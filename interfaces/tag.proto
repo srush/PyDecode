@@ -1,0 +1,14 @@
+import "hypergraph.proto";
+
+message Tagging {
+  required int32 ind =1;
+  required int32 tag_id=2;
+}
+
+
+extend Hypergraph.Node {
+
+  optional Tagging tagging = 120;
+  optional bool has_tagging = 121;
+}
+

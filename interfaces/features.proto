@@ -1,0 +1,22 @@
+import "hypergraph.proto";
+
+option optimize_for = SPEED;
+
+/*message FeatureVector {
+  message FeaturePair {
+    optional string feature = 1;
+    optional float value = 2 [default = 1];
+
+  }
+
+  repeated FeaturePair values = 1;
+  }*/
+
+
+extend Hypergraph.Node {
+  optional string node_fv = 100;
+}
+
+extend Hypergraph.Edge {
+  optional string edge_fv = 100;
+}

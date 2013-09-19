@@ -1,0 +1,15 @@
+import "hypergraph.proto";
+
+message Dep {
+  required int32 head =1;
+  required int32 mod = 2;
+}
+
+extend Hypergraph.Edge {
+  optional Dep dep = 110;
+  optional bool has_dep = 111;
+}
+
+extend Hypergraph {
+  optional int32 len = 1;
+}

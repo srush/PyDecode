@@ -1,0 +1,6 @@
+import "hypergraph.proto";
+
+extend Hypergraph {
+       optional string foreign_sentence = 1; 
+       repeated string reference_sentences = 2;
+}

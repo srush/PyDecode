@@ -1,0 +1,7 @@
+
+import "hypergraph.proto";
+
+extend Hypergraph.Node {
+  optional bool is_word = 110;
+  optional string word = 111;
+}
