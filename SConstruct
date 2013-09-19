@@ -26,16 +26,16 @@ for build_mode in ['debug', 'profile', 'opt']:
 
     env.Append(LIBPATH =('.',) + tuple(sub_dirs))
 
-    cpppath  = ('.', '#/' + variant + 'interfaces/hypergraph/gen-cpp',
-                include_path + tuple(sub_dirs))
+    cpppath = ('.', '#/' + variant + 'interfaces/hypergraph/gen-cpp',
+               include_path + tuple(sub_dirs))
 
     env.Append(CPPPATH=[cpppath])
     env.Append(LIBS=libs)
     env.Append(HYP_PROTO="#/" + variant + "interfaces/hypergraph/gen-cpp/")
     env.Append(HYP_PROTO_PY="#/python/decoding/interfaces/")
     env.Append(PROTOCPROTOPATH = [variant + "interfaces"])
-    interfaces = SConscript(dirs=[variant + "interfaces"], exports=['env'])
-    local_libs = SConscript(dirs=sub_dirs, exports=['env', 'build_config'])
+    interfaces = env.SConscript(dirs=[variant + "interfaces"], exports=['env'])
+    local_libs = env.SConscript(dirs=sub_dirs, exports=['env', 'build_config'])
     env.Alias('proto', interfaces)
 # docs = env.Doxygen('Doxyfile')
 # env.Alias('document', docs)
