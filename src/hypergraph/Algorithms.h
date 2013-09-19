@@ -1,9 +1,9 @@
-#ifndef HYPERGRAPHALGORITHMS_H_
-#define HYPERGRAPHALGORITHMS_H_
+#ifndef HYPERGRAPH_ALGORITHMS_H_
+#define HYPERGRAPH_ALGORITHMS_H_
 
 #include "svector.hpp"
 #include "Cache.h"
-#include "Hypergraph.h"
+#include "hypergraph/algorithms.h"
 
 
 

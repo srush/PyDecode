@@ -1,5 +1,5 @@
-#ifndef HYPERGRAPH_H_
-#define HYPERGRAPH_H_
+#ifndef HYPERGRAPH_HYPERGRAPH_H_
+#define HYPERGRAPH_HYPERGRAPH_H_
 #include "Weights.h"
 #include <vector>
 #include <set>
