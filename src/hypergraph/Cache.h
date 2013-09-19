@@ -8,11 +8,10 @@ using namespace std;
 template <class C, class V>
 class Cache {
  public:
-  // can hit directly if need be
   vector <V> store;
   vector <bool> has_value;
 
-  Cache(int size) { 
+  Cache(int size) {
     store.resize(size);
     has_value.resize(size);
   }
@@ -21,27 +20,27 @@ class Cache {
     return has_value.size();
   }
 
-  const V & get(const C & edge ) const { 
+  const V & get(const C & edge) const {
     int id = edge.id();
     assert (has_value[id]);
     return store[id];
   }
 
-   V & get_no_check(const C &edge ) { 
+   V & get_no_check(const C &edge) {
     int id = edge.id();
     has_value[id] = true;
     return store[id];
   }
 
-  V & get(const C & edge ) { 
+  V & get(const C & edge) {
     int id = edge.id();
     assert (has_value[id]);
     return store[id];
   }
 
-  const V &get_default(const C &edge, const V &def) const { 
+  const V &get_default(const C &edge, const V &def) const {
     int id = edge.id();
-    if ( has_value[id]) {
+    if (has_value[id]) {
       return store[id];
     } else {
       return def;
@@ -57,7 +56,7 @@ class Cache {
   V get_by_key(int id) const {
     return store[id];
   }
-  
+
   void set_value(const C & edge, V val) {
     int id = edge.id();
     assert(id < store.size());
@@ -86,7 +85,7 @@ class StoreCache {
   StoreCache() {}
   StoreCache(int size) {resize(size);}
 
-  void resize(int size) { 
+  void resize(int size) {
     store.resize(size);
     full_keys.resize(size);
     has_value.resize(size);
@@ -101,7 +100,7 @@ class StoreCache {
     assert (has_value[id]);
     return store[id];
   }
-  
+
   void set_value(const C & edge, V val) {
     int id = edge.id();
     has_value[id]= true;

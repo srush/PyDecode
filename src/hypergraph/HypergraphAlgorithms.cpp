@@ -8,23 +8,28 @@
 #include <cmath>
 #include <cy_svector.hpp>
 #include <algorithm>
-#include "../common.h"
+// #include "../common.h"
 using namespace std;
 
-namespace Scarab{
-  namespace HG{
-    double log_sum( double a, double b) {
-      double M = max(a,b);
-      double m = min(a,b);
-      return M + log(1.0 + exp(m - M));
-    }
+double log_sum( double a, double b) {
+  double M = max(a,b);
+  double m = min(a,b);
+  return M + log(1.0 + exp(m - M));
+}
 
-double best_path_helper(const Hypernode & node, const EdgeCache & edge_weights, NodeCache & score_memo_table, NodeBackCache & back_memo_table);
-vector <const Hypernode *> construct_best_fringe_help(const Hypernode & node, const NodeBackCache & back_memo_table);
+double best_path_helper(const Hypernode & node,
+                        const EdgeCache & edge_weights,
+                        NodeCache & score_memo_table,
+                        NodeBackCache & back_memo_table);
+
+vector <const Hypernode *> construct_best_fringe_help(const Hypernode & node,
+                                                      const NodeBackCache & back_memo_table);
+
 HEdges construct_best_edges_help(const Hypernode & node, const NodeBackCache & back_memo_table);
+
 wvector construct_best_fv_help(const Hypernode & node, const NodeBackCache & back_memo_table);
 
-    void best_outside_path_helper(const Hypernode & node,
+void best_outside_path_helper(const Hypernode & node,
                               const EdgeCache & edge_weights,
                               const NodeCache & score_memo_table,
                               NodeCache & outside_memo_table);
@@ -40,6 +45,7 @@ wvector construct_best_fv_help(const Hypernode & node, const NodeBackCache & bac
           continue;
         }
         reachable_nodes->insert(n);
+        reachable_nodes.
         const Hypernode & node = _forest.get_node(n);
         foreach (const Hyperedge *edge, node.edges()) {
           reachable_edges->insert(edge->id());
@@ -56,6 +62,7 @@ vector <const Hypernode *>  HypergraphAlgorithms::topological_sort() const {
   //cerr << reachable_nodes.size() << endl;
   vector <const Hypernode * > top_sort;
   queue<int> s;
+
   s.push(_forest.root().id());
   top_sort.clear();
   Cache <Hyperedge, bool> removed(_forest.num_edges());
@@ -92,6 +99,7 @@ EdgeCache * HypergraphAlgorithms::cache_edge_weights(const svector<int, double> 
 
   foreach (const Hyperedge *edge, _forest.edges()) {
     double dot = edge->fvector().dot(weight_vector);
+
     //cout << svector_str(weight_vector) << endl;
     //cout << svector_str(edge.fvector()) << endl;
     //cout << dot<< endl;
@@ -106,7 +114,6 @@ EdgeCache * HypergraphAlgorithms::cache_edge_weights(const svector<int, double> 
 EdgeCache* HypergraphAlgorithms::combine_edge_weights( const EdgeCache & w1, const EdgeCache & w2 )  const {
   EdgeCache * combine = new EdgeCache(_forest.num_edges());
   foreach (const Hyperedge * edge, _forest.edges()) {
-
     double v1;
     if (w1.has_key(*edge)) {
       v1= w1.get_value(*edge);
@@ -149,6 +156,7 @@ vector <const Hypernode *> construct_best_fringe_help(const Hypernode & node, co
 }
 
 wvector HypergraphAlgorithms::construct_best_feature_vector(const NodeBackCache & back_memo_table) const {
+
   return construct_best_fv_help(_forest.root(), back_memo_table);
 }
 
@@ -507,11 +515,3 @@ void HypergraphAlgorithms::collect_marginals(const NodeCache & inside_memo_table
     }
   }
 }
-
-
-
-
-  }}
-
-
-
