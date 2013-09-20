@@ -1,33 +1,32 @@
 #ifndef HYPERGRAPHIMPL_H_
 #define HYPERGRAPHIMPL_H_
 
-#include "Hypergraph.h"
-#include "hypergraph.pb.h"
-#include "features.pb.h"
-
-#include "Weights.h"
-#include "../common.h"
 #include <vector>
 #include <set>
+
+#include "../interfaces/hypergraph/gen-cpp/hypergraph.pb.h"
+#include "../interfaces/hypergraph/gen-cpp/features.pb.h"
+
+#include "Hypergraph.h"
+#include "common.h"
+#include "Weights.h"
 using namespace std;
 
-namespace Scarab {
-namespace HG {
 
 class HypernodeImpl;
 
 class HyperedgeImpl: public Hyperedge {
 public:
   virtual ~HyperedgeImpl(){ delete _features; }
-  HyperedgeImpl(const string & label, str_vector * features, 
-                int id, vector <Hypernode *> tail_nodes, 
+  HyperedgeImpl(const string & label, str_vector * features,
+                int id, vector <Hypernode *> tail_nodes,
                 Hypernode * head_node):
   _id(id),
-    _label(label), _tail_nodes(tail_nodes), 
+    _label(label), _tail_nodes(tail_nodes),
     _head_node(head_node), _features(features) {
-    
+
   }
-  
+
 
   const Hypernode & tail_node(unsigned int i) const {
     return * (_tail_nodes[i]);
@@ -35,8 +34,8 @@ public:
 
   uint num_nodes() const{
     return _tail_nodes.size();
-  }  
-  
+  }
+
   const wvector & fvector() const {
     return *_features;
   }
@@ -49,7 +48,7 @@ public:
     _feature_str = feat_str;
   }
 
-  const Scarab::HG::Hypernode & head_node() const { 
+  const Scarab::HG::Hypernode & head_node() const {
     return (*_head_node);
   }
 
@@ -69,7 +68,7 @@ public:
     _id = new_id;
   }
 
-  const string _label;  
+  const string _label;
   vector <Hypernode *> _tail_nodes;
   Hypernode * _head_node;
 
@@ -86,8 +85,8 @@ public:
   HypernodeImpl(const string & label, int id, wvector * features) :
   _id(id),
   _label(label), _features(features) {}
- 
-  
+
+
   void add_edge(Hyperedge *edge) {
     _edges.push_back(edge);
   }
@@ -102,25 +101,25 @@ public:
 
 
   void prune_edges(const set<int> & keep_edges ) {
-    vector < Hyperedge *> new_edges; 
-    vector < Hyperedge *> new_in_edges; 
+    vector < Hyperedge *> new_edges;
+    vector < Hyperedge *> new_in_edges;
     foreach (Hyperedge * edge, _edges) {
-      if (keep_edges.find(edge->id()) != keep_edges.end()) 
+      if (keep_edges.find(edge->id()) != keep_edges.end())
         new_edges.push_back(edge);
     }
     foreach (Hyperedge * edge, _in_edges) {
-      if (keep_edges.find(edge->id()) != keep_edges.end()) 
-        new_in_edges.push_back(edge); 
+      if (keep_edges.find(edge->id()) != keep_edges.end())
+        new_in_edges.push_back(edge);
     }
 
     _edges = new_edges;
-    _in_edges = new_in_edges;    
+    _in_edges = new_in_edges;
   }
 
   const Hyperedge & edge(uint i ) const {
     return *_edges[i];
   }
-  
+
   unsigned int num_edges() const{
     return _edges.size();
   }
@@ -143,27 +142,27 @@ public:
 
   const vector <Hyperedge*> & in_edges() const {
     return _in_edges;
-  } 
-  
+  }
+
   void reid(int new_id) {
     _id = new_id;
   }
 
   string label() const {
-    return _label; 
+    return _label;
   }
 
-private:  
+private:
    int  _id;
  public:
-  vector <Hyperedge *> _edges; 
+  vector <Hyperedge *> _edges;
   string _label;
 
 
-private:  
+private:
   wvector *_features;
-  
-  vector <Hyperedge *> _in_edges; 
+
+  vector <Hyperedge *> _in_edges;
 };
 
 class HypergraphImpl : public HGraph {
@@ -172,7 +171,7 @@ class HypergraphImpl : public HGraph {
 
   HypergraphImpl(vector <Hypernode*> nodes, vector <Hyperedge*> edges, Hypernode* root):
   _nodes(nodes), _edges(edges), _root(root){}
-  
+
   ~HypergraphImpl(){
     for (int i = 0; i < _nodes.size(); ++i) {
       delete _nodes[i];
@@ -182,7 +181,7 @@ class HypergraphImpl : public HGraph {
     }
   }
   //HypergraphImpl(const char* filename);//const Hypergraph & pb);
-      
+
   const Hypernode & root() const {
     return *_root;
   }
@@ -207,8 +206,8 @@ class HypergraphImpl : public HGraph {
     //assert (edge.id() == i);
     return *_edges[i];
   }
-  
-  
+
+
   void build_from_file(const char * file_name);
   void build_from_proto(Hypergraph *hgraph);
 
@@ -225,29 +224,26 @@ class HypergraphImpl : public HGraph {
   ::Hypergraph * hgraph;
   Hypernode * _root;
   vector <Hypernode *> _nodes;
-  vector <Hyperedge *> _edges; 
+  vector <Hyperedge *> _edges;
 
   virtual Hypernode * make_node(const Hypergraph_Node & node,  wvector * features) {
     //    cout << "bad make node called!" << endl;
-    return new HypernodeImpl(node.label(), node.id(), features); 
+    return new HypernodeImpl(node.label(), node.id(), features);
   }
 
   virtual void make_edge(const Hypergraph_Edge & edge, const Hyperedge * our_edge) {}
-  virtual void convert_edge(const Hyperedge * our_edge, Hypergraph_Edge * edge, int id ) {} 
+  virtual void convert_edge(const Hyperedge * our_edge, Hypergraph_Edge * edge, int id ) {}
 /* ;{ */
 /*     edge->set_id(id); */
 /*     edge->set_label(our_edge->label()); */
 /*   } */
-  virtual void convert_node(const Hypernode * our_node, Hypergraph_Node * node, int id ) { 
+  virtual void convert_node(const Hypernode * our_node, Hypergraph_Node * node, int id ) {
     node->set_id(id);
     node->set_label(our_node->label());
   }
   virtual void set_up(const Hypergraph & hgraph) {}
   virtual void print() const {}
-  
+
 };
 
-
-}
-}
 #endif

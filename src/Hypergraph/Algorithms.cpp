@@ -1,4 +1,4 @@
-#include "HypergraphAlgorithms.h"
+#include "Hypergraph/Algorithms.h"
 
 #include <iostream>
 #include <iomanip>
@@ -6,9 +6,9 @@
 #include <queue>
 #include <vector>
 #include <cmath>
-#include <cy_svector.hpp>
+//#include <cy_svector.hpp>
 #include <algorithm>
-// #include "../common.h"
+#include "common.h"
 using namespace std;
 
 double log_sum( double a, double b) {
@@ -22,41 +22,48 @@ double best_path_helper(const Hypernode & node,
                         NodeCache & score_memo_table,
                         NodeBackCache & back_memo_table);
 
-vector <const Hypernode *> construct_best_fringe_help(const Hypernode & node,
-                                                      const NodeBackCache & back_memo_table);
+vector <const Hypernode *> construct_best_fringe_help(
+    const Hypernode & node,
+    const NodeBackCache & back_memo_table);
 
-HEdges construct_best_edges_help(const Hypernode & node, const NodeBackCache & back_memo_table);
+HEdges construct_best_edges_help(
+    const Hypernode & node,
+    const NodeBackCache & back_memo_table);
 
-wvector construct_best_fv_help(const Hypernode & node, const NodeBackCache & back_memo_table);
+wvector construct_best_fv_help(
+    const Hypernode & node,
+    const NodeBackCache & back_memo_table);
 
-void best_outside_path_helper(const Hypernode & node,
-                              const EdgeCache & edge_weights,
-                              const NodeCache & score_memo_table,
-                              NodeCache & outside_memo_table);
+void best_outside_path_helper(
+    const Hypernode &node,
+    const EdgeCache &edge_weights,
+    const NodeCache &score_memo_table,
+    NodeCache &outside_memo_table);
 
 
-    void  HypergraphAlgorithms::reachable(set<int> *reachable_nodes, set<int> *reachable_edges) const {
-      set<int> s;
-      s.insert(_forest.root().id());
-      while (!s.empty()) {
-        int n = (*s.begin());
-        s.erase(n);
-        if (reachable_nodes->find(n) != reachable_nodes->end()) {
-          continue;
-        }
-        reachable_nodes->insert(n);
-        reachable_nodes.
-        const Hypernode & node = _forest.get_node(n);
-        foreach (const Hyperedge *edge, node.edges()) {
-          reachable_edges->insert(edge->id());
-          foreach (const Hypernode * sub_node, edge->tail_nodes()) {
-            s.insert(sub_node->id());
-          }
-        }
+void  HypergraphAlgorithms::reachable(
+    set<int> *reachable_nodes,
+    set<int> *reachable_edges) const {
+  set<int> s;
+  s.insert(_forest.root().id());
+  while (!s.empty()) {
+    int n = (*s.begin());
+    s.erase(n);
+    if (reachable_nodes->find(n) != reachable_nodes->end()) {
+      continue;
+    }
+    reachable_nodes->insert(n);
+    const Hypernode & node = _forest.get_node(n);
+    foreach (const Hyperedge *edge, node.edges()) {
+      reachable_edges->insert(edge->id());
+      foreach (const Hypernode * sub_node, edge->tail_nodes()) {
+        s.insert(sub_node->id());
       }
     }
+  }
+}
 
-vector <const Hypernode *>  HypergraphAlgorithms::topological_sort() const {
+vector<const Hypernode *> HypergraphAlgorithms::topological_sort() const {
   set<int> reachable_edges, reachable_nodes;
   reachable(&reachable_nodes, &reachable_edges);
   //cerr << reachable_nodes.size() << endl;
@@ -230,34 +237,34 @@ vector <const Hypernode * > HypergraphAlgorithms::construct_best_node_order(cons
   return construct_best_node_order_help(_forest.root(), back_memo_table);
 }
 
-    double HypergraphAlgorithms::filter_pruning_threshold(const EdgeCache & edge_weights,
-                                                          const NodeCache & score_memo_table,
-                                                          const NodeCache & outside_memo_table,
-                                                          double best,
-                                                          double alpha) {
+double HypergraphAlgorithms::filter_pruning_threshold(const EdgeCache & edge_weights,
+                                                      const NodeCache & score_memo_table,
+                                                      const NodeCache & outside_memo_table,
+                                                      double best,
+                                                      double alpha) {
 
-      set<int> reachable_edges, reachable_nodes;
-      reachable(&reachable_nodes, &reachable_edges);
-      int count = 0;
-      double total = 0.0;
-      foreach (HNode node, _forest.nodes()) {
-        if (reachable_nodes.find(node->id()) == reachable_nodes.end()) continue;
-        double node_outside = outside_memo_table.get(*node);
-        double node_inside = score_memo_table.get(*node);
-        double marginal = node_inside + node_outside;
-        total += marginal;
-        count++;
-      }
-      return alpha * best + (1.0 - alpha) * (total / count) + 1e-4;
-    }
+  set<int> reachable_edges, reachable_nodes;
+  reachable(&reachable_nodes, &reachable_edges);
+  int count = 0;
+  double total = 0.0;
+  foreach (HNode node, _forest.nodes()) {
+    if (reachable_nodes.find(node->id()) == reachable_nodes.end()) continue;
+    double node_outside = outside_memo_table.get(*node);
+    double node_inside = score_memo_table.get(*node);
+    double marginal = node_inside + node_outside;
+    total += marginal;
+    count++;
+  }
+  return alpha * best + (1.0 - alpha) * (total / count) + 1e-4;
+}
 
 HypergraphPrune HypergraphAlgorithms::pretty_good_pruning(const EdgeCache & edge_weights,
                                                           const NodeCache & score_memo_table,
                                                           const NodeCache & outside_memo_table,
                                                           double cutoff) {
   HypergraphPrune prune(_forest);
-//   vector<const Hypernode *> node_order =  topological_sort();
-//   reverse(node_order.begin(), node_order.end());
+  //   vector<const Hypernode *> node_order =  topological_sort();
+  //   reverse(node_order.begin(), node_order.end());
   set<int> reachable_edges, reachable_nodes;
   reachable(&reachable_nodes, &reachable_edges);
   //vector <const Hypernode *> node_order =  topological_sort();
@@ -269,8 +276,8 @@ HypergraphPrune HypergraphAlgorithms::pretty_good_pruning(const EdgeCache & edge
       continue;
     }
   }
-//   for (int i = nodes.size() - 1; i >= 0; --i) {
-//     HNode node = nodes[i];
+  //   for (int i = nodes.size() - 1; i >= 0; --i) {
+  //     HNode node = nodes[i];
 
   //foreach (HNode node, node_order) {
   foreach (HNode node, _forest.nodes()) {
@@ -317,7 +324,7 @@ double HypergraphAlgorithms::best_outside_path(const EdgeCache & edge_weights,
                                                const NodeCache & score_memo_table,
                                                NodeCache & outside_score_table) const {
   vector<const Hypernode *> node_order =
-    HypergraphAlgorithms(_forest).topological_sort();
+      HypergraphAlgorithms(_forest).topological_sort();
 
   foreach(HNode node, node_order) {
     outside_score_table.set_value(*node, INF);
@@ -327,7 +334,7 @@ double HypergraphAlgorithms::best_outside_path(const EdgeCache & edge_weights,
     int id = node->id();
     //if (_out_done.find(id) == _out_done.end()) {
     best_outside_path_helper(*node, edge_weights, score_memo_table, outside_score_table);
-      //}
+    //}
   }
 }
 
@@ -361,27 +368,27 @@ void best_outside_path_helper(const Hypernode & node,
   }
 }
 
-    double HypergraphAlgorithms::inside_scores(bool max, const EdgeCache & edge_weights,
-                                               NodeCache & inside_memo_table) const {
-      return inside_score_helper(max, _forest.root(), edge_weights, inside_memo_table);
-    }
+double HypergraphAlgorithms::inside_scores(bool max, const EdgeCache & edge_weights,
+                                           NodeCache & inside_memo_table) const {
+  return inside_score_helper(max, _forest.root(), edge_weights, inside_memo_table);
+}
 
-    double HypergraphAlgorithms::inside_score_helper(bool use_max, const Hypernode & node,
-                                                     const EdgeCache & edge_weights,
-                                                     NodeCache & inside_memo_table) const {
-      // assume score are log probs
-      if (inside_memo_table.has_key(node)) {
-        return inside_memo_table.get_value(node);
-      }
+double HypergraphAlgorithms::inside_score_helper(bool use_max, const Hypernode & node,
+                                                 const EdgeCache & edge_weights,
+                                                 NodeCache & inside_memo_table) const {
+  // assume score are log probs
+  if (inside_memo_table.has_key(node)) {
+    return inside_memo_table.get_value(node);
+  }
 
-      double inside_score;
+  double inside_score;
 
-      if (node.num_edges() == 0) {
-        inside_score = 0.0; // log(1.0)
-      } else {
-        inside_score = INF;
-        foreach (const Hyperedge * edge, node.edges()) {
-          double edge_value = edge_weights.get_value(*edge);
+  if (node.num_edges() == 0) {
+    inside_score = 0.0; // log(1.0)
+  } else {
+    inside_score = INF;
+    foreach (const Hyperedge * edge, node.edges()) {
+      double edge_value = edge_weights.get_value(*edge);
       foreach ( const Hypernode * tail_node, edge->tail_nodes()) {
         // sum
         edge_value += inside_score_helper(use_max, *tail_node, edge_weights, inside_memo_table);
@@ -399,63 +406,63 @@ void best_outside_path_helper(const Hypernode & node,
   return inside_score;
 }
 
-    double HypergraphAlgorithms::outside_scores(bool max, const EdgeCache & edge_weights,
-                                                const NodeCache & inside_memo_table,
-                                                NodeCache & outside_memo_table) const {
+double HypergraphAlgorithms::outside_scores(bool max, const EdgeCache & edge_weights,
+                                            const NodeCache & inside_memo_table,
+                                            NodeCache & outside_memo_table) const {
 
 
-      //reverse(node_order.begin(), node_order.end());
-      //cerr << node_order.size() << " " << _forest.num_nodes() << endl;
-      //assert(node_order.size() == _forest.num_nodes());
-      outside_memo_table.set_value(_forest.root(), 0.0);
-      //cerr << _forest.root().id() << endl;
-      set<int> reachable_edges, reachable_nodes;
-      reachable(&reachable_nodes, &reachable_edges);
-      //vector <const Hypernode *> node_order =  topological_sort();
-      const vector<Hypernode *> &nodes = _forest.nodes();
-      //foreach (HNode node, _forest.nodes()) {
-      for (int i = nodes.size() - 1; i >= 0; --i) {
-        HNode node = nodes[i];
-        int id = node->id();
-        if (reachable_nodes.find(id) != reachable_nodes.end()) {
-          outside_score_helper(max, *node, edge_weights, inside_memo_table, outside_memo_table);
-        }
-      }
+  //reverse(node_order.begin(), node_order.end());
+  //cerr << node_order.size() << " " << _forest.num_nodes() << endl;
+  //assert(node_order.size() == _forest.num_nodes());
+  outside_memo_table.set_value(_forest.root(), 0.0);
+  //cerr << _forest.root().id() << endl;
+  set<int> reachable_edges, reachable_nodes;
+  reachable(&reachable_nodes, &reachable_edges);
+  //vector <const Hypernode *> node_order =  topological_sort();
+  const vector<Hypernode *> &nodes = _forest.nodes();
+  //foreach (HNode node, _forest.nodes()) {
+  for (int i = nodes.size() - 1; i >= 0; --i) {
+    HNode node = nodes[i];
+    int id = node->id();
+    if (reachable_nodes.find(id) != reachable_nodes.end()) {
+      outside_score_helper(max, *node, edge_weights, inside_memo_table, outside_memo_table);
+    }
+  }
+}
+
+double HypergraphAlgorithms::outside_score_helper(bool use_max,
+                                                  const Hypernode & node,
+                                                  const EdgeCache & edge_weights,
+                                                  const NodeCache & inside_memo_table,
+                                                  NodeCache & outside_memo_table) const {
+  if (!outside_memo_table.has_key(node)) return 0.0;
+  assert(outside_memo_table.has_key(node));
+  double above_score = outside_memo_table.get_value(node);
+
+  foreach (HEdge edge, node.edges()) {
+    double edge_value= edge_weights.get_value(*edge);
+    double total = 0.0;
+    foreach (HNode node, edge->tail_nodes()) {
+      double node_inside = inside_memo_table.get_value(*node);
+      total += node_inside;
     }
 
-    double HypergraphAlgorithms::outside_score_helper(bool use_max,
-                                                      const Hypernode & node,
-                                                      const EdgeCache & edge_weights,
-                                                      const NodeCache & inside_memo_table,
-                                                      NodeCache & outside_memo_table) const {
-      if (!outside_memo_table.has_key(node)) return 0.0;
-      assert(outside_memo_table.has_key(node));
-      double above_score = outside_memo_table.get_value(node);
-
-      foreach (HEdge edge, node.edges()) {
-        double edge_value= edge_weights.get_value(*edge);
-        double total = 0.0;
-        foreach (HNode node, edge->tail_nodes()) {
-          double node_inside = inside_memo_table.get_value(*node);
-          total += node_inside;
+    foreach (HNode node, edge->tail_nodes()) {
+      double node_inside = inside_memo_table.get_value(*node);
+      double outside_score = edge_value + above_score + total - node_inside;
+      if (outside_memo_table.has_key(*node)) {
+        double cur_score = outside_memo_table.get(*node);
+        if (!use_max) {
+          outside_memo_table.set_value(*node, log_sum(cur_score, outside_score));
+        } else {
+          outside_memo_table.set_value(*node, min(cur_score, outside_score));
         }
-
-        foreach (HNode node, edge->tail_nodes()) {
-          double node_inside = inside_memo_table.get_value(*node);
-          double outside_score = edge_value + above_score + total - node_inside;
-          if (outside_memo_table.has_key(*node)) {
-            double cur_score = outside_memo_table.get(*node);
-            if (!use_max) {
-              outside_memo_table.set_value(*node, log_sum(cur_score, outside_score));
-            } else {
-              outside_memo_table.set_value(*node, min(cur_score, outside_score));
-            }
-          } else {
-            outside_memo_table.set_value(*node, outside_score);
-          }
-        }
+      } else {
+        outside_memo_table.set_value(*node, outside_score);
       }
     }
+  }
+}
 
 
 double HypergraphAlgorithms::best_path( const EdgeCache & edge_weights, NodeCache & score_memo_table,

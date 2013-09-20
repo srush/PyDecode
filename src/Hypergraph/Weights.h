@@ -4,8 +4,8 @@
 // Weights.h - helper methods for using David Chiang's sparse vector
 #include <iostream>
 #include <fstream>
-#include <cy_svector.hpp>
-#include <svector.hpp>
+//#include <cy_svector.hpp>
+#include "svector.hpp"
 // #include "../CommandLine.h"
 using namespace std;
 

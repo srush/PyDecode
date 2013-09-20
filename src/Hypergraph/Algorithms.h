@@ -3,13 +3,13 @@
 
 #include "svector.hpp"
 #include "Cache.h"
-#include "hypergraph/algorithms.h"
+#include "Hypergraph.h"
 
 
 
-typedef Cache <Hyperedge, double> EdgeCache;
-typedef Cache <Hypernode, double> NodeCache;
-typedef Cache <Hypernode, const Hyperedge *> NodeBackCache;
+typedef Cache<Hyperedge, double> EdgeCache;
+typedef Cache<Hypernode, double> NodeCache;
+typedef Cache<Hypernode, const Hyperedge *> NodeBackCache;
 
 /* struct HypergraphWeights { */
 /* HypergraphWeights():_edge_weights() */

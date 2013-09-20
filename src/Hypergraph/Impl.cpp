@@ -1,10 +1,12 @@
-#include "HypergraphImpl.h"
-#include "Weights.h"
-#include "hypergraph.pb.h"
-#include "features.pb.h"
-#include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/io/coded_stream.h>
-#include "EdgeCache.h"
+#include <google/protobuf/io/zero_copy_stream_impl.h>
+
+#include "Hypergraph/Impl.h"
+#include "Hypergraph/Cache.h"
+#include "Weights.h"
+#include "../interface/hypergraph/gen-cpp/hypergraph.pb.h"
+#include "../interface/hypergraph/gen-cpp/features.pb.h"
+
 using namespace google::protobuf::io;
 
 // void HypergraphImpl::prune(const HypergraphPrune & prune) {
