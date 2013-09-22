@@ -1,194 +1,89 @@
+// Copyright [2013] Alexander Rush
+
 #ifndef HYPERGRAPH_HYPERGRAPH_H_
 #define HYPERGRAPH_HYPERGRAPH_H_
-#include "Weights.h"
-#include <vector>
+
 #include <set>
 #include <string>
+#include <vector>
+
+#include "Hypergraph/Weights.h"
+#include "./common.h"
 using namespace std;
 
-// Hypergraph interface for internal use.
-// This interface is entirely immutable! Every function is const
-// See Cache.h for implementing state on top on hypergraphs.
-
 class Hypernode;
+class Hyperedge;
 typedef const Hypernode *HNode;
 typedef vector <const Hypernode *> HNodes;
+typedef const Hyperedge *HEdge;
+typedef vector<const Hyperedge *> HEdges;
 
 // Base class for weighted hyperedge.
 class Hyperedge {
  public:
-  //Hyperedge(unsigned int id): _id(id){}
-   virtual ~Hyperedge() {}
+  Hyperedge(int id, string label, HNode head,
+            const vector<HNode> &tails)
+    : id_(id), label_(label),
+      head_(head), tail_nodes_(tails) {}
 
-  /**
-   * Get edge id
-   *
-   * @return The id of this edge in a fixed hypergraph
-   */
-   virtual unsigned int id() const = 0;
+  // Get the id of the edge.
+  unsigned int id() const { return id_; }
 
-   virtual string label() const = 0;
+  // Get the label of the edge.
+  string label() const { return label_; }
 
-  // These are deprecated use iterator
+  // Get the head node of the edge.
+  HNode head_node() const { return head_; }
 
-  /**
-   * Get a node in this edges tail
-   * @deprecated
-   * @param i The node position, in tail_node order
-   *
-   * @return The hypernode
-   */
-  virtual const Hypernode & tail_node(unsigned int i) const = 0;
+  // Get the tail nodes of the hyperedge in order.
+  const vector<HNode> &tail_nodes() const { return tail_nodes_; }
 
-  /**
-   * The number of tail nodes in this edge.
-   * @deprecated
-   *
-   * @return The length
-   */
-  virtual unsigned int num_nodes() const =0 ;
-
-  /**
-   * The feature vector associated with this node.
-   * TODO: remove this from the representation
-   * @deprecated
-   *
-   * @return Feature vector
-   */
-  virtual const svector<int, double> & fvector() const = 0;
-
-  /**
-   * Get the node at the head of this hyperedge
-   *
-   * @return Head node
-   */
-  virtual const Hypernode & head_node() const  = 0;
-
-  // TODO: These should be iterators, figuring that part out
-  /**
-   * Get all the nodes in the tail of the hyperedge
-   * WARNING: Treat this as a const iterator.
-   * @return Const iterator to nodes.
-   */
-  virtual const vector <Hypernode *> & tail_nodes() const =0;
-
-
-  // protected:
-  //unsigned int _id;
+ private:
+  int id_;
+  string label_;
+  vector<HNode> tail_nodes_;
+  HNode head_;
 };
 
-
-typedef const Hyperedge * HEdge;
-typedef vector <HEdge > HEdges;
 
 /**
  * Hypernode - Constant representation of a hypernode in a hypergraph.
  * Accessors for edges above and below.
  */
 class Hypernode {
- public:
+  public:
+  explicit Hypernode(int id) : id_(id) {}
 
-  /**
-   * WARNING: Private except to Hypergraph
-   */
-  //Hypernode(unsigned int id): _id(id){}
-   virtual ~Hypernode() {}
-  /**
-   * The unique identifier of the Hypernode
-   * @deprecated
-   *
-   * @return The number
-   */
-   virtual unsigned int id() const = 0;// {return _id;}
+  unsigned int id() const { return id_; }
 
-  // This interface is deprecated, use iterators below instead
+  void add_edge(const Hyperedge *edge) {
+    edges_.push_back(edge);
+  }
 
-  /**
-   * Get the number of hyperedges that have this node as head
-   * @deprecated
-   *
-   * @return The number
-   */
-  virtual unsigned int num_edges() const = 0;
+  // Get all hyperedges with this hypernode as head.
+  const vector<HEdge> &edges() const { return edges_; }
 
-  /**
-   * Get the number of hyperedges that have this node as tail
-   * @deprecated
-   *
-   * @return The number
-   */
-  virtual unsigned int num_in_edges() const =0;
-
-
-  /**
-   * Get the hyperedge  this node as head
-   * @deprecated
-   * @param i Local local id of edge
-   *
-   * @return The hyperedge
-   */
-  virtual const Hyperedge & edge(unsigned int i ) const = 0;
-
-
-  /**
-   * Get the hyperedge this node as tail
-   * @deprecated
-   * @param i Local local id of edge
-   *
-   * @return The hyperedge
-   */
-  virtual const Hyperedge & in_edge(unsigned int i) const = 0;
-
-
-
-  /**
-   * Is this node a terminal nodes. (no children)
-   *
-   * @return True if terminal (assert is_terminal() == (num_edges() == 0))
-   */
-  virtual bool is_terminal() const =0;
-
-  // TODO: These should be (lazy) iterators, figure that part out
-  /**
-   * Get all hyperedges with this hypernode as head.
-   * WARNING: Treat this as a const iterator.
-   * @return Const iterator to edges.
-   */
-  virtual const vector <Hyperedge*> &edges() const =0;
+  bool terminal() const { return (edges_.size() == 0); }
 
   /**
    * Get all hyperedges with this hypernode as a tail.
    * WARNING: Treat this as a const iterator.
    * @return Const iterator to edges.
    */
-  virtual const vector <Hyperedge *> &in_edges() const =0;
-
-  virtual string label() const { return ""; };
+  //virtual const vector<Hyperedge *> &in_edges() const = 0;
+ private:
+  int id_;
+  vector<HEdge> edges_;
 };
 
-class HGraph {
+class Hypergraph {
  public:
-  virtual ~HGraph() {}
-
-  /**
-   * Display the hypergraph for debugging.
-   */
-  virtual void print() const = 0;
-
   /**
    * Get the root of the hypergraph
    *
    * @return Hypernode at root
    */
-  virtual const Hypernode &root() const = 0;
-
-
-  // TODO: remove these
-  virtual unsigned int num_edges() const =0;
-  virtual unsigned int num_nodes() const = 0;
-
-  virtual const Hypernode &get_node(unsigned int i) const = 0;
-  virtual const Hyperedge &get_edge(unsigned int i) const = 0;
+  HNode root() const { return nodes_[root_id_]; }
 
   // Switching to iterator interface
   /**
@@ -196,21 +91,109 @@ class HGraph {
    * WARNING: Treat this as a const iterator.
    * @return Const iterator to hypernodes in hypergraph.
    */
-  virtual const vector <Hypernode* > &nodes() const = 0;
+  const vector <HNode> &nodes() const {
+    return nodes_;
+  }
 
   /**
    * Get all hyperedges in the hypergraph. (Assume unordered)
    * WARNING: Treat this as a const iterator.
    * @return Const iterator to edges in hypergraph .
    */
-  virtual const vector <Hyperedge*> & edges() const =0;
+  const vector <HEdge> & edges() const {
+    return edges_;
+  }
+
+  // Construction Code.
+
+  // Create a new node and begin adding edges.
+  HNode start_node();
+
+  HEdge add_edge(const vector<HNode> &nodes, string label);
+
+
+  void end_node() { lock_ = false; }
+
+  // Add a hyperedge to the current hypernode in focus.
+//HEdge add_edge(const vector<HNode> &nodes, string label);
+
+  // Complete the hypergraph.
+  void finish() {
+    root_id_ = nodes_.size() - 1;
+    // TODO(srush) Run checks to make sure we are complete.
+  }
+
+ private:
+  // For construction.
+
+  // The hypergraph is adding an edge. It is locked.
+  bool lock_;
+
+  // The current node being created.
+  Hypernode *creating_node_;
+
+  // List of nodes guarenteed to be in topological order.
+  vector<HNode> nodes_;
+
+  // List of edges guarenteed to be in topological order.
+  vector<HEdge> edges_;
+
+  // The id of the root.
+  int root_id_;
 };
 
-struct HypergraphPrune {
-  HypergraphPrune(const HGraph &hgraph_) : hgraph(hgraph_) {}
-  set <int> nodes;
-  set <int> edges;
-  const HGraph & hgraph;
+class Hyperpath {
+ public:
+  Hyperpath(const Hypergraph *graph,
+            const vector<HEdge> &edges)
+      : edges_(edges) {
+    foreach (HEdge edge, edges) {
+      edges_set_.insert(edge->id());
+    }
+  }
+
+  const vector<HEdge> &edges() const {
+    return edges_;
+  }
+
+  bool has_edge(HEdge edge) const {
+    return edges_set_.find(edge->id())
+        != edges_set_.end();
+  }
+
+ private:
+  set<int> edges_set_;
+  const vector<HEdge> edges_;
 };
 
-#endif
+class HypergraphWeights {
+ public:
+  HypergraphWeights(const Hypergraph *hypergraph,
+                    const vector<double> &weights,
+                    double bias)
+  : weights_(weights),
+      hypergraph_(hypergraph),
+      bias_(bias)
+
+  {
+    assert(weights.size() == hypergraph->edges().size());
+  }
+
+  double dot(const Hyperpath &path) const;
+
+  double score(HEdge edge) const { return weights_[edge->id()]; }
+
+  double bias() const { return bias_; }
+
+  HypergraphWeights *modify(const SparseVec &, double) const;
+
+
+
+ private:
+  const Hypergraph *hypergraph_;
+  vector<double> weights_;
+  double bias_;
+};
+
+
+#endif  // HYPERGRAPH_HYPERGRAPH_H_
