@@ -1,4 +1,5 @@
-#include <vector> 
+// Copyright [2013] Alexander Rush
 
-using namespace std;
+#include <vector>
 
+using std;
