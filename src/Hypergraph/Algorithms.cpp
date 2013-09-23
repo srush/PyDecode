@@ -38,8 +38,11 @@ Hyperpath *viterbi_path(const Hypergraph *graph,
   while(!to_examine.empty()) {
     HEdge edge = back[to_examine.front()->id()];
     to_examine.pop();
+    if (edge == NULL) continue;
+    path.push_back(edge);
     foreach (HNode node, edge->tail_nodes()) {
       to_examine.push(node);
+
     }
   }
   return new Hyperpath(graph, path);

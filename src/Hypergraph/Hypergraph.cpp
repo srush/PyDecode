@@ -16,6 +16,7 @@ HNode Hypergraph::start_node() {
   int id = nodes_.size();
   creating_node_ = new Hypernode(id);
   nodes_.push_back(creating_node_);
+  return creating_node_;
 }
 
 double HypergraphWeights::dot(const Hyperpath &path) const {
