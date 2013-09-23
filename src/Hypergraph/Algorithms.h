@@ -12,7 +12,8 @@
 
 
 Hyperpath *viterbi_path(const Hypergraph *graph,
-                        const HypergraphWeights &theta);
+                        const HypergraphWeights &theta,
+                        vector<double> *chart);
 
 void outside(const Hypergraph *graph,
              const HypergraphWeights &theta,

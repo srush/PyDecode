@@ -5,7 +5,8 @@ from libcpp.vector cimport vector
 
 cdef extern from "Hypergraph/Algorithms.h":
     Hyperpath *viterbi_path(const Hypergraph *graph,
-                            const HypergraphWeights theta)
+                            const HypergraphWeights theta,
+                            vector[double] *chart)
 
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass Hyperedge:
@@ -34,13 +35,14 @@ cdef extern from "Hypergraph/Hypergraph.h":
 
     cdef cppclass HypergraphWeights:
         HypergraphWeights(const Hypergraph *hypergraph,
-                          vector[double] weights,
+                          const vector[double] weights,
                           double bias)
         double dot(const Hyperpath &path)
 
 cdef extern from "Hypergraph/Constraints.h":
     cdef cppclass Constraint:
         Constrint(string label, int id)
+
     cdef cppclass HypergraphConstraints:
         HypergraphConstraints(const Hypergraph *hypergraph)
         Constraint *add_constraint(string label)
@@ -51,7 +53,8 @@ cdef extern from "Hypergraph/Constraints.h":
 
 
 def viterbi(HGraph graph, Weights weights):
-    viterbi_path(graph.thisptr, deref(weights.thisptr))
+    cdef vector[double] chart
+    viterbi_path(graph.thisptr, deref(weights.thisptr), &chart)
 
 cdef class HGraph:
     cdef Hypergraph *thisptr
@@ -167,7 +170,7 @@ cdef class WeightBuilder:
         weights.resize(self.hypergraph.edges_size(), 0)
         for i, w in self.vals.iteritems():
             weights[i] = w
-        return Weights(self.hypergraph, weights)
+        return Weights(self.hypergraph, weights, 0.0)
 
 cdef class HConstraints:
     cdef HypergraphConstraints *thisptr

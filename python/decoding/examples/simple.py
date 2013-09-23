@@ -16,4 +16,4 @@ with hypergraph.builder() as b:
         wb.set_weight(edge, 15)
     print hypergraph.edges_size()
 weights = wb.weights()
-d.viterbi(hypergraph, weights)
+#d.viterbi(hypergraph, weights)

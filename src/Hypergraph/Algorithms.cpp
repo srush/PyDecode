@@ -92,7 +92,8 @@ class ConstrainedProducer : public SubgradientProducer {
     constraints_->convert(*cur_state.duals, &edge_duals, &bias_dual);
     HypergraphWeights *dual_weights =
         weights_->modify(edge_duals, bias_dual);
-    Hyperpath *path = viterbi_path(graph_, *dual_weights);
+    vector<double> chart;
+    Hyperpath *path = viterbi_path(graph_, *dual_weights, &chart);
     result->dual = dual_weights->dot(*path);
     result->subgrad = constraints_->subgradient(*path);
     delete dual_weights, path;
