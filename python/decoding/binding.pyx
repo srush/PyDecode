@@ -34,8 +34,9 @@ cdef extern from "Hypergraph/Hypergraph.h":
 
     cdef cppclass HypergraphWeights:
         HypergraphWeights(const Hypergraph *hypergraph,
-                          vector[double] weights)
-        double dot(const Hyperpath *path)
+                          vector[double] weights,
+                          double bias)
+        double dot(const Hyperpath &path)
 
 cdef extern from "Hypergraph/Constraints.h":
     cdef cppclass Constraint:
@@ -44,7 +45,10 @@ cdef extern from "Hypergraph/Constraints.h":
         HypergraphConstraints(const Hypergraph *hypergraph)
         Constraint *add_constraint(string label)
         int check_constraints(const Hyperpath path,
-                               vector[Constraint *] *failed)
+                              vector[const Constraint *] *failed,
+                              vector[int] *count
+                              )
+
 
 def viterbi(HGraph graph, Weights weights):
     viterbi_path(graph.thisptr, deref(weights.thisptr))
@@ -141,11 +145,11 @@ cdef class Path:
 
 cdef class Weights:
     cdef const HypergraphWeights *thisptr
-    def __cinit__(self, HGraph hypergraph, vector[double] weights):
-        self.thisptr = new HypergraphWeights(hypergraph.thisptr, weights)
+    def __cinit__(self, HGraph hypergraph, vector[double] weights, double bias):
+        self.thisptr = new HypergraphWeights(hypergraph.thisptr, weights, bias)
 
     def dot(self, Path path):
-        cdef double result = self.thisptr.dot(path.thisptr)
+        cdef double result = self.thisptr.dot(deref(path.thisptr))
         return result
 
 cdef class WeightBuilder:
@@ -171,8 +175,9 @@ cdef class HConstraints:
         self.thisptr = new HypergraphConstraints(hypergraph.thisptr)
 
     def check(self, Path path):
-        cdef vector[Constraint *] failed
-        self.thisptr.check_constraints(deref(path.thisptr), &failed)
+        cdef vector[const Constraint *] failed
+        cdef vector[int] count
+        self.thisptr.check_constraints(deref(path.thisptr), &failed, &count)
 
 # cdef class Hyperedge:
 #     cdef HyperedgeImpl *thisptr
