@@ -1,11 +1,10 @@
 from build_config import *
-from protoc import *
 import os
 
 
 
 for build_mode in ['debug', 'profile', 'opt']:
-    env = Environment(CC = 'g++', ENV=os.environ, tools=['default', 'protoc', 'doxygen'], toolpath = ['.'])
+    env = Environment(CC = 'g++', ENV=os.environ, tools=['default'], toolpath = ['.'])
     env.Append(ROOT=build_config['root'])
 
     if build_mode == "debug":
@@ -21,9 +20,8 @@ for build_mode in ['debug', 'profile', 'opt']:
     env.VariantDir(variant, '.')
     sub_dirs = ['#/' + variant + 'src']
 
-    #libs = ('decoding', "protobuf", "pthread", "gflags")
     libs = ('decoding')
-    include_path = build_config['include_extra']
+    include_path = build_config.get('include_extra',())
 
     env.Append(LIBPATH =('.',) + tuple(sub_dirs))
 

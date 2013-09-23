@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-#include "Hypergraph/Weights.h"
 #include "./common.h"
 using namespace std;
 
