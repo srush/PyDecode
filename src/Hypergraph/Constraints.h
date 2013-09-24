@@ -10,9 +10,9 @@ struct Constraint {
  public:
   Constraint(string _label, int _id) : label(_label), id(_id) {}
 
-  void set_bias(int _bias) { bias = _bias; }
+  void set_constant(int _bias) { bias = _bias; }
 
-  void add_edge(HEdge edge, int coefficient) {
+  void add_edge_term(HEdge edge, int coefficient) {
     edges.push_back(edge);
     coefficients.push_back(coefficient);
   }

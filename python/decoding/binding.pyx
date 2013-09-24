@@ -43,14 +43,16 @@ cdef extern from "Hypergraph/Hypergraph.h":
 cdef extern from "Hypergraph/Constraints.h":
     cdef cppclass Constraint:
         Constrint(string label, int id)
+        void set_constant(int _bias)
+        void add_edge_term(const Hyperedge *edge, int coefficient)
+        string label
 
     cdef cppclass HypergraphConstraints:
         HypergraphConstraints(const Hypergraph *hypergraph)
         Constraint *add_constraint(string label)
         int check_constraints(const Hyperpath path,
                               vector[const Constraint *] *failed,
-                              vector[int] *count
-                              )
+                              vector[int] *count)
 
 
 def viterbi(HGraph graph, Weights weights):
@@ -228,15 +230,39 @@ cdef class WeightBuilder:
             weights[i] = w
         return Weights(self.hypergraph, weights, 0.0)
 
+cdef class HConstraint:
+    cdef Constraint *thisptr
+    cdef init(self, Constraint *ptr):
+        self.thisptr = ptr
+
+    def set_constant(self, int constant):
+        self.thisptr.set_constant(constant)
+
+    def add_edge_term(self, Edge edge, int coefficient):
+        self.thisptr.add_edge_term(edge.edgeptr, coefficient)
+
 cdef class HConstraints:
     cdef HypergraphConstraints *thisptr
     def __cinit__(self, HGraph hypergraph):
         self.thisptr = new HypergraphConstraints(hypergraph.thisptr)
 
+    def add(self, string label):
+        cdef Constraint *cons
+        cons = self.thisptr.add_constraint(label)
+        cdef HConstraint hcons = HConstraint()
+        hcons.init(cons)
+        return hcons
+
     def check(self, Path path):
         cdef vector[const Constraint *] failed
         cdef vector[int] count
-        self.thisptr.check_constraints(deref(path.thisptr), &failed, &count)
+        self.thisptr.check_constraints(deref(path.thisptr),
+                                       &failed,
+                                       &count)
+        ret = []
+        for cons in failed:
+            ret.append(cons.label)
+        return ret
 
 # cdef class Hyperedge:
 #     cdef HyperedgeImpl *thisptr
