@@ -49,4 +49,3 @@ for edge in hypergraph.edges():
     for t in edge.tail():
         G.add_edge(name, t.id())
 nx.draw(G)
-plt.savefig("temp")
