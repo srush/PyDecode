@@ -1,7 +1,10 @@
 import networkx as nx
 
 def to_networkx(hypergraph):
-    "Convert hypergraph to networkx representation."
+    """Convert hypergraph to networkx representation.
+
+    :param hypergraph: The hypergraph to convert.
+    """
     graph = nx.Graph()
     for node in hypergraph.nodes():
         head_node = node.id()

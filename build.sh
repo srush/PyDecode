@@ -5,4 +5,5 @@ rm -fr build/lib.linux-x86_64-2.7/
 python setup.py clean
 python setup.py config
 python setup.py build
+python setup.py build_ext --inplace
 sudo python setup.py install

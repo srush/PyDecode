@@ -12,3 +12,7 @@ Documentation
    :maxdepth: 2
 
    getting_started
+   hypergraph
+   display
+   notebooks/hypergraphs
+

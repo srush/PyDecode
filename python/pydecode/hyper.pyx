@@ -1,3 +1,4 @@
+#cython: embedsignature=True
 from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -158,6 +159,12 @@ cdef class GraphBuilder:
             builder.build(self.table[attr])
         
     def add_node(self, label = "", terminal = False):
+        """
+        Add a node to the hypergraph. 
+        :param label Optional label for the node.
+        :param terminal Is this a terminal node?
+        """
+
         self.thisptr.end_node()
         node = Node()
         cdef const CHypernode *nodeptr 
