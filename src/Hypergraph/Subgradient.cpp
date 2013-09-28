@@ -42,19 +42,22 @@ bool Subgradient::run_one_round(bool *optimal) {
     cerr << "Round " << round_;
     cerr << " BEST_DUAL " << best_dual_;
     cerr << " CUR_DUAL " << result.dual;
+    cerr << endl;
     //cerr << " ALPHA " << last_alpha_;
   }
 
-  if (boost::numeric::ublas::norm_2(result.subgrad)) {
+  if (boost::numeric::ublas::norm_2(result.subgrad) == 0.0) {
     *optimal = true;
-    return true;
+    return false;
   }
   update_weights(result.subgrad);
-  return false;
+  return true;
 }
 
 void Subgradient::update_weights(const SparseVec &subgrad) {
   double alpha = rate_->get_alpha(past_duals_, subgrad);
+  cerr << "alpha: " << alpha << " " <<   boost::numeric::ublas::norm_2(duals_) << endl;
   SparseVec updates = alpha * subgrad;
-  duals_ += updates;
+  duals_ -= updates;
+
 }

@@ -23,19 +23,17 @@ bool HypergraphConstraints::check_constraints(
   return failed_constraints->size() == 0;
 }
 
-SparseVec HypergraphConstraints::subgradient(
-    const Hyperpath &path) const {
+void HypergraphConstraints::subgradient(const Hyperpath &path, 
+                                        SparseVec *subgrad) const {
   vector<const Constraint *> constraints;
   vector<int> count;
   check_constraints(path, &constraints, &count);
-  SparseVec subgrad;
   for (int i = 0; i < constraints.size(); ++i) {
-    subgrad[constraints[i]->id] = count[i];
+    (*subgrad)(constraints[i]->id) = count[i];
   }
-  return subgrad;
 }
 
-SparseVec HypergraphConstraints::convert(
+void HypergraphConstraints::convert(
     const SparseVec &dual_vector,
     SparseVec *edge_duals,
     double *bias_dual) const {

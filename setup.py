@@ -3,7 +3,7 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
 ext_modules = [Extension("decoding_ext",
-                         ["python/decoding/binding.cpp"],
+                         ["python/decoding/decoding_ext.pyx"],
                          language='c++',
                          include_dirs=[r'build/debug/src/'],
                          library_dirs=[r'build/debug/src/', ""],

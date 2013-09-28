@@ -9,8 +9,16 @@ typedef boost::numeric::ublas::mapped_vector<double> SparseVec;
 
 class SubgradRate {
  public:
-  virtual double get_alpha(vector <double> & past_duals,
+  virtual double get_alpha(vector<double> &past_duals,
                            const SparseVec &subgrad) const = 0;
+};
+
+class ConstantRate : public SubgradRate {
+ public:
+  double get_alpha(vector <double> &past_duals,
+                   const SparseVec &subgrad) const {
+    return 1.0;
+  }
 };
 
 // Input to the subgradient client
@@ -24,6 +32,8 @@ struct SubgradState {
 
 // Output of the subgradient client
 struct SubgradResult {
+  SubgradResult() : subgrad(10000) {}
+
   // The dual value with these weights.
   double dual;
 
@@ -62,10 +72,13 @@ class Subgradient {
       best_dual_(-INF),
       round_(1),
       debug_(false),
-      max_round_(200) {}
+    max_round_(200),
+    duals_(10000){}
 
-  void set_debug(){ debug_ = true;}
-  void set_max_rounds(int max_round){ max_round_ = max_round; }
+  void set_debug(){ debug_ = true; }
+  void set_max_rounds(int max_round) {
+    max_round_ = max_round; 
+  }
   bool solve();
 
  private:

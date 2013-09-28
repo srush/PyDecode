@@ -4,12 +4,19 @@
 
 #include <queue>
 #include <vector>
+#include <assert.h>
 
 #include "Hypergraph/Constraints.h"
 #include "Hypergraph/Subgradient.h"
 
 #include "./common.h"
 using namespace std;
+
+struct IdComparator {
+  bool operator()(HEdge edge1, HEdge edge2) const {
+    return edge1->id() < edge2->id();
+  }
+};
 
 Hyperpath *viterbi_path(const Hypergraph *graph,
                         const HypergraphWeights &theta,
@@ -18,6 +25,12 @@ Hyperpath *viterbi_path(const Hypergraph *graph,
   // Run Viterbi Hypergraph algorithm.
   chart->clear();
   chart->resize(graph->nodes().size(), -INF);
+
+  foreach (HNode node, graph->nodes()) {
+    if (node->terminal()) {
+      (*chart)[node->id()] = 0;
+    }
+  }
   vector<HEdge> back(graph->nodes().size(), NULL);
   foreach (HEdge edge, graph->edges()) {
     double score = theta.score(edge);
@@ -36,15 +49,19 @@ Hyperpath *viterbi_path(const Hypergraph *graph,
   queue<HNode> to_examine;
   to_examine.push(graph->root());
   while(!to_examine.empty()) {
-    HEdge edge = back[to_examine.front()->id()];
+    HNode node = to_examine.front();
+    HEdge edge = back[node->id()];
     to_examine.pop();
-    if (edge == NULL) continue;
+    if (edge == NULL) {
+      assert(node->terminal());
+      continue;
+    }
     path.push_back(edge);
     foreach (HNode node, edge->tail_nodes()) {
       to_examine.push(node);
-
     }
   }
+  sort(path.begin(), path.end(), IdComparator());
   return new Hyperpath(graph, path);
 }
 
@@ -90,15 +107,29 @@ class ConstrainedProducer : public SubgradientProducer {
 
   void solve(const SubgradState &cur_state,
              SubgradResult *result) const {
-    SparseVec edge_duals;
+    SparseVec edge_duals(10000);
     double bias_dual;
-    constraints_->convert(*cur_state.duals, &edge_duals, &bias_dual);
+    constraints_->convert(*cur_state.duals, 
+                          &edge_duals, 
+                          &bias_dual);
     HypergraphWeights *dual_weights =
         weights_->modify(edge_duals, bias_dual);
     vector<double> chart;
-    Hyperpath *path = viterbi_path(graph_, *dual_weights, &chart);
+    Hyperpath *path = viterbi_path(graph_, 
+                                   *dual_weights, 
+                                   &chart);
     result->dual = dual_weights->dot(*path);
-    result->subgrad = constraints_->subgradient(*path);
+    constraints_->subgradient(*path, &result->subgrad);
+
+    vector<const Constraint *> failed_constraints;
+    vector<int> counts;
+    constraints_->check_constraints(*path,
+                                    &failed_constraints, 
+                                    &counts);
+    for (int i = 0; i < failed_constraints.size(); ++i) {
+      cerr << "Dual " << result->dual << endl;
+      cerr << "Missed " << failed_constraints[i]->label << endl;
+    }
     delete dual_weights, path;
   }
 
@@ -113,6 +144,9 @@ Hyperpath *best_constrained_path(
     const Hypergraph *graph,
     const HypergraphWeights &theta,
     const HypergraphConstraints &constraints) {
-ConstrainedProducer producer(graph, &theta, &constraints);
-  Subgradient subgradient(&producer, NULL);
+  ConstantRate rate;
+  ConstrainedProducer producer(graph, &theta, &constraints);
+  Subgradient subgradient(&producer, &rate);
+  subgradient.set_debug();
+  subgradient.solve();
 }

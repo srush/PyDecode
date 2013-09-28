@@ -20,13 +20,18 @@ typedef vector<const Hyperedge *> HEdges;
 // Base class for weighted hyperedge.
 class Hyperedge {
  public:
-  Hyperedge(int id, string label, HNode head,
+  Hyperedge(string label, 
+            HNode head,
             const vector<HNode> &tails)
-    : id_(id), label_(label),
-      head_(head), tail_nodes_(tails) {}
+    : id_(-1),
+      label_(label),
+      head_(head), 
+      tail_nodes_(tails) {}
 
   // Get the id of the edge.
   unsigned int id() const { return id_; }
+
+  void set_id(int id) { id_ = id; }
 
   // Get the label of the edge.
   string label() const { return label_; }
@@ -36,6 +41,10 @@ class Hyperedge {
 
   // Get the tail nodes of the hyperedge in order.
   const vector<HNode> &tail_nodes() const { return tail_nodes_; }
+
+  bool operator<(const Hyperedge *edge2) const {
+    return id() < edge2->id();
+  }
 
  private:
   int id_;
@@ -51,9 +60,12 @@ class Hyperedge {
  */
 class Hypernode {
   public:
-  explicit Hypernode(int id) : id_(id) {}
+  explicit Hypernode(string label) 
+    : id_(-1), label_(label) {}
 
   unsigned int id() const { return id_; }
+
+  void set_id(int id) { id_ = id; }
 
   void add_edge(const Hyperedge *edge) {
     edges_.push_back(edge);
@@ -62,7 +74,7 @@ class Hypernode {
   // Get all hyperedges with this hypernode as head.
   const vector<HEdge> &edges() const { return edges_; }
 
-  bool terminal() const { return (edges_.size() == 0); }
+  bool terminal() const { return edges_.size() == 0; }
 
   /**
    * Get all hyperedges with this hypernode as a tail.
@@ -72,17 +84,21 @@ class Hypernode {
   //virtual const vector<Hyperedge *> &in_edges() const = 0;
  private:
   int id_;
+  string label_;
   vector<HEdge> edges_;
 };
 
 class Hypergraph {
  public:
+  Hypergraph() 
+    : terminal_lock_(true), lock_(false) {}
+
   /**
    * Get the root of the hypergraph
    *
    * @return Hypernode at root
    */
-  HNode root() const { return nodes_[root_id_]; }
+  HNode root() const { return root_; }
 
   // Switching to iterator interface
   /**
@@ -106,24 +122,30 @@ class Hypergraph {
   // Construction Code.
 
   // Create a new node and begin adding edges.
-  HNode start_node();
+  HNode add_terminal_node(string label);
+
+  HNode start_node(string label);
 
   HEdge add_edge(const vector<HNode> &nodes, string label);
-
 
   void end_node() { lock_ = false; }
 
   // Add a hyperedge to the current hypernode in focus.
-//HEdge add_edge(const vector<HNode> &nodes, string label);
+  //HEdge add_edge(const vector<HNode> &nodes, string label);
 
   // Complete the hypergraph.
   void finish() {
-    root_id_ = nodes_.size() - 1;
+    root_ = temp_nodes_[temp_nodes_.size() - 1];
+    fill();
     // TODO(srush) Run checks to make sure we are complete.
   }
 
+  // Remove paths that do not reach the root.
+  void fill();
+
  private:
   // For construction.
+  bool terminal_lock_;
 
   // The hypergraph is adding an edge. It is locked.
   bool lock_;
@@ -132,13 +154,21 @@ class Hypergraph {
   Hypernode *creating_node_;
 
   // List of nodes guarenteed to be in topological order.
+  vector<Hypernode *> temp_nodes_;
+
+  // List of edges guarenteed to be in topological order.
+  vector<Hyperedge *> temp_edges_;
+
+  // The true interface.
+
+  // List of nodes guarenteed to be in topological order.
   vector<HNode> nodes_;
+
 
   // List of edges guarenteed to be in topological order.
   vector<HEdge> edges_;
 
-  // The id of the root.
-  int root_id_;
+  HNode root_;
 };
 
 class Hyperpath {
@@ -146,8 +176,11 @@ class Hyperpath {
   Hyperpath(const Hypergraph *graph,
             const vector<HEdge> &edges)
       : edges_(edges) {
+    int last = -1;
     foreach (HEdge edge, edges) {
       edges_set_.insert(edge->id());
+      assert((int)edge->id() >= last);
+      last = edge->id();
     }
   }
 
@@ -164,6 +197,7 @@ class Hyperpath {
   set<int> edges_set_;
   const vector<HEdge> edges_;
 };
+
 
 class HypergraphWeights {
  public:
@@ -185,8 +219,6 @@ class HypergraphWeights {
   double bias() const { return bias_; }
 
   HypergraphWeights *modify(const SparseVec &, double) const;
-
-
 
  private:
   const Hypergraph *hypergraph_;

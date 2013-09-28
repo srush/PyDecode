@@ -40,11 +40,11 @@ class HypergraphConstraints {
       vector<const Constraint *> *failed_constraints,
       vector<int> *count) const;
 
-  SparseVec convert(const SparseVec &dual_vector,
+  void convert(const SparseVec &dual_vector,
                     SparseVec *edge_duals,
                     double *bias_dual) const;
 
-  SparseVec subgradient(const Hyperpath &path) const;
+  void subgradient(const Hyperpath &path, SparseVec *subgrad) const;
 
  private:
   const Hypergraph *hypergraph_;

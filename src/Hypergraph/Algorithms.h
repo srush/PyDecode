@@ -16,8 +16,10 @@ Hyperpath *viterbi_path(const Hypergraph *graph,
                         vector<double> *chart);
 
 void outside(const Hypergraph *graph,
-             const HypergraphWeights &theta,
+             const HypergraphWeights &weights,
+             const vector<double> &inside_chart,
              vector<double> *chart);
+
 
 Hyperpath *best_constrained_path(
     const Hypergraph *graph,

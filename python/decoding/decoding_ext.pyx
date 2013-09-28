@@ -2,11 +2,22 @@ from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
-
 cdef extern from "Hypergraph/Algorithms.h":
-    Hyperpath *viterbi_path(const Hypergraph *graph,
-                            const HypergraphWeights theta,
-                            vector[double] *chart)
+    Hyperpath *viterbi_path(
+        const Hypergraph *graph,
+        const HypergraphWeights theta,
+        vector[double] *chart)
+
+    void outside(
+        const Hypergraph *graph,
+        const HypergraphWeights weights,
+        const vector[double] inside_chart,
+        vector[double] *chart)
+    
+    Hyperpath *best_constrained_path(
+        const Hypergraph *graph,
+        const HypergraphWeights theta,
+        const HypergraphConstraints constraints)
 
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass Hyperedge:
@@ -22,7 +33,8 @@ cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass Hypergraph:
         Hypergraph()
         const Hypernode *root()
-        const Hypernode *start_node()
+        const Hypernode *start_node(string)
+        const Hypernode *add_terminal_node(string)
         vector[const Hypernode *] nodes()
         vector[const Hyperedge *] edges()
         void end_node()
@@ -32,7 +44,7 @@ cdef extern from "Hypergraph/Hypergraph.h":
 
     cdef cppclass Hyperpath:
         vector[const Hyperedge *] edges()
-
+        int has_edge(const Hyperedge *)
 
     cdef cppclass HypergraphWeights:
         HypergraphWeights(const Hypergraph *hypergraph,
@@ -54,15 +66,38 @@ cdef extern from "Hypergraph/Constraints.h":
                               vector[const Constraint *] *failed,
                               vector[int] *count)
 
-
-def viterbi(HGraph graph, Weights weights):
+cdef class Chart:
     cdef vector[double] chart
-    cdef const Hyperpath *hpath = viterbi_path(graph.thisptr, deref(weights.thisptr), &chart)
+
+    def score(self, Node node):
+        return self.chart[node.id()]
+
+def best_path(HGraph graph, 
+              Weights weights):
+    cdef Chart chart = Chart()
+    cdef const Hyperpath *hpath = \
+        viterbi_path(graph.thisptr, 
+                     deref(weights.thisptr), 
+                     &chart.chart)
     cdef Path path = Path()
     path.init(hpath)
-    return path
+    return path, chart
 
+def outside_path(HGraph graph, 
+                 Weights weights, 
+                 Chart inside_chart):
+    cdef Chart out_chart = Chart()
+    outside(graph.thisptr, deref(weights.thisptr), 
+            inside_chart.chart, &out_chart.chart)
+    return out_chart
 
+def best_constrained(HGraph graph, 
+                     Weights weights, 
+                     HConstraints constraints):
+    best_constrained_path(graph.thisptr, 
+                          deref(weights.thisptr), 
+                          deref(constraints.thisptr))
+    
 cdef class HGraph:
     cdef Hypergraph *thisptr
     def __cinit__(self):
@@ -85,6 +120,9 @@ cdef class HGraph:
     def nodes(self):
         return convert_nodes(self.thisptr.nodes())
 
+    def root(self):
+        return convert_node(self.thisptr.root())
+
 cdef class GraphBuilder:
     cdef Hypergraph *thisptr
 
@@ -97,16 +135,16 @@ cdef class GraphBuilder:
     def __exit__(self, a, b, c):
         self.thisptr.finish()
 
-    def add_terminal_node(self):
+    def add_terminal_node(self, label = ""):
         node = Node()
-        cdef const Hypernode *nodeptr = self.thisptr.start_node()
-        self.thisptr.end_node()
+        cdef const Hypernode *nodeptr = \
+            self.thisptr.add_terminal_node(label)
         node.init(nodeptr)
         return node
 
-    def add_node(self):
+    def add_node(self, label = ""):
         node = Node()
-        cdef const Hypernode *nodeptr = self.thisptr.start_node()
+        cdef const Hypernode *nodeptr = self.thisptr.start_node(label)
         node.init_mutable(self.thisptr, nodeptr)
         return node
 
@@ -118,7 +156,8 @@ cdef class Node:
     def __cinit__(self):
         self.edge_count = 0
 
-    cdef init_mutable(self, Hypergraph *graphptr, const Hypernode *nodeptr):
+    cdef init_mutable(self, Hypergraph *graphptr, 
+                      const Hypernode *nodeptr):
         self.graphptr = graphptr
         self.nodeptr = nodeptr
 
@@ -126,10 +165,14 @@ cdef class Node:
         self.nodeptr = nodeptr
 
     def id(self):
+        assert(self.nodeptr.id() != -1)
         return self.nodeptr.id()
 
     def edges(self):
         return convert_edges(self.nodeptr.edges())
+
+    def is_terminal(self):
+        return self.nodeptr.edges().size() == 0
 
     def __cinit__(self):
         pass
@@ -137,7 +180,7 @@ cdef class Node:
     def __enter__(self):
         return self
 
-    def add_edge(self, tail_nodes, label):
+    def add_edge(self, tail_nodes, label = ""):
         cdef vector[const Hypernode *] tail_node_ptrs
         for tail_node in tail_nodes:
             tail_node_ptrs.push_back((<Node> tail_node).nodeptr)
@@ -148,7 +191,6 @@ cdef class Node:
         return edge
 
     def __exit__(self, a, b, c):
-        print "exit"
         if self.edge_count == 0:
             assert False
         self.graphptr.end_node()
@@ -173,6 +215,7 @@ cdef class Edge:
         return self.edgeptr.label()
 
     def id(self):
+        assert(self.edgeptr.id() != -1)
         return self.edgeptr.id()
 
 
@@ -203,11 +246,18 @@ cdef class Path:
     def edges(self):
         return convert_edges(self.thisptr.edges())
 
-
+    def __contains__(self, Edge hyperedge):
+        return self.thisptr.has_edge(hyperedge.edgeptr)
+        
+    
 cdef class Weights:
     cdef const HypergraphWeights *thisptr
-    def __cinit__(self, HGraph hypergraph, vector[double] weights, double bias):
-        self.thisptr = new HypergraphWeights(hypergraph.thisptr, weights, bias)
+    def __cinit__(self, 
+                  HGraph hypergraph, 
+                  vector[double] weights, 
+                  double bias):
+        self.thisptr = new HypergraphWeights(hypergraph.thisptr, 
+                                             weights, bias)
 
     def dot(self, Path path):
         cdef double result = self.thisptr.dot(deref(path.thisptr))
@@ -217,17 +267,17 @@ cdef class WeightBuilder:
     cdef vals
     cdef hypergraph
     def __cinit__(self, hypergraph):
-        self.vals = {}
+        self.vals = []
         self.hypergraph = hypergraph
 
     def set_weight(self, Edge edge, val):
-        self.vals[edge.edgeptr.id()] = val
+        self.vals.append((edge, val))
 
     def weights(self):
         cdef vector[double] weights
         weights.resize(self.hypergraph.edges_size(), 0)
-        for i, w in self.vals.iteritems():
-            weights[i] = w
+        for edge, w in self.vals:
+            weights[edge.id()] = w
         return Weights(self.hypergraph, weights, 0.0)
 
 cdef class HConstraint:
@@ -263,6 +313,7 @@ cdef class HConstraints:
         for cons in failed:
             ret.append(cons.label)
         return ret
+
 
 # cdef class Hyperedge:
 #     cdef HyperedgeImpl *thisptr
