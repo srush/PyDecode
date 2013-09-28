@@ -1,8 +1,21 @@
+---------------
 Getting Started
 ---------------
 
+Build the C++ library::
 
-Make a file 
+    $ scons
 
-> mv build_config.py.template 
+Build the Python extension::
 
+    $ python setup.py config
+    $ python setup.py build
+    $ python setup.py install
+
+Dependencies
+~~~~~~~~~~~~
+
+- Boost
+- Pandas (optional)
+- NetworkX (optional)
+- Nose (optional)

@@ -14,6 +14,7 @@
 
 import sys
 import os
+sys.path.append(os.path.abspath('_themes'))
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -186,6 +187,11 @@ html_static_path = ['_static']
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'PyDecodedoc'
 
+
+html_theme_options = {
+    'index_logo': ''
+    #'github_fork': 'srush/pydecode',
+}
 
 # -- Options for LaTeX output ---------------------------------------------
 

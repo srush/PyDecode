@@ -1,5 +1,4 @@
-Import('env build_config')
-
+Import('env')
 
 sources = [
     "Hypergraph/Hypergraph.cpp",
