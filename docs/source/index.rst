@@ -12,7 +12,9 @@ Documentation
    :maxdepth: 2
 
    getting_started
-   hypergraph
-   display
+   api
+   examples
+   notebooks/hypergraphs
+
    notebooks/hypergraphs
 
