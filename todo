@@ -6,10 +6,6 @@
 
 - better construction error messages
 
-- pydoc the cython. 
-
 - cky example
 
 - pandas of dual values
-
-- ipython-notebook
