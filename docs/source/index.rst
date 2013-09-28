@@ -14,7 +14,4 @@ Documentation
    getting_started
    api
    examples
-   notebooks/hypergraphs
-
-   notebooks/hypergraphs
 
