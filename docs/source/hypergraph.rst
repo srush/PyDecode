@@ -1,11 +1,13 @@
-Hypergraph
+Using the Hypergraph
 =========
 
 
-.. autoclass:: pydecode.hyper.Chart
-.. automethod:: pydecode.hyper.Chart.score
-
-
-.. automodule:: pydecode.hyper
+.. autoclass:: pydecode.hyper.Hypergraph
    :members:
-   :undoc-members:
+
+.. autoclass:: pydecode.hyper.Node
+   :members:
+
+.. autoclass:: pydecode.hyper.Edge
+   :members:
+

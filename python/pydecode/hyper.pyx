@@ -72,10 +72,25 @@ cdef class Chart:
     cdef vector[double] chart
 
     def score(self, Node node):
+        """
+        Get the chart score for a node.
+        
+        :param node: The node to check.
+        :returns: A score
+        """
+      
         return self.chart[node.id()]
 
 def best_path(Hypergraph graph, 
               Weights weights):
+    """
+    Find the highest-score path in the hypergraph.
+
+    :param graph: The hypergraph to search.
+    :param weights: The weights of the hypergraph.
+    :returns: The best path and inside chart.
+    """
+
     cdef Chart chart = Chart()
     cdef const CHyperpath *hpath = \
         viterbi_path(graph.thisptr, 
@@ -88,6 +103,14 @@ def best_path(Hypergraph graph,
 def outside_path(Hypergraph graph, 
                  Weights weights, 
                  Chart inside_chart):
+    """
+    Find the outside score for the hypergraph.
+
+    :param graph: The hypergraph to search.
+    :param weights: The weights of the hypergraph.
+    :param inside_chart: The inside chart.
+    :returns: The outside chart. 
+    """
     cdef Chart out_chart = Chart()
     outside(graph.thisptr, deref(weights.thisptr), 
             inside_chart.chart, &out_chart.chart)
@@ -96,6 +119,15 @@ def outside_path(Hypergraph graph,
 def best_constrained(Hypergraph graph, 
                      Weights weights, 
                      Constraints constraints):
+    """
+    Find the highest-scoring path satisfying constraints.
+
+    :param graph: The hypergraph to search.
+    :param weights: The weights of the hypergraph.
+    :param constraints: The hyperedge constraints.
+    :returns: The best path. 
+    """
+
     cdef CHyperpath *cpath = best_constrained_path(graph.thisptr, 
                           deref(weights.thisptr), 
                           deref(constraints.thisptr))
@@ -131,6 +163,11 @@ cdef class Hypergraph:
         return convert_node(self.thisptr.root())
 
 cdef class GraphBuilder:
+    """
+    Build a hypergraph. Created using 
+
+    with hypergraph.builder() as b:
+    """
     cdef CHypergraph *thisptr
     cdef Hypergraph hyper
     cdef types 
@@ -154,8 +191,10 @@ cdef class GraphBuilder:
     def add_node(self, edges = [], label = ""):
         """
         Add a node to the hypergraph. 
-        :param label Optional label for the node.
-        :param terminal Is this a terminal node?
+
+        :param edges: A list of edges of the form ([v_2, v_3..], label). 
+        :param label: Optional label for the node.
+
         """
 
         node = Node()
@@ -253,6 +292,12 @@ cdef class Weights:
     cdef Hypergraph hypergraph
     cdef const CHypergraphWeights *thisptr
     def __cinit__(self, Hypergraph hypergraph, fn):
+        """ 
+        Build the weight vector for a hypergraph.
+        
+        :param hypergraph: The underlying hypergraph.
+        :param fn: A function from edge labels to weights.
+        """
         self.hypergraph = hypergraph
 
         cdef vector[double] weights
@@ -264,6 +309,13 @@ cdef class Weights:
                                  weights, 0.0)
 
     def dot(self, Path path):
+        """ 
+        Score a path with a weight vector.
+        
+        :param path: The hyperpath  to score.
+        :return: The score.
+        """
+
         cdef double result = self.thisptr.dot(deref(path.thisptr))
         return result
 
@@ -279,6 +331,10 @@ cdef class Constraint:
         self.thisptr.add_edge_term(edge.edgeptr, coefficient)
 
 cdef class Constraints:
+    """
+    A class for storing the matrix of hypergraph constraints A y = b.
+    """
+
     cdef CHypergraphConstraints *thisptr
     cdef Hypergraph hypergraph
     def __cinit__(self, Hypergraph hypergraph):
@@ -286,6 +342,14 @@ cdef class Constraints:
         self.hypergraph = hypergraph
 
     def add(self, string label, fn, int constant):
+        """
+        Add a new hypergraph constraint. 
+
+        :param label: The name of the constraint.
+        :param fn: A function mapping the label of an edge to its coefficient.
+        :param constant: The value b_i for this constraint.
+        :returns: The constraint.
+        """
         cdef CConstraint *cons
         cons = self.thisptr.add_constraint(label)
         cdef Constraint hcons = Constraint()
@@ -299,6 +363,13 @@ cdef class Constraints:
         return hcons
 
     def check(self, Path path):
+        """
+        Check which constraints a path violates.
+
+        :param path: The hyperpath to check
+        :returns: The labels of violated constraints.
+        """
+
         cdef vector[const CConstraint *] failed
         cdef vector[int] count
         self.thisptr.check_constraints(deref(path.thisptr),
