@@ -1,1 +1,1 @@
-find src/ | grep Hypergraph | xargs python ~/libs/cpplint.py --root=src
+find src/ | grep Hypergraph | xargs python scripts/cpplint.py --root=src
