@@ -63,6 +63,7 @@ cdef extern from "Hypergraph/Constraints.h":
     cdef cppclass CHypergraphConstraints "HypergraphConstraints":
         CHypergraphConstraints(const CHypergraph *hypergraph)
         CConstraint *add_constraint(string label)
+        const CHypergraph *hypergraph()
         int check_constraints(const CHyperpath path,
                               vector[const CConstraint *] *failed,
                               vector[int] *count)
@@ -95,34 +96,40 @@ def outside_path(Hypergraph graph,
 def best_constrained(Hypergraph graph, 
                      Weights weights, 
                      Constraints constraints):
-    best_constrained_path(graph.thisptr, 
+    cdef CHyperpath *cpath = best_constrained_path(graph.thisptr, 
                           deref(weights.thisptr), 
                           deref(constraints.thisptr))
+    cdef Path path = Path()
+    path.init(cpath)
+    return path
     
 cdef class Hypergraph:
     cdef CHypergraph *thisptr
-    cdef registered
-
+    cdef types
     def __cinit__(self):
         self.thisptr = new CHypergraph()
-        self.registered = []
-    
-    def register(self, builder, attr):
-        self.registered.append((builder, attr))
+        self.types = []
+
+    # def register(self, builder, attr):
+    #     self.registered.append((builder, attr))
 
     def builder(self):
         gb = GraphBuilder()
-        gb.init(self.thisptr, self.registered)
+        gb.init(self, self.thisptr)
         return gb
+
+
+    # def nodes_size(self):
+    #     return self.thisptr.nodes().size()
+
+    def edges(self):
+        return convert_edges(self.thisptr.edges())
 
     def edges_size(self):
         return self.thisptr.edges().size()
 
-    def nodes_size(self):
-        return self.thisptr.nodes().size()
-
-    def edges(self):
-        return convert_edges(self.thisptr.edges())
+    def type(self, edge):
+        return self.types[edge.id()]
 
     def nodes(self):
         return convert_nodes(self.thisptr.nodes())
@@ -136,63 +143,73 @@ cdef class Hypergraph:
 #         gb.init(self.thisptr)
 #         return gb
 
-
 cdef class GraphBuilder:
     cdef CHypergraph *thisptr
-    cdef table
-    cdef registered
+    cdef Hypergraph hyper
+    cdef types 
     
-    cdef init(self, CHypergraph *ptr, registered):
+    cdef init(self, Hypergraph hyper, CHypergraph *ptr):
         self.thisptr = ptr
-        self.registered = registered
-        self.table = {}
-        for builder, attr in self.registered:
-            self.table[attr] = []
-
+        self.hyper = hyper
+        self.types = []
+        
     def __enter__(self): return self
 
     def __exit__(self, exception, b, c):
         if exception:
            return False
         self.thisptr.finish()
-        for builder, attr in self.registered:
-            builder.build(self.table[attr])
-        
-    def add_node(self, label = "", terminal = False):
+        self.hyper.types = [None] * self.thisptr.edges().size()
+        for edge, t in self.types:
+            if not edge.removed():
+                self.hyper.types[edge.id()] = t
+
+    def add_node(self, edges = [], label = ""):
         """
         Add a node to the hypergraph. 
         :param label Optional label for the node.
         :param terminal Is this a terminal node?
         """
 
-        self.thisptr.end_node()
         node = Node()
         cdef const CHypernode *nodeptr 
-        if terminal:
+        if not edges:
             nodeptr = self.thisptr.add_terminal_node(label)
         else:
             nodeptr = self.thisptr.start_node(label)
+        cdef vector[const CHypernode *] tail_node_ptrs
+        cdef const CHyperedge *edgeptr
+        for tail_nodes, t in edges:
+            tail_node_ptrs.clear()
+            for tail_node in tail_nodes:
+                tail_node_ptrs.push_back((<Node> tail_node).nodeptr)
+            edgeptr = self.thisptr.add_edge(tail_node_ptrs, "")
+            self.types.append((convert_edge(edgeptr), t))
+        # for key, val in keywords.iteritems():
+        #     self.add_attr(edgeptr, key, val)
+
         node.init(nodeptr)
+        self.thisptr.end_node()
         return node
 
-    cdef add_attr(self, const CHyperedge *edgeptr, name, val):
+    # cdef add_attr(self, const CHyperedge *edgeptr, name, val):
         
-        self.table[name].append((convert_edge(edgeptr), val))
+    #     self.table[name].append((convert_edge(edgeptr), val))
 
-    def add_edge(self, head_node, tail_nodes, 
-                 label = "", 
-                 **keywords):
-        cdef vector[const CHypernode *] tail_node_ptrs
-        for tail_node in tail_nodes:
-            tail_node_ptrs.push_back((<Node> tail_node).nodeptr)
-        cdef const CHyperedge *edgeptr = self.thisptr.add_edge(tail_node_ptrs, label)
-        for key, val in keywords.iteritems():
-            self.add_attr(edgeptr, key, val)
+    # def add_edge(self, head_node, tail_nodes, 
+    #              label = "", 
+    #              **keywords):
+    #     cdef vector[const CHypernode *] tail_node_ptrs
+    #     for tail_node in tail_nodes:
+    #         tail_node_ptrs.push_back((<Node> tail_node).nodeptr)
+    #     cdef const CHyperedge *edgeptr = self.thisptr.add_edge(tail_node_ptrs, label)
+    #     for key, val in keywords.iteritems():
+    #         self.add_attr(edgeptr, key, val)
 
 cdef class Node:
     cdef const CHypernode *nodeptr
     cdef CHypergraph *graphptr
-    cdef int edge_count
+    # cdef int edge_count
 
     # def __cinit__(self):
     #     self.edge_count = 0
@@ -302,24 +319,41 @@ cdef class Path:
 cdef class Weights:
     cdef Hypergraph hypergraph
     cdef const CHypergraphWeights *thisptr
-    def __cinit__(self, Hypergraph hypergraph):
+    def __cinit__(self, Hypergraph hypergraph, fn):
         self.hypergraph = hypergraph
-        hypergraph.register(self, "weight")
+        #hypergraph.register(self, "weight")
 
-    cdef init(self, vector[double] weights, double bias):
-        self.thisptr = new CHypergraphWeights(self.hypergraph.thisptr, 
-                                              weights, bias)
+        cdef vector[double] weights
+        weights.resize(self.hypergraph.thisptr.edges().size())
+        for i, ty in enumerate(self.hypergraph.types):
+            weights[i] = fn(ty)
+        self.thisptr =  \
+          new CHypergraphWeights(self.hypergraph.thisptr, 
+                                 weights, 0.0)
+
+    # cdef init(self, vector[double] weights, double bias):
+    #     self.thisptr = \
+    #         new CHypergraphWeights(self.hypergraph.thisptr, 
+    #                                weights, bias)
     
     # def builder(self):
     #     return WeightBuilder(self)
 
-    def build(self, attrs):
-        cdef vector[double] weight_vals
-        weight_vals.resize(self.hypergraph.edges_size(), 0)
-        for edge, w in attrs:
-            if not edge.removed():
-                weight_vals[edge.id()] = w
-        self.init(weight_vals, 0.0)
+    # def build(self, fn):
+    #     cdef vector[double] weights
+    #     weights.resize(self.hypergraph.thisptr.edges().size())
+    #     for i, score in enumerate(fn(self.hypergraph.types)):
+    #         weights[i] = score
+    #     self.thisptr =  \
+    #       new CHypergraphWeights(self.hypergraph.thisptr, 
+    #                              weights, 0.0)
+
+        # cdef vector[double] weight_vals
+        # weight_vals.resize(self.hypergraph.edges_size(), 0)
+        # for edge, w in attrs:
+        #     if not edge.removed():
+        #         weight_vals[edge.id()] = w
+        # self.init(weight_vals, 0.0)
 
     def dot(self, Path path):
         cdef double result = self.thisptr.dot(deref(path.thisptr))
@@ -363,15 +397,16 @@ cdef class Constraint:
 
 cdef class Constraints:
     cdef CHypergraphConstraints *thisptr
+    cdef Hypergraph hypergraph
     def __cinit__(self, Hypergraph hypergraph):
         self.thisptr = new CHypergraphConstraints(hypergraph.thisptr)
-        hypergraph.register(self, "constraints")
+        self.hypergraph = hypergraph
 
-    def build(self, attrs):
-        for edge, ls in attrs:
-            if not edge.removed():
-                for constraint, coeff in ls:
-                    constraint.add_edge_term(edge, coeff)
+    # def build(self, attrs):
+    #     for edge, ls in attrs:
+    #         if not edge.removed():
+    #             for constraint, coeff in ls:
+    #                 constraint.add_edge_term(edge, coeff)
         # cdef vector[double] weight_vals
         # weight_vals.resize(self.weights.hypergraph.edges_size(), 0)
         # for edge, w in attrs:
@@ -380,12 +415,17 @@ cdef class Constraints:
 
         
 
-    def add(self, string label, int constant):
+    def add(self, string label, fn, int constant):
         cdef CConstraint *cons
         cons = self.thisptr.add_constraint(label)
         cdef Constraint hcons = Constraint()
         hcons.init(cons)
         hcons.thisptr.set_constant(constant)
+        cdef vector[const CHyperedge *] edges = self.hypergraph.thisptr.edges()
+        cdef int coefficient
+        for i, ty in enumerate(self.hypergraph.types):
+            coefficient = fn(ty)
+            if coefficient: cons.add_edge_term(edges[i], coefficient)
         return hcons
 
     def check(self, Path path):

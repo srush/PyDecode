@@ -21,6 +21,18 @@ class ConstantRate : public SubgradRate {
   }
 };
 
+class DecreasingRate : public SubgradRate {
+ public:
+  double get_alpha(vector<double> &past_duals,
+                   const SparseVec &subgrad) const {
+    double rate = 1.0;
+    for (int i = 0; i < past_duals.size(); ++i) {
+      rate *= 0.9;
+    } 
+    return rate;
+  }
+};
+
 // Input to the subgradient client
 struct SubgradState {
   // The current round of the subgradient algorithm

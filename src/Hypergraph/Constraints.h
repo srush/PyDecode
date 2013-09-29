@@ -46,6 +46,7 @@ class HypergraphConstraints {
 
   void subgradient(const Hyperpath &path, SparseVec *subgrad) const;
 
+  const Hypergraph *hypergraph() const { return hypergraph_; }
  private:
   const Hypergraph *hypergraph_;
   vector<Constraint *> constraints_;

@@ -130,8 +130,11 @@ class ConstrainedProducer : public SubgradientProducer {
       cerr << "Dual " << result->dual << endl;
       cerr << "Missed " << failed_constraints[i]->label << endl;
     }
-    delete dual_weights, path;
+    delete dual_weights;
+    path_ = path;
   }
+
+  mutable Hyperpath *path_;
 
  private:
   const Hypergraph *graph_;
@@ -144,9 +147,11 @@ Hyperpath *best_constrained_path(
     const Hypergraph *graph,
     const HypergraphWeights &theta,
     const HypergraphConstraints &constraints) {
-  ConstantRate rate;
+  DecreasingRate rate;
+  cerr << "decreasing" << endl;
   ConstrainedProducer producer(graph, &theta, &constraints);
   Subgradient subgradient(&producer, &rate);
   subgradient.set_debug();
   subgradient.solve();
+  return producer.path_;
 }

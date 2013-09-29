@@ -6,3 +6,4 @@ Example Notebooks
    :maxdepth: 2
 
    hypergraphs
+   hmms
