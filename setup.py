@@ -39,5 +39,5 @@ setup(
   packages=['pydecode'],
   package_dir={'pydecode': 'python/pydecode'},
   ext_modules = ext_modules,
-  requires=["networkx"]
+  requires=["networkx", "pandas"]
 )
