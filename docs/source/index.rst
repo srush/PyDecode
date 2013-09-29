@@ -13,5 +13,5 @@ Documentation
 
    getting_started
    api
-   examples
+   notebooks/index
 
