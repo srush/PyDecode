@@ -14,9 +14,8 @@ Simple Hypergraph Example
 
     hyp = hyper.Hypergraph()
     with hyp.builder() as b:
-         n1 = b.add_node("first", terminal=True)
-         n2 = b.add_node("second")
-         b.add_edge(n2, [n1], label = "Edge")
+         n1 = b.add_node()
+         n2 = b.add_node((([n1], "Label"),))
 Draw the graph
 
 .. code:: python
@@ -32,3 +31,7 @@ Draw the graph
 .. image:: hypergraphs_files/hypergraphs_4_0.png
 
 
+
+.. code:: python
+
+    
