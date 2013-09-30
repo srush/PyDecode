@@ -1,9 +1,12 @@
 import networkx as nx
 
 def to_networkx(hypergraph, extra=[], node_extra=[], paths=[]):
-    """Convert hypergraph to networkx representation.
+    """Convert hypergraph to networkx graph representation.
 
     :param hypergraph: The hypergraph to convert.
+    :param extra: Extra naming information for edges.
+    :param node_extra: Extra naming information for nodes.
+    :param paths: Paths to highlight in the graph.
     """
 
     colors = ["red", "blue", "green"]
@@ -38,6 +41,14 @@ def to_image(hypergraph, filename, extra=[], node_extra=[], paths=[]):
     agraph.draw(filename)
 
 def to_ipython(hypergraph, extra=[], node_extra=[], paths=[]):
+    """Display a hypergraph in iPython.
+
+    :param hypergraph: The hypergraph to convert.
+    :param extra: Extra naming information for edges.
+    :param node_extra: Extra naming information for nodes.
+    :param paths: Paths to highlight in the graph.
+    """
+    
     from IPython.display import Image
     temp_file = "/tmp/tmp.png"
     to_image(hypergraph, temp_file, extra, node_extra, paths)

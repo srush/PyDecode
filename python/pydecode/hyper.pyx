@@ -285,27 +285,41 @@ cdef convert_node(const CHypernode * node):
     return py_node
 
 cdef class Path:
+    """
+    A valid path in the hypergraph.
+    """
     cdef const CHyperpath *thisptr
     cdef init(self, const CHyperpath *path):
         self.thisptr = path
 
     def edges(self):
+        """
+        Returns the edges in the path.
+        """
         return convert_edges(self.thisptr.edges())
 
-    def __contains__(self, Edge hyperedge):
-        return self.thisptr.has_edge(hyperedge.edgeptr)
+    def __contains__(self, Edge edge):
+        """
+        Check whether an edge is in the path.
+        
+        :param edge: The edge to check.
+        """
+        return self.thisptr.has_edge(edge.edgeptr)
         
 cdef class Weights:
+    """
+    Weights associated with a hypergraph.
+    """
     cdef Hypergraph hypergraph
     cdef const CHypergraphWeights *thisptr
-    def __cinit__(self, Hypergraph hypergraph, fn):
+    def __cinit__(self, Hypergraph graph, fn):
         """ 
         Build the weight vector for a hypergraph.
         
         :param hypergraph: The underlying hypergraph.
         :param fn: A function from edge labels to weights.
         """
-        self.hypergraph = hypergraph
+        self.hypergraph = graph
 
         cdef vector[double] weights
         weights.resize(self.hypergraph.thisptr.edges().size())
