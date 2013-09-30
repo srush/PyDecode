@@ -3,7 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. include:: ../../README.rst
 
 Documentation
 -------------
@@ -11,10 +10,12 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
-
    getting_started
    notebooks/tutorial
    notebooks/index
    api
+
+.. include:: ../../README.rst
+
 
 

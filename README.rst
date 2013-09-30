@@ -33,7 +33,6 @@ the C++ codebase as small as possible.
 
 Small example 
 
-.. include:: notebooks/hypergraphs.rst
 
 
 
