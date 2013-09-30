@@ -1,6 +1,9 @@
 ---------------
-Getting Started
+Setup
 ---------------
+
+Installation
+~~~~~~~~~~~~
 
 Build the C++ library::
 

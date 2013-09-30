@@ -5,26 +5,27 @@ Simple Hypergraph Example
 
 .. code:: python
 
-    import pydecode.hyper as hyper
+    import pydecode.hyper as ph
     import pydecode.display as display
-    import networkx as nx 
-    import matplotlib.pyplot as plt 
-    from IPython.display import Image
 .. code:: python
 
-    hyp = hyper.Hypergraph()
+    hyp = ph.Hypergraph()
     with hyp.builder() as b:
-         n1 = b.add_node()
-         n2 = b.add_node((([n1], "Label"),))
+         n1 = b.add_node(label = "a")
+         n2 = b.add_node(label = "b")
+         n3 = b.add_node(label = "c")
+         n4 = b.add_node(label = "d")
+         n5 = b.add_node((([n1, n2], "edge1"),), label = "e")
+         b.add_node([([n5], "edge3"), ([n3, n4], "edge2")], label = "root")
+    
+    def build_weights(label):
+         return {"edge1" : 3, "edge2" : 1, "edge3" : 1}[label]
+    weights = ph.Weights(hyp, build_weights)
 Draw the graph
 
 .. code:: python
 
-    G = display.to_networkx(hyp)
-    d = nx.drawing.to_agraph(G)
-    d.layout("dot")
-    d.draw("/tmp/tmp.png")
-    Image(filename ="/tmp/tmp.png")
+    display.to_ipython(hyp, extra=[weights])
 
 
 
@@ -34,4 +35,11 @@ Draw the graph
 
 .. code:: python
 
-    
+    path, _ = ph.best_path(hyp, weights)
+    display.to_ipython(hyp, paths=[path])
+
+
+
+.. image:: hypergraphs_files/hypergraphs_5_0.png
+
+

@@ -11,7 +11,10 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
+
    getting_started
-   api
+   notebooks/tutorial
    notebooks/index
+   api
+
 

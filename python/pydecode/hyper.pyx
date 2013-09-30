@@ -29,6 +29,7 @@ cdef extern from "Hypergraph/Hypergraph.h":
 
     cdef cppclass CHypernode "Hypernode":
         vector[const CHyperedge *] edges()
+        string label()
         int id()
 
     cdef cppclass CHypergraph "Hypergraph":
@@ -52,6 +53,7 @@ cdef extern from "Hypergraph/Hypergraph.h":
                            const vector[double] weights,
                            double bias)
         double dot(const CHyperpath &path)
+        double score(const CHyperedge *edge)
 
 cdef extern from "Hypergraph/Constraints.h":
     cdef cppclass CConstraint "Constraint":
@@ -71,14 +73,13 @@ cdef extern from "Hypergraph/Constraints.h":
 cdef class Chart:
     cdef vector[double] chart
 
-    def score(self, Node node):
+    def __getitem__(self, Node node):
         """
         Get the chart score for a node.
         
         :param node: The node to check.
         :returns: A score
         """
-      
         return self.chart[node.id()]
 
 def best_path(Hypergraph graph, 
@@ -153,7 +154,7 @@ cdef class Hypergraph:
     def edges_size(self):
         return self.thisptr.edges().size()
 
-    def type(self, edge):
+    def label(self, edge):
         return self.types[edge.id()]
 
     def nodes(self):
@@ -230,6 +231,9 @@ cdef class Node:
     def edges(self):
         return convert_edges(self.nodeptr.edges())
 
+    def label(self):
+        return self.nodeptr.label()
+
     def is_terminal(self):
         return self.nodeptr.edges().size() == 0
 
@@ -245,14 +249,17 @@ cdef class Edge:
     cdef init(self, const CHyperedge *ptr):
         self.edgeptr = ptr
 
+    def label(self):
+        return self.edgeptr.label()
+        
     def tail(self):
         return convert_nodes(self.edgeptr.tail_nodes())
 
     def head(self):
         return convert_node(self.edgeptr.head_node())
 
-    def label(self):
-        return self.edgeptr.label()
+    # def label(self):
+    #     return self.edgeptr.label()
 
     def removed(self):
         return (self.edgeptr.id() == -1)
@@ -307,6 +314,9 @@ cdef class Weights:
         self.thisptr =  \
           new CHypergraphWeights(self.hypergraph.thisptr, 
                                  weights, 0.0)
+
+    def __getitem__(self, Edge edge):
+        return self.thisptr.score(edge.edgeptr)
 
     def dot(self, Path path):
         """ 

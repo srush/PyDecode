@@ -10,3 +10,9 @@ hmm.py: hmm.ipynb
 
 hmm.rst: hmm.ipynb
 	ipython nbconvert --to rst hmm.ipynb
+
+tutorial.py: tutorial.ipynb
+	ipython nbconvert --to python tutorial.ipynb
+
+tutorial.rst: tutorial.ipynb
+	ipython nbconvert --to rst tutorial.ipynb

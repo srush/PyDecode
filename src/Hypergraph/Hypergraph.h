@@ -63,6 +63,8 @@ class Hypernode {
   explicit Hypernode(string label) 
     : id_(-1), label_(label) {}
 
+  string label() const { return label_; } 
+
   unsigned int id() const { return id_; }
 
   void set_id(int id) { id_ = id; }

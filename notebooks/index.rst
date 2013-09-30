@@ -1,5 +1,5 @@
 ========
-Example Notebooks
+More Examples
 ========
 
 .. toctree::

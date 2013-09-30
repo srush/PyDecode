@@ -1,33 +1,47 @@
 import networkx as nx
 
-def to_networkx(hypergraph):
+def to_networkx(hypergraph, extra=[], node_extra=[], paths=[]):
     """Convert hypergraph to networkx representation.
 
     :param hypergraph: The hypergraph to convert.
     """
-    graph = nx.Graph()
+
+    colors = ["red", "blue", "green"]
+    def node_label(node):
+        return "{}".format(" ".join( 
+                [node.label()] + [extra[node] for extra in node_extra]))
+
+    graph = nx.DiGraph()
     for node in hypergraph.nodes():
-        head_node = str(node.id()) 
-        graph.add_node(head_node)
+        label = node_label(node)
+        graph.add_node(node.id(), label = label)
         for edge in node.edges():
-            artificial_node = str(edge.id()) + " * " + str(hypergraph.type(edge))
-            graph.add_node(artificial_node)
-            graph.add_edge(head_node, artificial_node)
+            artificial_node = "[e{}]".format(edge.id())
+            color = ""
+            for path, c in zip(paths, colors):
+                if edge in path:
+                    color = c
+            label = "{}".format(hypergraph.label(edge))
+            for labeler in extra:
+                label += " : " + str(labeler[edge])
+            graph.add_node(artificial_node, shape = "rect", label = label)
+            graph.add_edge(node.id(), artificial_node, color=color)
             for tail_nodes in edge.tail() :
-                graph.add_edge(artificial_node, tail_nodes.id())
+                graph.add_edge(artificial_node, tail_nodes.id(), color=color)
     return graph
 
-def to_image(hypergraph, filename):
-    G = to_networkx(hypergraph)
+def to_image(hypergraph, filename, extra=[], node_extra=[], paths=[]):
+    G = to_networkx(hypergraph, extra, node_extra, paths)
     agraph = nx.drawing.to_agraph(G)
+    agraph.graph_attr.update({"rankdir":  "RL"})
     agraph.layout("dot")
     agraph.draw(filename)
 
-def to_ipython(hypergraph):
+def to_ipython(hypergraph, extra=[], node_extra=[], paths=[]):
     from IPython.display import Image
     temp_file = "/tmp/tmp.png"
-    to_image(hypergraph, temp_file)
-    Image(filename = temp_file)
+    to_image(hypergraph, temp_file, extra, node_extra, paths)
+    return Image(filename = temp_file)
 
 def pretty_print(hypergraph):
     graph = nx.Graph()
