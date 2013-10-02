@@ -14,6 +14,7 @@ else:
 
 
 ext_modules = [ ]
+cmdclass = {}
 
 if use_cython:
     ext_modules = [Extension("pydecode.hyper",
@@ -23,6 +24,7 @@ if use_cython:
                              library_dirs=[r'build/debug/src/', ""],
                              extra_objects=['build/debug/src/libdecoding.a'],
                              libraries=['decoding'])]
+    cmdclass = {'build_ext': build_ext}
 
 else:
     ext_modules = [Extension("pydecode.hyper",
@@ -35,7 +37,7 @@ else:
     
 setup(
   name = 'pydecode',
-  cmdclass = {'build_ext': build_ext},
+  cmdclass = cmdclass,
   packages=['pydecode'],
   package_dir={'pydecode': 'python/pydecode'},
   ext_modules = ext_modules,
