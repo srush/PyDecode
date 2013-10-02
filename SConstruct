@@ -4,11 +4,11 @@ import os
 for build_mode in ['debug', 'profile', 'opt']:
     env = Environment(CC = 'g++', ENV=os.environ)
     
-    conf = Configure(env)
-    if not conf.CheckLib('boost_system'):
-        print 'Did not find libboost, exiting!'
-        Exit(1)
-    env = conf.Finish()
+    # conf = Configure(env)
+    # if not conf.CheckLib('boost_system'):
+    #     print 'Did not find libboost, exiting!'
+    #     Exit(1)
+    # env = conf.Finish()
 
 
     if build_mode == "debug":
