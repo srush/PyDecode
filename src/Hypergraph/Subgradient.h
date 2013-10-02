@@ -28,7 +28,7 @@ class DecreasingRate : public SubgradRate {
     double rate = 1.0;
     for (int i = 0; i < past_duals.size(); ++i) {
       rate *= 0.9;
-    } 
+    }
     return rate;
   }
 };
@@ -89,9 +89,13 @@ class Subgradient {
 
   void set_debug(){ debug_ = true; }
   void set_max_rounds(int max_round) {
-    max_round_ = max_round; 
+    max_round_ = max_round;
   }
   bool solve();
+
+  const vector<double> &duals() const {
+    return past_duals_;
+  }
 
  private:
   bool run_one_round(bool *optimal);

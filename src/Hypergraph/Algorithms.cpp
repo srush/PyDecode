@@ -109,14 +109,14 @@ class ConstrainedProducer : public SubgradientProducer {
              SubgradResult *result) const {
     SparseVec edge_duals(10000);
     double bias_dual;
-    constraints_->convert(*cur_state.duals, 
-                          &edge_duals, 
+    constraints_->convert(*cur_state.duals,
+                          &edge_duals,
                           &bias_dual);
     HypergraphWeights *dual_weights =
         weights_->modify(edge_duals, bias_dual);
     vector<double> chart;
-    Hyperpath *path = viterbi_path(graph_, 
-                                   *dual_weights, 
+    Hyperpath *path = viterbi_path(graph_,
+                                   *dual_weights,
                                    &chart);
     result->dual = dual_weights->dot(*path);
     constraints_->subgradient(*path, &result->subgrad);
@@ -124,7 +124,7 @@ class ConstrainedProducer : public SubgradientProducer {
     vector<const Constraint *> failed_constraints;
     vector<int> counts;
     constraints_->check_constraints(*path,
-                                    &failed_constraints, 
+                                    &failed_constraints,
                                     &counts);
     for (int i = 0; i < failed_constraints.size(); ++i) {
       cerr << "Dual " << result->dual << endl;
@@ -146,12 +146,14 @@ class ConstrainedProducer : public SubgradientProducer {
 Hyperpath *best_constrained_path(
     const Hypergraph *graph,
     const HypergraphWeights &theta,
-    const HypergraphConstraints &constraints) {
+    const HypergraphConstraints &constraints,
+    vector<double> *duals) {
   DecreasingRate rate;
   cerr << "decreasing" << endl;
   ConstrainedProducer producer(graph, &theta, &constraints);
   Subgradient subgradient(&producer, &rate);
   subgradient.set_debug();
   subgradient.solve();
+  *duals = subgradient.duals();
   return producer.path_;
 }

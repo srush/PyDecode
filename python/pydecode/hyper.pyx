@@ -14,11 +14,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphWeights weights,
         const vector[double] inside_chart,
         vector[double] *chart)
-    
+
     CHyperpath *best_constrained_path(
         const CHypergraph *graph,
         const CHypergraphWeights theta,
-        const CHypergraphConstraints constraints)
+        const CHypergraphConstraints constraints,
+        vector[double] *constraints,
+        )
 
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass CHyperedge "Hyperedge":
@@ -70,19 +72,25 @@ cdef extern from "Hypergraph/Constraints.h":
                               vector[const CConstraint *] *failed,
                               vector[int] *count)
 
+# cdef extern from "Hypergraph/Subgradient.h":
+#     cdef cppclass CSubgradient "Subgradient":
+#          vector[double] duals()
+
 cdef class Chart:
     cdef vector[double] chart
 
     def __getitem__(self, Node node):
         """
         Get the chart score for a node.
-        
+
         :param node: The node to check.
         :returns: A score
         """
         return self.chart[node.id()]
 
-def best_path(Hypergraph graph, 
+
+
+def best_path(Hypergraph graph,
               Weights weights):
     """
     Find the highest-score path in the hypergraph.
@@ -94,15 +102,15 @@ def best_path(Hypergraph graph,
 
     cdef Chart chart = Chart()
     cdef const CHyperpath *hpath = \
-        viterbi_path(graph.thisptr, 
-                     deref(weights.thisptr), 
+        viterbi_path(graph.thisptr,
+                     deref(weights.thisptr),
                      &chart.chart)
     cdef Path path = Path()
     path.init(hpath)
     return path, chart
 
-def outside_path(Hypergraph graph, 
-                 Weights weights, 
+def outside_path(Hypergraph graph,
+                 Weights weights,
                  Chart inside_chart):
     """
     Find the outside score for the hypergraph.
@@ -110,15 +118,15 @@ def outside_path(Hypergraph graph,
     :param graph: The hypergraph to search.
     :param weights: The weights of the hypergraph.
     :param inside_chart: The inside chart.
-    :returns: The outside chart. 
+    :returns: The outside chart.
     """
     cdef Chart out_chart = Chart()
-    outside(graph.thisptr, deref(weights.thisptr), 
+    outside(graph.thisptr, deref(weights.thisptr),
             inside_chart.chart, &out_chart.chart)
     return out_chart
 
-def best_constrained(Hypergraph graph, 
-                     Weights weights, 
+def best_constrained(Hypergraph graph,
+                     Weights weights,
                      Constraints constraints):
     """
     Find the highest-scoring path satisfying constraints.
@@ -126,16 +134,17 @@ def best_constrained(Hypergraph graph,
     :param graph: The hypergraph to search.
     :param weights: The weights of the hypergraph.
     :param constraints: The hyperedge constraints.
-    :returns: The best path. 
+    :returns: The best path and the dual values.
     """
-
-    cdef CHyperpath *cpath = best_constrained_path(graph.thisptr, 
-                          deref(weights.thisptr), 
-                          deref(constraints.thisptr))
+    cdef vector[double] duals
+    cdef CHyperpath *cpath = best_constrained_path(graph.thisptr,
+                          deref(weights.thisptr),
+                          deref(constraints.thisptr),
+                          &duals)
     cdef Path path = Path()
     path.init(cpath)
-    return path
-    
+    return path, duals
+
 cdef class Hypergraph:
     cdef CHypergraph *thisptr
     cdef types
@@ -165,19 +174,19 @@ cdef class Hypergraph:
 
 cdef class GraphBuilder:
     """
-    Build a hypergraph. Created using 
+    Build a hypergraph. Created using
 
     with hypergraph.builder() as b:
     """
     cdef CHypergraph *thisptr
     cdef Hypergraph hyper
-    cdef types 
-    
+    cdef types
+
     cdef init(self, Hypergraph hyper, CHypergraph *ptr):
         self.thisptr = ptr
         self.hyper = hyper
         self.types = []
-        
+
     def __enter__(self): return self
 
     def __exit__(self, exception, b, c):
@@ -191,15 +200,15 @@ cdef class GraphBuilder:
 
     def add_node(self, edges = [], label = ""):
         """
-        Add a node to the hypergraph. 
+        Add a node to the hypergraph.
 
-        :param edges: A list of edges of the form ([v_2, v_3..], label). 
+        :param edges: A list of edges of the form ([v_2, v_3..], label).
         :param label: Optional label for the node.
 
         """
 
         node = Node()
-        cdef const CHypernode *nodeptr 
+        cdef const CHypernode *nodeptr
         if not edges:
             nodeptr = self.thisptr.add_terminal_node(label)
         else:
@@ -242,7 +251,7 @@ cdef class Node:
 
 cdef class Edge:
     cdef const CHyperedge *edgeptr
-    
+
     def __cinit__(self):
         pass
 
@@ -251,7 +260,7 @@ cdef class Edge:
 
     def label(self):
         return self.edgeptr.label()
-        
+
     def tail(self):
         return convert_nodes(self.edgeptr.tail_nodes())
 
@@ -301,11 +310,11 @@ cdef class Path:
     def __contains__(self, Edge edge):
         """
         Check whether an edge is in the path.
-        
+
         :param edge: The edge to check.
         """
         return self.thisptr.has_edge(edge.edgeptr)
-        
+
 cdef class Weights:
     """
     Weights associated with a hypergraph.
@@ -313,9 +322,9 @@ cdef class Weights:
     cdef Hypergraph hypergraph
     cdef const CHypergraphWeights *thisptr
     def __cinit__(self, Hypergraph graph, fn):
-        """ 
+        """
         Build the weight vector for a hypergraph.
-        
+
         :param hypergraph: The underlying hypergraph.
         :param fn: A function from edge labels to weights.
         """
@@ -326,16 +335,16 @@ cdef class Weights:
         for i, ty in enumerate(self.hypergraph.types):
             weights[i] = fn(ty)
         self.thisptr =  \
-          new CHypergraphWeights(self.hypergraph.thisptr, 
+          new CHypergraphWeights(self.hypergraph.thisptr,
                                  weights, 0.0)
 
     def __getitem__(self, Edge edge):
         return self.thisptr.score(edge.edgeptr)
 
     def dot(self, Path path):
-        """ 
+        """
         Score a path with a weight vector.
-        
+
         :param path: The hyperpath  to score.
         :return: The score.
         """
@@ -367,7 +376,7 @@ cdef class Constraints:
 
     def add(self, string label, fn, int constant):
         """
-        Add a new hypergraph constraint. 
+        Add a new hypergraph constraint.
 
         :param label: The name of the constraint.
         :param fn: A function mapping the label of an edge to its coefficient.
@@ -403,4 +412,3 @@ cdef class Constraints:
         for cons in failed:
             ret.append(cons.label)
         return ret
-

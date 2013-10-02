@@ -24,7 +24,8 @@ void outside(const Hypergraph *graph,
 Hyperpath *best_constrained_path(
     const Hypergraph *graph,
     const HypergraphWeights &theta,
-    const HypergraphConstraints &constraints);
+    const HypergraphConstraints &constraints,
+    vector<double> *duals);
 
 
 
