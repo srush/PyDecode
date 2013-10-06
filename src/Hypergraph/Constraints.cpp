@@ -1,6 +1,7 @@
 // Copyright [2013] Alexander Rush
 #include "Hypergraph/Constraints.h"
 
+#include <vector>
 #include "Hypergraph/Hypergraph.h"
 
 bool HypergraphConstraints::check_constraints(
@@ -9,7 +10,6 @@ bool HypergraphConstraints::check_constraints(
     vector<int> *counts) const {
   foreach (Constraint *cons, constraints_) {
     int count = cons->bias;
-    //foreach (HEdge edge, cons->edges_) {
     for (int i = 0; i < cons->edges.size(); ++i) {
       if (path.has_edge(cons->edges[i])) {
         count += cons->coefficients[i];
@@ -23,8 +23,9 @@ bool HypergraphConstraints::check_constraints(
   return failed_constraints->size() == 0;
 }
 
-void HypergraphConstraints::subgradient(const Hyperpath &path, 
-                                        SparseVec *subgrad) const {
+void HypergraphConstraints::subgradient(
+    const Hyperpath &path,
+    SparseVec *subgrad) const {
   vector<const Constraint *> constraints;
   vector<int> count;
   check_constraints(path, &constraints, &count);

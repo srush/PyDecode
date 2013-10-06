@@ -20,12 +20,12 @@ typedef vector<const Hyperedge *> HEdges;
 // Base class for weighted hyperedge.
 class Hyperedge {
  public:
-  Hyperedge(string label, 
+  Hyperedge(string label,
             HNode head,
             const vector<HNode> &tails)
     : id_(-1),
       label_(label),
-      head_(head), 
+      head_(head),
       tail_nodes_(tails) {}
 
   // Get the id of the edge.
@@ -49,8 +49,8 @@ class Hyperedge {
  private:
   int id_;
   string label_;
-  vector<HNode> tail_nodes_;
   HNode head_;
+  vector<HNode> tail_nodes_;
 };
 
 
@@ -60,10 +60,10 @@ class Hyperedge {
  */
 class Hypernode {
   public:
-  explicit Hypernode(string label) 
+  explicit Hypernode(string label)
     : id_(-1), label_(label) {}
 
-  string label() const { return label_; } 
+  string label() const { return label_; }
 
   unsigned int id() const { return id_; }
 
@@ -78,12 +78,6 @@ class Hypernode {
 
   bool terminal() const { return edges_.size() == 0; }
 
-  /**
-   * Get all hyperedges with this hypernode as a tail.
-   * WARNING: Treat this as a const iterator.
-   * @return Const iterator to edges.
-   */
-  //virtual const vector<Hyperedge *> &in_edges() const = 0;
  private:
   int id_;
   string label_;
@@ -92,7 +86,7 @@ class Hypernode {
 
 class Hypergraph {
  public:
-  Hypergraph() 
+  Hypergraph()
     : terminal_lock_(true), lock_(false) {}
 
   /**
@@ -131,9 +125,6 @@ class Hypergraph {
   HEdge add_edge(const vector<HNode> &nodes, string label);
 
   void end_node() { lock_ = false; }
-
-  // Add a hyperedge to the current hypernode in focus.
-  //HEdge add_edge(const vector<HNode> &nodes, string label);
 
   // Complete the hypergraph.
   void finish() {
@@ -178,11 +169,8 @@ class Hyperpath {
   Hyperpath(const Hypergraph *graph,
             const vector<HEdge> &edges)
       : edges_(edges) {
-    int last = -1;
     foreach (HEdge edge, edges) {
       edges_set_.insert(edge->id());
-      assert((int)edge->id() >= last);
-      last = edge->id();
     }
   }
 
@@ -206,12 +194,10 @@ class HypergraphWeights {
   HypergraphWeights(const Hypergraph *hypergraph,
                     const vector<double> &weights,
                     double bias)
-  : weights_(weights),
-      hypergraph_(hypergraph),
-      bias_(bias)
-
-  {
-    assert(weights.size() == hypergraph->edges().size());
+  : hypergraph_(hypergraph),
+    weights_(weights),
+    bias_(bias) {
+      assert(weights.size() == hypergraph->edges().size());
   }
 
   double dot(const Hyperpath &path) const;

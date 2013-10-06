@@ -3,7 +3,7 @@ import os
 
 for build_mode in ['debug', 'profile', 'opt']:
     env = Environment(CC = 'g++', ENV=os.environ)
-    
+
     # conf = Configure(env)
     # if not conf.CheckLib('boost_system'):
     #     print 'Did not find libboost, exiting!'
@@ -12,20 +12,20 @@ for build_mode in ['debug', 'profile', 'opt']:
 
 
     if build_mode == "debug":
-        env.Prepend(CCFLAGS =('-g', '-fPIC'))
+        env.Prepend(CCFLAGS =('-g', '-fPIC', '-Wall'))
     elif build_mode == "profile":
-        env.Append(CCFLAGS = ('-O2', '-p', "-ggdb", 
-                              "-fprofile-arcs", "-ftest-coverage", 
+        env.Append(CCFLAGS = ('-O2', '-p', "-ggdb",
+                              "-fprofile-arcs", "-ftest-coverage",
                               "-fno-strict-aliasing"),
-                   LINKFLAGS = ('-O2', '-p', "-ggdb" ,  
-                                "-fprofile-arcs", 
-                                "-ftest-coverage", 
+                   LINKFLAGS = ('-O2', '-p', "-ggdb" ,
+                                "-fprofile-arcs",
+                                "-ftest-coverage",
                                 "-fno-strict-aliasing"))
     elif build_mode == "opt":
-        env.Append(CCFLAGS = ('-O2', '-DNDEBUG', 
-                              '-Werror', '-Wno-deprecated', 
+        env.Append(CCFLAGS = ('-O2', '-DNDEBUG',  '-fPIC',
+                              '-Werror', '-Wno-deprecated',
                               "-fno-strict-aliasing"),
-                   LINKFLAGS = ('-O2', '-DNDEBUG', 
+                   LINKFLAGS = ('-O2', '-DNDEBUG', '-fPIC',
                                 "-fno-strict-aliasing"))
 
     variant = 'build/' + build_mode + "/"

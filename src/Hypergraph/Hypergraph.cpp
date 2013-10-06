@@ -1,6 +1,7 @@
 // Copyright [2013] Alexander Rush
 #include "Hypergraph/Hypergraph.h"
-
+#include <string>
+#include <vector>
 
 HEdge Hypergraph::add_edge(const vector<HNode> &nodes, string label)  {
   assert(lock_);
@@ -38,18 +39,19 @@ double HypergraphWeights::dot(const Hyperpath &path) const {
 HypergraphWeights *HypergraphWeights::modify(const SparseVec &edge_duals,
                                              double bias_dual) const {
   vector<double> new_weights(weights_);
-  for(SparseVec::const_iterator i = edge_duals.begin();
-      i != edge_duals.end(); ++i ) {
+  for (SparseVec::const_iterator i = edge_duals.begin();
+      i != edge_duals.end(); ++i) {
     new_weights[i.index()] += edge_duals[i.index()];
   }
-  return new HypergraphWeights(hypergraph_, 
-                               new_weights, bias_ + bias_dual);
+  return new HypergraphWeights(hypergraph_,
+                               new_weights,
+                               bias_ + bias_dual);
 }
 
 
 void Hypergraph::fill() {
   vector<bool> reachable_nodes(temp_nodes_.size(), false);
-  vector<bool> reachable_edges(temp_edges_.size(), false);  
+  vector<bool> reachable_edges(temp_edges_.size(), false);
 
   // Outside order.
   for (int i = temp_edges_.size() - 1; i >= 0; --i) {

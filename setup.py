@@ -6,7 +6,7 @@ try:
     from Cython.Compiler.Version import version
     if int(version.split(".")[1]) < 19:
         raise ImportError("Bad version.")
-    
+
 except ImportError:
     use_cython = False
 else:
@@ -20,9 +20,9 @@ if use_cython:
     ext_modules = [Extension("pydecode.hyper",
                              ["python/pydecode/hyper.pyx"],
                              language='c++',
-                             include_dirs=[r'build/debug/src/', "."],
-                             library_dirs=[r'build/debug/src/', ""],
-                             extra_objects=['build/debug/src/libdecoding.a'],
+                             include_dirs=[r'build/opt/src/', "."],
+                             library_dirs=[r'build/opt/src/', ""],
+                             extra_objects=['build/opt/src/libdecoding.a'],
                              libraries=['decoding'])]
     cmdclass = {'build_ext': build_ext}
 
@@ -30,11 +30,11 @@ else:
     ext_modules = [Extension("pydecode.hyper",
                              ["python/pydecode/hyper.cpp"],
                              language='c++',
-                             include_dirs=[r'build/debug/src/', "."],
-                             library_dirs=[r'build/debug/src/', ""],
-                             extra_objects=['build/debug/src/libdecoding.a'],
+                             include_dirs=[r'build/opt/src/', "."],
+                             library_dirs=[r'build/opt/src/', ""],
+                             extra_objects=['build/opt/src/libdecoding.a'],
                              libraries=['decoding'])]
-    
+
 setup(
   name = 'pydecode',
   cmdclass = cmdclass,

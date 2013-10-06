@@ -3,6 +3,10 @@
 #ifndef HYPERGRAPH_CONSTRAINTS_H_
 #define HYPERGRAPH_CONSTRAINTS_H_
 
+#include "Hypergraph/Constraints.h"
+#include <string>
+#include <vector>
+
 #include "Hypergraph/Hypergraph.h"
 #include "./common.h"
 
@@ -17,6 +21,13 @@ struct Constraint {
     coefficients.push_back(coefficient);
   }
 
+  bool has_edge(HEdge edge) const {
+    foreach (HEdge cedge, edges) {
+      if (cedge->id() == edge->id()) return true;
+    }
+    return false;
+  }
+
   string label;
   vector<HEdge> edges;
   vector<int> coefficients;
@@ -26,7 +37,7 @@ struct Constraint {
 
 class HypergraphConstraints {
  public:
-  HypergraphConstraints(const Hypergraph *hypergraph)
+  explicit HypergraphConstraints(const Hypergraph *hypergraph)
       : hypergraph_(hypergraph) {}
 
   Constraint *add_constraint(string label) {
@@ -47,10 +58,11 @@ class HypergraphConstraints {
   void subgradient(const Hyperpath &path, SparseVec *subgrad) const;
 
   const Hypergraph *hypergraph() const { return hypergraph_; }
+
  private:
   const Hypergraph *hypergraph_;
   vector<Constraint *> constraints_;
 };
 
 
-#endif  // HYPERGRAPH_HYPERGRAPH_H_
+#endif  // HYPERGRAPH_CONSTRAINTS_H_

@@ -1,5 +1,5 @@
 cython --cplus python/decoding/binding.pyx
-scons build/debug/src/libdecoding.a
+scons build/opt/src/libdecoding.a
 rm -fr build/temp.linux-x86_64-2.7/
 rm -fr build/lib.linux-x86_64-2.7/
 rm -fr python/pydecode/hyper.so

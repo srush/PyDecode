@@ -1,21 +1,22 @@
-#ifndef SUBGRADIENT_H_
-#define SUBGRADIENT_H_
+#ifndef HYPERGRAPH_SUBGRADIENT_H_
+#define HYPERGRAPH_SUBGRADIENT_H_
 
 #include <vector>
-#include <./common.h>
+#include "./common.h"
+
 using namespace std;
 
 typedef boost::numeric::ublas::mapped_vector<double> SparseVec;
 
 class SubgradRate {
  public:
-  virtual double get_alpha(vector<double> &past_duals,
+  virtual double get_alpha(const vector<double> &past_duals,
                            const SparseVec &subgrad) const = 0;
 };
 
 class ConstantRate : public SubgradRate {
  public:
-  double get_alpha(vector <double> &past_duals,
+  double get_alpha(const vector<double> &past_duals,
                    const SparseVec &subgrad) const {
     return 1.0;
   }
@@ -23,13 +24,13 @@ class ConstantRate : public SubgradRate {
 
 class DecreasingRate : public SubgradRate {
  public:
-  double get_alpha(vector<double> &past_duals,
-                   const SparseVec &subgrad) const {
-    double rate = 1.0;
-    for (int i = 0; i < past_duals.size(); ++i) {
-      rate *= 0.9;
-    }
-    return rate;
+  double get_alpha(const vector<double> &past_duals,
+                    const SparseVec &subgrad) const {
+     double rate = 1.0;
+     for (uint i = 0; i < past_duals.size(); ++i) {
+       rate *= 0.9;
+     }
+     return rate;
   }
 };
 
@@ -44,7 +45,7 @@ struct SubgradState {
 
 // Output of the subgradient client
 struct SubgradResult {
-  SubgradResult() : subgrad(10000) {}
+  SubgradResult() : subgrad(100000) {}
 
   // The dual value with these weights.
   double dual;
@@ -61,33 +62,32 @@ class SubgradientProducer {
  public:
   // Solve the problem with the current dual weights.
   virtual void solve(const SubgradState & cur_state,
-                     SubgradResult *result) const = 0;
+                     SubgradResult *result) = 0;
 };
 
-/**
- * Subgradient optimization manager. Takes an object to produce
- * subgradients given current dual values as well as an object
- * to determine the current update rate.
- */
+ /**
+  * Subgradient optimization manager. Takes an object to produce
+  * subgradients given current dual values as well as an object
+  * to determine the current update rate.
+  */
 class Subgradient {
  public:
-
   /**
    *
    * @param subgrad_producer Gives the subgradient at the current position
    * @param update_rate A class to decide the alpha to use at the current iteration
    */
- Subgradient(const SubgradientProducer *subgrad_producer,
-             const SubgradRate *update_rate)
-     : producer_(subgrad_producer),
+  Subgradient(SubgradientProducer *subgrad_producer,
+            const SubgradRate *update_rate)
+    : producer_(subgrad_producer),
       rate_(update_rate),
-      best_dual_(-INF),
+      best_dual_(INF),
       round_(1),
-      debug_(false),
-    max_round_(200),
-    duals_(10000){}
+      duals_(100000),
+      max_round_(200),
+      debug_(false) {}
 
-  void set_debug(){ debug_ = true; }
+  void set_debug() { debug_ = true; }
   void set_max_rounds(int max_round) {
     max_round_ = max_round;
   }
@@ -101,7 +101,7 @@ class Subgradient {
   bool run_one_round(bool *optimal);
   void update_weights(const SparseVec &);
 
-  const SubgradientProducer *producer_;
+  SubgradientProducer *producer_;
   const SubgradRate *rate_;
 
   double best_dual_;
@@ -109,8 +109,8 @@ class Subgradient {
 
   SparseVec duals_;
   vector<double> past_duals_;
-  bool debug_;
   int max_round_;
+  bool debug_;
 };
 
-#endif
+#endif  // HYPERGRAPH_SUBGRADIENT_H_

@@ -19,8 +19,14 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *graph,
         const CHypergraphWeights theta,
         const CHypergraphConstraints constraints,
-        vector[double] *constraints,
+        vector[CConstrainedResult] *constraints,
         )
+
+    cdef cppclass CConstrainedResult "ConstrainedResult":
+        const CHyperpath *path
+        double dual
+        double primal
+        vector[const CConstraint *] constraints
 
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass CHyperedge "Hyperedge":
@@ -59,8 +65,9 @@ cdef extern from "Hypergraph/Hypergraph.h":
 
 cdef extern from "Hypergraph/Constraints.h":
     cdef cppclass CConstraint "Constraint":
-        Constrint(string label, int id)
+        Constraint(string label, int id)
         void set_constant(int _bias)
+        int has_edge(const CHyperedge *edge)
         void add_edge_term(const CHyperedge *edge, int coefficient)
         string label
 
@@ -86,7 +93,7 @@ cdef class Chart:
         :param node: The node to check.
         :returns: A score
         """
-        return self.chart[node.id()]
+        return self.chart[node.id]
 
 
 
@@ -136,14 +143,48 @@ def best_constrained(Hypergraph graph,
     :param constraints: The hyperedge constraints.
     :returns: The best path and the dual values.
     """
-    cdef vector[double] duals
+    cdef vector[CConstrainedResult] results
     cdef CHyperpath *cpath = best_constrained_path(graph.thisptr,
                           deref(weights.thisptr),
                           deref(constraints.thisptr),
-                          &duals)
+                          &results)
+
     cdef Path path = Path()
     path.init(cpath)
-    return path, duals
+    return path, convert_results(results)
+
+cdef convert_results(vector[CConstrainedResult] c):
+    cdef results = []
+    for cresult in c:
+        py_res = ConstrainedResult()
+        py_res.init(cresult)
+        results.append(py_res)
+    return results
+
+cdef convert_constraints(vector[const CConstraint *] c):
+    cdef results = []
+    for cresult in c:
+        py_res = Constraint()
+        py_res.init(cresult)
+        results.append(py_res)
+    return results
+
+cdef class ConstrainedResult:
+    cdef CConstrainedResult thisptr
+    cdef init(self, CConstrainedResult ptr):
+        self.thisptr = ptr
+
+    def __getattr__(self, attr):
+        if attr == "path":
+            path = Path()
+            path.init(self.thisptr.path)
+            return path
+        if attr == "dual":
+            return self.thisptr.dual
+        if attr == "primal":
+            return self.thisptr.primal
+        if attr == "constraints":
+            return convert_constraints(self.thisptr.constraints)
 
 cdef class Hypergraph:
     cdef CHypergraph *thisptr
@@ -157,20 +198,20 @@ cdef class Hypergraph:
         gb.init(self, self.thisptr)
         return gb
 
-    def edges(self):
-        return convert_edges(self.thisptr.edges())
+    def __getattr__(self, attr):
+        if attr == "nodes":
+            return convert_nodes(self.thisptr.nodes())
+        if attr == "root":
+            return convert_node(self.thisptr.root())
+        if attr == "edges":
+            return convert_edges(self.thisptr.edges())
 
     def edges_size(self):
         return self.thisptr.edges().size()
 
     def label(self, edge):
-        return self.types[edge.id()]
+        return self.types[edge.id]
 
-    def nodes(self):
-        return convert_nodes(self.thisptr.nodes())
-
-    def root(self):
-        return convert_node(self.thisptr.root())
 
 cdef class GraphBuilder:
     """
@@ -196,7 +237,7 @@ cdef class GraphBuilder:
         self.hyper.types = [None] * self.thisptr.edges().size()
         for edge, t in self.types:
             if not edge.removed():
-                self.hyper.types[edge.id()] = t
+                self.hyper.types[edge.id] = t
 
     def add_node(self, edges = [], label = ""):
         """
@@ -233,15 +274,17 @@ cdef class Node:
     cdef init(self, const CHypernode *nodeptr):
         self.nodeptr = nodeptr
 
-    def id(self):
-        assert self.nodeptr.id() != -1, "Bad node id."
-        return self.nodeptr.id()
+    def __hash__(self):
+        return self.id
 
-    def edges(self):
-        return convert_edges(self.nodeptr.edges())
-
-    def label(self):
-        return self.nodeptr.label()
+    def __getattr__(self, attr):
+        if attr == "id":
+            assert self.nodeptr.id() != -1, "Bad node id."
+            return self.nodeptr.id()
+        if attr == "edges":
+            return convert_edges(self.nodeptr.edges())
+        if attr == "label":
+            return self.nodeptr.label()
 
     def is_terminal(self):
         return self.nodeptr.edges().size() == 0
@@ -255,27 +298,25 @@ cdef class Edge:
     def __cinit__(self):
         pass
 
+    def __hash__(self):
+        return self.id
+
     cdef init(self, const CHyperedge *ptr):
         self.edgeptr = ptr
 
-    def label(self):
-        return self.edgeptr.label()
-
-    def tail(self):
-        return convert_nodes(self.edgeptr.tail_nodes())
-
-    def head(self):
-        return convert_node(self.edgeptr.head_node())
-
-    # def label(self):
-    #     return self.edgeptr.label()
+    def __getattr__(self, attr):
+        if attr == "label":
+            return self.edgeptr.label()
+        if attr == "tail":
+            return convert_nodes(self.edgeptr.tail_nodes())
+        if attr == "head":
+            return convert_node(self.edgeptr.head_node())
+        if attr == "id":
+            assert self.edgeptr.id() != -1, "Bad edge id."
+            return self.edgeptr.id()
 
     def removed(self):
         return (self.edgeptr.id() == -1)
-
-    def id(self):
-        assert self.edgeptr.id() != -1, "Bad edge id."
-        return self.edgeptr.id()
 
 cdef convert_edges(vector[const CHyperedge *] edges):
     return [convert_edge(edge) for edge in edges]
@@ -301,11 +342,12 @@ cdef class Path:
     cdef init(self, const CHyperpath *path):
         self.thisptr = path
 
-    def edges(self):
+    def __getattr__(self, attr):
         """
         Returns the edges in the path.
         """
-        return convert_edges(self.thisptr.edges())
+        if attr == "edges":
+            return convert_edges(self.thisptr.edges())
 
     def __contains__(self, Edge edge):
         """
@@ -353,15 +395,17 @@ cdef class Weights:
         return result
 
 cdef class Constraint:
-    cdef CConstraint *thisptr
-    cdef init(self, CConstraint *ptr):
+    cdef const CConstraint *thisptr
+    cdef init(self, const CConstraint *ptr):
         self.thisptr = ptr
 
-    def __setitem__(self, Edge edge, int val):
-        self.thisptr.add_edge_term(edge.edgeptr, val)
+    def __str__(self): return self.thisptr.label
 
-    def add_edge_term(self, Edge edge, int coefficient):
-        self.thisptr.add_edge_term(edge.edgeptr, coefficient)
+    def __getattr__(self, attr):
+        if attr == "label": return self.thisptr.label
+
+    def __contains__(self, Edge edge):
+        self.thisptr.has_edge(edge.edgeptr)
 
 cdef class Constraints:
     """
@@ -387,7 +431,7 @@ cdef class Constraints:
         cons = self.thisptr.add_constraint(label)
         cdef Constraint hcons = Constraint()
         hcons.init(cons)
-        hcons.thisptr.set_constant(constant)
+        cons.set_constant(constant)
         cdef vector[const CHyperedge *] edges = self.hypergraph.thisptr.edges()
         cdef int coefficient
         for i, ty in enumerate(self.hypergraph.types):
