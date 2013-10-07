@@ -25,7 +25,7 @@ Draw the graph
 
 .. code:: python
 
-    display.to_ipython(hyp, extra=[weights])
+    display.to_ipython(hyp, display.HypergraphWeightFormatter(hyp, weights))
 
 
 
@@ -36,7 +36,7 @@ Draw the graph
 .. code:: python
 
     path, _ = ph.best_path(hyp, weights)
-    display.to_ipython(hyp, paths=[path])
+    display.to_ipython(hyp, display.HypergraphPathFormatter(hyp, [path]))
 
 
 

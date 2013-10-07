@@ -47,7 +47,7 @@ We can also display the hypergraph to see our work.
 .. code:: python
 
     import pydecode.display as display
-    display.to_ipython(hyper1)
+    display.to_ipython(hyper1, display.HypergraphFormatter(hyper1))
 
 
 
@@ -69,7 +69,7 @@ defining a function to map labels to weights.
     weights = ph.Weights(hyper1, build_weights)
 .. code:: python
 
-    for edge in hyper1.edges():
+    for edge in hyper1.edges:
         print hyper1.label(edge), weights[edge]
 
 .. parsed-literal::
@@ -95,7 +95,7 @@ We use the best path.
 
 .. code:: python
 
-    display.to_ipython(hyper1, extra = [weights], paths = [path])
+    display.to_ipython(hyper1, display.HypergraphFormatter(hyper1))
 
 
 
@@ -153,7 +153,7 @@ Here is a simple dynamic programming example take from wikipedia:
 .. code:: python
 
     hyper2 = make_ld_hyper("ab", "bb")
-    display.to_ipython(hyper2)
+    display.to_ipython(hyper2, display.HypergraphFormatter(hyper2))
 
 
 
@@ -164,24 +164,17 @@ Here is a simple dynamic programming example take from wikipedia:
 .. code:: python
 
     def build_weights(label):
-        if label in ["<", ">"]: return 0
-        if label == "m": return 1
+        if label in ["<", ">"]: return 0.0
+        if label == "m": return 1.0
+        return 0.0
     weights2 = ph.Weights(hyper2, build_weights)
 .. code:: python
 
     path, chart = ph.best_path(hyper2, weights2)
-    display.to_ipython(hyper2, extra = [weights2], paths = [path])
+    display.to_ipython(hyper2, display.HypergraphPathFormatter(hyper2, [path]))
 
 
 
 .. image:: tutorial_files/tutorial_22_0.png
 
 
-
-.. code:: python
-
-    Hypergraph for Tagging
-    ----------------------------------
-.. code:: python
-
-    

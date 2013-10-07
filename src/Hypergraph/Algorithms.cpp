@@ -196,7 +196,7 @@ class ConstrainedProducer : public SubgradientProducer {
   vector<ConstrainedResult> constrained_results_;
 };
 
-Hyperpath *best_constrained_path(
+const Hyperpath *best_constrained_path(
     const Hypergraph *graph,
     const HypergraphWeights &theta,
     const HypergraphConstraints &constraints,
@@ -209,5 +209,5 @@ Hyperpath *best_constrained_path(
   subgradient.set_debug();
   subgradient.solve();
   *result = producer.results();
-  return NULL;
+  return (*result)[result->size() - 1].path;
 }

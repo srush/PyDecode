@@ -1,13 +1,13 @@
 
 ## Simple Hypergraph Example
 
-# In[15]:
+# In[1]:
 
 import pydecode.hyper as ph
 import pydecode.display as display
 
 
-# In[27]:
+# In[7]:
 
 hyp = ph.Hypergraph()
 with hyp.builder() as b:
@@ -25,19 +25,19 @@ weights = ph.Weights(hyp, build_weights)
 
 # Draw the graph
 
-# In[28]:
+# In[8]:
 
-display.to_ipython(hyp, extra=[weights])
+display.to_ipython(hyp, display.HypergraphWeightFormatter(hyp, weights))
 
 
-# Out[28]:
+# Out[8]:
 
-#     <IPython.core.display.Image at 0x3503790>
+#     <IPython.core.display.Image at 0x4578550>
 
 # In[30]:
 
 path, _ = ph.best_path(hyp, weights)
-display.to_ipython(hyp, paths=[path])
+display.to_ipython(hyp, display.HypergraphPathFormatter(hyp, [path]))
 
 
 # Out[30]:

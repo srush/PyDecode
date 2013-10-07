@@ -15,12 +15,33 @@ class HypergraphFormatter:
     def subgraph_format(self, subgraph): return {}
 
 class HypergraphPathFormatter(HypergraphFormatter):
-    def __init__(self, hypergraph, path):
+    def __init__(self, hypergraph, paths):
         self.hypergraph = hypergraph
-        self.path = path
+        self.paths = paths
     def hyperedge_attrs(self, edge):
-        if edge in self.path:
-            return {"color":"blue"}
+        colors = ["red", "green", "blue", "purple"]
+        for path, color in zip(self.paths, colors):
+            if edge in path:
+                return {"color": color}
+        return {}
+
+
+class HypergraphWeightFormatter(HypergraphFormatter):
+    def __init__(self, hypergraph, weights):
+        self.hypergraph = hypergraph
+        self.weights = weights
+    def hyperedge_node_attrs(self, edge):
+        return {"label": self.weights[edge]}
+
+class HypergraphConstraintFormatter(HypergraphFormatter):
+    def __init__(self, hypergraph, constraints):
+        self.hypergraph = hypergraph
+        self.constraints = constraints
+    def hyperedge_attrs(self, edge):
+        colors = ["red", "green", "blue", "purple"]
+        for constraint, color in zip(self.constraints, colors):
+            if edge in constraint:
+                return {"color": color}
         return {}
 
 

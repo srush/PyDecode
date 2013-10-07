@@ -78,7 +78,7 @@ class MaxMarginals {
 };
 
 
-Hyperpath *best_constrained_path(
+const Hyperpath *best_constrained_path(
     const Hypergraph *graph,
     const HypergraphWeights &theta,
     const HypergraphConstraints &constraints,

@@ -93,7 +93,7 @@ Step 3: Construct the weights.
 
 .. code:: python
 
-    format = display.HypergraphPathFormatter(hypergraph, path)
+    format = display.HypergraphPathFormatter(hypergraph, [path])
     display.to_ipython(hypergraph, format)
 
 
@@ -119,7 +119,7 @@ graphviz (http://www.graphviz.org/content/attrs)
         def subgraph_format(self, subgraph):
             return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
     
-    format = HMMFormat(hypergraph, path)
+    format = HMMFormat(hypergraph, [path])
     display.to_ipython(hypergraph, format)
 
 
@@ -166,27 +166,40 @@ Solve instead using subgradient.
     gpath, duals = ph.best_constrained(hypergraph, weights, constraints)
 .. code:: python
 
-    import pandas as pd
-    df = pd.DataFrame(data = {"dual" : duals}, index = range(len(duals)))
-    df.plot(linewidth=5)
-
-
+    for d in duals:
+        print d.dual, d.constraints
 
 .. parsed-literal::
 
-    <matplotlib.axes.AxesSubplot at 0x41fb9d0>
+    9.6 [<pydecode.hyper.Constraint object at 0x4c37110>, <pydecode.hyper.Constraint object at 0x4c37130>]
+    8.8 []
 
 
+.. code:: python
+
+    display.report(duals)
 
 
-.. image:: hmm_files/hmm_20_1.png
+.. image:: hmm_files/hmm_21_0.png
 
 
 .. code:: python
 
     # Output the path.
-    for edge in gpath.edges():
+    for edge in gpath.edges:
         print hypergraph.label(edge)
+
+.. parsed-literal::
+
+    ROOT -> D
+    D -> N
+    N -> V
+    V -> D
+    D -> D
+    D -> N
+    N -> END
+
+
 .. code:: python
 
     print "check", constraints.check(gpath)
@@ -194,16 +207,52 @@ Solve instead using subgradient.
 
 .. parsed-literal::
 
-    check ['tag_V', 'tag_N']
-    score 7.8
+    check []
+    score 8.8
 
 
 .. code:: python
 
-    display.to_ipython(hypergraph, paths=[path, gpath])
+    format = HMMFormat(hypergraph, [path, gpath])
+    display.to_ipython(hypergraph, format)
 
 
 
-.. image:: hmm_files/hmm_23_0.png
+.. image:: hmm_files/hmm_24_0.png
+
+
+
+.. code:: python
+
+    for constraint in constraints:
+        print constraint.label
+
+.. parsed-literal::
+
+    tag_D
+    tag_V
+    tag_N
+
+
+.. code:: python
+
+    class HMMConstraintFormat(display.HypergraphConstraintFormatter):
+        def hypernode_attrs(self, node):
+            label = self.hypergraph.node_label(node)
+            return {"label": label.tag, "shape": ""}
+        def hyperedge_node_attrs(self, edge):
+            return {"color": "pink", "shape": "point"}
+        def hypernode_subgraph(self, node):
+            label = self.hypergraph.node_label(node)
+            return ["cluster_" + str(label.position)]
+        def subgraph_format(self, subgraph):
+            return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
+    
+    format = HMMConstraintFormat(hypergraph, constraints)
+    display.to_ipython(hypergraph, format)
+
+
+
+.. image:: hmm_files/hmm_26_0.png
 
 

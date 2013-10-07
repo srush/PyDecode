@@ -15,7 +15,7 @@ cdef extern from "Hypergraph/Algorithms.h":
         const vector[double] inside_chart,
         vector[double] *chart)
 
-    CHyperpath *best_constrained_path(
+    const CHyperpath *best_constrained_path(
         const CHypergraph *graph,
         const CHypergraphWeights theta,
         const CHypergraphConstraints constraints,
@@ -71,6 +71,7 @@ cdef extern from "Hypergraph/Constraints.h":
         void add_edge_term(const CHyperedge *edge, int coefficient)
         string label
 
+
     cdef cppclass CHypergraphConstraints "HypergraphConstraints":
         CHypergraphConstraints(const CHypergraph *hypergraph)
         CConstraint *add_constraint(string label)
@@ -78,7 +79,7 @@ cdef extern from "Hypergraph/Constraints.h":
         int check_constraints(const CHyperpath path,
                               vector[const CConstraint *] *failed,
                               vector[int] *count)
-
+        const vector[const CConstraint *] constraints()
 # cdef extern from "Hypergraph/Subgradient.h":
 #     cdef cppclass CSubgradient "Subgradient":
 #          vector[double] duals()
@@ -144,7 +145,7 @@ def best_constrained(Hypergraph graph,
     :returns: The best path and the dual values.
     """
     cdef vector[CConstrainedResult] results
-    cdef CHyperpath *cpath = best_constrained_path(graph.thisptr,
+    cdef const CHyperpath *cpath = best_constrained_path(graph.thisptr,
                           deref(weights.thisptr),
                           deref(constraints.thisptr),
                           &results)
@@ -428,7 +429,7 @@ cdef class Constraint:
         if attr == "label": return self.thisptr.label
 
     def __contains__(self, Edge edge):
-        self.thisptr.has_edge(edge.edgeptr)
+        return self.thisptr.has_edge(edge.edgeptr)
 
 cdef class Constraints:
     """
@@ -456,6 +457,9 @@ cdef class Constraints:
             for label, coeff in constraints:
                 constraint = <Constraint> by_label[label]
                 (<CConstraint *> constraint.thisptr).add_edge_term(edges[i], coeff)
+
+    def __iter__(self):
+        return iter(convert_constraints(self.thisptr.constraints()))
 
     # def add(self, string label, fn, int constant, index = None):
     #     """
