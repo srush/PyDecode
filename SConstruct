@@ -22,10 +22,10 @@ for build_mode in ['debug', 'profile', 'opt']:
                                 "-ftest-coverage",
                                 "-fno-strict-aliasing"))
     elif build_mode == "opt":
-        env.Append(CCFLAGS = ('-O2', '-DNDEBUG',  '-fPIC',
+        env.Append(CCFLAGS = ('-O2', '-fPIC',
                               '-Werror', '-Wno-deprecated',
                               "-fno-strict-aliasing"),
-                   LINKFLAGS = ('-O2', '-DNDEBUG', '-fPIC',
+                   LINKFLAGS = ('-O2', '-fPIC',
                                 "-fno-strict-aliasing"))
 
     variant = 'build/' + build_mode + "/"

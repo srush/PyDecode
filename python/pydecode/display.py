@@ -1,46 +1,75 @@
 import networkx as nx
 
-def to_networkx(hypergraph, extra=[], node_extra=[], paths=[], constraints = None):
+class HypergraphFormatter:
+    def __init__(self, hypergraph):
+        self.hypergraph = hypergraph
+    def hypernode_attrs(self, node):
+        return {"shape": "ellipse", "label":str(self.hypergraph.node_label(node))}
+    def hyperedge_node_attrs(self, edge):
+        return {"shape": "rect",
+                "label": str(self.hypergraph.label(edge))}
+    def hyperedge_attrs(self, edge):
+        return {}
+    def hypernode_subgraph(self, node): return []
+    def hyperedge_subgraph(self, edge): return []
+    def subgraph_format(self, subgraph): return {}
+
+class HypergraphPathFormatter(HypergraphFormatter):
+    def __init__(self, hypergraph, path):
+        self.hypergraph = hypergraph
+        self.path = path
+    def hyperedge_attrs(self, edge):
+        if edge in self.path:
+            return {"color":"blue"}
+        return {}
+
+
+def to_networkx(hypergraph, graph_format):
     """Convert hypergraph to networkx graph representation.
 
     :param hypergraph: The hypergraph to convert.
-    :param extra: Extra naming information for edges.
-    :param node_extra: Extra naming information for nodes.
-    :param paths: Paths to highlight in the graph.
+    :param graph_format: A dictionary of formatting options.
     """
 
-    colors = ["red", "blue", "green"]
-    def node_label(node):
-        return "{}".format(" ".join(
-                [node.label] + [extra[node] for extra in node_extra]))
 
     graph = nx.DiGraph()
+    def e(edge): return "e" + str(edge.id)
     for node in hypergraph.nodes:
-        label = node_label(node)
-        graph.add_node(node.id, label = label)
+        graph.add_node(node.id)
+        graph.node[node.id].update(
+            graph_format.hypernode_attrs(node))
         for edge in node.edges:
-            artificial_node = "[e{}]".format(edge.id)
-            color = ""
-            for path, c in zip(paths, colors):
-                if edge in path:
-                    color = c
-            label = "{}".format(hypergraph.label(edge))
-            for labeler in extra:
-                label += " : " + str(labeler[edge])
-            graph.add_node(artificial_node, shape = "rect", label = label)
-            graph.add_edge(node.id, artificial_node, color=color)
+            graph.add_node(e(edge))
+            graph.node[e(edge)].update(
+                graph_format.hyperedge_node_attrs(edge))
+
+            graph.add_edge(node.id, e(edge))
+            graph[node.id][e(edge)].update(
+                graph_format.hyperedge_attrs(edge))
+
             for tail_nodes in edge.tail:
-                graph.add_edge(artificial_node, tail_nodes.id, color=color)
+                graph.add_edge(e(edge), tail_nodes.id)
+                graph[e(edge)][tail_nodes.id].update(
+                    graph_format.hyperedge_attrs(edge))
     return graph
 
-def to_image(hypergraph, filename, extra=[], node_extra=[], paths=[], constraints = None):
-    G = to_networkx(hypergraph, extra, node_extra, paths, constraints)
+def to_image(hypergraph, filename, graph_format):
+    subgraphs = {}
+    G = to_networkx(hypergraph, graph_format)
     agraph = nx.drawing.to_agraph(G)
-    agraph.graph_attr.update({"rankdir":  "RL"})
+
+    for node in hypergraph.nodes:
+        for sub in graph_format.hypernode_subgraph(node):
+            subgraphs.setdefault(sub, [])
+            subgraphs[sub].append(node.id)
+    for sub, nodes in subgraphs.iteritems():
+        subgraph = agraph.subgraph(nodes, name = sub)
+        subgraph.graph_attr.update(graph_format.subgraph_format(sub))
+    agraph.graph_attr.update({"rankdir": "RL"})
     agraph.layout("dot")
     agraph.draw(filename)
 
-def to_ipython(hypergraph, extra=[], node_extra=[], paths=[], constraints = None):
+def to_ipython(hypergraph, graph_format):
     """Display a hypergraph in iPython.
 
     :param hypergraph: The hypergraph to convert.
@@ -51,7 +80,7 @@ def to_ipython(hypergraph, extra=[], node_extra=[], paths=[], constraints = None
 
     from IPython.display import Image
     temp_file = "/tmp/tmp.png"
-    to_image(hypergraph, temp_file, extra, node_extra, paths, constraints)
+    to_image(hypergraph, temp_file, graph_format)
     return Image(filename = temp_file)
 
 def pretty_print(hypergraph):

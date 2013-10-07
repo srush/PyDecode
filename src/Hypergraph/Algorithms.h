@@ -39,10 +39,52 @@ class ConstrainedResult {
   vector<const Constraint *> constraints;
 };
 
+class MaxMarginals {
+ public:
+
+  MaxMarginals(const Hypergraph *hypergraph,
+               const HypergraphWeights *weights,
+               const vector<double> *in_chart,
+               const vector<double> *out_chart)
+      : hypergraph_(hypergraph),
+      weights_(weights),
+      in_chart_(in_chart),
+      out_chart_(out_chart) {
+        assert(in_chart->size() == out_chart->size());
+        assert(hypergraph->nodes().size() == out_chart->size());
+      }
+
+  ~MaxMarginals() {
+    delete in_chart_;
+    delete out_chart_;
+  }
+
+  // Compute the max-marginals for the weighted hypergraph.
+  static MaxMarginals *compute(const Hypergraph *hypergraph,
+                               const HypergraphWeights *weights);
+
+  // Get max-marginal for edge or node.
+  double max_marginal(HEdge edge) const;
+  double max_marginal(HNode node) const;
+
+ private:
+  const Hypergraph *hypergraph_;
+  const HypergraphWeights *weights_;
+
+  // Pointer to inside and outside charts.
+  // Note these are owned by the object.
+  const vector<double> *in_chart_;
+  const vector<double> *out_chart_;
+};
+
+
 Hyperpath *best_constrained_path(
     const Hypergraph *graph,
     const HypergraphWeights &theta,
     const HypergraphConstraints &constraints,
     vector<ConstrainedResult> *duals);
+
+
+
 
 #endif  // HYPERGRAPH_ALGORITHMS_H_

@@ -6,18 +6,16 @@
 
 using namespace std;
 
-typedef boost::numeric::ublas::mapped_vector<double> SparseVec;
-
 class SubgradRate {
  public:
   virtual double get_alpha(const vector<double> &past_duals,
-                           const SparseVec &subgrad) const = 0;
+                           const Vec &subgrad) const = 0;
 };
 
 class ConstantRate : public SubgradRate {
  public:
   double get_alpha(const vector<double> &past_duals,
-                   const SparseVec &subgrad) const {
+                   const Vec &subgrad) const {
     return 1.0;
   }
 };
@@ -25,7 +23,7 @@ class ConstantRate : public SubgradRate {
 class DecreasingRate : public SubgradRate {
  public:
   double get_alpha(const vector<double> &past_duals,
-                    const SparseVec &subgrad) const {
+                    const Vec &subgrad) const {
      double rate = 1.0;
      for (uint i = 0; i < past_duals.size(); ++i) {
        rate *= 0.9;
@@ -40,18 +38,20 @@ struct SubgradState {
   int round;
 
   // The current dual values.
-  SparseVec *duals;
+  Vec *duals;
 };
 
 // Output of the subgradient client
 struct SubgradResult {
-  SubgradResult() : subgrad(100000) {}
+  SubgradResult(int size) : subgrad(size) {
+    for (int i = 0; i < size; ++i) subgrad[i] = 0.0;
+  }
 
   // The dual value with these weights.
   double dual;
 
   // The subgradient at this iteration.
-  SparseVec subgrad;
+  Vec subgrad;
 };
 
 
@@ -78,12 +78,14 @@ class Subgradient {
    * @param update_rate A class to decide the alpha to use at the current iteration
    */
   Subgradient(SubgradientProducer *subgrad_producer,
-            const SubgradRate *update_rate)
+              const SubgradRate *update_rate,
+              int num_constraints)
     : producer_(subgrad_producer),
       rate_(update_rate),
       best_dual_(INF),
       round_(1),
-      duals_(100000),
+      duals_(num_constraints),
+      num_constraints_(num_constraints),
       max_round_(200),
       debug_(false) {}
 
@@ -99,7 +101,7 @@ class Subgradient {
 
  private:
   bool run_one_round(bool *optimal);
-  void update_weights(const SparseVec &);
+  void update_weights(const Vec &);
 
   SubgradientProducer *producer_;
   const SubgradRate *rate_;
@@ -107,8 +109,9 @@ class Subgradient {
   double best_dual_;
   int round_;
 
-  SparseVec duals_;
+  Vec duals_;
   vector<double> past_duals_;
+  int num_constraints_;
   int max_round_;
   bool debug_;
 };

@@ -1,12 +1,15 @@
 
 ## Tutorial 
 
-# In[1]:
+# Building a Hypergraph
+# ---------------------
+
+# In[4]:
 
 import pydecode.hyper as ph
 
 
-# In[2]:
+# In[5]:
 
 hyper1 = ph.Hypergraph()
 
@@ -20,16 +23,16 @@ hyper1 = ph.Hypergraph()
 #    * A list of tail nodes for that edge. 
 #    * A label for that edge. 
 
-# In[3]:
+# In[6]:
 
 with hyper1.builder() as b:
-    node_a = b.add_node()
-    node_b = b.add_node()
-    node_c = b.add_node()
-    node_d = b.add_node()
-    node_e = b.add_node([([node_b, node_c], "First Edge")])
+    node_a = b.add_node(label = "a")
+    node_b = b.add_node(label = "b")
+    node_c = b.add_node(label = "c")
+    node_d = b.add_node(label = "d")
+    node_e = b.add_node([([node_b, node_c], "First Edge")], label = "e")
     b.add_node([([node_a, node_e], "Second Edge"),
-                ([node_a, node_d], "Third Edge")])
+                ([node_a, node_d], "Third Edge")], label = "f")
 
 
 # Outside of the `with` block the hypergraph is considered finished and no new nodes can be added. 
@@ -44,14 +47,11 @@ display.to_ipython(hyper1)
 
 # Out[7]:
 
-#     <IPython.core.display.Image at 0x3dcdf10>
+#     <IPython.core.display.Image at 0x3320ed0>
 
-# In[ ]:
+# After creating the hypergraph we can assign additional property information. One useful property is to add weights. We do this by defining a function to map labels to weights.
 
-After creating the hypergraph we can assign additional property information. One useful property is to add weights. We do this by defining a function to map labels to weights.
-
-
-# In[ ]:
+# In[8]:
 
 def build_weights(label):
     if "First" in label: return 1
@@ -61,31 +61,47 @@ def build_weights(label):
 weights = ph.Weights(hyper1, build_weights)
 
 
-# In[ ]:
+# In[10]:
 
 for edge in hyper1.edges():
-    print hyper1.type(edge), weights[edge]
+    print hyper1.label(edge), weights[edge]
 
+
+# Out[10]:
+
+#     First Edge 1.0
+#     Second Edge 5.0
+#     Third Edge 5.0
+# 
 
 # We use the best path.
 
-# In[ ]:
+# In[11]:
 
 path, chart = ph.best_path(hyper1, weights)
 
 
-# In[ ]:
+# In[12]:
 
 print weights.dot(path)
 
 
-# In[ ]:
+# Out[12]:
+
+#     6.0
+# 
+
+# In[13]:
 
 display.to_ipython(hyper1, extra = [weights], paths = [path])
 
 
+# Out[13]:
+
+#     <IPython.core.display.Image at 0x2e46050>
+
 # Hypergraph for Dynamic Programming
-# ==================================
+# ----------------------------------
 # 
 # The next question is how we might use this in practice.
 
@@ -130,15 +146,15 @@ def make_ld_hyper(s, t):
     return ld_hyper
 
 
-# In[33]:
+# In[40]:
 
 hyper2 = make_ld_hyper("ab", "bb")
 display.to_ipython(hyper2)
 
 
-# Out[33]:
+# Out[40]:
 
-#     <IPython.core.display.Image at 0x3e24850>
+#     <IPython.core.display.Image at 0x3e24bd0>
 
 # In[34]:
 
@@ -148,12 +164,23 @@ def build_weights(label):
 weights2 = ph.Weights(hyper2, build_weights)
 
 
-# In[35]:
+# In[39]:
 
 path, chart = ph.best_path(hyper2, weights2)
 display.to_ipython(hyper2, extra = [weights2], paths = [path])
 
 
-# Out[35]:
+# Out[39]:
 
-#     <IPython.core.display.Image at 0x3e24550>
+#     <IPython.core.display.Image at 0x3e24ad0>
+
+# In[ ]:
+
+Hypergraph for Tagging
+----------------------------------
+
+
+# In[ ]:
+
+
+

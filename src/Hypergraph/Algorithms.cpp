@@ -96,8 +96,51 @@ void outside(const Hypergraph *graph,
   }
 }
 
+MaxMarginals *MaxMarginals::compute(
+    const Hypergraph *hypergraph,
+    const HypergraphWeights *weights) {
+  vector<double> *in_chart = new vector<double>();
+  vector<double> *out_chart = new vector<double>();
 
+  Hyperpath *path = viterbi_path(hypergraph,
+                                 *weights,
+                                 in_chart);
+  outside(hypergraph, *weights, *in_chart, out_chart);
+  delete path;
+  return new MaxMarginals(hypergraph, weights, in_chart, out_chart);
+}
 
+double MaxMarginals::max_marginal(HEdge edge) const {
+  double score = (*out_chart_)[edge->head_node()->id()];
+  score += weights_->score(edge);
+  foreach (HNode node, edge->tail_nodes()) {
+    score += (*out_chart_)[node->id()];
+  }
+  return score;
+}
+
+double MaxMarginals::max_marginal(HNode node) const {
+  return (*in_chart_)[node->id()] + (*out_chart_)[node->id()];
+}
+
+void prune(const Hypergraph *original,
+           const HypergraphWeights &weights,
+           Hypergraph *out,
+           HypergraphWeights *out_weights) {
+  MaxMarginals *max_marginals =
+      MaxMarginals::compute(original, &weights);
+  double total_score = 0.0;
+  foreach (HEdge edge, original->edges()) {
+    total_score += max_marginals->max_marginal(edge);
+  }
+  double average_score = total_score / original->edges().size();
+
+  foreach (HEdge edge, original->edges()) {
+    double score = max_marginals->max_marginal(edge);
+  }
+  delete max_marginals;
+  return ;
+}
 
 class ConstrainedProducer : public SubgradientProducer {
  public:
@@ -105,12 +148,13 @@ class ConstrainedProducer : public SubgradientProducer {
       const Hypergraph *graph,
       const HypergraphWeights *weights,
       const HypergraphConstraints *constraints)
-      : graph_(graph), weights_(weights), constraints_(constraints)
-  {}
+      : graph_(graph),
+        weights_(weights),
+        constraints_(constraints) {}
 
   void solve(const SubgradState &cur_state,
              SubgradResult *result) {
-    SparseVec edge_duals(100000);
+    vector<double> edge_duals(graph_->edges().size());
     double bias_dual;
     constraints_->convert(*cur_state.duals,
                           &edge_duals,
@@ -132,8 +176,8 @@ class ConstrainedProducer : public SubgradientProducer {
 
 
     for (uint i = 0; i < failed_constraints.size(); ++i) {
-      cerr << "Dual " << result->dual << endl;
-      cerr << "Missed " << failed_constraints[i]->label << endl;
+      // cerr << "Dual " << result->dual << endl;
+      // cerr << "Missed " << failed_constraints[i]->label << endl;
     }
     constrained_results_.push_back(
         ConstrainedResult(path, result->dual, 0.0,
@@ -160,7 +204,8 @@ Hyperpath *best_constrained_path(
   DecreasingRate rate;
   cerr << "decreasing" << endl;
   ConstrainedProducer producer(graph, &theta, &constraints);
-  Subgradient subgradient(&producer, &rate);
+  Subgradient subgradient(&producer, &rate,
+                          constraints.constraints().size());
   subgradient.set_debug();
   subgradient.solve();
   *result = producer.results();

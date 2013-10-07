@@ -43,7 +43,7 @@ class HypergraphConstraints {
   Constraint *add_constraint(string label) {
     Constraint *cons = new Constraint(label, constraints_.size());
     constraints_.push_back(cons);
-    return constraints_.back();
+    return cons;
   }
 
   bool check_constraints(
@@ -51,17 +51,21 @@ class HypergraphConstraints {
       vector<const Constraint *> *failed_constraints,
       vector<int> *count) const;
 
-  void convert(const SparseVec &dual_vector,
-                    SparseVec *edge_duals,
-                    double *bias_dual) const;
+  void convert(const Vec &dual_vector,
+               vector<double> *edge_duals,
+               double *bias_dual) const;
 
-  void subgradient(const Hyperpath &path, SparseVec *subgrad) const;
+  void subgradient(const Hyperpath &path, Vec *subgrad) const;
 
   const Hypergraph *hypergraph() const { return hypergraph_; }
 
+  const vector<const Constraint *> &constraints() const {
+      return constraints_;
+  }
+
  private:
   const Hypergraph *hypergraph_;
-  vector<Constraint *> constraints_;
+  vector<const Constraint *> constraints_;
 };
 
 

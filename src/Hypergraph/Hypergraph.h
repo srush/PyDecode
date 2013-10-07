@@ -124,7 +124,9 @@ class Hypergraph {
 
   HEdge add_edge(const vector<HNode> &nodes, string label);
 
-  void end_node() { lock_ = false; }
+  // Returns true if the node was created.
+  // Returns false if the node was removed (no children).
+  bool end_node();
 
   // Complete the hypergraph.
   void finish() {
@@ -137,6 +139,7 @@ class Hypergraph {
   void fill();
 
  private:
+
   // For construction.
   bool terminal_lock_;
 
@@ -188,6 +191,7 @@ class Hyperpath {
   const vector<HEdge> edges_;
 };
 
+class HypergraphProjection;
 
 class HypergraphWeights {
  public:
@@ -206,7 +210,10 @@ class HypergraphWeights {
 
   double bias() const { return bias_; }
 
-  HypergraphWeights *modify(const SparseVec &, double) const;
+  HypergraphWeights *modify(const vector<double> &, double) const;
+
+  HypergraphWeights *project_weights(
+      const HypergraphProjection &projection);
 
  private:
   const Hypergraph *hypergraph_;
@@ -214,5 +221,53 @@ class HypergraphWeights {
   double bias_;
 };
 
+class HypergraphProjection {
+ public:
+  HypergraphProjection(const Hypergraph *original,
+                    const Hypergraph *_new_graph,
+                    const vector<HNode> *node_map,
+                    const vector<HEdge> *edge_map)
+      : original_graph(original),
+      new_graph(_new_graph),
+      node_map_(node_map),
+      edge_map_(edge_map) {
+        assert(node_map->size() == original_graph->nodes().size());
+        assert(edge_map->size() == original_graph->edges().size());
+      }
+
+  ~HypergraphProjection() {
+    delete node_map_;
+    delete edge_map_;
+  }
+
+  static HypergraphProjection *project_hypergraph(
+      const Hypergraph *hypergraph,
+      vector<bool> edge_mask);
+
+  HEdge project(HEdge original) const {
+    return (*edge_map_)[original->id()];
+  }
+
+  HNode project(HNode original) const {
+    return (*node_map_)[original->id()];
+  }
+
+  const Hypergraph *original_graph;
+  const Hypergraph *new_graph;
+
+ private:
+
+  // Owned.
+  const vector<HNode> *node_map_;
+  const vector<HEdge> *edge_map_;
+};
+
+
+// Given an original hypergraph, builds a pruned hypergraph with only
+// edges in the mask.
+Hypergraph *build_pruned_hypergraph(
+    const Hypergraph *hypergraph,
+    vector<bool> edge_mask,
+    vector<HEdge *> edge_map);
 
 #endif  // HYPERGRAPH_HYPERGRAPH_H_

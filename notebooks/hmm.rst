@@ -7,17 +7,19 @@ A Constrained HMM Example
 
     import pydecode.hyper as ph
     import pydecode.display as display
-Step 1: Construct the HMM probabilities.
+    from collections import namedtuple
+We begin by constructing the HMM probabilities.
 
 .. code:: python
 
     # The emission probabilities.
-    emission = {'the' :  {'D': 0.8, 'N': 0.1, 'V': 0.1},
+    emission = {'ROOT' :  {'ROOT' : 1.0},
+                'the' :  {'D': 0.8, 'N': 0.1, 'V': 0.1},
                 'dog' :  {'D': 0.1, 'N': 0.8, 'V': 0.1},
                 'walked' : {'V': 1},
                 'in' :   {'D': 1},
                 'park' : {'N': 0.1, 'V': 0.9},
-                'END' :  {'END' : 0}}
+                'END' :  {'END' : 1.0}}
           
     
     # The transition probabilities.
@@ -28,22 +30,30 @@ Step 1: Construct the HMM probabilities.
     
     # The sentence to be tagged.
     sentence = 'the dog walked in the park'
-Step 2: Construct the hypergraph topology.
+Next we specify the the index set using namedtuples.
+
+.. code:: python
+
+    class Bigram(namedtuple("Bigram", ["word", "tag", "prevtag"])):
+        def __str__(self): return "%s -> %s"%(self.prevtag, self.tag)
+    class Tagged(namedtuple("Tagged", ["position", "word", "tag"])):
+        def __str__(self): return "%s %s"%(self.word, self.tag)
+Now we are ready to build the hypergraph topology itself.
 
 .. code:: python
 
     hypergraph = ph.Hypergraph()                      
     with hypergraph.builder() as b:
-        node_start = b.add_node()
+        node_start = b.add_node(label = Tagged(-1, "<s>", "<t>"))
         node_list = [(node_start, "ROOT")]
         words = sentence.strip().split(" ") + ["END"]
             
-        for word in words:
+        for i, word in enumerate(words):
             next_node_list = []
             for tag in emission[word].iterkeys():
-                edges = (([prev_node], (word, tag, prev_tag))
+                edges = (([prev_node], Bigram(word, tag, prev_tag))
                          for prev_node, prev_tag in node_list)
-                node = b.add_node(edges, label = str((word, tag)))
+                node = b.add_node(edges, label = Tagged(i, word, tag))
                 next_node_list.append((node, tag))
             node_list = next_node_list
 Step 3: Construct the weights.
@@ -60,42 +70,84 @@ Step 3: Construct the weights.
     print weights.dot(path)
     
     # Output the path.
-    for edge in path.edges():
-        print hypergraph.label(edge)
+    [hypergraph.label(edge) for edge in path.edges]
 
 .. parsed-literal::
 
-    8.6
-    ('the', 'D', 'ROOT')
-    ('dog', 'N', 'D')
-    ('walked', 'V', 'N')
-    ('in', 'D', 'V')
-    ('the', 'N', 'D')
-    ('park', 'V', 'N')
-    ('END', 'END', 'V')
+    9.6
+
+
+
+
+.. parsed-literal::
+
+    [Bigram(word='the', tag='D', prevtag='ROOT'),
+     Bigram(word='dog', tag='N', prevtag='D'),
+     Bigram(word='walked', tag='V', prevtag='N'),
+     Bigram(word='in', tag='D', prevtag='V'),
+     Bigram(word='the', tag='N', prevtag='D'),
+     Bigram(word='park', tag='V', prevtag='N'),
+     Bigram(word='END', tag='END', prevtag='V')]
+
 
 
 .. code:: python
 
-    display.to_ipython(hypergraph, paths=[path])
+    format = display.HypergraphPathFormatter(hypergraph, path)
+    display.to_ipython(hypergraph, format)
 
 
 
-.. image:: hmm_files/hmm_9_0.png
+.. image:: hmm_files/hmm_11_0.png
 
 
 
-Step 4: Add the constraints.
+We can also use a custom fancier formatter. These attributes are from
+graphviz (http://www.graphviz.org/content/attrs)
 
 .. code:: python
 
-    # The tag of "dog" is the same tag as "park".
-    constraints = ph.Constraints(hypergraph)
-    for cons_tag in ["D", "V", "N"]:
-        def constraint((word, tag, prev_tag)):
-            if cons_tag != tag: return 0
-            return {"dog" : 1, "park" : -1}.get(word, 0) 
-        constraints.add("tag_" + cons_tag, constraint, 0)
+    class HMMFormat(display.HypergraphPathFormatter):
+        def hypernode_attrs(self, node):
+            label = self.hypergraph.node_label(node)
+            return {"label": label.tag, "shape": ""}
+        def hyperedge_node_attrs(self, edge):
+            return {"color": "pink", "shape": "point"}
+        def hypernode_subgraph(self, node):
+            label = self.hypergraph.node_label(node)
+            return ["cluster_" + str(label.position)]
+        def subgraph_format(self, subgraph):
+            return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
+    
+    format = HMMFormat(hypergraph, path)
+    display.to_ipython(hypergraph, format)
+
+
+
+.. image:: hmm_files/hmm_13_0.png
+
+
+
+PyDecode also allows you to add extra constraints to the problem. As an
+example we can add constraints to enfore that the tag of "dog" is the
+same tag as "park".
+
+.. code:: python
+
+    
+    def cons(tag): return "tag_%s"%tag
+    
+    def build_constraints(bigram):
+        if bigram.word == "dog":
+            return [(cons(bigram.tag), 1)]
+        elif bigram.word == "park":
+            return [(cons(bigram.tag), -1)]
+        return []
+    
+    constraints = \
+        ph.Constraints(hypergraph, 
+                       [(cons(tag), 0) for tag in ["D", "V", "N"]], 
+                       build_constraints)
 This check fails because the tags do not agree.
 
 .. code:: python
@@ -111,7 +163,25 @@ Solve instead using subgradient.
 
 .. code:: python
 
-    gpath = ph.best_constrained(hypergraph, weights, constraints)
+    gpath, duals = ph.best_constrained(hypergraph, weights, constraints)
+.. code:: python
+
+    import pandas as pd
+    df = pd.DataFrame(data = {"dual" : duals}, index = range(len(duals)))
+    df.plot(linewidth=5)
+
+
+
+.. parsed-literal::
+
+    <matplotlib.axes.AxesSubplot at 0x41fb9d0>
+
+
+
+
+.. image:: hmm_files/hmm_20_1.png
+
+
 .. code:: python
 
     # Output the path.
@@ -121,12 +191,19 @@ Solve instead using subgradient.
 
     print "check", constraints.check(gpath)
     print "score", weights.dot(gpath)
+
+.. parsed-literal::
+
+    check ['tag_V', 'tag_N']
+    score 7.8
+
+
 .. code:: python
 
     display.to_ipython(hypergraph, paths=[path, gpath])
 
 
 
-.. image:: hmm_files/hmm_18_0.png
+.. image:: hmm_files/hmm_23_0.png
 
 
