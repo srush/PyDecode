@@ -16,23 +16,22 @@ with hypergraph.builder() as b:
 
 
 # Specify the weights.
-def weights(t): return {"1": 5,"2": 10, "3": 15, "4": 15}[t]
+def weights(t): return {"1": 5, "2": 10, "3": 15, "4": 15}[t]
 weights = hyper.Weights(hypergraph, weights)
 
 # Specify the constraints.
-constraints = hyper.Constraints(hypergraph)
-
 def edges_a(t):
-    if t in ["2", "4"]: return 1
-    return 0
-constraints.add("constraint_a", edges_a, -1)
+    if t in ["2", "4"]: return [("constraint_a", 1)]
+    if t == "3": return [("constraint_b", 2)]
+    return []
 
-def edges_b(t):
-    if t == "3": return 2
-    return 0
-constraints.add("constraint_a", edges_b, -2)
+constraints = hyper.Constraints(hypergraph,
+                                [("constraint_a", -1),
+                                 ("constraint_b", -2)],
+                                edges_a)
 
-G = draw.to_networkx(hypergraph)
+
+G = draw.to_networkx(hypergraph, draw.HypergraphFormatter(hypergraph))
 nx.draw(G)
 
 path, chart = hyper.best_path(hypergraph, weights)
