@@ -96,7 +96,7 @@ void outside(const Hypergraph *graph,
   }
 }
 
-MaxMarginals *MaxMarginals::compute(
+const MaxMarginals *MaxMarginals::compute(
     const Hypergraph *hypergraph,
     const HypergraphWeights *weights) {
   vector<double> *in_chart = new vector<double>();
@@ -114,7 +114,7 @@ double MaxMarginals::max_marginal(HEdge edge) const {
   double score = (*out_chart_)[edge->head_node()->id()];
   score += weights_->score(edge);
   foreach (HNode node, edge->tail_nodes()) {
-    score += (*out_chart_)[node->id()];
+    score += (*in_chart_)[node->id()];
   }
   return score;
 }
@@ -123,23 +123,26 @@ double MaxMarginals::max_marginal(HNode node) const {
   return (*in_chart_)[node->id()] + (*out_chart_)[node->id()];
 }
 
-void prune(const Hypergraph *original,
-           const HypergraphWeights &weights,
-           Hypergraph *out,
-           HypergraphWeights *out_weights) {
-  MaxMarginals *max_marginals =
+const HypergraphProjection *prune(const Hypergraph *original,
+                                  const HypergraphWeights &weights,
+                                  double ratio) {
+  const MaxMarginals *max_marginals =
       MaxMarginals::compute(original, &weights);
-  double total_score = 0.0;
-  foreach (HEdge edge, original->edges()) {
-    total_score += max_marginals->max_marginal(edge);
-  }
-  double average_score = total_score / original->edges().size();
-
+  double best = max_marginals->max_marginal(original->root());
+  //double total_score = 0.0;
+  vector<bool> edge_mask(original->edges().size(), true);
+  // foreach (HEdge edge, original->edges()) {
+  //   total_score += max_marginals->max_marginal(edge);
+  // }
+  // double average_score = total_score / original->edges().size();
   foreach (HEdge edge, original->edges()) {
     double score = max_marginals->max_marginal(edge);
+    if (score < ratio * best) {
+      edge_mask[edge->id()] = false;
+    }
   }
   delete max_marginals;
-  return ;
+  return HypergraphProjection::project_hypergraph(original, edge_mask);
 }
 
 class ConstrainedProducer : public SubgradientProducer {

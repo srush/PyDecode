@@ -3,7 +3,7 @@ import random
 import pydecode.display as draw
 import networkx as nx
 import matplotlib.pyplot as plt
-
+import nose.tools as nt
 
 def simple_hypergraph():
     hypergraph = hyper.Hypergraph()
@@ -12,7 +12,7 @@ def simple_hypergraph():
         term = [b.add_node() for i in range(3)]
         head_node = b.add_node([([term[0], term[1]], "")])
         head_node2 = b.add_node([([head_node, term[2]], "")])
-    weights = hyper.Weights(hypergraph, lambda t: random.random())
+    weights = hyper.Weights(hypergraph).build(lambda t: random.random())
     return hypergraph, weights
 
 def random_hypergraph():
@@ -26,18 +26,18 @@ def random_hypergraph():
             node_a, node_b = random.sample(nodes, 2)
             head_node = b.add_node((([node_a, node_b], node),))
             nodes.append(head_node)
-    assert len(hypergraph.nodes) > 0
+    nt.assert_greater(len(hypergraph.nodes), 0)
     assert len(hypergraph.edges) > 0
 
-    weights = hyper.Weights(hypergraph, lambda t: random.random())
+    weights = hyper.Weights(hypergraph).build(lambda t: random.random())
     return hypergraph, weights
 
 def test_numbering():
     for hypergraph, _ in [random_hypergraph() for i in range(10)]:
         for i, node in enumerate(hypergraph.nodes):
-            assert node.id == i
+            nt.assert_equal(node.id, i)
         for i, edge in enumerate(hypergraph.edges):
-            assert edge.id == i
+            nt.assert_equal(edge.id, i)
 
 def valid_hypergraph(hypergraph):
     root_count = 0
@@ -60,11 +60,11 @@ def valid_hypergraph(hypergraph):
         # Check ordering.
         for edge in node.edges:
             for tail_node in edge.tail:
-                assert tail_node.id < node.id, "%d %d"%(tail_node.id, node.id)
+                nt.assert_less(tail_node.id, node.id)
                 children.add(tail_node.id)
 
     # Only 1 root.
-    assert len(children) == len(hypergraph.nodes) - 1
+    nt.assert_equal(len(children), len(hypergraph.nodes) - 1)
 
 
 def test_simple_valid():
@@ -77,7 +77,7 @@ def test_valid():
 def valid_path(hypergraph, path):
     "Check whether a path is valid."
     root = hypergraph.root
-    assert len(path.edges) > 0
+    nt.assert_greater(len(path.edges), 0)
     # Check there is a path to terminals.
     stack = [hypergraph.root]
     while stack:
@@ -98,7 +98,7 @@ def test_construction():
 def test_inside():
     for h, w in [random_hypergraph() for i in range(10)]:
         path, chart = hyper.best_path(h, w)
-        assert w.dot(path) != 0.0
+        nt.assert_not_equal(w.dot(path), 0.0)
 
         valid_path(h, path)
 
@@ -106,16 +106,29 @@ def test_outside():
     for h, w in [random_hypergraph() for i in range(10)]:
         path, chart = hyper.best_path(h, w)
         best = w.dot(path)
-        assert best != 0.0
+        nt.assert_not_equal(best, 0.0)
         out_chart = hyper.outside_path(h, w, chart)
         for node in h.nodes:
             other = chart[node] + out_chart[node]
-            assert other <= best + 1e-4, \
-                "Best: {}. Other: {}".format(other, best)
-
+            nt.assert_less_equal(other, best  + 1e-4)
             if node.is_terminal():
-                assert abs(other - best) < 1e-4, \
-                    "Best: {}. Other: {}".format(other, best)
+                nt.assert_almost_equal(other, best)
+
+def test_maxmarginals():
+    for h, w in [random_hypergraph() for i in range(10)]:
+        path, chart = hyper.best_path(h, w)
+        best = w.dot(path)
+        nt.assert_not_equal(best, 0.0)
+        max_marginals = hyper.compute_max_marginals(h, w)
+        for node in h.nodes:
+            other = max_marginals.node_marginal(node)
+            nt.assert_less_equal(other, best + 1e-4)
+
+        for edge in h.edges:
+            other = max_marginals.edge_marginal(edge)
+            nt.assert_less_equal(other, best + 1e-4)
+            if edge in path:
+                nt.assert_almost_equal(other, best)
 
 def random_constraint(hypergraph):
     edge, = random.sample(hypergraph.edges, 1)
@@ -124,7 +137,7 @@ def random_constraint(hypergraph):
         if label == l:
             return [("have", 1), ("not", 1)]
         return []
-    constraints = hyper.Constraints(hypergraph,
+    constraints = hyper.Constraints(hypergraph).build(
                                     [("have", -1), ("not", 0)],
                                     build_constraints)
     return constraints, edge
@@ -135,10 +148,17 @@ def test_constraint():
         path, chart = hyper.best_path(h, w)
         match = constraints.check(path)
         if edge not in path:
-            assert match[0] == "have"
+            nt.assert_equal(match[0], "have")
         else:
-            assert match[0] == "not"
+            nt.assert_equal(match[0], "not")
+
+
+def test_pruning():
+    for h, w in [random_hypergraph() for i in range(10)]:
+        new_hyper, new_weights = hyper.prune_hypergraph(h, w, 0.9)
+        path, chart = hyper.best_path(new_hyper, new_weights)
+        valid_path(new_hyper, path)
 
 if __name__ == "__main__":
     test_inside()
-    test_constraint()
+    test_pruning()

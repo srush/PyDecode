@@ -213,7 +213,7 @@ class HypergraphWeights {
   HypergraphWeights *modify(const vector<double> &, double) const;
 
   HypergraphWeights *project_weights(
-      const HypergraphProjection &projection);
+      const HypergraphProjection &projection) const;
 
  private:
   const Hypergraph *hypergraph_;
@@ -224,9 +224,9 @@ class HypergraphWeights {
 class HypergraphProjection {
  public:
   HypergraphProjection(const Hypergraph *original,
-                    const Hypergraph *_new_graph,
-                    const vector<HNode> *node_map,
-                    const vector<HEdge> *edge_map)
+                       const Hypergraph *_new_graph,
+                       const vector<HNode> *node_map,
+                       const vector<HEdge> *edge_map)
       : original_graph(original),
       new_graph(_new_graph),
       node_map_(node_map),

@@ -62,7 +62,7 @@ HypergraphWeights *HypergraphWeights::modify(
 }
 
 HypergraphWeights *HypergraphWeights::project_weights(
-    const HypergraphProjection &projection) {
+    const HypergraphProjection &projection) const {
   vector<double> weights(projection.new_graph->edges().size());
   foreach (HEdge edge, projection.original_graph->edges()) {
     HEdge new_edge = projection.project(edge);
@@ -125,7 +125,8 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
   foreach (HNode node, hypergraph->nodes()) {
     if (node->terminal()) {
       // The node is a terminal, so just add it.
-      new_graph->add_terminal_node(node->label());
+      (*node_map)[node->id()] =
+          new_graph->add_terminal_node(node->label());
     } else {
       (*node_map)[node->id()] =
           new_graph->start_node(node->label());

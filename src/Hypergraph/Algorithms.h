@@ -60,8 +60,8 @@ class MaxMarginals {
   }
 
   // Compute the max-marginals for the weighted hypergraph.
-  static MaxMarginals *compute(const Hypergraph *hypergraph,
-                               const HypergraphWeights *weights);
+  static const MaxMarginals *compute(const Hypergraph *hypergraph,
+                                     const HypergraphWeights *weights);
 
   // Get max-marginal for edge or node.
   double max_marginal(HEdge edge) const;
@@ -85,6 +85,9 @@ const Hyperpath *best_constrained_path(
     vector<ConstrainedResult> *duals);
 
 
+const HypergraphProjection *prune(const Hypergraph *original,
+                                  const HypergraphWeights &weights,
+                                  double ratio);
 
 
 #endif  // HYPERGRAPH_ALGORITHMS_H_

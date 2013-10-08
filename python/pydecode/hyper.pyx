@@ -15,6 +15,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const vector[double] inside_chart,
         vector[double] *chart)
 
+    const CHypergraphProjection *prune(
+        const CHypergraph *original,
+        const CHypergraphWeights weights,
+        double ratio)
+
     const CHyperpath *best_constrained_path(
         const CHypergraph *graph,
         const CHypergraphWeights theta,
@@ -27,6 +32,15 @@ cdef extern from "Hypergraph/Algorithms.h":
         double dual
         double primal
         vector[const CConstraint *] constraints
+
+    cdef cppclass CMaxMarginals "MaxMarginals":
+        const CHyperpath *path
+        double max_marginal(const CHyperedge *edge)
+        double max_marginal(const CHypernode *node)
+
+cdef extern from "Hypergraph/Algorithms.h" namespace "MaxMarginals":
+    CMaxMarginals *compute(const CHypergraph *hypergraph,
+                       const CHypergraphWeights *weights)
 
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass CHyperedge "Hyperedge":
@@ -62,6 +76,13 @@ cdef extern from "Hypergraph/Hypergraph.h":
                            double bias)
         double dot(const CHyperpath &path)
         double score(const CHyperedge *edge)
+        CHypergraphWeights *project_weights(
+            const CHypergraphProjection )
+
+    cdef cppclass CHypergraphProjection "HypergraphProjection":
+        const CHypergraph *new_graph
+        const CHyperedge *project(const CHyperedge *edge)
+        const CHypernode *project(const CHypernode *node)
 
 cdef extern from "Hypergraph/Constraints.h":
     cdef cppclass CConstraint "Constraint":
@@ -154,6 +175,41 @@ def best_constrained(Hypergraph graph,
     path.init(cpath)
     return path, convert_results(results)
 
+def compute_max_marginals(Hypergraph graph, Weights weights):
+    cdef const CMaxMarginals *marginals = \
+        compute(graph.thisptr, weights.thisptr)
+    cdef MaxMarginals max_marginals = MaxMarginals()
+    max_marginals.init(marginals)
+    return max_marginals
+
+def prune_hypergraph(Hypergraph graph, Weights weights, double ratio):
+    cdef const CHypergraphProjection *projection = \
+        prune(graph.thisptr, deref(weights.thisptr), ratio)
+    cdef Hypergraph new_graph = Hypergraph()
+
+    # Map nodes.
+    node_labels = [None] * projection.new_graph.nodes().size()
+    cdef vector[const CHypernode*] old_nodes = graph.thisptr.nodes()
+    cdef const CHypernode *node
+    for i in range(old_nodes.size()):
+        node = projection.project(old_nodes[i])
+        if node != NULL and node.id() >= 0:
+            node_labels[node.id()] = graph.node_labels[i]
+
+    # Map edges.
+    edge_labels = [None] * projection.new_graph.edges().size()
+    cdef vector[const CHyperedge *] old_edges = graph.thisptr.edges()
+    cdef const CHyperedge *edge
+    for i in range(old_edges.size()):
+        edge = projection.project(old_edges[i])
+        if edge != NULL and edge.id() >= 0:
+            edge_labels[edge.id()] = graph.edge_labels[i]
+
+    new_graph.init(projection.new_graph, node_labels, edge_labels)
+    cdef Weights new_weights = Weights(new_graph)
+    new_weights.init(weights.thisptr.project_weights(deref(projection)))
+    return new_graph, new_weights
+
 cdef convert_results(vector[CConstrainedResult] c):
     cdef results = []
     for cresult in c:
@@ -189,18 +245,21 @@ cdef class ConstrainedResult:
 
 cdef class Hypergraph:
     cdef CHypergraph *thisptr
-    cdef types
-    cdef indexed_types
+    cdef edge_labels
     cdef node_labels
     def __cinit__(self):
         self.thisptr = new CHypergraph()
-        self.types = []
+        self.edge_labels = []
         self.node_labels = []
-        self.indexed_types = {}
 
-    def builder(self, indexed = False):
+    cdef init(self, const CHypergraph *ptr, node_labels, edge_labels):
+        self.thisptr = <CHypergraph *> ptr
+        self.edge_labels = edge_labels
+        self.node_labels = node_labels
+
+    def builder(self):
         gb = GraphBuilder()
-        gb.init(self, self.thisptr, indexed)
+        gb.init(self, self.thisptr)
         return gb
 
     def __getattr__(self, attr):
@@ -215,7 +274,7 @@ cdef class Hypergraph:
         return self.thisptr.edges().size()
 
     def label(self, edge):
-        return self.types[edge.id]
+        return self.edge_labels[edge.id]
 
     def node_label(self, node):
         return self.node_labels[node.id]
@@ -229,15 +288,13 @@ cdef class GraphBuilder:
     """
     cdef CHypergraph *thisptr
     cdef Hypergraph hyper
-    cdef types
+    cdef edge_labels
     cdef node_labels
-    cdef indexed
 
-    cdef init(self, Hypergraph hyper, CHypergraph *ptr, indexed):
+    cdef init(self, Hypergraph hyper, CHypergraph *ptr):
         self.thisptr = ptr
-        self.indexed = indexed
         self.hyper = hyper
-        self.types = []
+        self.edge_labels = []
         self.node_labels = []
 
     def __enter__(self): return self
@@ -246,19 +303,16 @@ cdef class GraphBuilder:
         if exception:
            return False
         self.thisptr.finish()
-        self.hyper.types = [None] * self.thisptr.edges().size()
+        self.hyper.edge_labels = [None] * self.thisptr.edges().size()
         self.hyper.node_labels = [None] * self.thisptr.nodes().size()
 
         for node, t in self.node_labels:
             if not node.removed():
                 self.hyper.node_labels[node.id] = t
 
-        for edge, t in self.types:
+        for edge, t in self.edge_labels:
             if not edge.removed():
-                self.hyper.types[edge.id] = t
-                if self.indexed:
-                    self.hyper.indexed_types.setdefault(t.index(), [])
-                    self.hyper.indexed_types[t.index()].append((edge.id, t))
+                self.hyper.edge_labels[edge.id] = t
 
     def add_node(self, edges = [], label = ""):
         """
@@ -282,7 +336,7 @@ cdef class GraphBuilder:
                 for tail_node in tail_nodes:
                     tail_node_ptrs.push_back((<Node> tail_node).nodeptr)
                 edgeptr = self.thisptr.add_edge(tail_node_ptrs, "")
-                self.types.append((convert_edge(edgeptr), t))
+                self.edge_labels.append((convert_edge(edgeptr), t))
             self.thisptr.end_node()
         self.node_labels.append((node, label))
         node.init(nodeptr)
@@ -387,22 +441,32 @@ cdef class Weights:
     """
     cdef Hypergraph hypergraph
     cdef const CHypergraphWeights *thisptr
-    def __cinit__(self, Hypergraph graph, fn):
+    def __cinit__(self, Hypergraph graph):
         """
         Build the weight vector for a hypergraph.
 
         :param hypergraph: The underlying hypergraph.
-        :param fn: A function from edge labels to weights.
         """
         self.hypergraph = graph
 
+    def build(self, fn):
+        """
+        Build the weight vector for a hypergraph.
+
+        :param fn: A function from edge labels to weights.
+        """
         cdef vector[double] weights
         weights.resize(self.hypergraph.thisptr.edges().size())
-        for i, ty in enumerate(self.hypergraph.types):
+        for i, ty in enumerate(self.hypergraph.edge_labels):
             weights[i] = fn(ty)
         self.thisptr =  \
           new CHypergraphWeights(self.hypergraph.thisptr,
                                  weights, 0.0)
+        return self
+
+    cdef init(self, const CHypergraphWeights *ptr):
+        self.thisptr = ptr
+
 
     def __getitem__(self, Edge edge):
         return self.thisptr.score(edge.edgeptr)
@@ -438,9 +502,11 @@ cdef class Constraints:
 
     cdef CHypergraphConstraints *thisptr
     cdef Hypergraph hypergraph
-    def __cinit__(self, Hypergraph hypergraph, constraints, builder):
+    def __cinit__(self, Hypergraph hypergraph):
         self.thisptr = new CHypergraphConstraints(hypergraph.thisptr)
         self.hypergraph = hypergraph
+
+    def build(self, constraints, builder):
         cdef CConstraint *cons
         cdef Constraint hcons
         by_label = {}
@@ -452,11 +518,12 @@ cdef class Constraints:
             by_label[label] = hcons
 
         cdef vector[const CHyperedge *] edges = self.hypergraph.thisptr.edges()
-        for i, ty in enumerate(self.hypergraph.types):
+        for i, ty in enumerate(self.hypergraph.edge_labels):
             constraints = builder(ty)
             for label, coeff in constraints:
                 constraint = <Constraint> by_label[label]
                 (<CConstraint *> constraint.thisptr).add_edge_term(edges[i], coeff)
+        return self
 
     def __iter__(self):
         return iter(convert_constraints(self.thisptr.constraints()))
@@ -478,7 +545,7 @@ cdef class Constraints:
     #     cdef vector[const CHyperedge *] edges = self.hypergraph.thisptr.edges()
     #     cdef int coefficient
     #     if not index:
-    #         edge_types = enumerate(self.hypergraph.types)
+    #         edge_types = enumerate(self.hypergraph.edge_labels)
     #     else:
     #         edge_types = self.hypergraph.indexed_types.get(index, [])
     #     for i, ty in edge_types:
@@ -503,3 +570,15 @@ cdef class Constraints:
         for cons in failed:
             ret.append(cons.label)
         return ret
+
+cdef class MaxMarginals:
+    cdef const CMaxMarginals *thisptr
+
+    cdef init(self, const CMaxMarginals *ptr):
+        self.thisptr = ptr
+
+    def edge_marginal(self, Edge edge):
+        return self.thisptr.max_marginal(edge.edgeptr)
+
+    def node_marginal(self, Node node):
+        return self.thisptr.max_marginal(node.nodeptr)

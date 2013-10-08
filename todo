@@ -1,11 +1,25 @@
+srush
+-----
+
+- fix pruning
+
 - write note describing construction disclaimers
 
 - Write Documentation
 
 - profile
 
-- More tests
-
 - better construction error messages
 
-- cky example
+- delete memory
+
+- Gurobi ilp
+
+- beam search...
+
+- k-best
+
+
+on2
+---
+- implement semirings
