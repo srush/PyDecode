@@ -26,6 +26,7 @@ bool Hypergraph::end_node() {
 
   // Remove this node if it has no edges.
   if (creating_node_->edges().size() == 0) {
+    creating_node_->set_id(-1);
     temp_nodes_.pop_back();
     return false;
   } else {
@@ -66,7 +67,8 @@ HypergraphWeights *HypergraphWeights::project_weights(
   vector<double> weights(projection.new_graph->edges().size());
   foreach (HEdge edge, projection.original_graph->edges()) {
     HEdge new_edge = projection.project(edge);
-    if (new_edge != NULL) {
+    if (new_edge != NULL && new_edge->id() >= 0) {
+      assert(new_edge->id() < projection.new_graph->edges().size());
       weights[new_edge->id()] = score(edge);
     }
   }
@@ -109,6 +111,8 @@ void Hypergraph::fill() {
       temp_edges_[i]->set_id(edge_count);
       edges_.push_back(temp_edges_[i]);
       edge_count++;
+    } else {
+      temp_edges_[i]->set_id(-1);
     }
   }
 }
@@ -128,8 +132,7 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
       (*node_map)[node->id()] =
           new_graph->add_terminal_node(node->label());
     } else {
-      (*node_map)[node->id()] =
-          new_graph->start_node(node->label());
+      (*node_map)[node->id()] = new_graph->start_node(node->label());
 
       // Try to add each of the edges of the node.
       foreach (HEdge edge, node->edges()) {
@@ -151,7 +154,9 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
           (*edge_map)[edge->id()] = new_edge;
         }
       }
-      new_graph->end_node();
+      if (!new_graph->end_node()) {
+        (*node_map)[node->id()] = NULL;
+      }
     }
   }
   new_graph->finish();

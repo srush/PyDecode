@@ -155,9 +155,66 @@ def test_constraint():
 
 def test_pruning():
     for h, w in [random_hypergraph() for i in range(10)]:
-        new_hyper, new_weights = hyper.prune_hypergraph(h, w, 0.9)
-        path, chart = hyper.best_path(new_hyper, new_weights)
-        valid_path(new_hyper, path)
+        original_path, _ = hyper.best_path(h, w)
+        new_hyper, new_weights = hyper.prune_hypergraph(h, w, 0.99)
+        prune_path, chart = hyper.best_path(new_hyper, new_weights)
+        assert len(original_path.edges) > 0
+        # for edge in original_path.edges:
+        #     assert edge in prune_path
+        valid_path(new_hyper, prune_path)
+
+        original_score = w.dot(original_path)
+        print original_score
+        print new_weights.dot(prune_path)
+        nt.assert_almost_equal(original_score,
+                               new_weights.dot(prune_path))
+
+        # Test pruning amount.
+        prune = random.random()
+        max_marginals = hyper.compute_max_marginals(h, w)
+        new_hyper, new_weights = hyper.prune_hypergraph(h, w, prune)
+
+        assert (len(new_hyper.edges) > 0)
+        original_edges = {}
+        for edge in h.edges:
+            original_edges[h.label(edge)] = edge
+
+        new_edges = {}
+        for edge in new_hyper.edges:
+            new_edges[h.label(edge)] = edge
+
+        for name, edge in new_edges.iteritems():
+
+            orig = original_edges[name]
+            nt.assert_almost_equal(w[orig], new_weights[edge])
+            m = max_marginals.edge_marginal(orig)
+            nt.assert_greater(m, prune * original_score)
+
+def random_have_constraint(hypergraph):
+    edge, = random.sample(hypergraph.edges, 1)
+    def build_constraints(label):
+        l = hypergraph.label(edge)
+        if label == l:
+            return [("have", 1)]
+        return []
+    constraints = hyper.Constraints(hypergraph).build(
+                                    [("have", -1)],
+                                    build_constraints)
+    return constraints, edge
+
+def test_subgradient():
+    for h, w in [random_hypergraph() for i in range(10)]:
+        constraints, edge = random_have_constraint(h)
+        path, chart = hyper.best_path(h, w)
+        match = constraints.check(path)
+        if edge not in path:
+            nt.assert_equal(match[0], "have")
+
+        cpath, duals = hyper.best_constrained(h, w, constraints)
+        assert edge in cpath
+
+
+
 
 if __name__ == "__main__":
     test_inside()

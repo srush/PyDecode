@@ -51,11 +51,12 @@ class HypergraphConstraints {
       vector<const Constraint *> *failed_constraints,
       vector<int> *count) const;
 
-  void convert(const Vec &dual_vector,
+  void convert(const vector<double> &dual_vector,
                vector<double> *edge_duals,
                double *bias_dual) const;
 
-  void subgradient(const Hyperpath &path, Vec *subgrad) const;
+  void subgradient(const Hyperpath &path,
+                   vector<double> *subgrad) const;
 
   const Hypergraph *hypergraph() const { return hypergraph_; }
 

@@ -1,7 +1,9 @@
 srush
 -----
 
-- fix pruning
+- Gurobi ilp
+
+- beam search...
 
 - write note describing construction disclaimers
 
@@ -12,10 +14,6 @@ srush
 - better construction error messages
 
 - delete memory
-
-- Gurobi ilp
-
-- beam search...
 
 - k-best
 

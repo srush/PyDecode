@@ -1,4 +1,4 @@
-all: hypergraphs.py hypergraphs.rst hmm.py hmm.rst tutorial.py tutorial.rst
+all: hypergraphs.py hypergraphs.rst hmm.py hmm.rst tutorial.py tutorial.rst decipher.py decipher.rst
 
 hypergraphs.py: hypergraphs.ipynb
 	ipython nbconvert --to python hypergraphs.ipynb
@@ -17,3 +17,9 @@ tutorial.py: tutorial.ipynb
 
 tutorial.rst: tutorial.ipynb
 	ipython nbconvert --to rst tutorial.ipynb
+
+decipher.py: decipher.ipynb
+	ipython nbconvert --to python decipher.ipynb
+
+decipher.rst: decipher.ipynb
+	ipython nbconvert --to rst decipher.ipynb

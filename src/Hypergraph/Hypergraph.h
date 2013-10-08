@@ -29,7 +29,7 @@ class Hyperedge {
       tail_nodes_(tails) {}
 
   // Get the id of the edge.
-  unsigned int id() const { return id_; }
+  int id() const { return id_; }
 
   void set_id(int id) { id_ = id; }
 
@@ -65,7 +65,7 @@ class Hypernode {
 
   string label() const { return label_; }
 
-  unsigned int id() const { return id_; }
+  int id() const { return id_; }
 
   void set_id(int id) { id_ = id; }
 
@@ -87,7 +87,8 @@ class Hypernode {
 class Hypergraph {
  public:
   Hypergraph()
-    : terminal_lock_(true), lock_(false) {}
+      : terminal_lock_(true), lock_(false),
+      temp_nodes_(0), temp_edges_(0) {}
 
   /**
    * Get the root of the hypergraph
@@ -233,6 +234,14 @@ class HypergraphProjection {
       edge_map_(edge_map) {
         assert(node_map->size() == original_graph->nodes().size());
         assert(edge_map->size() == original_graph->edges().size());
+        foreach (HNode node, *node_map) {
+          assert(node == NULL ||
+                 node->id() < (int)_new_graph->nodes().size());
+        }
+        foreach (HEdge edge, *edge_map) {
+          assert(edge == NULL ||
+                 edge->id() < (int)_new_graph->edges().size());
+        }
       }
 
   ~HypergraphProjection() {

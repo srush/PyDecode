@@ -25,7 +25,7 @@ bool HypergraphConstraints::check_constraints(
 
 void HypergraphConstraints::subgradient(
     const Hyperpath &path,
-    Vec *subgrad) const {
+    vector<double> *subgrad) const {
   vector<const Constraint *> constraints;
   vector<int> count;
   check_constraints(path, &constraints, &count);
@@ -35,14 +35,13 @@ void HypergraphConstraints::subgradient(
 }
 
 void HypergraphConstraints::convert(
-    const Vec &dual_vector,
+    const vector<double> &dual_vector,
     vector<double> *edge_duals,
     double *bias_dual) const {
   *bias_dual = 0.0;
-  for (Vec::const_iterator i = dual_vector.begin();
-       i != dual_vector.end(); ++i) {
-    double dual = dual_vector[i.index()];
-    const Constraint &cons = *constraints_[i.index()];
+  for (int i = 0; i < dual_vector.size(); ++i) {
+    double dual = dual_vector[i];
+    const Constraint &cons = *constraints_[i];
     *bias_dual += dual * cons.bias;
     for (uint j = 0; j < cons.edges.size(); ++j) {
       (*edge_duals)[cons.edges[j]->id()] +=

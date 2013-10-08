@@ -129,18 +129,21 @@ const HypergraphProjection *prune(const Hypergraph *original,
   const MaxMarginals *max_marginals =
       MaxMarginals::compute(original, &weights);
   double best = max_marginals->max_marginal(original->root());
-  //double total_score = 0.0;
+  double total_score = 0.0;
   vector<bool> edge_mask(original->edges().size(), true);
-  // foreach (HEdge edge, original->edges()) {
-  //   total_score += max_marginals->max_marginal(edge);
-  // }
-  // double average_score = total_score / original->edges().size();
+  foreach (HEdge edge, original->edges()) {
+    total_score += max_marginals->max_marginal(edge);
+  }
+  int prune = 0;
+  double average_score = total_score / original->edges().size();
   foreach (HEdge edge, original->edges()) {
     double score = max_marginals->max_marginal(edge);
-    if (score < ratio * best) {
+    if (score < (ratio * best  +  (1.0 - ratio) * average_score)) {
       edge_mask[edge->id()] = false;
+      prune += 1;
     }
   }
+  //cerr << average_score << " " << total_score << " " << (ratio * best  +  (1.0 - ratio) * average_score) << " " << prune << endl;
   delete max_marginals;
   return HypergraphProjection::project_hypergraph(original, edge_mask);
 }
@@ -205,7 +208,7 @@ const Hyperpath *best_constrained_path(
     const HypergraphConstraints &constraints,
     vector<ConstrainedResult> *result) {
   DecreasingRate rate;
-  cerr << "decreasing" << endl;
+  //cerr << "decreasing" << endl;
   ConstrainedProducer producer(graph, &theta, &constraints);
   Subgradient subgradient(&producer, &rate,
                           constraints.constraints().size());

@@ -194,6 +194,7 @@ def prune_hypergraph(Hypergraph graph, Weights weights, double ratio):
     for i in range(old_nodes.size()):
         node = projection.project(old_nodes[i])
         if node != NULL and node.id() >= 0:
+            # print node.id(), old_nodes[i].id(), len(node_labels), i, old_nodes.size()
             node_labels[node.id()] = graph.node_labels[i]
 
     # Map edges.
@@ -203,6 +204,7 @@ def prune_hypergraph(Hypergraph graph, Weights weights, double ratio):
     for i in range(old_edges.size()):
         edge = projection.project(old_edges[i])
         if edge != NULL and edge.id() >= 0:
+            # print edge.id(), old_edges[i].id()
             edge_labels[edge.id()] = graph.edge_labels[i]
 
     new_graph.init(projection.new_graph, node_labels, edge_labels)
@@ -435,6 +437,9 @@ cdef class Path:
         """
         return self.thisptr.has_edge(edge.edgeptr)
 
+    def __iter__(self):
+        return iter(convert_edges(self.thisptr.edges()))
+
 cdef class Weights:
     """
     Weights associated with a hypergraph.
@@ -456,7 +461,7 @@ cdef class Weights:
         :param fn: A function from edge labels to weights.
         """
         cdef vector[double] weights
-        weights.resize(self.hypergraph.thisptr.edges().size())
+        weights.resize(self.hypergraph.thisptr.edges().size(), 0.0)
         for i, ty in enumerate(self.hypergraph.edge_labels):
             weights[i] = fn(ty)
         self.thisptr =  \
@@ -478,6 +483,7 @@ cdef class Weights:
         :param path: The hyperpath  to score.
         :return: The score.
         """
+
 
         cdef double result = self.thisptr.dot(deref(path.thisptr))
         return result
@@ -527,31 +533,6 @@ cdef class Constraints:
 
     def __iter__(self):
         return iter(convert_constraints(self.thisptr.constraints()))
-
-    # def add(self, string label, fn, int constant, index = None):
-    #     """
-    #     Add a new hypergraph constraint.
-
-    #     :param label: The name of the constraint.
-    #     :param fn: A function mapping the label of an edge to its coefficient.
-    #     :param constant: The value b_i for this constraint.
-    #     :returns: The constraint.
-    #     """
-    #     cdef CConstraint *cons
-    #     cons = self.thisptr.add_constraint(label)
-    #     cdef Constraint hcons = Constraint()
-    #     hcons.init(cons)
-    #     cons.set_constant(constant)
-    #     cdef vector[const CHyperedge *] edges = self.hypergraph.thisptr.edges()
-    #     cdef int coefficient
-    #     if not index:
-    #         edge_types = enumerate(self.hypergraph.edge_labels)
-    #     else:
-    #         edge_types = self.hypergraph.indexed_types.get(index, [])
-    #     for i, ty in edge_types:
-    #         coefficient = fn(ty)
-    #         if coefficient: cons.add_edge_term(edges[i], coefficient)
-    #     return hcons
 
     def check(self, Path path):
         """

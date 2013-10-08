@@ -7,8 +7,8 @@
 #include <boost/numeric/ublas/io.hpp>
 
 #define foreach BOOST_FOREACH
-typedef boost::numeric::ublas::vector<double> Vec;
-typedef boost::numeric::ublas::mapped_vector<double> SparseVec;
+//typedef boost::numeric::ublas::vector<double> Vec;
+//typedef boost::numeric::ublas::mapped_vector<double> SparseVec;
 #define INF 1e8
 typedef unsigned int uint;
 class Clock {

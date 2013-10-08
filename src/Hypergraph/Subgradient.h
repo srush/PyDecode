@@ -9,13 +9,13 @@ using namespace std;
 class SubgradRate {
  public:
   virtual double get_alpha(const vector<double> &past_duals,
-                           const Vec &subgrad) const = 0;
+                           const vector<double> &subgrad) const = 0;
 };
 
 class ConstantRate : public SubgradRate {
  public:
   double get_alpha(const vector<double> &past_duals,
-                   const Vec &subgrad) const {
+                   const vector<double> &subgrad) const {
     return 1.0;
   }
 };
@@ -23,7 +23,7 @@ class ConstantRate : public SubgradRate {
 class DecreasingRate : public SubgradRate {
  public:
   double get_alpha(const vector<double> &past_duals,
-                    const Vec &subgrad) const {
+                   const vector<double> &subgrad) const {
      double rate = 1.0;
      for (uint i = 0; i < past_duals.size(); ++i) {
        rate *= 0.9;
@@ -38,7 +38,7 @@ struct SubgradState {
   int round;
 
   // The current dual values.
-  Vec *duals;
+  vector<double> *duals;
 };
 
 // Output of the subgradient client
@@ -51,7 +51,7 @@ struct SubgradResult {
   double dual;
 
   // The subgradient at this iteration.
-  Vec subgrad;
+  vector<double> subgrad;
 };
 
 
@@ -101,7 +101,7 @@ class Subgradient {
 
  private:
   bool run_one_round(bool *optimal);
-  void update_weights(const Vec &);
+  void update_weights(const vector<double> &);
 
   SubgradientProducer *producer_;
   const SubgradRate *rate_;
@@ -109,7 +109,7 @@ class Subgradient {
   double best_dual_;
   int round_;
 
-  Vec duals_;
+  vector<double> duals_;
   vector<double> past_duals_;
   int num_constraints_;
   int max_round_;
