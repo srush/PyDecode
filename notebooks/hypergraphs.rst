@@ -20,7 +20,7 @@ Simple Hypergraph Example
     
     def build_weights(label):
          return {"edge1" : 3, "edge2" : 1, "edge3" : 1}[label]
-    weights = ph.Weights(hyp, build_weights)
+    weights = ph.Weights(hyp).build(build_weights)
 Draw the graph
 
 .. code:: python

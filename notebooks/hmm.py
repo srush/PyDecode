@@ -69,7 +69,7 @@ with hypergraph.builder() as b:
 
 def build_weights((word, tag, prev_tag)):
     return transition[prev_tag][tag] + emission[word][tag] 
-weights = ph.Weights(hypergraph, build_weights)
+weights = ph.Weights(hypergraph).build(build_weights)
 
 
 # In[6]:
@@ -103,7 +103,7 @@ display.to_ipython(hypergraph, format)
 
 # Out[7]:
 
-#     <IPython.core.display.Image at 0x4b7ea50>
+#     <IPython.core.display.Image at 0x364f8d0>
 
 # We can also use a custom fancier formatter. These attributes are from graphviz (http://www.graphviz.org/content/attrs)
 
@@ -127,12 +127,11 @@ display.to_ipython(hypergraph, format)
 
 # Out[8]:
 
-#     <IPython.core.display.Image at 0x4c33590>
+#     <IPython.core.display.Image at 0x3ae07d0>
 
 # PyDecode also allows you to add extra constraints to the problem. As an example we can add constraints to enfore that the tag of "dog" is the same tag as "park".
 
 # In[9]:
-
 
 def cons(tag): return "tag_%s"%tag
 
@@ -143,7 +142,7 @@ def build_constraints(bigram):
         return [(cons(bigram.tag), -1)]
     return []
 
-constraints =     ph.Constraints(hypergraph, 
+constraints =     ph.Constraints(hypergraph).build( 
                    [(cons(tag), 0) for tag in ["D", "V", "N"]], 
                    build_constraints)
 
@@ -175,7 +174,7 @@ for d in duals:
 
 # Out[12]:
 
-#     9.6 [<pydecode.hyper.Constraint object at 0x4c37110>, <pydecode.hyper.Constraint object at 0x4c37130>]
+#     9.6 [<pydecode.hyper.Constraint object at 0x3af4130>, <pydecode.hyper.Constraint object at 0x3af4170>]
 #     8.8 []
 # 
 
@@ -226,7 +225,7 @@ display.to_ipython(hypergraph, format)
 
 # Out[16]:
 
-#     <IPython.core.display.Image at 0x52bfed0>
+#     <IPython.core.display.Image at 0x3c60990>
 
 # In[17]:
 
@@ -241,7 +240,7 @@ for constraint in constraints:
 #     tag_N
 # 
 
-# In[21]:
+# In[18]:
 
 class HMMConstraintFormat(display.HypergraphConstraintFormatter):
     def hypernode_attrs(self, node):
@@ -259,6 +258,49 @@ format = HMMConstraintFormat(hypergraph, constraints)
 display.to_ipython(hypergraph, format)
 
 
-# Out[21]:
+# Out[18]:
 
-#     <IPython.core.display.Image at 0x55b7910>
+#     <IPython.core.display.Image at 0x4464c50>
+
+# Pruning
+# 
+
+# In[22]:
+
+pruned_hypergraph, pruned_weights = ph.prune_hypergraph(hypergraph, weights, 0.8)
+
+
+# In[ ]:
+
+
+
+
+# In[25]:
+
+display.to_ipython(pruned_hypergraph, HMMFormat(pruned_hypergraph, []))
+
+
+# Out[25]:
+
+#     <IPython.core.display.Image at 0x44648d0>
+
+# In[32]:
+
+very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
+
+
+# Out[32]:
+
+
+    ---------------------------------------------------------------------------
+    IndexError                                Traceback (most recent call last)
+
+    <ipython-input-32-20046aa06d46> in <module>()
+    ----> 1 very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
+    
+
+    /home/srush/Projects/decoding/python/pydecode/hyper.so in pydecode.hyper.prune_hypergraph (python/pydecode/hyper.cpp:2145)()
+
+
+    IndexError: list assignment index out of range
+

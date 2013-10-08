@@ -62,7 +62,7 @@ Step 3: Construct the weights.
 
     def build_weights((word, tag, prev_tag)):
         return transition[prev_tag][tag] + emission[word][tag] 
-    weights = ph.Weights(hypergraph, build_weights)
+    weights = ph.Weights(hypergraph).build(build_weights)
 .. code:: python
 
     # Find the viterbi path.
@@ -134,7 +134,6 @@ same tag as "park".
 
 .. code:: python
 
-    
     def cons(tag): return "tag_%s"%tag
     
     def build_constraints(bigram):
@@ -145,7 +144,7 @@ same tag as "park".
         return []
     
     constraints = \
-        ph.Constraints(hypergraph, 
+        ph.Constraints(hypergraph).build( 
                        [(cons(tag), 0) for tag in ["D", "V", "N"]], 
                        build_constraints)
 This check fails because the tags do not agree.
@@ -171,7 +170,7 @@ Solve instead using subgradient.
 
 .. parsed-literal::
 
-    9.6 [<pydecode.hyper.Constraint object at 0x4c37110>, <pydecode.hyper.Constraint object at 0x4c37130>]
+    9.6 [<pydecode.hyper.Constraint object at 0x3af4130>, <pydecode.hyper.Constraint object at 0x3af4170>]
     8.8 []
 
 
@@ -255,4 +254,42 @@ Solve instead using subgradient.
 
 .. image:: hmm_files/hmm_26_0.png
 
+
+
+Pruning
+
+.. code:: python
+
+    pruned_hypergraph, pruned_weights = ph.prune_hypergraph(hypergraph, weights, 0.8)
+.. code:: python
+
+    
+.. code:: python
+
+    display.to_ipython(pruned_hypergraph, HMMFormat(pruned_hypergraph, []))
+
+
+
+.. image:: hmm_files/hmm_30_0.png
+
+
+
+.. code:: python
+
+    very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
+
+::
+
+
+    ---------------------------------------------------------------------------
+    IndexError                                Traceback (most recent call last)
+
+    <ipython-input-32-20046aa06d46> in <module>()
+    ----> 1 very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
+    
+
+    /home/srush/Projects/decoding/python/pydecode/hyper.so in pydecode.hyper.prune_hypergraph (python/pydecode/hyper.cpp:2145)()
+
+
+    IndexError: list assignment index out of range
 
