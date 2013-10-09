@@ -3,6 +3,8 @@ import networkx as nx
 class HypergraphFormatter:
     def __init__(self, hypergraph):
         self.hypergraph = hypergraph
+    def graph_attrs(self):
+        return {"rankdir": "RL"}
     def hypernode_attrs(self, node):
         return {"shape": "ellipse", "label":str(self.hypergraph.node_label(node))}
     def hyperedge_node_attrs(self, edge):
@@ -80,14 +82,26 @@ def to_image(hypergraph, filename, graph_format):
     agraph = nx.drawing.to_agraph(G)
 
     for node in hypergraph.nodes:
-        for sub in graph_format.hypernode_subgraph(node):
+        for sub, rank in graph_format.hypernode_subgraph(node):
             subgraphs.setdefault(sub, [])
-            subgraphs[sub].append(node.id)
-    for sub, nodes in subgraphs.iteritems():
+            subgraphs[sub].append((node.id, rank))
+
+    for sub, node_ranks in subgraphs.iteritems():
+        node_ranks.sort(key = lambda (node, rank): rank)
+        nodes = [node for node, rank in node_ranks]
         subgraph = agraph.subgraph(nodes, name = sub)
+        if sub[:7] != "cluster":
+            # for node in nodes:
+            #     agraph.get_node(node).attr.update({"group": sub})
+
+            for n_a, n_b in zip(nodes, nodes[1:]):
+                edge = subgraph.add_edge(n_a, n_b,
+                                         weight = 1000, style="invis")
         subgraph.graph_attr.update(graph_format.subgraph_format(sub))
-    agraph.graph_attr.update({"rankdir": "RL"})
+    agraph.graph_attr.update(graph_format.graph_attrs())
+
     agraph.layout("dot")
+    agraph.write("/tmp/tmp.dot")
     agraph.draw(filename)
 
 def to_ipython(hypergraph, graph_format):
