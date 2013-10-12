@@ -6,9 +6,10 @@
 #include <queue>
 #include <vector>
 
+#include "./common.h"
+
 #include "Hypergraph/Hypergraph.h"
 #include "Hypergraph/Constraints.h"
-#include "./common.h"
 
 
 Hyperpath *viterbi_path(const Hypergraph *graph,

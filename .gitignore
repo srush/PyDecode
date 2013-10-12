@@ -60,3 +60,7 @@ nosetests.xml
 *~
 G*
 build_config.py
+
+## Sublime files ##
+*.sublime-project
+*.sublime-workspace
