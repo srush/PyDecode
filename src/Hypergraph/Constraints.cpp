@@ -1,14 +1,12 @@
 // Copyright [2013] Alexander Rush
-#include "Hypergraph/Constraints.h"
 
-#include <vector>
-#include "Hypergraph/Hypergraph.h"
+#include "Hypergraph/Constraints.h"
 
 bool HypergraphConstraints::check_constraints(
     const Hyperpath &path,
     vector<const Constraint *> *failed_constraints,
     vector<int> *counts) const {
-  foreach (const Constraint *cons, constraints_) {
+  for (const Constraint *cons : constraints_) {
     int count = cons->bias;
     for (uint i = 0; i < cons->edges.size(); ++i) {
       if (path.has_edge(cons->edges[i])) {
@@ -39,7 +37,7 @@ void HypergraphConstraints::convert(
     vector<double> *edge_duals,
     double *bias_dual) const {
   *bias_dual = 0.0;
-  for (int i = 0; i < dual_vector.size(); ++i) {
+  for (uint i = 0; i < dual_vector.size(); ++i) {
     double dual = dual_vector[i];
     const Constraint &cons = *constraints_[i];
     *bias_dual += dual * cons.bias;

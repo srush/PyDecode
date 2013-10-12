@@ -6,6 +6,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <cassert>
 
 #include "./common.h"
 using namespace std;
@@ -173,7 +174,7 @@ class Hyperpath {
   Hyperpath(const Hypergraph *graph,
             const vector<HEdge> &edges)
       : edges_(edges) {
-    foreach (HEdge edge, edges) {
+    for(HEdge edge : edges) {
       edges_set_.insert(edge->id());
     }
   }
@@ -234,11 +235,11 @@ class HypergraphProjection {
       edge_map_(edge_map) {
         assert(node_map->size() == original_graph->nodes().size());
         assert(edge_map->size() == original_graph->edges().size());
-        foreach (HNode node, *node_map) {
+        for(HNode node : *node_map) {
           assert(node == NULL ||
                  node->id() < (int)_new_graph->nodes().size());
         }
-        foreach (HEdge edge, *edge_map) {
+        for(HEdge edge : *edge_map) {
           assert(edge == NULL ||
                  edge->id() < (int)_new_graph->edges().size());
         }
