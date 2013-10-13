@@ -3,12 +3,12 @@
 #ifndef HYPERGRAPH_CONSTRAINTS_H_
 #define HYPERGRAPH_CONSTRAINTS_H_
 
-#include "Hypergraph/Constraints.h"
 #include <string>
 #include <vector>
 
-#include "Hypergraph/Hypergraph.h"
 #include "./common.h"
+
+#include "Hypergraph/Hypergraph.h"
 
 struct Constraint {
  public:
@@ -22,7 +22,7 @@ struct Constraint {
   }
 
   bool has_edge(HEdge edge) const {
-    foreach (HEdge cedge, edges) {
+    for (HEdge cedge : edges) {
       if (cedge->id() == edge->id()) return true;
     }
     return false;

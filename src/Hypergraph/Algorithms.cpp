@@ -1,17 +1,13 @@
 // Copyright [2013] Alexander Rush
 
-#include "Hypergraph/Algorithms.h"
 
-#include <assert.h>
 #include <algorithm>
-#include <queue>
-#include <vector>
+#include <cassert>
 
-
-#include "Hypergraph/Constraints.h"
+#include "Hypergraph/Algorithms.h"
 #include "Hypergraph/Subgradient.h"
 
-#include "./common.h"
+
 using namespace std;
 
 struct IdComparator {
@@ -27,16 +23,16 @@ Hyperpath *viterbi_path(const Hypergraph *graph,
   chart->clear();
   chart->resize(graph->nodes().size(), -INF);
 
-  foreach (HNode node, graph->nodes()) {
+  for (HNode node : graph->nodes()) {
     if (node->terminal()) {
       (*chart)[node->id()] = 0;
     }
   }
   vector<HEdge> back(graph->nodes().size(), NULL);
-  foreach (HEdge edge, graph->edges()) {
+  for (HEdge edge : graph->edges()) {
     double score = theta.score(edge);
     int head_id = edge->head_node()->id();
-    foreach (HNode node, edge->tail_nodes()) {
+    for (HNode node : edge->tail_nodes()) {
       score += (*chart)[node->id()];
     }
     if (score > (*chart)[head_id]) {
@@ -58,7 +54,7 @@ Hyperpath *viterbi_path(const Hypergraph *graph,
       continue;
     }
     path.push_back(edge);
-    foreach (HNode node, edge->tail_nodes()) {
+    for (HNode node : edge->tail_nodes()) {
       to_examine.push(node);
     }
   }
@@ -77,11 +73,11 @@ void outside(const Hypergraph *graph,
   for (int i = edges.size() - 1; i >= 0; --i) {
     HEdge edge = edges[i];
     double full_score = weights.score(edge);
-    foreach (HNode node, edge->tail_nodes()) {
+    for (HNode node : edge->tail_nodes()) {
       full_score += inside_chart[node->id()];
     }
     double head_score = (*chart)[edge->head_node()->id()];
-    foreach (HNode node, edge->tail_nodes()) {
+    for (HNode node : edge->tail_nodes()) {
       double score = head_score + full_score - inside_chart[node->id()];
       if (score > (*chart)[node->id()]) {
         (*chart)[node->id()] = score;
@@ -113,7 +109,7 @@ const MaxMarginals *MaxMarginals::compute(
 double MaxMarginals::max_marginal(HEdge edge) const {
   double score = (*out_chart_)[edge->head_node()->id()];
   score += weights_->score(edge);
-  foreach (HNode node, edge->tail_nodes()) {
+  for (HNode node : edge->tail_nodes()) {
     score += (*in_chart_)[node->id()];
   }
   return score;
@@ -131,14 +127,14 @@ const HypergraphProjection *prune(const Hypergraph *original,
   double best = max_marginals->max_marginal(original->root());
   double total_score = 0.0;
   vector<bool> edge_mask(original->edges().size(), true);
-  foreach (HEdge edge, original->edges()) {
+  for (HEdge edge : original->edges()) {
     total_score += max_marginals->max_marginal(edge);
   }
   int prune = 0;
   double average_score =
       total_score / (float)original->edges().size();
   assert(average_score - 1e-4 <= best);
-  foreach (HEdge edge, original->edges()) {
+  for (HEdge edge : original->edges()) {
     double score = max_marginals->max_marginal(edge);
     if (score + 1e-4 <
         (ratio * best  +  (1.0 - ratio) * average_score)) {
