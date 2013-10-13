@@ -8,6 +8,5 @@ sources = [
     ]
 
 hyp_lib = env.Library('decoding', sources)
-#hyp_lib2 = env.SharedLibrary('decoding', sources)
 
 Return('hyp_lib')

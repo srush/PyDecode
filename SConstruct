@@ -1,15 +1,7 @@
 import os
 
-
 for build_mode in ['debug', 'profile', 'opt']:
     env = Environment(CC = 'g++', ENV=os.environ)
-
-    # conf = Configure(env)
-    # if not conf.CheckLib('boost_system'):
-    #     print 'Did not find libboost, exiting!'
-    #     Exit(1)
-    # env = conf.Finish()
-
 
     if build_mode == "debug":
         env.Prepend(CCFLAGS =('-g', '-fPIC', '-Wall', '-std=c++11'))
@@ -33,13 +25,7 @@ for build_mode in ['debug', 'profile', 'opt']:
     sub_dirs = ['#/' + variant + 'src']
     libs = ('decoding')
     env.Append(LIBPATH =('.',) + tuple(sub_dirs))
-
-    cpppath = ('.', '#/' + variant + 'interfaces/hypergraph/gen-cpp',
-               tuple(sub_dirs))
-
+    cpppath = ('.', tuple(sub_dirs))
     env.Append(CPPPATH=[cpppath])
     env.Append(LIBS=libs)
-
-    #interfaces = env.SConscript(dirs=[variant + "interfaces"], exports=['env'])
     local_libs = env.SConscript(dirs=sub_dirs, exports=['env'])
-    #env.Program(variant + 'run', variant + "src/run.cpp", LIBS = libs)
