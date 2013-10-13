@@ -1,7 +1,6 @@
 srush
 -----
-
-- Gurobi ilp
+- allow primal setting.
 
 - beam search...
 

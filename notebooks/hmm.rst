@@ -115,10 +115,11 @@ graphviz (http://www.graphviz.org/content/attrs)
             return {"color": "pink", "shape": "point"}
         def hypernode_subgraph(self, node):
             label = self.hypergraph.node_label(node)
-            return ["cluster_" + str(label.position)]
+            return [("clust_" + str(label.position), label.tag)]
         def subgraph_format(self, subgraph):
-            return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
-    
+            return {#"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])],
+                    "rank" : "same"}
+        def graph_attrs(self): return {"rankdir":"RL"}
     format = HMMFormat(hypergraph, [path])
     display.to_ipython(hypergraph, format)
 
@@ -170,7 +171,7 @@ Solve instead using subgradient.
 
 .. parsed-literal::
 
-    9.6 [<pydecode.hyper.Constraint object at 0x3af4130>, <pydecode.hyper.Constraint object at 0x3af4170>]
+    9.6 [<pydecode.hyper.Constraint object at 0x4d53190>, <pydecode.hyper.Constraint object at 0x4d539f0>]
     8.8 []
 
 
@@ -250,10 +251,35 @@ Solve instead using subgradient.
     format = HMMConstraintFormat(hypergraph, constraints)
     display.to_ipython(hypergraph, format)
 
+::
 
 
-.. image:: hmm_files/hmm_26_0.png
+    ---------------------------------------------------------------------------
+    ValueError                                Traceback (most recent call last)
 
+    <ipython-input-123-73aaf724ef31> in <module>()
+         12 
+         13 format = HMMConstraintFormat(hypergraph, constraints)
+    ---> 14 display.to_ipython(hypergraph, format)
+    
+
+    /home/srush/Projects/decoding/python/pydecode/display.py in to_ipython(hypergraph, graph_format)
+        113     from IPython.display import Image
+        114     temp_file = "/tmp/tmp.png"
+    --> 115     to_image(hypergraph, temp_file, graph_format)
+        116     return Image(filename = temp_file)
+        117 
+
+
+    /home/srush/Projects/decoding/python/pydecode/display.py in to_image(hypergraph, filename, graph_format)
+         83 
+         84     for node in hypergraph.nodes:
+    ---> 85         for sub, rank in graph_format.hypernode_subgraph(node):
+         86             subgraphs.setdefault(sub, [])
+         87             subgraphs[sub].append((node.id, rank))
+
+
+    ValueError: too many values to unpack
 
 
 Pruning
@@ -267,29 +293,6 @@ Pruning
 .. code:: python
 
     display.to_ipython(pruned_hypergraph, HMMFormat(pruned_hypergraph, []))
-
-
-
-.. image:: hmm_files/hmm_30_0.png
-
-
-
 .. code:: python
 
     very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
-
-::
-
-
-    ---------------------------------------------------------------------------
-    IndexError                                Traceback (most recent call last)
-
-    <ipython-input-32-20046aa06d46> in <module>()
-    ----> 1 very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
-    
-
-    /home/srush/Projects/decoding/python/pydecode/hyper.so in pydecode.hyper.prune_hypergraph (python/pydecode/hyper.cpp:2145)()
-
-
-    IndexError: list assignment index out of range
-

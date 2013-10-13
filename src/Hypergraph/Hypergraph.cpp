@@ -136,7 +136,7 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
 
       // Try to add each of the edges of the node.
       foreach (HEdge edge, node->edges()) {
-        if (!edge_mask[edge->id()]) break;
+        if (!edge_mask[edge->id()]) continue;
         vector<HNode> tails;
         bool all_tails_exist = true;
         foreach (HNode tail_node, edge->tail_nodes()) {
@@ -154,8 +154,13 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
           (*edge_map)[edge->id()] = new_edge;
         }
       }
+      bool success = true;
       if (!new_graph->end_node()) {
         (*node_map)[node->id()] = NULL;
+        success = false;
+      }
+      if (hypergraph->root()->id() == node->id()) {
+        assert(success);
       }
     }
   }

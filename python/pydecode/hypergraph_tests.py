@@ -159,8 +159,8 @@ def test_pruning():
         new_hyper, new_weights = hyper.prune_hypergraph(h, w, 0.99)
         prune_path, chart = hyper.best_path(new_hyper, new_weights)
         assert len(original_path.edges) > 0
-        # for edge in original_path.edges:
-        #     assert edge in prune_path
+        for edge in original_path.edges:
+            assert edge in prune_path
         valid_path(new_hyper, prune_path)
 
         original_score = w.dot(original_path)
@@ -214,7 +214,17 @@ def test_subgradient():
         assert edge in cpath
 
 
+def test_lp():
+    import pydecode.lp as lp
+    for h, w in [simple_hypergraph()]:
 
+        g = lp.HypergraphLP.make_lp(h, w)
+        path = g.solve()
+        opath, _ = hyper.best_path(h, w)
+        nt.assert_almost_equal(w.dot(path), w.dot(opath))
+
+        for edge in path.edges:
+            assert(edge in opath)
 
 if __name__ == "__main__":
     test_inside()

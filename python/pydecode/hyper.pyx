@@ -67,6 +67,8 @@ cdef extern from "Hypergraph/Hypergraph.h":
         void finish()
 
     cdef cppclass CHyperpath "Hyperpath":
+        CHyperpath(const CHypergraph *graph,
+                   const vector[const CHyperedge *] edges)
         vector[const CHyperedge *] edges()
         int has_edge(const CHyperedge *)
 
@@ -91,6 +93,9 @@ cdef extern from "Hypergraph/Constraints.h":
         int has_edge(const CHyperedge *edge)
         void add_edge_term(const CHyperedge *edge, int coefficient)
         string label
+        vector[const CHyperedge *] edges
+        vector[int] coefficients
+        int bias
 
 
     cdef cppclass CHypergraphConstraints "HypergraphConstraints":
@@ -419,6 +424,13 @@ cdef class Path:
     A valid path in the hypergraph.
     """
     cdef const CHyperpath *thisptr
+    def __cinit__(self, Hypergraph graph=None, edges=[]):
+        cdef vector[const CHyperedge *] cedges
+        if graph and edges:
+            for edge in edges:
+                cedges.push_back((<Edge>edge).edgeptr)
+            self.thisptr = new CHyperpath(graph.thisptr, cedges)
+
     cdef init(self, const CHyperpath *path):
         self.thisptr = path
 
@@ -497,6 +509,11 @@ cdef class Constraint:
 
     def __getattr__(self, attr):
         if attr == "label": return self.thisptr.label
+        if attr == "constant": return self.thisptr.bias
+
+    def __iter__(self):
+        edges = convert_edges(self.thisptr.edges)
+        return iter(zip(self.thisptr.coefficients, edges))
 
     def __contains__(self, Edge edge):
         return self.thisptr.has_edge(edge.edgeptr)

@@ -135,15 +135,18 @@ const HypergraphProjection *prune(const Hypergraph *original,
     total_score += max_marginals->max_marginal(edge);
   }
   int prune = 0;
-  double average_score = total_score / original->edges().size();
+  double average_score =
+      total_score / (float)original->edges().size();
+  assert(average_score - 1e-4 <= best);
   foreach (HEdge edge, original->edges()) {
     double score = max_marginals->max_marginal(edge);
-    if (score < (ratio * best  +  (1.0 - ratio) * average_score)) {
+    if (score + 1e-4 <
+        (ratio * best  +  (1.0 - ratio) * average_score)) {
       edge_mask[edge->id()] = false;
       prune += 1;
     }
   }
-  //cerr << average_score << " " << total_score << " " << (ratio * best  +  (1.0 - ratio) * average_score) << " " << prune << endl;
+  cerr << average_score << " " << total_score << " " << (ratio * best  +  (1.0 - ratio) * average_score) << " " << best << " " << prune << endl;
   delete max_marginals;
   return HypergraphProjection::project_hypergraph(original, edge_mask);
 }
