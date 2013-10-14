@@ -1,2 +1,3 @@
+nosetest>1.0
 matplotlib>=1.2
 networkx>=1.7
