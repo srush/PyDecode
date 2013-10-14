@@ -64,3 +64,9 @@ build_config.py
 ## Sublime files ##
 *.sublime-project
 *.sublime-workspace
+
+*.log
+*.out
+*.idx
+*.aux
+

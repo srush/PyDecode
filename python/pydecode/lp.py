@@ -28,12 +28,12 @@ class HypergraphLP:
 
     @staticmethod
     def make_lp(hypergraph, weights,
-                name="Hypergraph Problem", var_type=pulp.LpContinuous):
+                name="Hypergraph Problem",
+                var_type=pulp.LpContinuous):
         prob = pulp.LpProblem("Hypergraph Problem", pulp.LpMinimize)
 
         def node_name(node):
-            return "node_{}_{}".format(node.id,
-                                       hypergraph.node_label(node))
+            return "node_{}".format(node.id)
         def edge_name(edge):
             return "edge_{}".format(edge.id)
         #hypergraph.label(edge))

@@ -118,13 +118,13 @@ best = weights.dot(path)
 maxmarginals = ph.compute_max_marginals(hypergraph, weights)
 avg = 0.0
 for edge in hypergraph.edges:
-    avg += maxmarginals.edge_marginal(edge)
+    avg += maxmarginals[edge]
 avg = avg / float(len(hypergraph.edges))
 thres = ((0.9) * best + (0.1) * avg)
 print thres
 kept = set()
 for edge in hypergraph.edges:
-    score = maxmarginals.edge_marginal(edge)
+    score = maxmarginals[edge]
     print score, score < thres
     if score >= thres:
         kept.add(edge.id)

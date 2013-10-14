@@ -2,6 +2,7 @@
 
 #include "Hypergraph/Hypergraph.h"
 
+int Hypergraph::ID = 0;
 
 HEdge Hypergraph::add_edge(const vector<HNode> &nodes, string label)  {
   assert(lock_);
@@ -43,6 +44,7 @@ HNode Hypergraph::add_terminal_node(string label) {
 }
 
 double HypergraphWeights::dot(const Hyperpath &path) const {
+  path.check(*hypergraph_);
   double score = 0.0;
   for (HEdge edge : path.edges()) {
     score += weights_[edge->id()];
@@ -74,7 +76,6 @@ HypergraphWeights *HypergraphWeights::project_weights(
   }
   return new HypergraphWeights(projection.new_graph, weights, bias_);
 }
-
 
 void Hypergraph::fill() {
   vector<bool> reachable_nodes(temp_nodes_.size(), false);

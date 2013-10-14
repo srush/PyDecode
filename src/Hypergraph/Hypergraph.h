@@ -3,10 +3,11 @@
 #ifndef HYPERGRAPH_HYPERGRAPH_H_
 #define HYPERGRAPH_HYPERGRAPH_H_
 
+#include <cassert>
+#include <exception>
 #include <set>
 #include <string>
 #include <vector>
-#include <cassert>
 
 #include "./common.h"
 using namespace std;
@@ -17,6 +18,24 @@ typedef const Hypernode *HNode;
 typedef vector <const Hypernode *> HNodes;
 typedef const Hyperedge *HEdge;
 typedef vector<const Hyperedge *> HEdges;
+
+struct HypergraphException : public exception {
+  string s;
+  HypergraphException(string ss) : s(ss) {}
+  ~HypergraphException() throw () {}
+  const char* what() const throw() { return s.c_str(); }
+};
+
+class HypergraphAccessException : public HypergraphException {
+};
+
+class HypergraphMatchException : public HypergraphException {
+
+};
+
+class HypergraphConstructionException : public HypergraphException {
+
+};
 
 // Base class for weighted hyperedge.
 class Hyperedge {
@@ -89,7 +108,8 @@ class Hypergraph {
  public:
   Hypergraph()
       : terminal_lock_(true), lock_(false),
-      temp_nodes_(0), temp_edges_(0) {}
+      temp_nodes_(0), temp_edges_(0),
+      id_(ID++) {}
 
   /**
    * Get the root of the hypergraph
@@ -104,7 +124,7 @@ class Hypergraph {
    * WARNING: Treat this as a const iterator.
    * @return Const iterator to hypernodes in hypergraph.
    */
-  const vector <HNode> &nodes() const {
+  const vector<HNode> &nodes() const {
     return nodes_;
   }
 
@@ -113,7 +133,7 @@ class Hypergraph {
    * WARNING: Treat this as a const iterator.
    * @return Const iterator to edges in hypergraph .
    */
-  const vector <HEdge> & edges() const {
+  const vector<HEdge> & edges() const {
     return edges_;
   }
 
@@ -139,6 +159,9 @@ class Hypergraph {
 
   // Remove paths that do not reach the root.
   void fill();
+
+
+  bool same(const Hypergraph &other) const { return other.id_ == id_; }
 
  private:
 
@@ -167,13 +190,17 @@ class Hypergraph {
   vector<HEdge> edges_;
 
   HNode root_;
+
+  int id_;
+
+  static int ID;
 };
 
 class Hyperpath {
  public:
   Hyperpath(const Hypergraph *graph,
             const vector<HEdge> &edges)
-      : edges_(edges) {
+      : graph_(graph), edges_(edges) {
     for(HEdge edge : edges) {
       edges_set_.insert(edge->id());
     }
@@ -188,9 +215,17 @@ class Hyperpath {
         != edges_set_.end();
   }
 
+  void check(const Hypergraph &graph) const {
+    if (!graph.same(*graph_)) {
+      throw HypergraphException("Hypergraph does not match path.");
+    }
+  }
+
  private:
+  const Hypergraph *graph_;
   set<int> edges_set_;
   const vector<HEdge> edges_;
+
 };
 
 class HypergraphProjection;
@@ -216,6 +251,12 @@ class HypergraphWeights {
 
   HypergraphWeights *project_weights(
       const HypergraphProjection &projection) const;
+
+  void check(const Hypergraph &graph) const {
+    if (!graph.same(*hypergraph_)) {
+      throw HypergraphException("Hypergraph does not match weights.");
+    }
+  }
 
  private:
   const Hypergraph *hypergraph_;

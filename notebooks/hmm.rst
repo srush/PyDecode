@@ -171,7 +171,7 @@ Solve instead using subgradient.
 
 .. parsed-literal::
 
-    9.6 [<pydecode.hyper.Constraint object at 0x3b5c130>, <pydecode.hyper.Constraint object at 0x3b5c0f0>]
+    9.6 [<pydecode.hyper.Constraint object at 0x3ede1d0>, <pydecode.hyper.Constraint object at 0x3ede090>]
     8.8 []
 
 
@@ -188,46 +188,6 @@ Solve instead using subgradient.
     import pydecode.lp as lp
     hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, weights)
     path = hypergraph_lp.solve()
-
-::
-
-
-    ---------------------------------------------------------------------------
-    PulpSolverError                           Traceback (most recent call last)
-
-    <ipython-input-25-50f1f023eb17> in <module>()
-          1 import pydecode.lp as lp
-          2 hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, weights)
-    ----> 3 path = hypergraph_lp.solve()
-    
-
-    /home/srush/Projects/decoding/python/pydecode/lp.py in solve(self, solver)
-         15 
-         16     def solve(self, solver=None):
-    ---> 17         status = self.lp.solve()
-         18         path_edges = [edge
-         19                       for edge in self.hypergraph.edges
-
-
-    /usr/local/lib/python2.7/dist-packages/pulp/pulp.pyc in solve(self, solver, **kwargs)
-       1612         #time it
-       1613         self.solutionTime = -clock()
-    -> 1614         status = solver.actualSolve(self, **kwargs)
-       1615         self.solutionTime += clock()
-       1616         self.restoreObjective(wasNone, dummyVar)
-
-
-    /usr/local/lib/python2.7/dist-packages/pulp/solvers.pyc in actualSolve(self, lp)
-        357 
-        358         if not os.path.exists(tmpSol):
-    --> 359             raise PulpSolverError, "PuLP: Error while executing "+self.path
-        360         lp.status, values = self.readsol(tmpSol)
-        361         lp.assignVarsVals(values)
-
-
-    PulpSolverError: PuLP: Error while executing glpsol
-
-
 .. code:: python
 
     # Output the path.

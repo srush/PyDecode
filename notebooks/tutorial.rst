@@ -66,7 +66,7 @@ defining a function to map labels to weights.
         if "Second" in label: return 5
         if "Third" in label: return 5
         return 0
-    weights = ph.Weights(hyper1, build_weights)
+    weights = ph.Weights(hyper1).build(build_weights)
 .. code:: python
 
     for edge in hyper1.edges:
@@ -167,7 +167,7 @@ Here is a simple dynamic programming example take from wikipedia:
         if label in ["<", ">"]: return 0.0
         if label == "m": return 1.0
         return 0.0
-    weights2 = ph.Weights(hyper2, build_weights)
+    weights2 = ph.Weights(hyper2).build(build_weights)
 .. code:: python
 
     path, chart = ph.best_path(hyper2, weights2)

@@ -31,6 +31,12 @@ This is a note on running decipherment.
             self.plaintext = plaintext
     simple_problem = Problem("ababacabac ")
     simple_problem.make_cipher("abac")
+
+.. parsed-literal::
+
+    
+
+
 .. code:: python
 
     import pydecode.hyper as hyper
@@ -83,7 +89,7 @@ This is a note on running decipherment.
             return {"color": "pink", "shape": "point"}
         def hypernode_subgraph(self, node):
             label = self.hypergraph.node_label(node)
-            return ["cluster_" + str(label.i)]
+            return [("cluster_" + str(label.i), label.i)]
         # def subgraph_format(self, subgraph):
         #     return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
     
@@ -144,39 +150,39 @@ l^2 constraints
 
 .. parsed-literal::
 
-    0.70303262896
-    0.676212295905
-    0.43750593877
-    0.00938915686059
-    0.564162079225
-    0.722017722152
-    0.247006890533
-    0.539191293399
-    0.216991331549
-    0.730933205951
-    0.469229775434
-    0.371490981225
-    0.982409886818
-    0.221561306386
-    0.778218323839
-    0.0656559254133
-    0.468223740379
-    0.520127234634
-    0.921828628809
-    0.282919306759
-    0.926934958024
-    0.22385320216
-    0.184922369718
-    0.890985305051
-    0.996326784576
-    0.16965504918
-    0.564655548258
-    0.221743806149
-    0.304515879722
-    0.292258405864
-    0.409225055659
-    0.618844153235
-    0.249232775945
+    0.439529396568
+    0.118871071994
+    0.789021590346
+    0.773859760987
+    0.331166719804
+    0.210266437624
+    0.644248381653
+    0.947822640217
+    0.623687349699
+    0.0619245821011
+    0.428125980304
+    0.947963838136
+    0.413298343627
+    0.090241883533
+    0.471665801439
+    0.260141322231
+    0.111991990646
+    0.947188115723
+    0.846164715608
+    0.0241127275885
+    0.794472055826
+    0.50027139538
+    0.276092326835
+    0.0810922544945
+    0.40705712343
+    0.910619716508
+    0.92719176098
+    0.708645820912
+    0.625943298616
+    0.672398339909
+    0.149564913089
+    0.683693618913
+    0.199998133306
 
 
 .. code:: python
@@ -188,7 +194,7 @@ l^2 constraints
 
 .. parsed-literal::
 
-    3.837955199760571
+    4.278486879627907
 
 
 
@@ -212,11 +218,9 @@ l^2 constraints
 
 .. parsed-literal::
 
-    3.83795519976
-    4.56111115365
-    4.47710448555
-    4.46159227196
-    3.82735509656
+    4.27848687963
+    4.75235448802
+    4.1423428642
 
 
 .. code:: python
@@ -234,7 +238,7 @@ l^2 constraints
 
 .. parsed-literal::
 
-    3.82735509656
+    4.1423428642
 
 
 
@@ -278,7 +282,7 @@ Real Problem
     for edge in path2.edges:
         print edge.id
         print weights2[edge]
-    weights2.dot(path)
+    weights2.dot(path2)
 
 .. parsed-literal::
 
@@ -348,7 +352,7 @@ Real Problem
 
 .. parsed-literal::
 
-    -8.957765495182873
+    -21.751856464057795
 
 
 
@@ -356,130 +360,10 @@ Real Problem
 
     new_hyper, new_weights = hyper.prune_hypergraph(hyper2, weights2, 0.2)
     constraints2 = build_constraints(new_hyper, complicated_problem)
-
-.. parsed-literal::
-
-    0 0 46 0 381
-    1 1 46 1 381
-    2 2 46 2 381
-    3 3 46 3 381
-    4 4 46 4 381
-    5 5 46 5 381
-    6 16 46 16 381
-    7 31 46 31 381
-    8 46 46 46 381
-    9 50 46 50 381
-    10 52 46 52 381
-    11 53 46 53 381
-    12 54 46 54 381
-    13 55 46 55 381
-    14 58 46 58 381
-    15 61 46 61 381
-    16 62 46 62 381
-    17 63 46 63 381
-    18 64 46 64 381
-    19 65 46 65 381
-    20 66 46 66 381
-    21 77 46 77 381
-    22 92 46 92 381
-    23 93 46 93 381
-    24 94 46 94 381
-    25 95 46 95 381
-    26 96 46 96 381
-    27 97 46 97 381
-    28 108 46 108 381
-    29 123 46 123 381
-    30 138 46 138 381
-    31 139 46 139 381
-    32 140 46 140 381
-    33 141 46 141 381
-    34 142 46 142 381
-    35 143 46 143 381
-    36 154 46 154 381
-    37 173 46 173 381
-    38 177 46 177 381
-    39 184 46 184 381
-    40 199 46 199 381
-    41 218 46 218 381
-    42 222 46 222 381
-    43 229 46 229 381
-    44 244 46 244 381
-    45 267 46 267 381
-    0 0
-    1 1
-    2 2
-    3 3
-    4 4
-    5 15
-    6 16
-    7 17
-    8 18
-    9 19
-    10 240
-    11 465
-    12 525
-    13 555
-    14 570
-    15 585
-    16 600
-    17 645
-    18 690
-    19 694
-    20 696
-    21 697
-    22 698
-    23 699
-    24 702
-    25 705
-    26 706
-    27 707
-    28 708
-    29 709
-    30 720
-    31 721
-    32 722
-    33 723
-    34 724
-    35 945
-    36 960
-    37 961
-    38 962
-    39 963
-    40 964
-    41 975
-    42 976
-    43 977
-    44 978
-    45 979
-    46 1200
-    47 1425
-    48 1440
-    49 1441
-    50 1442
-    51 1443
-    52 1444
-    53 1455
-    54 1456
-    55 1457
-    56 1458
-    57 1459
-    58 1740
-    59 1800
-    60 1909
-    61 1913
-    62 2130
-    63 2415
-    64 2475
-    65 2584
-    66 2588
-    67 2805
-    68 3150
-
-
 .. code:: python
 
-    print hyper2.edges_size()
-    new_hyper.edges_size()
+    print hyper2.edges_size
+    new_hyper.edges_size
 
 .. parsed-literal::
 
@@ -490,7 +374,7 @@ Real Problem
 
 .. parsed-literal::
 
-    69
+    1430
 
 
 
@@ -514,16 +398,9 @@ Real Problem
 
 .. parsed-literal::
 
-    letter_a_from_letter_a letter_a_from_letter_c letter_d_from_letter_c letter_a_from_letter_b letter_c_from_letter_b letter_c_from_letter_g letter_h_from_letter_g letter_a_from_letter_l letter_d_from_letter_l
-    letter_a_from_letter_a letter_a_from_letter_c letter_h_from_letter_c letter_a_from_letter_b letter_c_from_letter_g letter_b_from_letter_g letter_h_from_letter_g
-    letter_a_from_letter_a letter_a_from_letter_c letter_h_from_letter_c letter_a_from_letter_b letter_c_from_letter_g letter_b_from_letter_g letter_h_from_letter_g
-    letter_a_from_letter_a letter_a_from_letter_c letter_d_from_letter_c letter_a_from_letter_b letter_c_from_letter_g letter_e_from_letter_g letter_h_from_letter_g
-    letter_a_from_letter_a letter_a_from_letter_c letter_d_from_letter_c letter_a_from_letter_b letter_a_from_letter_g letter_c_from_letter_g letter_h_from_letter_g
-    letter_a_from_letter_a letter_a_from_letter_c letter_h_from_letter_c letter_a_from_letter_b letter_c_from_letter_g letter_e_from_letter_g letter_h_from_letter_g
-    letter_a_from_letter_a letter_a_from_letter_c letter_h_from_letter_c letter_a_from_letter_b letter_c_from_letter_g letter_d_from_letter_g letter_h_from_letter_g
-    letter_a_from_letter_a letter_a_from_letter_c letter_d_from_letter_c letter_a_from_letter_b letter_c_from_letter_g letter_h_from_letter_g
-    letter_a_from_letter_a letter_a_from_letter_c letter_d_from_letter_c letter_a_from_letter_b letter_c_from_letter_g letter_e_from_letter_g letter_h_from_letter_g
-    letter_a_from_letter_a letter_a_from_letter_c letter_h_from_letter_c letter_a_from_letter_b letter_c_from_letter_g letter_e_from_letter_g letter_h_from_letter_g
+    letter_c_from_letter_c letter_b_from_letter_c
+    letter_c_from_letter_c letter_b_from_letter_c
+    
 
 
 .. code:: python
@@ -549,53 +426,6 @@ Weights are the bigram language model scores.
 
 .. parsed-literal::
 
-    -21.7518564641
+     -21.7518564641
     p r e s   d f   p r e   p r e a d f a d f   p r e n a d f  
 
-
-.. code:: python
-
-    for edge in path2.edges:
-        print new_hyper.label(edge).letter, 
-
-
-.. parsed-literal::
-
-    c a a a   a a   c a a   c a h a a d a a h
-
-
-.. code:: python
-
-    new_hyper, new_weights = hyper.prune_hypergraph(hyper2, weights2, 0.9)
-    new_constraints = build_constraints(new_hyper, ciphertext2)
-
-::
-
-
-    ---------------------------------------------------------------------------
-    NameError                                 Traceback (most recent call last)
-
-    <ipython-input-28-9ec05a252bb9> in <module>()
-          1 new_hyper, new_weights = hyper.prune_hypergraph(hyper2, weights2, 0.9)
-    ----> 2 new_constraints = build_constraints(new_hyper, ciphertext2)
-    
-
-    NameError: name 'ciphertext2' is not defined
-
-
-.. parsed-literal::
-
-    0 0 2 0 381
-    1 12 2 12 381
-    0 11
-
-
-.. code:: python
-
-    path2, duals = hyper.best_constrained(new_hyper, new_weights, new_constraints)
-    # print weights2.dot(path2)
-    # for edge in path2.edges:
-    #     print hyper2.label(edge).letter, 
-.. code:: python
-
-    display.report(duals)

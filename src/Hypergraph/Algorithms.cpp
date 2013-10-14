@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <exception>
 
 #include "Hypergraph/Algorithms.h"
 #include "Hypergraph/Subgradient.h"
@@ -19,6 +20,8 @@ struct IdComparator {
 Hyperpath *viterbi_path(const Hypergraph *graph,
                         const HypergraphWeights &theta,
                         vector<double> *chart) {
+  theta.check(*graph);
+
   // Run Viterbi Hypergraph algorithm.
   chart->clear();
   chart->resize(graph->nodes().size(), -INF);
@@ -66,6 +69,11 @@ void outside(const Hypergraph *graph,
              const HypergraphWeights &weights,
              const vector<double> &inside_chart,
              vector<double> *chart) {
+  weights.check(*graph);
+  if (inside_chart.size() != graph->nodes().size()) {
+    throw HypergraphException("Chart size doesn't match graph");
+  }
+
   chart->resize(graph->nodes().size(), -INF);
   const vector<HEdge> &edges = graph->edges();
 
@@ -95,6 +103,7 @@ void outside(const Hypergraph *graph,
 const MaxMarginals *MaxMarginals::compute(
     const Hypergraph *hypergraph,
     const HypergraphWeights *weights) {
+  weights->check(*hypergraph);
   vector<double> *in_chart = new vector<double>();
   vector<double> *out_chart = new vector<double>();
 
@@ -122,6 +131,7 @@ double MaxMarginals::max_marginal(HNode node) const {
 const HypergraphProjection *prune(const Hypergraph *original,
                                   const HypergraphWeights &weights,
                                   double ratio) {
+  weights.check(*original);
   const MaxMarginals *max_marginals =
       MaxMarginals::compute(original, &weights);
   double best = max_marginals->max_marginal(original->root());
@@ -206,6 +216,9 @@ const Hyperpath *best_constrained_path(
     const HypergraphWeights &theta,
     const HypergraphConstraints &constraints,
     vector<ConstrainedResult> *result) {
+  theta.check(*graph);
+  constraints.check(*graph);
+
   DecreasingRate rate;
   //cerr << "decreasing" << endl;
   ConstrainedProducer producer(graph, &theta, &constraints);

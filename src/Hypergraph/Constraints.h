@@ -64,6 +64,12 @@ class HypergraphConstraints {
       return constraints_;
   }
 
+  void check(const Hypergraph &graph) const {
+    if (!graph.same(*hypergraph_)) {
+      throw HypergraphException("Hypergraph does not match constraints.");
+    }
+  }
+
  private:
   const Hypergraph *hypergraph_;
   vector<const Constraint *> constraints_;
