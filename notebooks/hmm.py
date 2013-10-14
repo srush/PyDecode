@@ -2,7 +2,7 @@
 # A Constrained HMM Example
 # ---------------------
 
-# In[106]:
+# In[1]:
 
 import pydecode.hyper as ph
 import pydecode.display as display
@@ -11,7 +11,7 @@ from collections import namedtuple
 
 # We begin by constructing the HMM probabilities.
 
-# In[107]:
+# In[2]:
 
 # The emission probabilities.
 emission = {'ROOT' :  {'ROOT' : 1.0},
@@ -35,7 +35,7 @@ sentence = 'the dog walked in the park'
 
 # Next we specify the the index set using namedtuples.
 
-# In[108]:
+# In[3]:
 
 class Bigram(namedtuple("Bigram", ["word", "tag", "prevtag"])):
     def __str__(self): return "%s -> %s"%(self.prevtag, self.tag)
@@ -45,7 +45,7 @@ class Tagged(namedtuple("Tagged", ["position", "word", "tag"])):
 
 # Now we are ready to build the  hypergraph topology itself.
 
-# In[109]:
+# In[4]:
 
 hypergraph = ph.Hypergraph()                      
 with hypergraph.builder() as b:
@@ -65,14 +65,14 @@ with hypergraph.builder() as b:
 
 # Step 3: Construct the weights.
 
-# In[110]:
+# In[5]:
 
 def build_weights((word, tag, prev_tag)):
     return transition[prev_tag][tag] + emission[word][tag] 
 weights = ph.Weights(hypergraph).build(build_weights)
 
 
-# In[111]:
+# In[6]:
 
 # Find the viterbi path.
 path, chart = ph.best_path(hypergraph, weights)
@@ -82,7 +82,7 @@ print weights.dot(path)
 [hypergraph.label(edge) for edge in path.edges]
 
 
-# Out[111]:
+# Out[6]:
 
 #     9.6
 # 
@@ -95,19 +95,19 @@ print weights.dot(path)
 #      Bigram(word='park', tag='V', prevtag='N'),
 #      Bigram(word='END', tag='END', prevtag='V')]
 
-# In[112]:
+# In[7]:
 
 format = display.HypergraphPathFormatter(hypergraph, [path])
 display.to_ipython(hypergraph, format)
 
 
-# Out[112]:
+# Out[7]:
 
-#     <IPython.core.display.Image at 0x48a0750>
+#     <IPython.core.display.Image at 0x36b0650>
 
 # We can also use a custom fancier formatter. These attributes are from graphviz (http://www.graphviz.org/content/attrs)
 
-# In[124]:
+# In[8]:
 
 class HMMFormat(display.HypergraphPathFormatter):
     def hypernode_attrs(self, node):
@@ -117,22 +117,22 @@ class HMMFormat(display.HypergraphPathFormatter):
         return {"color": "pink", "shape": "point"}
     def hypernode_subgraph(self, node):
         label = self.hypergraph.node_label(node)
-        return [("clust_" + str(label.position), label.tag)]
+        return [("cluster_" + str(label.position), None)]
     def subgraph_format(self, subgraph):
-        return {#"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])],
+        return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])],
                 "rank" : "same"}
     def graph_attrs(self): return {"rankdir":"RL"}
 format = HMMFormat(hypergraph, [path])
 display.to_ipython(hypergraph, format)
 
 
-# Out[124]:
+# Out[8]:
 
-#     <IPython.core.display.Image at 0x56e3310>
+#     <IPython.core.display.Image at 0x3b50750>
 
 # PyDecode also allows you to add extra constraints to the problem. As an example we can add constraints to enfore that the tag of "dog" is the same tag as "park".
 
-# In[114]:
+# In[9]:
 
 def cons(tag): return "tag_%s"%tag
 
@@ -150,52 +150,98 @@ constraints =     ph.Constraints(hypergraph).build(
 
 # This check fails because the tags do not agree.
 
-# In[115]:
+# In[10]:
 
 print "check", constraints.check(path)
 
 
-# Out[115]:
+# Out[10]:
 
 #     check ['tag_V', 'tag_N']
 # 
 
 # Solve instead using subgradient.
 
-# In[116]:
+# In[11]:
 
 gpath, duals = ph.best_constrained(hypergraph, weights, constraints)
 
 
-# In[117]:
+# In[12]:
 
 for d in duals:
     print d.dual, d.constraints
 
 
-# Out[117]:
+# Out[12]:
 
-#     9.6 [<pydecode.hyper.Constraint object at 0x4d53190>, <pydecode.hyper.Constraint object at 0x4d539f0>]
+#     9.6 [<pydecode.hyper.Constraint object at 0x3b5c130>, <pydecode.hyper.Constraint object at 0x3b5c0f0>]
 #     8.8 []
 # 
 
-# In[118]:
+# In[13]:
 
 display.report(duals)
 
 
-# Out[118]:
+# Out[13]:
 
 # image file:
 
-# In[119]:
+# In[25]:
+
+import pydecode.lp as lp
+hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, weights)
+path = hypergraph_lp.solve()
+
+
+# Out[25]:
+
+
+    ---------------------------------------------------------------------------
+    PulpSolverError                           Traceback (most recent call last)
+
+    <ipython-input-25-50f1f023eb17> in <module>()
+          1 import pydecode.lp as lp
+          2 hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, weights)
+    ----> 3 path = hypergraph_lp.solve()
+    
+
+    /home/srush/Projects/decoding/python/pydecode/lp.py in solve(self, solver)
+         15 
+         16     def solve(self, solver=None):
+    ---> 17         status = self.lp.solve()
+         18         path_edges = [edge
+         19                       for edge in self.hypergraph.edges
+
+
+    /usr/local/lib/python2.7/dist-packages/pulp/pulp.pyc in solve(self, solver, **kwargs)
+       1612         #time it
+       1613         self.solutionTime = -clock()
+    -> 1614         status = solver.actualSolve(self, **kwargs)
+       1615         self.solutionTime += clock()
+       1616         self.restoreObjective(wasNone, dummyVar)
+
+
+    /usr/local/lib/python2.7/dist-packages/pulp/solvers.pyc in actualSolve(self, lp)
+        357 
+        358         if not os.path.exists(tmpSol):
+    --> 359             raise PulpSolverError, "PuLP: Error while executing "+self.path
+        360         lp.status, values = self.readsol(tmpSol)
+        361         lp.assignVarsVals(values)
+
+
+    PulpSolverError: PuLP: Error while executing glpsol
+
+
+# In[14]:
 
 # Output the path.
 for edge in gpath.edges:
     print hypergraph.label(edge)
 
 
-# Out[119]:
+# Out[14]:
 
 #     ROOT -> D
 #     D -> N
@@ -206,42 +252,42 @@ for edge in gpath.edges:
 #     N -> END
 # 
 
-# In[120]:
+# In[15]:
 
 print "check", constraints.check(gpath)
 print "score", weights.dot(gpath)
 
 
-# Out[120]:
+# Out[15]:
 
 #     check []
 #     score 8.8
 # 
 
-# In[121]:
+# In[16]:
 
 format = HMMFormat(hypergraph, [path, gpath])
 display.to_ipython(hypergraph, format)
 
 
-# Out[121]:
+# Out[16]:
 
-#     <IPython.core.display.Image at 0x4d8ae10>
+#     <IPython.core.display.Image at 0x41f0fd0>
 
-# In[122]:
+# In[17]:
 
 for constraint in constraints:
     print constraint.label
 
 
-# Out[122]:
+# Out[17]:
 
 #     tag_D
 #     tag_V
 #     tag_N
 # 
 
-# In[123]:
+# In[18]:
 
 class HMMConstraintFormat(display.HypergraphConstraintFormatter):
     def hypernode_attrs(self, node):
@@ -251,7 +297,7 @@ class HMMConstraintFormat(display.HypergraphConstraintFormatter):
         return {"color": "pink", "shape": "point"}
     def hypernode_subgraph(self, node):
         label = self.hypergraph.node_label(node)
-        return ["cluster_" + str(label.position)]
+        return [("cluster_" + str(label.position), None)]
     def subgraph_format(self, subgraph):
         return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
 
@@ -259,56 +305,33 @@ format = HMMConstraintFormat(hypergraph, constraints)
 display.to_ipython(hypergraph, format)
 
 
-# Out[123]:
+# Out[18]:
 
-
-    ---------------------------------------------------------------------------
-    ValueError                                Traceback (most recent call last)
-
-    <ipython-input-123-73aaf724ef31> in <module>()
-         12 
-         13 format = HMMConstraintFormat(hypergraph, constraints)
-    ---> 14 display.to_ipython(hypergraph, format)
-    
-
-    /home/srush/Projects/decoding/python/pydecode/display.py in to_ipython(hypergraph, graph_format)
-        113     from IPython.display import Image
-        114     temp_file = "/tmp/tmp.png"
-    --> 115     to_image(hypergraph, temp_file, graph_format)
-        116     return Image(filename = temp_file)
-        117 
-
-
-    /home/srush/Projects/decoding/python/pydecode/display.py in to_image(hypergraph, filename, graph_format)
-         83 
-         84     for node in hypergraph.nodes:
-    ---> 85         for sub, rank in graph_format.hypernode_subgraph(node):
-         86             subgraphs.setdefault(sub, [])
-         87             subgraphs[sub].append((node.id, rank))
-
-
-    ValueError: too many values to unpack
-
+#     <IPython.core.display.Image at 0x44b68d0>
 
 # Pruning
 # 
 
-# In[ ]:
+# In[19]:
 
 pruned_hypergraph, pruned_weights = ph.prune_hypergraph(hypergraph, weights, 0.8)
 
 
-# In[ ]:
+# In[19]:
 
 
 
 
-# In[ ]:
+# In[20]:
 
 display.to_ipython(pruned_hypergraph, HMMFormat(pruned_hypergraph, []))
 
 
-# In[ ]:
+# Out[20]:
+
+#     <IPython.core.display.Image at 0x44b6350>
+
+# In[21]:
 
 very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
 

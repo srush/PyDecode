@@ -1,2 +1,7 @@
-check []
-score 8.8
+ROOT -> D
+D -> N
+N -> V
+V -> D
+D -> D
+D -> N
+N -> END

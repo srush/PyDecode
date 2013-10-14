@@ -115,9 +115,9 @@ graphviz (http://www.graphviz.org/content/attrs)
             return {"color": "pink", "shape": "point"}
         def hypernode_subgraph(self, node):
             label = self.hypergraph.node_label(node)
-            return [("clust_" + str(label.position), label.tag)]
+            return [("cluster_" + str(label.position), None)]
         def subgraph_format(self, subgraph):
-            return {#"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])],
+            return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])],
                     "rank" : "same"}
         def graph_attrs(self): return {"rankdir":"RL"}
     format = HMMFormat(hypergraph, [path])
@@ -171,7 +171,7 @@ Solve instead using subgradient.
 
 .. parsed-literal::
 
-    9.6 [<pydecode.hyper.Constraint object at 0x4d53190>, <pydecode.hyper.Constraint object at 0x4d539f0>]
+    9.6 [<pydecode.hyper.Constraint object at 0x3b5c130>, <pydecode.hyper.Constraint object at 0x3b5c0f0>]
     8.8 []
 
 
@@ -181,6 +181,51 @@ Solve instead using subgradient.
 
 
 .. image:: hmm_files/hmm_21_0.png
+
+
+.. code:: python
+
+    import pydecode.lp as lp
+    hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, weights)
+    path = hypergraph_lp.solve()
+
+::
+
+
+    ---------------------------------------------------------------------------
+    PulpSolverError                           Traceback (most recent call last)
+
+    <ipython-input-25-50f1f023eb17> in <module>()
+          1 import pydecode.lp as lp
+          2 hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, weights)
+    ----> 3 path = hypergraph_lp.solve()
+    
+
+    /home/srush/Projects/decoding/python/pydecode/lp.py in solve(self, solver)
+         15 
+         16     def solve(self, solver=None):
+    ---> 17         status = self.lp.solve()
+         18         path_edges = [edge
+         19                       for edge in self.hypergraph.edges
+
+
+    /usr/local/lib/python2.7/dist-packages/pulp/pulp.pyc in solve(self, solver, **kwargs)
+       1612         #time it
+       1613         self.solutionTime = -clock()
+    -> 1614         status = solver.actualSolve(self, **kwargs)
+       1615         self.solutionTime += clock()
+       1616         self.restoreObjective(wasNone, dummyVar)
+
+
+    /usr/local/lib/python2.7/dist-packages/pulp/solvers.pyc in actualSolve(self, lp)
+        357 
+        358         if not os.path.exists(tmpSol):
+    --> 359             raise PulpSolverError, "PuLP: Error while executing "+self.path
+        360         lp.status, values = self.readsol(tmpSol)
+        361         lp.assignVarsVals(values)
+
+
+    PulpSolverError: PuLP: Error while executing glpsol
 
 
 .. code:: python
@@ -218,7 +263,7 @@ Solve instead using subgradient.
 
 
 
-.. image:: hmm_files/hmm_24_0.png
+.. image:: hmm_files/hmm_25_0.png
 
 
 
@@ -244,42 +289,17 @@ Solve instead using subgradient.
             return {"color": "pink", "shape": "point"}
         def hypernode_subgraph(self, node):
             label = self.hypergraph.node_label(node)
-            return ["cluster_" + str(label.position)]
+            return [("cluster_" + str(label.position), None)]
         def subgraph_format(self, subgraph):
             return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
     
     format = HMMConstraintFormat(hypergraph, constraints)
     display.to_ipython(hypergraph, format)
 
-::
 
 
-    ---------------------------------------------------------------------------
-    ValueError                                Traceback (most recent call last)
+.. image:: hmm_files/hmm_27_0.png
 
-    <ipython-input-123-73aaf724ef31> in <module>()
-         12 
-         13 format = HMMConstraintFormat(hypergraph, constraints)
-    ---> 14 display.to_ipython(hypergraph, format)
-    
-
-    /home/srush/Projects/decoding/python/pydecode/display.py in to_ipython(hypergraph, graph_format)
-        113     from IPython.display import Image
-        114     temp_file = "/tmp/tmp.png"
-    --> 115     to_image(hypergraph, temp_file, graph_format)
-        116     return Image(filename = temp_file)
-        117 
-
-
-    /home/srush/Projects/decoding/python/pydecode/display.py in to_image(hypergraph, filename, graph_format)
-         83 
-         84     for node in hypergraph.nodes:
-    ---> 85         for sub, rank in graph_format.hypernode_subgraph(node):
-         86             subgraphs.setdefault(sub, [])
-         87             subgraphs[sub].append((node.id, rank))
-
-
-    ValueError: too many values to unpack
 
 
 Pruning
@@ -293,6 +313,13 @@ Pruning
 .. code:: python
 
     display.to_ipython(pruned_hypergraph, HMMFormat(pruned_hypergraph, []))
+
+
+
+.. image:: hmm_files/hmm_31_0.png
+
+
+
 .. code:: python
 
     very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
