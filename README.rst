@@ -1,5 +1,6 @@
 
-PyDecode is a dynamic programming toolkit. It is being developed as a research tool for natural language processing.
+PyDecode is a dynamic programming toolkit being developed to help researchers studying natural language processing.
+
 The interface and visualization code is written Python, the core algorithms are written in C++.
 For full description of the project see the documentation_.
 
@@ -27,7 +28,7 @@ Currently the toolkit is in early development but should be ready to be used.
 
 Dynamic programming:
 
-* Construction of a dynamic programming algorithms.
+* Construction of dynamic programming algorithms.
 * Graphical output for debugging.
 * Finding the best path, inside scores, outside scores, and oracle scores.
 * Pruning based on max-marginals.

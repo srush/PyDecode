@@ -4,18 +4,12 @@
    contain the root `toctree` directive.
 
 
-Documentation
+PyDecode
 -------------
+
+.. include:: ../../README.rst
 
 .. toctree::
    :maxdepth: 2
 
-   getting_started
-   notebooks/tutorial
-   notebooks/index
-   api
-
-.. include:: ../../README.rst
-
-
-
+   docs
