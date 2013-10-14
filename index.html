@@ -31,54 +31,65 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h1>
-<a name="pydecode" class="anchor" href="#pydecode"><span class="octicon octicon-link"></span></a>PyDecode</h1>
+        <p>PyDecode is a dynamic programming toolkit. It is being developed as a
+research tool for natural language processing. The interface and
+visualization code is written Python, the core algorithms are written in
+C++. For full description of the project see the
+<a href="http://pydecode.readthedocs.org/">documentation</a>.</p>
 
-<p>PyDecode is a pragmatic toolkit for dynamic programming with a focus on natural language processing (NLP).<br>
-The interface is in Python, the core code is in C++. </p>
-
-<p>A sentence with links to the documentation_ and the <code>Linux kernel archive</code>_.</p>
-
-<p>.. _documentation: <a href="http://pydecode.readthedocs.org/">http://pydecode.readthedocs.org/</a>
-.. _Linux kernel archive: <a href="http://www.kernel.org/">http://www.kernel.org/</a></p>
+<h1>
+<a name="motivation" class="anchor" href="#motivation"><span class="octicon octicon-link"></span></a>Motivation</h1>
 
 <p>We built this toolkit because:</p>
 
 <ul>
-<li>Dynamic programming is hard to get right and painful to debug.</li>
-<li>Run-time efficiency is crucial for many NLP tasks.</li>
-<li>Extensions to dynamic programming often require extensive extra programming.</li>
-</ul><p>Currently the toolkit is in early development. The code now includes:</p>
+<li>  Dynamic programming is hard to get right and painful to debug.</li>
+<li>  Run-time efficiency is crucial for many NLP tasks.</li>
+<li>  Extensions to dynamic programming often require extensive extra
+programming.</li>
+</ul><p>This
+<a href="https://github.com/srush/PyDecode/raw/master/writing/slides/slides.pdf">presentation</a>
+discusses the background for this work.</p>
+
+<h1>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h1>
+
+<p>Currently the toolkit is in early development but should be ready to be
+used.</p>
 
 <p>Dynamic programming:</p>
 
 <ul>
-<li>Construction of a dynamic program (using hypergraphs).</li>
-<li>Graphical output for debugging.</li>
-<li>Finding the best path, inside scores, outside scores, and oracle scores.</li>
-<li>Pruning.</li>
-<li>Integration with an LP solver.</li>
+<li>  Construction of a dynamic programming algorithms.</li>
+<li>  Graphical output for debugging.</li>
+<li>  Finding the best path, inside scores, outside scores, and oracle
+scores.</li>
+<li>  Pruning based on max-marginals.</li>
+<li>  Integration with an LP solver.</li>
 </ul><p>Constrained dynamic programming:</p>
 
 <ul>
-<li>Hypergraphs with additional side-constraints. </li>
-<li>Subgradient-style optimization for side-constraints </li>
+<li>  Hypergraphs with additional constraints.</li>
+<li>  Subgradient-style optimization for constraints.</li>
+<li>  ILP optimization with constraints.</li>
 </ul><p>Future additions:</p>
 
 <ul>
-<li>Hooks for features and training.</li>
-<li>Formal A* and beam search extensions.</li>
-<li>K-best algorithms.</li>
+<li>  Hooks for features and training.</li>
+<li>  Formal A* and beam search extensions.</li>
+<li>  K-best algorithms.</li>
 </ul><p>While the interface is in Python, the underlying algorithms and data
 structures are written in C++ with Cython bindings. Our aim is to keep
 the C++ codebase as small as possible.</p>
 
-<p>It is being developed with the hope of
-(1) simplifying and formalizing the process of writing decoding
-algorithms and (2) trying out new experimental algorithms for
-constrained decoding problems. The main application for the library is
-natural language processing (NLP), however it should be applicable to
-other areas that use dynamic programming.</p>
+<h1>
+<a name="tutorial-and-galleries" class="anchor" href="#tutorial-and-galleries"><span class="octicon octicon-link"></span></a>Tutorial and Galleries</h1>
+
+<p>To get started check out the
+<a href="http://pydecode.readthedocs.org/en/latest/notebooks/tutorial.html">tutorial</a>
+and a
+<a href="http://pydecode.readthedocs.org/en/latest/notebooks/tutorial.html">gallery</a>
+of examples.</p>
       </section>
     </div>
 
@@ -90,7 +101,17 @@ other areas that use dynamic programming.</p>
       </footer>
     </div>
 
-    
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-44854618-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
 
   </body>
 </html>
