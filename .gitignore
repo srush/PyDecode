@@ -69,4 +69,7 @@ build_config.py
 *.out
 *.idx
 *.aux
-
+*.nav
+*.syntex.gz
+*.toc
+*.vrb
