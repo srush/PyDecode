@@ -1,2 +1,2 @@
+matplotlib>=1.2
 networkx>=1.7
-pandas>=0.11
