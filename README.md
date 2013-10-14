@@ -4,7 +4,8 @@ visualization code is written Python, the core algorithms are written in
 C++. For full description of the project see the
 [documentation](http://pydecode.readthedocs.org/).
 
-Motivation -----
+Motivation
+==========
 
 We built this toolkit because:
 
