@@ -1,0 +1,32 @@
+{#
+    sphinxdoc/layout.html
+    ~~~~~~~~~~~~~~~~~~~~~
+
+    Sphinx layout template for the sphinxdoc theme.
+
+    :copyright: Copyright 2007-2013 by the Sphinx team, see AUTHORS.
+    :license: BSD, see LICENSE for details.
+#}
+{%- extends "!layout.html" %}
+
+{%- block extrahead %}
+  {{ super() }}
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+{% endblock %}
+
+{% block header %}
+  {{ super() }}
+<div style=" height:15px; background: orange;">
+</div>
+
+<div style="height: 90px; background: url(_static/pdp-bg.png);">
+
+<div style="font-size: 35px; padding-left: 300px; font-family: 'Roboto', serif; width: 17%; height:70%; padding-top: 28px; font-weight:600; ">
+  PyDecode
+</div>
+</div>
+
+{% endblock %}
+
+
