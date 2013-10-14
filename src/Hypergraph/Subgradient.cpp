@@ -1,7 +1,8 @@
 #include "Hypergraph/Subgradient.h"
 
-#include <math.h>
-#include <time.h>
+#include <iostream>
+#include <cmath>
+#include <ctime>
 #include "./common.h"
 
 #define TIMING 0
@@ -44,7 +45,7 @@ bool Subgradient::run_one_round(bool *optimal) {
     cerr << endl;
   }
   double norm = 0.0;
-  for (double s : result.subgrad) norm += fabs(s);
+  foreach (double s, result.subgrad) norm += fabs(s);
   if (norm == 0.0) {
     *optimal = true;
     return false;

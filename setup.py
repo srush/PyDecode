@@ -20,7 +20,7 @@ if use_cython:
     ext_modules = [Extension("pydecode.hyper",
                              ["python/pydecode/hyper.pyx"],
                              language='c++',
-                             extra_compile_args=['-std=c++11'],
+                             #extra_compile_args=['-std=c++11'],
                              include_dirs=[r'build/debug/src/', "."],
                              library_dirs=[r'build/debug/src/', ""],
                              extra_objects=['build/debug/src/libdecoding.a'],

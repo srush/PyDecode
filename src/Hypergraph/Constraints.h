@@ -22,7 +22,7 @@ struct Constraint {
   }
 
   bool has_edge(HEdge edge) const {
-    for (HEdge cedge : edges) {
+    foreach (HEdge cedge, edges) {
       if (cedge->id() == edge->id()) return true;
     }
     return false;

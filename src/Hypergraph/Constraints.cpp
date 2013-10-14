@@ -6,7 +6,7 @@ bool HypergraphConstraints::check_constraints(
     const Hyperpath &path,
     vector<const Constraint *> *failed_constraints,
     vector<int> *counts) const {
-  for (const Constraint *cons : constraints_) {
+  foreach (const Constraint *cons, constraints_) {
     int count = cons->bias;
     for (uint i = 0; i < cons->edges.size(); ++i) {
       if (path.has_edge(cons->edges[i])) {

@@ -1,9 +1,10 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <boost/numeric/ublas/io.hpp>
+#include <boost/foreach.hpp>
 
 #define INF 1e8
+#define foreach BOOST_FOREACH
 
 typedef unsigned int uint;
 class Clock {
@@ -14,6 +15,5 @@ class Clock {
     return diffms;
   }
 };
-
 
 #endif

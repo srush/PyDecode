@@ -201,7 +201,7 @@ class Hyperpath {
   Hyperpath(const Hypergraph *graph,
             const vector<HEdge> &edges)
       : graph_(graph), edges_(edges) {
-    for(HEdge edge : edges) {
+    foreach (HEdge edge, edges) {
       edges_set_.insert(edge->id());
     }
   }
@@ -276,11 +276,11 @@ class HypergraphProjection {
       edge_map_(edge_map) {
         assert(node_map->size() == original_graph->nodes().size());
         assert(edge_map->size() == original_graph->edges().size());
-        for(HNode node : *node_map) {
+        foreach (HNode node, *node_map) {
           assert(node == NULL ||
                  node->id() < (int)_new_graph->nodes().size());
         }
-        for(HEdge edge : *edge_map) {
+        foreach (HEdge edge, *edge_map) {
           assert(edge == NULL ||
                  edge->id() < (int)_new_graph->edges().size());
         }

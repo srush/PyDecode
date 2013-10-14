@@ -46,7 +46,7 @@ HNode Hypergraph::add_terminal_node(string label) {
 double HypergraphWeights::dot(const Hyperpath &path) const {
   path.check(*hypergraph_);
   double score = 0.0;
-  for (HEdge edge : path.edges()) {
+  foreach (HEdge edge, path.edges()) {
     score += weights_[edge->id()];
   }
   return score + bias_;
@@ -67,7 +67,7 @@ HypergraphWeights *HypergraphWeights::modify(
 HypergraphWeights *HypergraphWeights::project_weights(
     const HypergraphProjection &projection) const {
   vector<double> weights(projection.new_graph->edges().size());
-  for (HEdge edge : projection.original_graph->edges()) {
+  foreach (HEdge edge, projection.original_graph->edges()) {
     HEdge new_edge = projection.project(edge);
     if (new_edge != NULL && new_edge->id() >= 0) {
       assert(new_edge->id() < projection.new_graph->edges().size());
@@ -89,7 +89,7 @@ void Hypergraph::fill() {
     }
     if (reachable_nodes[edge->head_node()->id()]) {
       reachable_edges[i] = true;
-      for (HNode node : edge->tail_nodes()) {
+      foreach (HNode node, edge->tail_nodes()) {
         reachable_nodes[node->id()] = true;
       }
     }
@@ -127,7 +127,7 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
       new vector<HEdge>(hypergraph->edges().size(), NULL);
 
   Hypergraph *new_graph = new Hypergraph();
-  for (HNode node : hypergraph->nodes()) {
+  foreach (HNode node, hypergraph->nodes()) {
     if (node->terminal()) {
       // The node is a terminal, so just add it.
       (*node_map)[node->id()] =
@@ -136,11 +136,11 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
       (*node_map)[node->id()] = new_graph->start_node(node->label());
 
       // Try to add each of the edges of the node.
-      for (HEdge edge : node->edges()) {
+      foreach (HEdge edge, node->edges()) {
         if (!edge_mask[edge->id()]) continue;
         vector<HNode> tails;
         bool all_tails_exist = true;
-        for (HNode tail_node : edge->tail_nodes()) {
+        foreach (HNode tail_node, edge->tail_nodes()) {
           HNode new_tail_node = (*node_map)[tail_node->id()];
           if (new_tail_node == NULL) {
             // The tail node was pruned.

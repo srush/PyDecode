@@ -4,11 +4,11 @@ for build_mode in ['debug', 'profile', 'opt']:
     env = Environment(CC = 'g++', ENV=os.environ)
 
     if build_mode == "debug":
-        env.Prepend(CCFLAGS =('-g', '-fPIC', '-Wall', '-std=c++11'))
+        env.Prepend(CCFLAGS =('-g', '-fPIC', '-Wall'))
     elif build_mode == "profile":
         env.Append(CCFLAGS = ('-O2', '-p', "-ggdb",
                               "-fprofile-arcs", "-ftest-coverage",
-                              "-fno-strict-aliasing", '-std=c++11'),
+                              "-fno-strict-aliasing"),
                    LINKFLAGS = ('-O2', '-p', "-ggdb" ,
                                 "-fprofile-arcs",
                                 "-ftest-coverage",
@@ -16,7 +16,7 @@ for build_mode in ['debug', 'profile', 'opt']:
     elif build_mode == "opt":
         env.Append(CCFLAGS = ('-O2', '-fPIC',
                               '-Werror', '-Wno-deprecated',
-                              "-fno-strict-aliasing", '-std=c++11'),
+                              "-fno-strict-aliasing"),
                    LINKFLAGS = ('-O2', '-fPIC',
                                 "-fno-strict-aliasing"))
 
