@@ -4,6 +4,11 @@ PyDecode
 PyDecode is a pragmatic toolkit for dynamic programming with a focus on natural language processing (NLP).  
 The interface is in Python, the core code is in C++. 
 
+A sentence with links to the documentation_ and the `Linux kernel archive`_.
+
+.. _documentation: http://pydecode.readthedocs.org/
+.. _Linux kernel archive: http://www.kernel.org/
+
 We built this toolkit because:
 
 * Dynamic programming is hard to get right and painful to debug.
