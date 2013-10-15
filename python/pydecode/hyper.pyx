@@ -435,7 +435,7 @@ cdef class Node:
         return self.id
 
 
-    property path:
+    property id:
         "A doc string can go here."
         def __get__(self):
             assert self.nodeptr.id() != -1, "Bad node id."
