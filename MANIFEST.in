@@ -1,2 +1,3 @@
 recursive-include src *.cpp *.h
+recursive-include python *.cpp *.h
 include *.txt

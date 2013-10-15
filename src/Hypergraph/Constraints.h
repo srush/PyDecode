@@ -28,6 +28,13 @@ struct Constraint {
     return false;
   }
 
+  int get_edge_coefficient(HEdge edge) const {
+    for (int i = 0; i < edges.size(); ++i) {
+      if (edge->id() == edges[i]->id()) return coefficients[i];
+    }
+    return 0;
+  }
+
   string label;
   vector<HEdge> edges;
   vector<int> coefficients;

@@ -106,6 +106,7 @@ cdef extern from "Hypergraph/Constraints.h":
         Constraint(string label, int id)
         void set_constant(int _bias)
         int has_edge(const CHyperedge *edge)
+        int get_edge_coefficient(const CHyperedge *edge)
         void add_edge_term(const CHyperedge *edge, int coefficient)
         string label
         vector[const CHyperedge *] edges
@@ -620,8 +621,8 @@ cdef class Constraint:
     def __contains__(self, Edge edge):
         return self.thisptr.has_edge(edge.edgeptr)
 
-    def __str__(self):
-        return self.thisptr.label
+    def __getitem__(self, Edge edge):
+        return self.thisptr.get_edge_coefficient(edge.edgeptr)
 
 cdef class Constraints:
     """

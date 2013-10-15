@@ -21,7 +21,7 @@ class HypergraphPathFormatter(HypergraphFormatter):
         self.hypergraph = hypergraph
         self.paths = paths
     def hyperedge_attrs(self, edge):
-        colors = ["red", "green", "blue", "purple"]
+        colors = ["red", "green", "blue", "purple", "orange", "yellow"]
         for path, color in zip(self.paths, colors):
             if edge in path:
                 return {"color": color}
