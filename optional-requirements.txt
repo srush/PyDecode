@@ -1,2 +1,3 @@
 pulp>=1.5
 pandas>=0.11
+ipython>=1.0
