@@ -3,3 +3,8 @@
 div.document {
     background: white;
 }
+
+div.related ul {
+     background: azure;
+     background-image: none;
+}
