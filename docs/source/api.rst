@@ -51,7 +51,7 @@ Algorithms
    outside_path
    best_constrained
    Path
-   Path.edges
+   Path.__iter__
    Path.__contains__
 
 Weights
@@ -81,7 +81,7 @@ Constraints
 
 .. automodule:: pydecode.hyper
    :members:
-   :special:
+   :special-members:
 
 .. automodule:: pydecode.display
    :members:
