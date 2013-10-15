@@ -276,17 +276,28 @@ cdef class ConstrainedResult:
     cdef init(self, CConstrainedResult ptr):
         self.thisptr = ptr
 
-    def __getattr__(self, attr):
-        if attr == "path":
+    property path:
+        "A doc string can go here."
+        def __get__(self):
             path = Path()
             path.init(self.thisptr.path)
             return path
-        if attr == "dual":
+
+    property dual:
+        "A doc string can go here."
+        def __get__(self):
             return self.thisptr.dual
-        if attr == "primal":
+
+    property primal:
+        "A doc string can go here."
+        def __get__(self):
             return self.thisptr.primal
-        if attr == "constraints":
+
+    property constraints:
+        "A doc string can go here."
+        def __get__(self):
             return convert_constraints(self.thisptr.constraints)
+
 
 cdef class Hypergraph:
     cdef CHypergraph *thisptr
@@ -307,14 +318,25 @@ cdef class Hypergraph:
         gb.init(self, self.thisptr)
         return gb
 
-    def __getattr__(self, attr):
-        if attr == "nodes":
+
+    property nodes:
+        "A doc string can go here."
+        def __get__(self):
             return convert_nodes(self.thisptr.nodes())
-        if attr == "root":
+
+    property root:
+        "A doc string can go here."
+        def __get__(self):
             return convert_node(self.thisptr.root())
-        if attr == "edges":
+
+    property edges:
+        "A doc string can go here."
+        def __get__(self):
             return convert_edges(self.thisptr.edges())
-        if attr == "edges_size":
+
+    property edges_size:
+        "A doc string can go here."
+        def __get__(self):
             return self.thisptr.edges().size()
 
     def label(self, edge):
@@ -412,19 +434,27 @@ cdef class Node:
     def __hash__(self):
         return self.id
 
-    def __getattr__(self, attr):
-        if attr == "id":
+
+    property path:
+        "A doc string can go here."
+        def __get__(self):
             assert self.nodeptr.id() != -1, "Bad node id."
             return self.nodeptr.id()
-        if attr == "edges":
+
+    property edges:
+        "A doc string can go here."
+        def __get__(self):
             return convert_edges(self.nodeptr.edges())
-        if attr == "label":
+
+    property label:
+        "A doc string can go here."
+        def __get__(self):
             return self.nodeptr.label()
-        if attr == "is_terminal":
+
+    property is_terminal:
+        "A doc string can go here."
+        def __get__(self):
             return self.nodeptr.edges().size() == 0
-        else:
-            raise HypergraphAccessException(
-                "No node attribute %s"%attr)
 
     def __str__(self):
         return self.nodeptr.label()
@@ -453,16 +483,21 @@ cdef class Edge:
     def __str__(self):
         return self.edgeptr.label()
 
-    def __getattr__(self, attr):
-        if attr == "tail":
+    property tail:
+        "A doc string can go here."
+        def __get__(self):
             return convert_nodes(self.edgeptr.tail_nodes())
-        if attr == "head":
+
+    property head:
+        "A doc string can go here."
+        def __get__(self):
             return convert_node(self.edgeptr.head_node())
-        if attr == "id":
+
+    property id:
+        "A doc string can go here."
+        def __get__(self):
             assert self.edgeptr.id() != -1, "Bad edge id."
             return self.edgeptr.id()
-        raise HypergraphAccessException(
-            "No edge attribute %s"%attr)
 
     def removed(self):
         return (self.edgeptr.id() == -1)
@@ -498,11 +533,9 @@ cdef class Path:
     cdef init(self, const CHyperpath *path):
         self.thisptr = path
 
-    def __getattr__(self, attr):
-        """
-        Returns the edges in the path.
-        """
-        if attr == "edges":
+    property edges:
+        "A doc string can go here."
+        def __get__(self):
             return convert_edges(self.thisptr.edges())
 
     def __contains__(self, Edge edge):
@@ -570,9 +603,15 @@ cdef class Constraint:
 
     def __str__(self): return self.thisptr.label
 
-    def __getattr__(self, attr):
-        if attr == "label": return self.thisptr.label
-        if attr == "constant": return self.thisptr.bias
+    property label:
+        "A doc string can go here."
+        def __get__(self):
+            return self.thisptr.label
+
+    property constant:
+        "A doc string can go here."
+        def __get__(self):
+            return self.thisptr.bias
 
     def __iter__(self):
         edges = convert_edges(self.thisptr.edges)

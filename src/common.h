@@ -1,7 +1,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <boost/foreach.hpp>
+#include <ctime>
+#include "./foreach.h"
 
 #define INF 1e8
 #define foreach BOOST_FOREACH
