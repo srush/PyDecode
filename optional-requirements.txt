@@ -18,3 +18,5 @@ nose>1.0
 
 # For NLP examples.
 nltk>=2.0
+
+brathe>=1.0
