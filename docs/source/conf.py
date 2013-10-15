@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath('../../python/'))
 
 sys.path.append( "../ext/breathe/" )
 
-breathe_projects = { "pydecode": "xml/" }
+breathe_projects = { "pydecode": os.path.abspath("../xml/") }
 breathe_default_project = "pydecode"
 
 # -- General configuration ------------------------------------------------

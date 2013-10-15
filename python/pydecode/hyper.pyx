@@ -133,8 +133,10 @@ cdef class Chart:
         """
         Get the chart score for a node.
 
-        :param node: The node to check.
+        :param :py:class:`Node` node: The node to check.
+
         :returns: A score.
+        :rtype: float
         """
         return self.chart[node.id]
 
@@ -145,8 +147,8 @@ def best_path(Hypergraph graph,
     """
     Find the highest-score path in the hypergraph.
 
-    :param graph: The hypergraph to search.
-    :param weights: The weights of the hypergraph.
+    :param :py:class:`Hypergraph` graph: The hypergraph to search.
+    :param :py:class:`Weights` weights: The weights of the hypergraph.
     :returns: The best path and inside chart.
     """
 
@@ -165,9 +167,12 @@ def outside_path(Hypergraph graph,
     """
     Find the outside score for the hypergraph.
 
-    :param graph: The hypergraph to search.
-    :param weights: The weights of the hypergraph.
-    :param inside_chart: The inside chart.
+    :param :py:class:`Hypergraph` graph: The hypergraph to search.
+
+    :param :py:class:`Weights` weights: The weights of the hypergraph.
+
+    :param :py:class:`Chart` inside_chart: The inside chart.
+
     :returns: The outside chart.
     :rtype: :py:class:`Chart`
     """
@@ -183,8 +188,11 @@ def best_constrained(Hypergraph graph,
     Find the highest-scoring path satisfying constraints.
 
     :param graph: The hypergraph to search.
-    :param weights: The weights of the hypergraph.
+    :type graph: :py:class:`Hypergraph`
+    :param  weights: The weights of the hypergraph.
+    :type weights: :py:class:`Weights`
     :param constraints: The hyperedge constraints.
+    :type constraints: :py:class:`Constraints`
     :returns: The best path and the dual values.
     """
     cdef vector[CConstrainedResult] results
