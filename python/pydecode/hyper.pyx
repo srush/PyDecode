@@ -169,6 +169,7 @@ def outside_path(Hypergraph graph,
     :param weights: The weights of the hypergraph.
     :param inside_chart: The inside chart.
     :returns: The outside chart.
+    :rtype: :py:class:`Chart`
     """
     cdef Chart out_chart = Chart()
     outside(graph.thisptr, deref(weights.thisptr),
@@ -278,24 +279,24 @@ cdef class ConstrainedResult:
         self.thisptr = ptr
 
     property path:
-        "A doc string can go here."
+        "The hyperpath associated with this round."
         def __get__(self):
             path = Path()
             path.init(self.thisptr.path)
             return path
 
     property dual:
-        "A doc string can go here."
+        "The dual value for this round."
         def __get__(self):
             return self.thisptr.dual
 
     property primal:
-        "A doc string can go here."
+        "The primal value for this round."
         def __get__(self):
             return self.thisptr.primal
 
     property constraints:
-        "A doc string can go here."
+        "The constraints violated for this round."
         def __get__(self):
             return convert_constraints(self.thisptr.constraints)
 
@@ -321,7 +322,7 @@ cdef class Hypergraph:
 
 
     property nodes:
-        "A doc string can go here."
+        "The nodes ."
         def __get__(self):
             return convert_nodes(self.thisptr.nodes())
 
