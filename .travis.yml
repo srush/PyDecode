@@ -6,4 +6,4 @@ install: "pip install -r requirements.txt -r optional-requirements.txt --use-mir
 # command to run tests
 script:
   - nosetests python/pydecode
-  - py.test notebooks
+  - cd python; py.test ../notebooks

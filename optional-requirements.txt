@@ -1,4 +1,5 @@
 pulp>=1.5
 pandas>=0.11
 ipython>=1.0
-pyzmq >= 2.1.11
+pyzmq>=2.1.11
+nltk>=2.0
