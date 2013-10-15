@@ -18,23 +18,33 @@ cmdclass = {}
 
 if use_cython:
     ext_modules = [Extension("pydecode.hyper",
-                             ["python/pydecode/hyper.pyx"],
+                             ["python/pydecode/hyper.pyx",
+                              "src/Hypergraph/Hypergraph.cpp",
+                              "src/Hypergraph/Algorithms.cpp",
+                              "src/Hypergraph/Constraints.cpp",
+                              "src/Hypergraph/Subgradient.cpp",
+                              ],
                              language='c++',
                              #extra_compile_args=['-std=c++11'],
-                             include_dirs=[r'build/debug/src/', "."],
-                             library_dirs=[r'build/debug/src/', ""],
-                             extra_objects=['build/debug/src/libdecoding.a'],
-                             libraries=['decoding'])]
+                             include_dirs=[r'src/', "."],
+                             )]
+                             #extra_objects=['build/debug/src/libdecoding.a'],
+                             #libraries=['decoding'])
+
     cmdclass = {'build_ext': build_ext}
 
 else:
     ext_modules = [Extension("pydecode.hyper",
-                             ["python/pydecode/hyper.cpp"],
+                             ["python/pydecode/hyper.cpp",
+                              "src/Hypergraph/Hypergraph.cpp",
+                              "src/Hypergraph/Algorithms.cpp",
+                              "src/Hypergraph/Constraints.cpp",
+                              "src/Hypergraph/Subgradient.cpp"],
                              language='c++',
-                             include_dirs=[r'build/debug/src/', "."],
-                             library_dirs=[r'build/debug/src/', ""],
-                             extra_objects=['build/debug/src/libdecoding.a'],
-                             libraries=['decoding'])]
+                             include_dirs=[r'src/', "."],
+                             #extra_objects=['build/debug/src/libdecoding.a'],
+                             #libraries=['decoding'])
+                   )]
 
 setup(
   name = 'pydecode',
@@ -42,5 +52,13 @@ setup(
   packages=['pydecode'],
   package_dir={'pydecode': 'python/pydecode'},
   ext_modules = ext_modules,
-  requires=["networkx", "pandas"]
+  requires=["networkx", "pandas"],
+  version = '0.1.3',
+  description = 'A dynamic programming toolkit',
+  author = 'Alexander Rush',
+  author_email = 'srush@csail.mit.edu',
+  url = 'https://github.com/srush/pydecode/',
+  download_url = 'https://github.com/srush/PyDecode/tarball/master',
+  keywords = ['nlp'], # arbitrary keywords
+  classifiers = []
 )
