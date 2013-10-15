@@ -8,3 +8,4 @@ Documentation
    notebooks/tutorial
    notebooks/index
    api
+   cpp_api

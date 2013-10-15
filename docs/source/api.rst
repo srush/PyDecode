@@ -1,12 +1,6 @@
 =====
-API
+Python API
 =====
-
-.. doxygenclass:: Hypergraph
-   :project: pydecode
-   :members:
-
-
 
 Construction
 ---------------
