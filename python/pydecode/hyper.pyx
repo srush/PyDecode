@@ -133,9 +133,10 @@ cdef class Chart:
         """
         Get the chart score for a node.
 
-        :param :py:class:`Node` node: The node to check.
+        :param node: The node to check.
+        :type node: :py:class:`Node`
 
-        :returns: A score.
+        :returns: The score.
         :rtype: float
         """
         return self.chart[node.id]
@@ -147,8 +148,12 @@ def best_path(Hypergraph graph,
     """
     Find the highest-score path in the hypergraph.
 
-    :param :py:class:`Hypergraph` graph: The hypergraph to search.
-    :param :py:class:`Weights` weights: The weights of the hypergraph.
+    :param graph: The hypergraph to search.
+    :type graph: :py:class:`Hypergraph`
+
+    :param weights: The weights of the hypergraph.
+    :type weights: :py:class:`Weights`
+
     :returns: The best path and inside chart.
     """
 
@@ -167,11 +172,14 @@ def outside_path(Hypergraph graph,
     """
     Find the outside score for the hypergraph.
 
-    :param :py:class:`Hypergraph` graph: The hypergraph to search.
+    :param graph: The hypergraph to search.
+    :type graph: :py:class:`Hypergraph`
 
-    :param :py:class:`Weights` weights: The weights of the hypergraph.
+    :param weights: The weights of the hypergraph.
+    :type weights: :py:class:`Weights`
 
-    :param :py:class:`Chart` inside_chart: The inside chart.
+    :param inside_chart: The inside chart.
+    :type inside_chart: :py:class:`Chart`
 
     :returns: The outside chart.
     :rtype: :py:class:`Chart`
@@ -189,10 +197,13 @@ def best_constrained(Hypergraph graph,
 
     :param graph: The hypergraph to search.
     :type graph: :py:class:`Hypergraph`
+
     :param  weights: The weights of the hypergraph.
     :type weights: :py:class:`Weights`
+
     :param constraints: The hyperedge constraints.
     :type constraints: :py:class:`Constraints`
+
     :returns: The best path and the dual values.
     """
     cdef vector[CConstrainedResult] results
@@ -213,8 +224,13 @@ def compute_max_marginals(Hypergraph graph,
     hypergraph.
 
     :param graph: The hypergraph to search.
+    :type graph: :py:class:`Hypergraph`
+
     :param weights: The weights of the hypergraph.
-    :returns: A MaxMarginals object.
+    :type weights: :py:class:`Weights`
+
+    :returns: The max-marginals.
+    :rtype: :py:class:`MaxMarginals`
     """
     cdef const CMaxMarginals *marginals = \
         compute(graph.thisptr, weights.thisptr)
@@ -230,8 +246,12 @@ def prune_hypergraph(Hypergraph graph,
     hypergraph.
 
     :param graph: The hypergraph to search.
+    :type graph: :py:class:`Hypergraph`
+
     :param weights: The weights of the hypergraph.
-    :returns: A MaxMarginals object.
+    :type weights: :py:class:`Weights`
+
+    :returns: The new hypergraphs and weights.
     """
     cdef const CHypergraphProjection *projection = \
         prune(graph.thisptr, deref(weights.thisptr), ratio)
@@ -324,35 +344,54 @@ cdef class Hypergraph:
         self.node_labels = node_labels
 
     def builder(self):
+        """
+        The builder for the hypergraph.
+
+        :rtype: :py:class:`GraphBuilder`
+        """
         gb = GraphBuilder()
         gb.init(self, self.thisptr)
         return gb
 
 
     property nodes:
-        "The nodes ."
+        "An iterator of hypernodes."
         def __get__(self):
             return convert_nodes(self.thisptr.nodes())
 
     property root:
-        "A doc string can go here."
+        "The root hypernode."
         def __get__(self):
             return convert_node(self.thisptr.root())
 
     property edges:
-        "A doc string can go here."
+        "An iterator of hyperedges."
         def __get__(self):
             return convert_edges(self.thisptr.edges())
 
     property edges_size:
-        "A doc string can go here."
+        "The number of edges."
         def __get__(self):
             return self.thisptr.edges().size()
 
     def label(self, edge):
+        """
+        The label associated with the edge.
+
+        :param edge: A hyperedge in the hypergraph.
+        :type edge: :py:class:`Edge`
+
+        """
         return self.edge_labels[edge.id]
 
     def node_label(self, node):
+        """
+        The label associated with the node.
+
+        :param node: A hypernode in the hypergraph.
+        :type node: :py:class:`Node`
+
+        """
         return self.node_labels[node.id]
 
 cdef class GraphBuilder:
@@ -375,10 +414,12 @@ cdef class GraphBuilder:
         self.started = False
 
     def __enter__(self):
+        """Start building the hypergraph"""
         self.started = True
         return self
 
     def __exit__(self, exception, b, c):
+        """End building the hypergraph"""
         if exception:
            return False
         self.started = False
@@ -398,9 +439,13 @@ cdef class GraphBuilder:
         """
         Add a node to the hypergraph.
 
-        :param edges: A list of edges of the form ([v_2, v_3..], label).
-        :param label: Optional label for the node.
+        :param edges: A list of the form ([v_2, v_3..], label).
+        :type label: list of pairs
 
+        :param label: Optional label for the node.
+        :type label: any
+
+        :rtype: :py:class:`Node`
         """
 
         if not self.started:
@@ -444,25 +489,24 @@ cdef class Node:
     def __hash__(self):
         return self.id
 
-
     property id:
-        "A doc string can go here."
+        "The id of the node."
         def __get__(self):
             assert self.nodeptr.id() != -1, "Bad node id."
             return self.nodeptr.id()
 
     property edges:
-        "A doc string can go here."
+        "The hyperedges with this node as head."
         def __get__(self):
             return convert_edges(self.nodeptr.edges())
 
     property label:
-        "A doc string can go here."
+        "Not used."
         def __get__(self):
             return self.nodeptr.label()
 
     property is_terminal:
-        "A doc string can go here."
+        "Is the node a terminal node."
         def __get__(self):
             return self.nodeptr.edges().size() == 0
 
@@ -494,17 +538,23 @@ cdef class Edge:
         return self.edgeptr.label()
 
     property tail:
-        "A doc string can go here."
+        """
+        The tail hypernodes for this edge.
+
+        An iterator of :py:class:`Node`s
+        """
         def __get__(self):
             return convert_nodes(self.edgeptr.tail_nodes())
 
     property head:
-        "A doc string can go here."
+        """
+        The head :py:class:`Node` for this edge.
+        """
         def __get__(self):
             return convert_node(self.edgeptr.head_node())
 
     property id:
-        "A doc string can go here."
+        "The id associated with this edge."
         def __get__(self):
             assert self.edgeptr.id() != -1, "Bad edge id."
             return self.edgeptr.id()
@@ -544,7 +594,11 @@ cdef class Path:
         self.thisptr = path
 
     property edges:
-        "A doc string can go here."
+        """
+        An iterator of :py:class:`Edge`s in the path.
+
+
+        """
         def __get__(self):
             return convert_edges(self.thisptr.edges())
 
@@ -600,8 +654,11 @@ cdef class Weights:
         """
         Score a path with a weight vector.
 
-        :param path: The hyperpath  to score.
+        :param path: The hyperpath to score.
+        :type path: :py:class:`Path`
+
         :return: The score.
+        :rtype: float
         """
         cdef double result = self.thisptr.dot(deref(path.thisptr))
         return result
@@ -614,12 +671,12 @@ cdef class Constraint:
     def __str__(self): return self.thisptr.label
 
     property label:
-        "A doc string can go here."
+        "The label on the constraint (string)"
         def __get__(self):
             return self.thisptr.label
 
     property constant:
-        "A doc string can go here."
+        "The constant associated with the constraint."
         def __get__(self):
             return self.thisptr.bias
 
@@ -640,22 +697,27 @@ cdef class Constraints:
 
     cdef CHypergraphConstraints *thisptr
     cdef Hypergraph hypergraph
-    def __cinit__(self, Hypergraph hypergraph):
+    def __cinit__(self, Hypergraph graph):
         """
         A set of constraints associated with a hypergraph.
 
-        :param hypergraph: The associated hypergraph.
+        :param graph: The associated hypergraph.
+        :type graph: :py:class:`Hypergraph`
         """
-        self.thisptr = new CHypergraphConstraints(hypergraph.thisptr)
-        self.hypergraph = hypergraph
+        self.thisptr = new CHypergraphConstraints(graph.thisptr)
+        self.hypergraph = graph
 
     def build(self, constraints, builder):
         """
         Build the constraints for a hypergraph.
 
         :param constraints: A list of pairs of the form (label, constant) indicating a constraint.
+
+
         :param builder: A function from edge label to a list of pairs (constraints, coeffificient).
-        :returns: The Constraints object.
+
+        :returns: The constraints.
+        :rtype: :py:class:`Constraints`
         """
         cdef CConstraint *cons
         cdef Constraint hcons
@@ -700,7 +762,10 @@ cdef class Constraints:
         Check which constraints a path violates.
 
         :param path: The hyperpath to check.
-        :returns: A list of the violated constraints.
+        :type path: :py:class:`Path`
+
+        :returns: The violated constraints.
+        :rtype: A list of :py:class:`Constraint` objects
         """
 
         cdef vector[const CConstraint *] failed
@@ -721,7 +786,10 @@ cdef class MaxMarginals:
         Get the max-marginal value of a node or an edge.
 
         :param obj: The node/edge to check..
+        :type obj: A :py:class:`Node` or :py:class:`Edge`
+
         :returns: The max-marginal value.
+        :rtype: float
 
         """
         if isinstance(obj, Edge):

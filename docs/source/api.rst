@@ -11,8 +11,10 @@ Construction
 
    Hypergraph.builder
    GraphBuilder.add_node
+   Weights.build
+   Constraints.build
 
-Access and Display
+Access
 ---------------
 
 .. automodule:: pydecode.hyper
@@ -22,8 +24,14 @@ Access and Display
    Hypergraph.nodes
    Hypergraph.edges
    Hypergraph.label
+   Hypergraph.node_label
    Node.edges
+   Node.is_terminal
+   Edge.head
    Edge.tail
+
+Display
+---------------
 
 .. automodule:: pydecode.display
 .. autosummary::
@@ -65,12 +73,15 @@ Constraints
    :toctree:
 
    Constraints
-   Constraints.add
    Constraints.check
-
+   Constraint.__getitem__
+   Constraint.__iter__
+   Constraint.constant
+   Constraint.__str__
 
 .. automodule:: pydecode.hyper
    :members:
+   :special:
 
 .. automodule:: pydecode.display
    :members:
