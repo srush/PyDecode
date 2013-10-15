@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structSubgradResult" kind="struct" prot="public">
+    <compoundname>SubgradResult</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structSubgradResult_1ab90f25d94df1353c7d68e6ff73317ed4" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double SubgradResult::dual</definition>
+        <argsstring></argsstring>
+        <name>dual</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" line="51" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structSubgradResult_1a621c082bf6bd98b6ffffb4ab024cc61a" prot="public" static="no" mutable="no">
+        <type>vector&lt; double &gt;</type>
+        <definition>vector&lt;double&gt; SubgradResult::subgrad</definition>
+        <argsstring></argsstring>
+        <name>subgrad</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" line="54" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structSubgradResult_1afb3b6d98b61f401ca41d157633e02e64" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SubgradResult::SubgradResult</definition>
+        <argsstring>(int size)</argsstring>
+        <name>SubgradResult</name>
+        <param>
+          <type>int</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" line="46" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" bodystart="46" bodyend="48"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" line="45" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" bodystart="45" bodyend="55"/>
+    <listofallmembers>
+      <member refid="structSubgradResult_1ab90f25d94df1353c7d68e6ff73317ed4" prot="public" virt="non-virtual"><scope>SubgradResult</scope><name>dual</name></member>
+      <member refid="structSubgradResult_1a621c082bf6bd98b6ffffb4ab024cc61a" prot="public" virt="non-virtual"><scope>SubgradResult</scope><name>subgrad</name></member>
+      <member refid="structSubgradResult_1afb3b6d98b61f401ca41d157633e02e64" prot="public" virt="non-virtual"><scope>SubgradResult</scope><name>SubgradResult</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classMaxMarginals" kind="class" prot="public">
+    <compoundname>MaxMarginals</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classMaxMarginals_1a57693e01a89a7e7caea9909b9fbecdfa" prot="private" static="no" mutable="no">
+        <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+        <definition>const Hypergraph* MaxMarginals::hypergraph_</definition>
+        <argsstring></argsstring>
+        <name>hypergraph_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="72" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMaxMarginals_1abc05c3ee5ad10e2a321db05864f3cd02" prot="private" static="no" mutable="no">
+        <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> *</type>
+        <definition>const HypergraphWeights* MaxMarginals::weights_</definition>
+        <argsstring></argsstring>
+        <name>weights_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="73" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMaxMarginals_1a566fff06089cb17da34f1cd3cec87e6b" prot="private" static="no" mutable="no">
+        <type>const vector&lt; double &gt; *</type>
+        <definition>const vector&lt;double&gt;* MaxMarginals::in_chart_</definition>
+        <argsstring></argsstring>
+        <name>in_chart_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="77" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMaxMarginals_1ad38252a9ec83f1cc23d85133df272bcb" prot="private" static="no" mutable="no">
+        <type>const vector&lt; double &gt; *</type>
+        <definition>const vector&lt;double&gt;* MaxMarginals::out_chart_</definition>
+        <argsstring></argsstring>
+        <name>out_chart_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="78" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classMaxMarginals_1a19a388e799847e6cb88fc91cc41df541" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MaxMarginals::MaxMarginals</definition>
+        <argsstring>(const Hypergraph *hypergraph, const HypergraphWeights *weights, const vector&lt; double &gt; *in_chart, const vector&lt; double &gt; *out_chart)</argsstring>
+        <name>MaxMarginals</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> *</type>
+          <declname>weights</declname>
+        </param>
+        <param>
+          <type>const vector&lt; double &gt; *</type>
+          <declname>in_chart</declname>
+        </param>
+        <param>
+          <type>const vector&lt; double &gt; *</type>
+          <declname>out_chart</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="53" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="46" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="classMaxMarginals_1aa63be4711b0f3af40b1baea5ee2d08a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MaxMarginals::~MaxMarginals</definition>
+        <argsstring>()</argsstring>
+        <name>~MaxMarginals</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="58" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="58" bodyend="61"/>
+      </memberdef>
+      <memberdef kind="function" id="classMaxMarginals_1aaddb1933560d836dea3a39754dded2d2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double MaxMarginals::max_marginal</definition>
+        <argsstring>(HEdge edge) const </argsstring>
+        <name>max_marginal</name>
+        <param>
+          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="68" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="119" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="classMaxMarginals_1af87a18b056eacf90fd990b562355c757" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double MaxMarginals::max_marginal</definition>
+        <argsstring>(HNode node) const </argsstring>
+        <name>max_marginal</name>
+        <param>
+          <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+          <declname>node</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="69" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="128" bodyend="130"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classMaxMarginals_1a6c7d8bc6f50a2baff1f2de9f1348bbce" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="classMaxMarginals" kindref="compound">MaxMarginals</ref> *</type>
+        <definition>const MaxMarginals * MaxMarginals::compute</definition>
+        <argsstring>(const Hypergraph *hypergraph, const HypergraphWeights *weights)</argsstring>
+        <name>compute</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> *</type>
+          <declname>weights</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="65" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="104" bodyend="117"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="43" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="43" bodyend="79"/>
+    <listofallmembers>
+      <member refid="classMaxMarginals_1a6c7d8bc6f50a2baff1f2de9f1348bbce" prot="public" virt="non-virtual"><scope>MaxMarginals</scope><name>compute</name></member>
+      <member refid="classMaxMarginals_1a57693e01a89a7e7caea9909b9fbecdfa" prot="private" virt="non-virtual"><scope>MaxMarginals</scope><name>hypergraph_</name></member>
+      <member refid="classMaxMarginals_1a566fff06089cb17da34f1cd3cec87e6b" prot="private" virt="non-virtual"><scope>MaxMarginals</scope><name>in_chart_</name></member>
+      <member refid="classMaxMarginals_1aaddb1933560d836dea3a39754dded2d2" prot="public" virt="non-virtual"><scope>MaxMarginals</scope><name>max_marginal</name></member>
+      <member refid="classMaxMarginals_1af87a18b056eacf90fd990b562355c757" prot="public" virt="non-virtual"><scope>MaxMarginals</scope><name>max_marginal</name></member>
+      <member refid="classMaxMarginals_1a19a388e799847e6cb88fc91cc41df541" prot="public" virt="non-virtual"><scope>MaxMarginals</scope><name>MaxMarginals</name></member>
+      <member refid="classMaxMarginals_1ad38252a9ec83f1cc23d85133df272bcb" prot="private" virt="non-virtual"><scope>MaxMarginals</scope><name>out_chart_</name></member>
+      <member refid="classMaxMarginals_1abc05c3ee5ad10e2a321db05864f3cd02" prot="private" virt="non-virtual"><scope>MaxMarginals</scope><name>weights_</name></member>
+      <member refid="classMaxMarginals_1aa63be4711b0f3af40b1baea5ee2d08a4" prot="public" virt="non-virtual"><scope>MaxMarginals</scope><name>~MaxMarginals</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

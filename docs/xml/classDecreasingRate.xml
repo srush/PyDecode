@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classDecreasingRate" kind="class" prot="public">
+    <compoundname>DecreasingRate</compoundname>
+    <basecompoundref refid="classSubgradRate" prot="public" virt="non-virtual">SubgradRate</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classDecreasingRate_1a9202652c8330af32a49e933175b0a451" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>double</type>
+        <definition>double DecreasingRate::get_alpha</definition>
+        <argsstring>(const vector&lt; double &gt; &amp;past_duals, const vector&lt; double &gt; &amp;subgrad) const </argsstring>
+        <name>get_alpha</name>
+        <reimplements refid="classSubgradRate_1aeef768c1e82a25490d5a9f146936c0c2">get_alpha</reimplements>
+        <param>
+          <type>const vector&lt; double &gt; &amp;</type>
+          <declname>past_duals</declname>
+        </param>
+        <param>
+          <type>const vector&lt; double &gt; &amp;</type>
+          <declname>subgrad</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" line="26" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" bodystart="25" bodyend="32"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="23">
+        <label>SubgradRate</label>
+        <link refid="classSubgradRate"/>
+      </node>
+      <node id="22">
+        <label>DecreasingRate</label>
+        <link refid="classDecreasingRate"/>
+        <childnode refid="23" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="25">
+        <label>SubgradRate</label>
+        <link refid="classSubgradRate"/>
+      </node>
+      <node id="24">
+        <label>DecreasingRate</label>
+        <link refid="classDecreasingRate"/>
+        <childnode refid="25" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" line="23" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Subgradient.h" bodystart="23" bodyend="33"/>
+    <listofallmembers>
+      <member refid="classDecreasingRate_1a9202652c8330af32a49e933175b0a451" prot="public" virt="virtual"><scope>DecreasingRate</scope><name>get_alpha</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

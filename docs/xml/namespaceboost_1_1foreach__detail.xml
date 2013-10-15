@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="namespaceboost_1_1foreach__detail" kind="namespace">
+    <compoundname>boost::foreach_detail</compoundname>
+    <innerclass refid="structboost_1_1foreach__detail_1_1auto__any__base" prot="public">boost::foreach_detail::auto_any_base</innerclass>
+    <innerclass refid="structboost_1_1foreach__detail_1_1auto__any" prot="public">boost::foreach_detail::auto_any</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceboost_1_1foreach__detail_1a06a7f15e7aac90399700924e7f10a562" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>T &amp;</type>
+        <definition>T&amp; boost::foreach_detail::auto_any_cast</definition>
+        <argsstring>(auto_any_base const &amp;any)</argsstring>
+        <name>auto_any_cast</name>
+        <param>
+          <type><ref refid="structboost_1_1foreach__detail_1_1auto__any__base" kindref="compound">auto_any_base</ref> const &amp;</type>
+          <declname>any</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/foreach.h" line="33" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="32" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1foreach__detail_1ae55294cad2a62d851ee84dac150900f2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structboost_1_1foreach__detail_1_1auto__any" kindref="compound">auto_any</ref>&lt; typename T::const_iterator &gt;</type>
+        <definition>auto_any&lt;typename T::const_iterator&gt; boost::foreach_detail::begin</definition>
+        <argsstring>(T const &amp;t)</argsstring>
+        <name>begin</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/foreach.h" line="40" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="39" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1foreach__detail_1a6886d724c6bfa30aabcb6108d070aec2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structboost_1_1foreach__detail_1_1auto__any" kindref="compound">auto_any</ref>&lt; typename T::const_iterator &gt;</type>
+        <definition>auto_any&lt;typename T::const_iterator&gt; boost::foreach_detail::end</definition>
+        <argsstring>(T const &amp;t)</argsstring>
+        <name>end</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/foreach.h" line="45" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="44" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1foreach__detail_1ac9f20c4748212c09b41ceafe94479d30" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool boost::foreach_detail::done</definition>
+        <argsstring>(auto_any_base const &amp;cur, auto_any_base const &amp;end, T &amp;)</argsstring>
+        <name>done</name>
+        <param>
+          <type><ref refid="structboost_1_1foreach__detail_1_1auto__any__base" kindref="compound">auto_any_base</ref> const &amp;</type>
+          <declname>cur</declname>
+        </param>
+        <param>
+          <type><ref refid="structboost_1_1foreach__detail_1_1auto__any__base" kindref="compound">auto_any_base</ref> const &amp;</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/foreach.h" line="51" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="50" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1foreach__detail_1ac0a7bd7a1b861aea60c98664e5da7e45" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void boost::foreach_detail::next</definition>
+        <argsstring>(auto_any_base const &amp;cur, T &amp;)</argsstring>
+        <name>next</name>
+        <param>
+          <type><ref refid="structboost_1_1foreach__detail_1_1auto__any__base" kindref="compound">auto_any_base</ref> const &amp;</type>
+          <declname>cur</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/foreach.h" line="57" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="56" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1foreach__detail_1ab528a32b49b094ab95870843130c87f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>T::reference</type>
+        <definition>T::reference boost::foreach_detail::deref</definition>
+        <argsstring>(auto_any_base const &amp;cur, T &amp;)</argsstring>
+        <name>deref</name>
+        <param>
+          <type><ref refid="structboost_1_1foreach__detail_1_1auto__any__base" kindref="compound">auto_any_base</ref> const &amp;</type>
+          <declname>cur</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/foreach.h" line="62" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="61" bodyend="64"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/src/foreach.h" line="18"/>
+  </compounddef>
+</doxygen>

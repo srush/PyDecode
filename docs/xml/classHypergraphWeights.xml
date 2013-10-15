@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classHypergraphWeights" kind="class" prot="public">
+    <compoundname>HypergraphWeights</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classHypergraphWeights_1ade5851e7e1bf7f89cda92fc0855d2b89" prot="private" static="no" mutable="no">
+        <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+        <definition>const Hypergraph* HypergraphWeights::hypergraph_</definition>
+        <argsstring></argsstring>
+        <name>hypergraph_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="262" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="262" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classHypergraphWeights_1ae1fb2b216235e9840fc068dac7268a67" prot="private" static="no" mutable="no">
+        <type>vector&lt; double &gt;</type>
+        <definition>vector&lt;double&gt; HypergraphWeights::weights_</definition>
+        <argsstring></argsstring>
+        <name>weights_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="263" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="263" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classHypergraphWeights_1aed6afcc481e7ab269b889bc6b9f2e709" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double HypergraphWeights::bias_</definition>
+        <argsstring></argsstring>
+        <name>bias_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="264" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="264" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classHypergraphWeights_1a816cc044bdd02f29095b75a8b4d7990e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>HypergraphWeights::HypergraphWeights</definition>
+        <argsstring>(const Hypergraph *hypergraph, const vector&lt; double &gt; &amp;weights, double bias)</argsstring>
+        <name>HypergraphWeights</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>const vector&lt; double &gt; &amp;</type>
+          <declname>weights</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>bias</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="240" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="235" bodyend="242"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphWeights_1ada9571950a004625a6d83e7b8ab1fdff" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double HypergraphWeights::dot</definition>
+        <argsstring>(const Hyperpath &amp;path) const </argsstring>
+        <name>dot</name>
+        <param>
+          <type>const <ref refid="classHyperpath" kindref="compound">Hyperpath</ref> &amp;</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="244" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="46" bodyend="53"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphWeights_1a225f7101da09c896d791f68203573940" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double HypergraphWeights::score</definition>
+        <argsstring>(HEdge edge) const </argsstring>
+        <name>score</name>
+        <param>
+          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="246" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="246" bodyend="246"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphWeights_1a3e57918b764043fc60505e5bb43b2f7c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double HypergraphWeights::bias</definition>
+        <argsstring>() const </argsstring>
+        <name>bias</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="248" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="248" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphWeights_1a5471d9be06b54978a720e8c3e137b815" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> *</type>
+        <definition>HypergraphWeights * HypergraphWeights::modify</definition>
+        <argsstring>(const vector&lt; double &gt; &amp;, double) const </argsstring>
+        <name>modify</name>
+        <param>
+          <type>const vector&lt; double &gt; &amp;</type>
+          <defname>edge_duals</defname>
+        </param>
+        <param>
+          <type>double</type>
+          <defname>bias_dual</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="250" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="55" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphWeights_1a034f783e7f1016d45db899e432173163" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> *</type>
+        <definition>HypergraphWeights * HypergraphWeights::project_weights</definition>
+        <argsstring>(const HypergraphProjection &amp;projection) const </argsstring>
+        <name>project_weights</name>
+        <param>
+          <type>const <ref refid="classHypergraphProjection" kindref="compound">HypergraphProjection</ref> &amp;</type>
+          <declname>projection</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="253" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="67" bodyend="78"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphWeights_1a22a11e7186e0ec131e884f16a2c45240" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void HypergraphWeights::check</definition>
+        <argsstring>(const Hypergraph &amp;graph) const </argsstring>
+        <name>check</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="255" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="255" bodyend="259"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="233" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="233" bodyend="265"/>
+    <listofallmembers>
+      <member refid="classHypergraphWeights_1a3e57918b764043fc60505e5bb43b2f7c" prot="public" virt="non-virtual"><scope>HypergraphWeights</scope><name>bias</name></member>
+      <member refid="classHypergraphWeights_1aed6afcc481e7ab269b889bc6b9f2e709" prot="private" virt="non-virtual"><scope>HypergraphWeights</scope><name>bias_</name></member>
+      <member refid="classHypergraphWeights_1a22a11e7186e0ec131e884f16a2c45240" prot="public" virt="non-virtual"><scope>HypergraphWeights</scope><name>check</name></member>
+      <member refid="classHypergraphWeights_1ada9571950a004625a6d83e7b8ab1fdff" prot="public" virt="non-virtual"><scope>HypergraphWeights</scope><name>dot</name></member>
+      <member refid="classHypergraphWeights_1ade5851e7e1bf7f89cda92fc0855d2b89" prot="private" virt="non-virtual"><scope>HypergraphWeights</scope><name>hypergraph_</name></member>
+      <member refid="classHypergraphWeights_1a816cc044bdd02f29095b75a8b4d7990e" prot="public" virt="non-virtual"><scope>HypergraphWeights</scope><name>HypergraphWeights</name></member>
+      <member refid="classHypergraphWeights_1a5471d9be06b54978a720e8c3e137b815" prot="public" virt="non-virtual"><scope>HypergraphWeights</scope><name>modify</name></member>
+      <member refid="classHypergraphWeights_1a034f783e7f1016d45db899e432173163" prot="public" virt="non-virtual"><scope>HypergraphWeights</scope><name>project_weights</name></member>
+      <member refid="classHypergraphWeights_1a225f7101da09c896d791f68203573940" prot="public" virt="non-virtual"><scope>HypergraphWeights</scope><name>score</name></member>
+      <member refid="classHypergraphWeights_1ae1fb2b216235e9840fc068dac7268a67" prot="private" virt="non-virtual"><scope>HypergraphWeights</scope><name>weights_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -2,13 +2,18 @@
 API
 =====
 
+.. doxygenclass:: Hypergraph
+   :project: pydecode
+   :members:
+
+
 
 Construction
 ---------------
 
 .. automodule:: pydecode.hyper
 .. autosummary::
-   :toctree: 
+   :toctree:
 
    Hypergraph.builder
    GraphBuilder.add_node
@@ -18,18 +23,18 @@ Access and Display
 
 .. automodule:: pydecode.hyper
 .. autosummary::
-   :toctree: 
+   :toctree:
 
    Hypergraph.nodes
    Hypergraph.edges
    Hypergraph.label
    Node.edges
    Edge.tail
-   
+
 .. automodule:: pydecode.display
 .. autosummary::
-   :toctree: 
-   
+   :toctree:
+
    to_ipython
    to_networkx
 
@@ -38,7 +43,7 @@ Algorithms
 
 .. automodule:: pydecode.hyper
 .. autosummary::
-   :toctree: 
+   :toctree:
 
    best_path
    outside_path
@@ -52,7 +57,7 @@ Weights
 
 .. automodule:: pydecode.hyper
 .. autosummary::
-   :toctree: 
+   :toctree:
 
    Weights
    Weights.dot
@@ -63,7 +68,7 @@ Constraints
 
 .. automodule:: pydecode.hyper
 .. autosummary::
-   :toctree: 
+   :toctree:
 
    Constraints
    Constraints.add
@@ -75,6 +80,3 @@ Constraints
 
 .. automodule:: pydecode.display
    :members:
-
-
-

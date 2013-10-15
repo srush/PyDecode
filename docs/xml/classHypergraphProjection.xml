@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classHypergraphProjection" kind="class" prot="public">
+    <compoundname>HypergraphProjection</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classHypergraphProjection_1a1e4b25b6b993b48a3486610fc2fb2f2b" prot="public" static="no" mutable="no">
+        <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+        <definition>const Hypergraph* HypergraphProjection::original_graph</definition>
+        <argsstring></argsstring>
+        <name>original_graph</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="306" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="306" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classHypergraphProjection_1ac4b7e4c0d7da068ebc8c50f029984876" prot="public" static="no" mutable="no">
+        <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+        <definition>const Hypergraph* HypergraphProjection::new_graph</definition>
+        <argsstring></argsstring>
+        <name>new_graph</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="307" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="307" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classHypergraphProjection_1ab3cebb12cb5d108717e1a79f83106a53" prot="private" static="no" mutable="no">
+        <type>const vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; *</type>
+        <definition>const vector&lt;HNode&gt;* HypergraphProjection::node_map_</definition>
+        <argsstring></argsstring>
+        <name>node_map_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="312" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="312" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classHypergraphProjection_1a2591ec6227618cb024cf1873983c29fa" prot="private" static="no" mutable="no">
+        <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt; *</type>
+        <definition>const vector&lt;HEdge&gt;* HypergraphProjection::edge_map_</definition>
+        <argsstring></argsstring>
+        <name>edge_map_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="313" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="313" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classHypergraphProjection_1a47ce7226419eb74c575fd33f19187f95" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>HypergraphProjection::HypergraphProjection</definition>
+        <argsstring>(const Hypergraph *original, const Hypergraph *_new_graph, const vector&lt; HNode &gt; *node_map, const vector&lt; HEdge &gt; *edge_map)</argsstring>
+        <name>HypergraphProjection</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>original</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>_new_graph</declname>
+        </param>
+        <param>
+          <type>const vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; *</type>
+          <declname>node_map</declname>
+        </param>
+        <param>
+          <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt; *</type>
+          <declname>edge_map</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="276" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="269" bodyend="287"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphProjection_1a00593a4957786c81decf47496d98b7e9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>HypergraphProjection::~HypergraphProjection</definition>
+        <argsstring>()</argsstring>
+        <name>~HypergraphProjection</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="289" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="289" bodyend="292"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphProjection_1a7415d20ef626a5491a89155fac95214d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+        <definition>HEdge HypergraphProjection::project</definition>
+        <argsstring>(HEdge original) const </argsstring>
+        <name>project</name>
+        <param>
+          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <declname>original</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="298" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="298" bodyend="300"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphProjection_1a0acb98ee5f83cf812539c38f72fe4f53" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+        <definition>HNode HypergraphProjection::project</definition>
+        <argsstring>(HNode original) const </argsstring>
+        <name>project</name>
+        <param>
+          <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+          <declname>original</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="302" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="302" bodyend="304"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classHypergraphProjection_1a327bfef2c1fd6cb7a5227208d8d65ff5" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classHypergraphProjection" kindref="compound">HypergraphProjection</ref> *</type>
+        <definition>HypergraphProjection * HypergraphProjection::project_hypergraph</definition>
+        <argsstring>(const Hypergraph *hypergraph, vector&lt; bool &gt; edge_mask)</argsstring>
+        <name>project_hypergraph</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>hypergraph</declname>
+        </param>
+        <param>
+          <type>vector&lt; bool &gt;</type>
+          <declname>edge_mask</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="296" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="121" bodyend="171"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="61">
+        <label>Hypergraph</label>
+        <link refid="classHypergraph"/>
+      </node>
+      <node id="60">
+        <label>HypergraphProjection</label>
+        <link refid="classHypergraphProjection"/>
+        <childnode refid="61" relation="usage">
+          <edgelabel>new_graph</edgelabel>
+          <edgelabel>original_graph</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="267" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="267" bodyend="314"/>
+    <listofallmembers>
+      <member refid="classHypergraphProjection_1a2591ec6227618cb024cf1873983c29fa" prot="private" virt="non-virtual"><scope>HypergraphProjection</scope><name>edge_map_</name></member>
+      <member refid="classHypergraphProjection_1a47ce7226419eb74c575fd33f19187f95" prot="public" virt="non-virtual"><scope>HypergraphProjection</scope><name>HypergraphProjection</name></member>
+      <member refid="classHypergraphProjection_1ac4b7e4c0d7da068ebc8c50f029984876" prot="public" virt="non-virtual"><scope>HypergraphProjection</scope><name>new_graph</name></member>
+      <member refid="classHypergraphProjection_1ab3cebb12cb5d108717e1a79f83106a53" prot="private" virt="non-virtual"><scope>HypergraphProjection</scope><name>node_map_</name></member>
+      <member refid="classHypergraphProjection_1a1e4b25b6b993b48a3486610fc2fb2f2b" prot="public" virt="non-virtual"><scope>HypergraphProjection</scope><name>original_graph</name></member>
+      <member refid="classHypergraphProjection_1a7415d20ef626a5491a89155fac95214d" prot="public" virt="non-virtual"><scope>HypergraphProjection</scope><name>project</name></member>
+      <member refid="classHypergraphProjection_1a0acb98ee5f83cf812539c38f72fe4f53" prot="public" virt="non-virtual"><scope>HypergraphProjection</scope><name>project</name></member>
+      <member refid="classHypergraphProjection_1a327bfef2c1fd6cb7a5227208d8d65ff5" prot="public" virt="non-virtual"><scope>HypergraphProjection</scope><name>project_hypergraph</name></member>
+      <member refid="classHypergraphProjection_1a00593a4957786c81decf47496d98b7e9" prot="public" virt="non-virtual"><scope>HypergraphProjection</scope><name>~HypergraphProjection</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

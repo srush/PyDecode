@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classClock" kind="class" prot="public">
+    <compoundname>Clock</compoundname>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classClock_1af45b8db844300755b8c4244a65f60833" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double Clock::diffclock</definition>
+        <argsstring>(clock_t clock1, clock_t clock2)</argsstring>
+        <name>diffclock</name>
+        <param>
+          <type>clock_t</type>
+          <declname>clock1</declname>
+        </param>
+        <param>
+          <type>clock_t</type>
+          <declname>clock2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/common.h" line="13" bodyfile="/home/srush/Projects/decoding/src/common.h" bodystart="13" bodyend="17"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/src/common.h" line="11" bodyfile="/home/srush/Projects/decoding/src/common.h" bodystart="11" bodyend="18"/>
+    <listofallmembers>
+      <member refid="classClock_1af45b8db844300755b8c4244a65f60833" prot="public" virt="non-virtual"><scope>Clock</scope><name>diffclock</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

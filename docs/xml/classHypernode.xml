@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classHypernode" kind="class" prot="public">
+    <compoundname>Hypernode</compoundname>
+    <includes refid="Hypergraph_8h" local="no">Hypergraph.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classHypernode_1a083cadfcef38537917657dd04f2876b6" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Hypernode::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="102" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classHypernode_1a08534f448431247042e85fbc50cb5838" prot="private" static="no" mutable="no">
+        <type>string</type>
+        <definition>string Hypernode::label_</definition>
+        <argsstring></argsstring>
+        <name>label_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="103" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classHypernode_1aad8f65115e39bdbe11b76e61d5477789" prot="private" static="no" mutable="no">
+        <type>vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt;</type>
+        <definition>vector&lt;HEdge&gt; Hypernode::edges_</definition>
+        <argsstring></argsstring>
+        <name>edges_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="104" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classHypernode_1af1bfd7e8478a49d7780e76c69dc45a4b" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Hypernode::Hypernode</definition>
+        <argsstring>(string label)</argsstring>
+        <name>Hypernode</name>
+        <param>
+          <type>string</type>
+          <declname>label</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="84" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="83" bodyend="84"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypernode_1ab8fc1812ca53d8da4a76f2f1fb2ae6d9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>string</type>
+        <definition>string Hypernode::label</definition>
+        <argsstring>() const </argsstring>
+        <name>label</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="86" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="86" bodyend="86"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypernode_1aa52ddab7be72f4c341fade6925a0452f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int Hypernode::id</definition>
+        <argsstring>() const </argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="88" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="88" bodyend="88"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypernode_1acc243e907de8a37389db2ace52762f8b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Hypernode::set_id</definition>
+        <argsstring>(int id)</argsstring>
+        <name>set_id</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="90" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="90" bodyend="90"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypernode_1a022ebc912865cf2d88542af747d81f6e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Hypernode::add_edge</definition>
+        <argsstring>(const Hyperedge *edge)</argsstring>
+        <name>add_edge</name>
+        <param>
+          <type>const <ref refid="classHyperedge" kindref="compound">Hyperedge</ref> *</type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="92" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="92" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt; &amp;</type>
+        <definition>const vector&lt;HEdge&gt;&amp; Hypernode::edges</definition>
+        <argsstring>() const </argsstring>
+        <name>edges</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="97" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="97" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypernode_1a1f60b0a9441e466f770429c510f2a35a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Hypernode::terminal</definition>
+        <argsstring>() const </argsstring>
+        <name>terminal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="99" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="99" bodyend="99"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><ref refid="classHypernode" kindref="compound">Hypernode</ref> - Constant representation of a hypernode in a hypergraph. Accessors for edges above and below. </para>    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="81" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="81" bodyend="105"/>
+    <listofallmembers>
+      <member refid="classHypernode_1a022ebc912865cf2d88542af747d81f6e" prot="public" virt="non-virtual"><scope>Hypernode</scope><name>add_edge</name></member>
+      <member refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" prot="public" virt="non-virtual"><scope>Hypernode</scope><name>edges</name></member>
+      <member refid="classHypernode_1aad8f65115e39bdbe11b76e61d5477789" prot="private" virt="non-virtual"><scope>Hypernode</scope><name>edges_</name></member>
+      <member refid="classHypernode_1af1bfd7e8478a49d7780e76c69dc45a4b" prot="public" virt="non-virtual"><scope>Hypernode</scope><name>Hypernode</name></member>
+      <member refid="classHypernode_1aa52ddab7be72f4c341fade6925a0452f" prot="public" virt="non-virtual"><scope>Hypernode</scope><name>id</name></member>
+      <member refid="classHypernode_1a083cadfcef38537917657dd04f2876b6" prot="private" virt="non-virtual"><scope>Hypernode</scope><name>id_</name></member>
+      <member refid="classHypernode_1ab8fc1812ca53d8da4a76f2f1fb2ae6d9" prot="public" virt="non-virtual"><scope>Hypernode</scope><name>label</name></member>
+      <member refid="classHypernode_1a08534f448431247042e85fbc50cb5838" prot="private" virt="non-virtual"><scope>Hypernode</scope><name>label_</name></member>
+      <member refid="classHypernode_1acc243e907de8a37389db2ace52762f8b" prot="public" virt="non-virtual"><scope>Hypernode</scope><name>set_id</name></member>
+      <member refid="classHypernode_1a1f60b0a9441e466f770429c510f2a35a" prot="public" virt="non-virtual"><scope>Hypernode</scope><name>terminal</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
