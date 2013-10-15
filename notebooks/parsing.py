@@ -1,5 +1,5 @@
 
-# In[3]:
+# In[1]:
 
 import pydecode.hyper as ph
 import pydecode.display as display
@@ -8,12 +8,12 @@ import random
 random.seed(0)
 
 
-# In[4]:
+# In[2]:
 
 sentence = "the man walked to the park"
 
 
-# In[5]:
+# In[3]:
 
 Tri = "tri"
 Trap = "trap"
@@ -27,7 +27,7 @@ class Arc(namedtuple("Arc", ["head_index", "modifier_index"])):
     pass
 
 
-# In[19]:
+# In[4]:
 
 def build_first_order(sentence):
     tokens = ["*"] + sentence.split()
@@ -88,21 +88,21 @@ sentence = "fans went wild"
 hypergraph = build_first_order(sentence)
 
 
-# Out[19]:
+# Out[4]:
 
 #     0 (0, 0) 3 []
 #     0 (1, 1) 3 []
 #     0 (2, 2) 3 []
 #     0 (3, 3) 3 []
-#     1 (0, 1) 3 [([<pydecode.hyper.Node object at 0x4421f30>, <pydecode.hyper.Node object at 0x44217b0>], None)]
-#     1 (1, 2) 3 [([<pydecode.hyper.Node object at 0x4421580>, <pydecode.hyper.Node object at 0x44218c8>], None)]
-#     1 (2, 3) 3 [([<pydecode.hyper.Node object at 0x4421530>, <pydecode.hyper.Node object at 0x4421df0>], None)]
-#     2 (0, 2) 3 [([<pydecode.hyper.Node object at 0x4421f30>, <pydecode.hyper.Node object at 0x44215d0>], None), ([<pydecode.hyper.Node object at 0x44218a0>, <pydecode.hyper.Node object at 0x44218c8>], None)]
-#     2 (1, 3) 3 [([<pydecode.hyper.Node object at 0x4421580>, <pydecode.hyper.Node object at 0x4421828>], None), ([<pydecode.hyper.Node object at 0x44214b8>, <pydecode.hyper.Node object at 0x4421df0>], None)]
-#     3 (0, 3) 3 [([<pydecode.hyper.Node object at 0x4421f30>, <pydecode.hyper.Node object at 0x4421670>], None), ([<pydecode.hyper.Node object at 0x44218a0>, <pydecode.hyper.Node object at 0x4421828>], None), ([<pydecode.hyper.Node object at 0x4421b70>, <pydecode.hyper.Node object at 0x4421df0>], None)]
+#     1 (0, 1) 3 [([<pydecode.hyper.Node object at 0x449fad0>, <pydecode.hyper.Node object at 0x449f418>], None)]
+#     1 (1, 2) 3 [([<pydecode.hyper.Node object at 0x449f710>, <pydecode.hyper.Node object at 0x449f850>], None)]
+#     1 (2, 3) 3 [([<pydecode.hyper.Node object at 0x449f6c0>, <pydecode.hyper.Node object at 0x449fd50>], None)]
+#     2 (0, 2) 3 [([<pydecode.hyper.Node object at 0x449fad0>, <pydecode.hyper.Node object at 0x449f8f0>], None), ([<pydecode.hyper.Node object at 0x449f4e0>, <pydecode.hyper.Node object at 0x449f850>], None)]
+#     2 (1, 3) 3 [([<pydecode.hyper.Node object at 0x449f710>, <pydecode.hyper.Node object at 0x449fbc0>], None), ([<pydecode.hyper.Node object at 0x449f1c0>, <pydecode.hyper.Node object at 0x449fd50>], None)]
+#     3 (0, 3) 3 [([<pydecode.hyper.Node object at 0x449fad0>, <pydecode.hyper.Node object at 0x449f968>], None), ([<pydecode.hyper.Node object at 0x449f4e0>, <pydecode.hyper.Node object at 0x449fbc0>], None), ([<pydecode.hyper.Node object at 0x449f6e8>, <pydecode.hyper.Node object at 0x449fd50>], None)]
 # 
 
-# In[20]:
+# In[5]:
 
 def build_weights(_):
     return random.random()
@@ -111,7 +111,7 @@ weights = ph.Weights(hypergraph).build(build_weights)
 # phyper, pweights = ph.prune_hypergraph(hypergraph, weights, 0.5)
 
 
-# In[8]:
+# In[6]:
 
 path, _ = ph.best_path(hypergraph, weights)
 best = weights.dot(path)
@@ -130,7 +130,7 @@ for edge in hypergraph.edges:
         kept.add(edge.id)
 
 
-# Out[8]:
+# Out[6]:
 
 #     5.07134788465
 #     5.07065375625 True
@@ -164,17 +164,17 @@ for edge in hypergraph.edges:
 #     5.11171809051 False
 # 
 
-# In[23]:
+# In[7]:
 
 phyper, pweights = ph.prune_hypergraph(hypergraph, weights, 0.9)
 
 
-# In[10]:
+# In[8]:
 
 #path, _ = ph.best_path(phyper, pweights)
 
 
-# In[28]:
+# In[9]:
 
 import pydecode.lp as lp
 hyperlp = lp.HypergraphLP.make_lp(phyper, pweights)
@@ -183,7 +183,7 @@ hyperlp.lp.writeLP("parse.lp")
 #     print >>w, open("/tmp/tmp.lp").read()
 
 
-# In[30]:
+# In[10]:
 
 class ParseFormat(display.HypergraphPathFormatter):
     def __init__(self, hypergraph, sentence, path):
@@ -216,7 +216,7 @@ class ParseFormat(display.HypergraphPathFormatter):
         return {"shape": "point"}
     def hyperedge_attrs(self, edge):
         return {"arrowhead": "none", 
-                "color": "red" if edge in self.path else "black",
+                "color": "orange" if edge in self.path else "black",
                 "penwidth": 5 if edge in self.path else 1}
         #return {"arrowhead": "none", "style": "" if edge in self.path else "invis" }
 # "shape": "polygon",
@@ -230,8 +230,6 @@ class ParseFormat(display.HypergraphPathFormatter):
 display.to_ipython(hypergraph, ParseFormat(hypergraph, sentence, path))
 
 
-# Out[30]:
+# Out[10]:
 
-#     <IPython.core.display.Image at 0x4630850>
-
-#     <IPython.core.display.Image at 0x4630810>
+#     <IPython.core.display.Image at 0x4528a50>

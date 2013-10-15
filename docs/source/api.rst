@@ -74,6 +74,7 @@ Constraints
 
    Constraints
    Constraints.check
+   Constraint
    Constraint.__getitem__
    Constraint.__iter__
    Constraint.constant
@@ -82,6 +83,7 @@ Constraints
 .. automodule:: pydecode.hyper
    :members:
    :special-members:
+   :exclude-members: __new__
 
 .. automodule:: pydecode.display
    :members:

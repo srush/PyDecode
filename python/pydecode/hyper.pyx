@@ -648,6 +648,14 @@ cdef class Weights:
         self.thisptr = ptr
 
     def __getitem__(self, Edge edge not None):
+        """
+        Get the weight associated with a hyperedge.
+
+        :param edge: The hyperedge.
+        :type edge: :py:class:`Edge`
+
+        :rtype: float
+        """
         return self.thisptr.score(edge.edgeptr)
 
     def dot(self, Path path not None):
@@ -664,6 +672,10 @@ cdef class Weights:
         return result
 
 cdef class Constraint:
+    """
+    A constraint.
+    """
+
     cdef const CConstraint *thisptr
     cdef init(self, const CConstraint *ptr):
         self.thisptr = ptr
@@ -681,13 +693,16 @@ cdef class Constraint:
             return self.thisptr.bias
 
     def __iter__(self):
+        "Returns an iterator over edge terms in the constraint."
         edges = convert_edges(self.thisptr.edges)
         return iter(zip(self.thisptr.coefficients, edges))
 
     def __contains__(self, Edge edge):
+        "Returns true if edge is non-zero in the constraint."
         return self.thisptr.has_edge(edge.edgeptr)
 
     def __getitem__(self, Edge edge):
+        "Returns the term associated with an edge"
         return self.thisptr.get_edge_coefficient(edge.edgeptr)
 
 cdef class Constraints:

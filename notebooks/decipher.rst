@@ -11,21 +11,21 @@ This is a note on running decipherment.
     from nltk.model.ngram import NgramModel
     from nltk.probability import LidstoneProbDist
     import random, math
-    
+
     class Problem:
         def __init__(self, corpus):
             self.t = corpus
             t = list(self.t)
             est = lambda fdist, bins: LidstoneProbDist(fdist, 0.0001)
             self.lm = NgramModel(2, t, estimator = est)
-    
+
             self.letters = set(t) #[chr(ord('a') + i) for i in range(26)]
             self.letters.remove(" ")
             shuffled = list(self.letters)
             random.shuffle(shuffled)
             self.substitution_table = dict(zip(self.letters, shuffled))
             self.substitution_table[" "] = " "
-    
+
         def make_cipher(self, plaintext):
             self.ciphertext = "".join([self.substitution_table[l] for l in plaintext])
             self.plaintext = plaintext
@@ -34,14 +34,14 @@ This is a note on running decipherment.
 
 .. parsed-literal::
 
-    
+
 
 
 .. code:: python
 
     import pydecode.hyper as hyper
     import pydecode.display as display
-    from collections import namedtuple        
+    from collections import namedtuple
 .. code:: python
 
     class Conversion(namedtuple("Conversion", ["i", "cipherletter", "prevletter", "letter"])):
@@ -67,7 +67,7 @@ This is a note on running decipherment.
                 for letter in possibilities:
                     edges = [([prev_node], Conversion(i, c, old_letter, letter))
                              for (old_letter, prev_node) in prev_nodes]
-                    
+
                     node = b.add_node(edges, label = Node(i, c, letter))
                     nodes.append((letter, node))
                 prev_nodes = nodes
@@ -92,7 +92,7 @@ This is a note on running decipherment.
             return [("cluster_" + str(label.i), label.i)]
         # def subgraph_format(self, subgraph):
         #     return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
-    
+
     display.to_ipython(hyper1, CipherFormat(hyper1, []))
 
 
@@ -103,7 +103,7 @@ This is a note on running decipherment.
 
 .. code:: python
 
-    
+
 Constraint is that the sum of edges with the conversion is equal to the
 0.
 
@@ -132,8 +132,8 @@ l^2 constraints
             else:
                 return [(transform(conv.cipherletter, conv.letter), -1)]
         constraints.build([(transform(l, l2), 0)
-                           for l  in letters 
-                           for l2 in letters], 
+                           for l  in letters
+                           for l2 in letters],
                           build)
         return constraints
     constraints = build_constraints(hyper1, simple_problem)
@@ -250,7 +250,7 @@ l^2 constraints
 
 
 Real Problem
-============
+------------
 
 
 .. code:: python
@@ -278,7 +278,7 @@ Real Problem
 .. code:: python
 
     path2, _ = hyper.best_path(hyper2, weights2)
-    
+
     for edge in path2.edges:
         print edge.id
         print weights2[edge]
@@ -394,13 +394,13 @@ Real Problem
     for d in duals[:10]:
         for const in d.constraints:
             print const.label,
-        print 
+        print
 
 .. parsed-literal::
 
     letter_c_from_letter_c letter_b_from_letter_c
     letter_c_from_letter_c letter_b_from_letter_c
-    
+
 
 
 .. code:: python
@@ -422,10 +422,9 @@ Weights are the bigram language model scores.
     path2, _ = hyper.best_path(hyper2, weights2)
     print weights2.dot(path2)
     for edge in path2.edges:
-        print hyper2.label(edge).letter, 
+        print hyper2.label(edge).letter,
 
 .. parsed-literal::
 
      -21.7518564641
-    p r e s   d f   p r e   p r e a d f a d f   p r e n a d f  
-
+    p r e s   d f   p r e   p r e a d f a d f   p r e n a d f

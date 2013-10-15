@@ -7,3 +7,5 @@ More Examples
 
    hypergraphs
    hmm
+   parsing
+   decipher
