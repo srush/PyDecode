@@ -8,3 +8,8 @@ div.related ul {
      background: rgb(76, 85, 85);
      background-image: none;
 }
+
+img {
+    margin: 20px;
+
+}

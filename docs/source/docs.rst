@@ -1,5 +1,6 @@
+================
 Documentation
--------------
+================
 
 .. toctree::
    :maxdepth: 2
@@ -9,3 +10,4 @@ Documentation
    notebooks/index
    api
    cpp_api
+   gallery

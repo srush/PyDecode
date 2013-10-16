@@ -1,6 +1,3 @@
-Parsing
-=============
-
 
 PyDecode is a dynamic programming toolkit being developed to help researchers studying natural language processing.
 
@@ -28,6 +25,18 @@ We built this toolkit because:
 This presentation_ discusses the background for this work.
 
 .. _presentation: https://github.com/srush/PyDecode/raw/master/writing/slides/slides.pdf
+
+
+Tutorial and Galleries
+----------------------
+
+.. hlist::
+   :columns: 2
+
+   * documentation_
+   * tutorial_
+   * gallery_
+   * api_
 
 
 Features
@@ -63,17 +72,6 @@ structures are written in C++ with Cython bindings. Our aim is to keep
 the C++ codebase as small as possible.
 
 
-Tutorial and Galleries
-----------------------
-
-.. hlist::
-   :columns: 2
-
-   * documentation_
-   * tutorial_
-   * gallery_
-   * api_
-
-.. _gallery: http://pydecode.readthedocs.org/en/latest/notebooks/tutorial.html
+.. _gallery: http://pydecode.readthedocs.org/en/latest/notebooks/gallery.html
 .. _tutorial: http://pydecode.readthedocs.org/en/latest/notebooks/tutorial.html
 .. _api: http://pydecode.readthedocs.org/en/latest/notebooks/api.html
