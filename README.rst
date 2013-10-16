@@ -13,18 +13,15 @@ For full description of the project see the documentation_.
    :align: center
 
 
-Motivation
--------------
+.. Motivation
+.. -------------
 
-We built this toolkit because:
+.. We built this toolkit because:
 
-* **Dynamic programming is hard** to get right and painful to debug.
-* **Run-time efficiency** is crucial for many NLP tasks.
-* **Extensions** to dynamic programming often require extensive extra programming.
+.. * **Dynamic programming is hard** to get right and painful to debug.
+.. * **Run-time efficiency** is crucial for many NLP tasks.
+.. * **Extensions** to dynamic programming often require extensive extra programming.
 
-This presentation_ discusses the background for this work.
-
-.. _presentation: https://github.com/srush/PyDecode/raw/master/writing/slides/slides.pdf
 
 
 Documentation, Tutorial and Gallery
@@ -43,6 +40,9 @@ Features
 -------------
 
 Currently the toolkit is in early development but should be ready to be used.
+This presentation_ discusses the background for this work.
+
+.. _presentation: https://github.com/srush/PyDecode/raw/master/writing/slides/slides.pdf
 
 Dynamic Programming
 ======================
