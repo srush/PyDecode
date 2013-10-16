@@ -3,14 +3,14 @@ Setup
 ---------------
 
 Installation
-~~~~~~~~~~~~
+=============
 
 Install using pip
 
     $ pip install pydecode
 
 Optional Dependencies
-~~~~~~~~~~~~
+=====================
 
 Networkx and PyGraphviz
 -------------

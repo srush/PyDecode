@@ -1,17 +1,43 @@
 import networkx as nx
 
 class HypergraphFormatter:
+    """
+    The base class for hypergraph formatters.
+    Define the style-sheet for graphviz representation.
+
+    Full list available - http://www.graphviz.org/content/attrs
+    """
     def __init__(self, hypergraph):
         self.hypergraph = hypergraph
+
     def graph_attrs(self):
+        "Returns a dictionary of graph properties."
         return {"rankdir": "RL"}
+
     def hypernode_attrs(self, node):
+        """
+        Returns a dictionary of node properties for style hypernode.
+
+        :param node: The hypernode to style.
+        """
         return {"shape": "ellipse", "label":str(self.hypergraph.node_label(node))}
+
     def hyperedge_node_attrs(self, edge):
+        """
+        Returns a dictionary of node properties for styling intermediate hyperedge nodes.
+
+        :param edge: The hyperedge to style.
+        """
         return {"shape": "rect",
                 "label": str(self.hypergraph.label(edge))}
     def hyperedge_attrs(self, edge):
+        """
+        Returns a dictionary of edge properties for styling hyperedge.
+
+        :param edge: The hyperedge to style.
+        """
         return {}
+
     def hypernode_subgraph(self, node): return []
     def hyperedge_subgraph(self, edge): return []
     def subgraph_format(self, subgraph): return {}
@@ -51,9 +77,13 @@ def to_networkx(hypergraph, graph_format):
     """Convert hypergraph to networkx graph representation.
 
     :param hypergraph: The hypergraph to convert.
-    :param graph_format: A dictionary of formatting options.
-    """
+    :type hypergraph: :py:class:`Hypergraph`
 
+    :param graph_format: A hypergraph formatter.
+    :type graph_format: :py:class:`HypergraphFormatter`
+
+    :rtype: NetworkX Graph
+    """
 
     graph = nx.DiGraph()
     def e(edge): return "e" + str(edge.id)
@@ -77,6 +107,17 @@ def to_networkx(hypergraph, graph_format):
     return graph
 
 def to_image(hypergraph, filename, graph_format):
+    """
+    :param hypergraph: The hypergraph to convert.
+    :type hypergraph: :py:class:`Hypergraph`
+
+    :param filename: A filename to writeout image.
+
+    :param graph_format: A hypergraph formatter.
+    :type graph_format: :py:class:`HypergraphFormatter`
+
+    :rtype: NetworkX Graph
+    """
     subgraphs = {}
     G = to_networkx(hypergraph, graph_format)
     agraph = nx.drawing.to_agraph(G)
@@ -108,9 +149,12 @@ def to_ipython(hypergraph, graph_format):
     """Display a hypergraph in iPython.
 
     :param hypergraph: The hypergraph to convert.
-    :param extra: Extra naming information for edges.
-    :param node_extra: Extra naming information for nodes.
-    :param paths: Paths to highlight in the graph.
+    :type hypergraph: :py:class:`Hypergraph`
+
+    :param graph_format: A hypergraph formatter.
+    :type graph_format: :py:class:`HypergraphFormatter`
+
+    :rtype: IPython display object.
     """
 
     from IPython.display import Image
@@ -139,6 +183,9 @@ def pretty_print_path(path):
 
 
 def report(duals):
+    """Display a constrained result in IPython
+    """
+
     import pandas as pd
     df = pd.DataFrame(
         data = {"dual": [d.dual for d in duals],

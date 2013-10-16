@@ -14,7 +14,7 @@ Construction
    Weights.build
    Constraints.build
 
-Access
+Hypergraph Access
 ---------------
 
 .. automodule:: pydecode.hyper
@@ -30,16 +30,6 @@ Access
    Edge.head
    Edge.tail
 
-Display
----------------
-
-.. automodule:: pydecode.display
-.. autosummary::
-   :toctree:
-
-   to_ipython
-   to_networkx
-
 Algorithms
 ---------------
 
@@ -50,6 +40,7 @@ Algorithms
    best_path
    outside_path
    best_constrained
+   prune_hypergraph
    Path
    Path.__iter__
    Path.__contains__
@@ -84,6 +75,3 @@ Constraints
    :members:
    :special-members:
    :exclude-members: __new__
-
-.. automodule:: pydecode.display
-   :members:

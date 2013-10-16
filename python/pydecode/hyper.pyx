@@ -307,24 +307,38 @@ cdef class ConstrainedResult:
         self.thisptr = ptr
 
     property path:
-        "The hyperpath associated with this round."
+        """The hyperpath associated with this round.
+
+        :rtype: :py:class:`Hyperpath`
+        """
         def __get__(self):
             path = Path()
             path.init(self.thisptr.path)
             return path
 
     property dual:
-        "The dual value for this round."
+        """The dual value for this round.
+
+        :rtype: float
+        """
         def __get__(self):
             return self.thisptr.dual
 
     property primal:
-        "The primal value for this round."
+        """
+        The primal value for this round.
+
+        :rtype: float
+        """
         def __get__(self):
             return self.thisptr.primal
 
     property constraints:
-        "The constraints violated for this round."
+        """
+        The constraints violated for this round.
+
+        :rtype: list of :py:class:`Constraint`
+        """
         def __get__(self):
             return convert_constraints(self.thisptr.constraints)
 
@@ -355,17 +369,29 @@ cdef class Hypergraph:
 
 
     property nodes:
-        "An iterator of hypernodes."
+        """
+        An iterator of hypernodes.
+
+        :rtype: iterator of :py:class:`Node`
+        """
         def __get__(self):
             return convert_nodes(self.thisptr.nodes())
 
     property root:
-        "The root hypernode."
+        """
+        The root hypernode.
+
+        :rtype: :py:class:`Node`
+        """
         def __get__(self):
             return convert_node(self.thisptr.root())
 
     property edges:
-        "An iterator of hyperedges."
+        """
+        An iterator of hyperedges.
+
+        :rtype: iterator of :py:class:`Edge`
+        """
         def __get__(self):
             return convert_edges(self.thisptr.edges())
 
@@ -381,6 +407,7 @@ cdef class Hypergraph:
         :param edge: A hyperedge in the hypergraph.
         :type edge: :py:class:`Edge`
 
+        :rtype: any
         """
         return self.edge_labels[edge.id]
 
@@ -391,6 +418,7 @@ cdef class Hypergraph:
         :param node: A hypernode in the hypergraph.
         :type node: :py:class:`Node`
 
+        :rtype: any
         """
         return self.node_labels[node.id]
 
@@ -398,7 +426,7 @@ cdef class GraphBuilder:
     """
     Build a hypergraph. Created using
 
-    with hypergraph.builder() as b:
+
     """
     cdef CHypergraph *thisptr
     cdef Hypergraph hyper
@@ -414,12 +442,19 @@ cdef class GraphBuilder:
         self.started = False
 
     def __enter__(self):
-        """Start building the hypergraph"""
+        """
+        Start building the hypergraph.
+
+        Use as with hypergraph.builder() as b:
+        """
         self.started = True
         return self
 
     def __exit__(self, exception, b, c):
-        """End building the hypergraph"""
+        """End building the hypergraph
+
+        Automatically called when exiting with block.
+        """
         if exception:
            return False
         self.started = False
@@ -439,8 +474,14 @@ cdef class GraphBuilder:
         """
         Add a node to the hypergraph.
 
-        :param edges: A list of the form ([v_2, v_3..], label).
-        :type label: list of pairs
+
+
+
+        :param edges: An iterator where each of the items is of the form
+        ([v_2, v_3..], label)  where v_2 ... are :py:class:`Node`s and
+        label is an edge label of any type.
+
+        :type label: iterator of pairs
 
         :param label: Optional label for the node.
         :type label: any
@@ -541,7 +582,7 @@ cdef class Edge:
         """
         The tail hypernodes for this edge.
 
-        An iterator of :py:class:`Node`s
+        :rtype: An iterator of :py:class:`Node`s
         """
         def __get__(self):
             return convert_nodes(self.edgeptr.tail_nodes())

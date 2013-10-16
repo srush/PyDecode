@@ -1,3 +1,6 @@
+================
+Parsing
+================
 
 .. code:: python
 
@@ -18,7 +21,7 @@
     class NodeType(namedtuple("NodeType", ["type", "dir", "span"])):
         def __str__(self):
             return "%s %s %d-%d"%(self.type, self.dir, self.span[0], self.span[1])
-    
+
     class Arc(namedtuple("Arc", ["head_index", "modifier_index"])):
         pass
 .. code:: python
@@ -32,45 +35,45 @@
                 edges = [e for e in edges if e is not None]
                 if edges or terminal:
                     chart[key] = b.add_node(edges, label = key)
-    
+
             def add_edge(key1, key2):
                 left = chart[key1]
                 right = chart[key2]
                 if left is not None and right is not None:
                     return ([left, right], None)
                 return None
-    
+
             n = len(tokens)
-    
+
             # Add terminal nodes.
             [add_node(b, [], NodeType(c, d, (s, s)), True)
              for s in range(n)
              for d in [Right, Left]
              for c in [Trap, Tri]]
-    
+
             for k in range(n):
                 for s in range(n):
                     t = k + s
                     if t >= n: break
                     span = (s, t)
-    
+
                     # First create incomplete items.
                     edges = [add_edge(NodeType(Tri, Right, (s, r)),
                                       NodeType(Tri, Left, (r+1, t)))
                              for r in range(s, t)]
                     add_node(b, edges, NodeType(Trap, Left, span))
-    
+
                     edges = [add_edge(NodeType(Tri, Right, (s, r)),
                                       NodeType(Tri, Left, (r+1, t)))
                              for r in range(s, t)]
                     add_node(b, edges, NodeType(Trap, Right, span))
-    
+
                     # Second create complete items.
                     edges = [add_edge(NodeType(Tri, Left, (s, r)),
                                       NodeType(Trap, Left, (r, t)))
                              for r in range(s, t)]
                     add_node(b, edges, NodeType(Tri, Left, span))
-                
+
                     edges = [add_edge(NodeType(Trap, Right, (s, r)),
                                       NodeType(Tri, Right, (r, t)))
                              for r in range(s + 1, t + 1)]
@@ -87,12 +90,12 @@
     0 (1, 1) 3 []
     0 (2, 2) 3 []
     0 (3, 3) 3 []
-    1 (0, 1) 3 [([<pydecode.hyper.Node object at 0x449fad0>, <pydecode.hyper.Node object at 0x449f418>], None)]
-    1 (1, 2) 3 [([<pydecode.hyper.Node object at 0x449f710>, <pydecode.hyper.Node object at 0x449f850>], None)]
-    1 (2, 3) 3 [([<pydecode.hyper.Node object at 0x449f6c0>, <pydecode.hyper.Node object at 0x449fd50>], None)]
-    2 (0, 2) 3 [([<pydecode.hyper.Node object at 0x449fad0>, <pydecode.hyper.Node object at 0x449f8f0>], None), ([<pydecode.hyper.Node object at 0x449f4e0>, <pydecode.hyper.Node object at 0x449f850>], None)]
-    2 (1, 3) 3 [([<pydecode.hyper.Node object at 0x449f710>, <pydecode.hyper.Node object at 0x449fbc0>], None), ([<pydecode.hyper.Node object at 0x449f1c0>, <pydecode.hyper.Node object at 0x449fd50>], None)]
-    3 (0, 3) 3 [([<pydecode.hyper.Node object at 0x449fad0>, <pydecode.hyper.Node object at 0x449f968>], None), ([<pydecode.hyper.Node object at 0x449f4e0>, <pydecode.hyper.Node object at 0x449fbc0>], None), ([<pydecode.hyper.Node object at 0x449f6e8>, <pydecode.hyper.Node object at 0x449fd50>], None)]
+    1 (0, 1) 3 [([<pydecode.hyper.Node object at 0x4421f30>, <pydecode.hyper.Node object at 0x44217b0>], None)]
+    1 (1, 2) 3 [([<pydecode.hyper.Node object at 0x4421580>, <pydecode.hyper.Node object at 0x44218c8>], None)]
+    1 (2, 3) 3 [([<pydecode.hyper.Node object at 0x4421530>, <pydecode.hyper.Node object at 0x4421df0>], None)]
+    2 (0, 2) 3 [([<pydecode.hyper.Node object at 0x4421f30>, <pydecode.hyper.Node object at 0x44215d0>], None), ([<pydecode.hyper.Node object at 0x44218a0>, <pydecode.hyper.Node object at 0x44218c8>], None)]
+    2 (1, 3) 3 [([<pydecode.hyper.Node object at 0x4421580>, <pydecode.hyper.Node object at 0x4421828>], None), ([<pydecode.hyper.Node object at 0x44214b8>, <pydecode.hyper.Node object at 0x4421df0>], None)]
+    3 (0, 3) 3 [([<pydecode.hyper.Node object at 0x4421f30>, <pydecode.hyper.Node object at 0x4421670>], None), ([<pydecode.hyper.Node object at 0x44218a0>, <pydecode.hyper.Node object at 0x4421828>], None), ([<pydecode.hyper.Node object at 0x4421b70>, <pydecode.hyper.Node object at 0x4421df0>], None)]
 
 
 .. code:: python
@@ -100,7 +103,7 @@
     def build_weights(_):
         return random.random()
     weights = ph.Weights(hypergraph).build(build_weights)
-    
+
     # phyper, pweights = ph.prune_hypergraph(hypergraph, weights, 0.5)
 .. code:: python
 
@@ -178,16 +181,16 @@
             return {"rankdir": "TB", "clusterrank": "local"}
         def hypernode_attrs(self, node):
             label = self.hypergraph.node_label(node)
-            return {"image": 
-                    ("triangle" if label.type == Tri else "trap") + "-" + 
+            return {"image":
+                    ("triangle" if label.type == Tri else "trap") + "-" +
                     ("right" if label.dir == Right else "left") + ".png",
                     "labelloc": "t",
                     "shape": "rect",
                     "style" : "dashed",
-                    "label": "%d-%d"%(label.span[0], label.span[1]) 
-                    if label.span[0] != label.span[1] else 
+                    "label": "%d-%d"%(label.span[0], label.span[1])
+                    if label.span[0] != label.span[1] else
                     (["*"] + sentence.split())[label.span[0]],
-    
+
                     }
         def hypernode_subgraph(self, node):
             label = self.hypergraph.node_label(node)
@@ -199,16 +202,16 @@
         def hyperedge_node_attrs(self, edge):
             return {"shape": "point"}
         def hyperedge_attrs(self, edge):
-            return {"arrowhead": "none", 
-                    "color": "orange" if edge in self.path else "black",
+            return {"arrowhead": "none",
+                    "color": "red" if edge in self.path else "black",
                     "penwidth": 5 if edge in self.path else 1}
             #return {"arrowhead": "none", "style": "" if edge in self.path else "invis" }
     # "shape": "polygon",
     #                 "skew" : 0.5 if label.dir == Left  else -0.5,
     #                 "sides" : 3 if label.type == Tri else 4,
-                    
+
     #display.to_ipython(phyper, ParseFormat(phyper, sentence, path))
-    
+
     # display.to_image(hypergraph, "parse_hypergraph.png", ParseFormat(hypergraph, sentence, path))
     # display.to_image(hypergraph, "parse_hypergraph_no_path.png", ParseFormat(hypergraph, sentence, []))
     display.to_ipython(hypergraph, ParseFormat(hypergraph, sentence, path))
@@ -218,3 +221,7 @@
 .. image:: parsing_files/parsing_9_0.png
 
 
+
+
+
+.. image:: parsing_files/parsing_9_1.png

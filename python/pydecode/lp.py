@@ -14,6 +14,14 @@ class HypergraphLP:
         self.edge_vars = edge_vars
 
     def solve(self, solver=None):
+        """
+        Solve the underlying hypergraph linear program and return the best path.
+
+        :param solver: A PuLP solver
+
+        :rtype: :py:class:`Path`
+        """
+
         status = self.lp.solve()
         path_edges = [edge
                       for edge in self.hypergraph.edges
@@ -21,6 +29,13 @@ class HypergraphLP:
         return ph.Path(self.hypergraph, path_edges)
 
     def add_constraints(constraints):
+        """
+        Add hard constraints to the hypergraph.
+
+        :param constraints: A PuLP solver
+        :type constraints: :py:class:`Constraints`
+        """
+
         for constraint in constraints:
             self.lp += constraint.constrant == \
                 sum([coeff * self.edge_vars[edge.id]
@@ -30,6 +45,19 @@ class HypergraphLP:
     def make_lp(hypergraph, weights,
                 name="Hypergraph Problem",
                 var_type=pulp.LpContinuous):
+        """
+        Construct a linear program from a hypergraph.
+
+        :param hypergraph: The hypergraph.
+        :type hypergraph: :py:class:`Hypergraph`
+
+        :param weights: The hypergraph weights.
+        :type weights: :py:class:`Weights`
+
+
+        :rtype: :py:class:`HypergraphLP`
+
+        """
         prob = pulp.LpProblem("Hypergraph Problem", pulp.LpMinimize)
 
         def node_name(node):

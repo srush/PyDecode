@@ -27,7 +27,7 @@ This presentation_ discusses the background for this work.
 .. _presentation: https://github.com/srush/PyDecode/raw/master/writing/slides/slides.pdf
 
 
-Tutorial and Galleries
+Documentation, Tutorial and Gallery
 ----------------------
 
 .. hlist::
