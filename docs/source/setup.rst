@@ -28,6 +28,12 @@ IPython
 Provides features for working with graphs in IPython and IPython notebook.
 
 
+PyStruct
+-------------
+
+Provides methods for training the parameters of a hypergraph model.
+
+
 PuLP and an LP solver (such as glpk or gurobi)
 -------------
 
