@@ -1,12 +1,11 @@
 import pydecode.hyper as ph
 from pydecode.semiring import *
-INF = 1e8
+
 
 
 class ChartBuilder:
     """
     A dynamic programming chart parameterized by semiring.
-
 
     """
 
@@ -39,6 +38,10 @@ class ChartBuilder:
         self._last = None
 
     def finish(self):
+        """
+        Finish the chart and get out the root value.
+        """
+
         if self._done:
             raise Exception("Hypergraph not constructed")
         if self._builder:
@@ -52,6 +55,10 @@ class ChartBuilder:
         return self._semiring.make(self._scorer(label))
 
     def init(self, node_label):
+        """
+        Initialize a chart cell to 1.
+        """
+
         if self._builder:
             print "start"
             node = self._build.add_node([], label=node_label)
@@ -60,6 +67,7 @@ class ChartBuilder:
             self._chart[node_label] = self._semiring.one()
 
     def sum(self, edges):
+        "Combine values with + semiring operation."
         return sum(edges, self._semiring.zero())
 
     def __setitem__(self, label, val):

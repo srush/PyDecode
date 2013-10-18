@@ -1,5 +1,11 @@
 INF = 1e8
 class SemiRing:
+    """
+    A semiring operation.
+
+    Implements + and *
+
+    """
     def __add__(self, other):
         raise NotImplementedError()
 
@@ -18,6 +24,11 @@ class SemiRing:
 
 
 class ViterbiSemiRing(SemiRing):
+    """
+    The viterbi max semiring.
+
+    """
+
     def __init__(self, v): self.v = v
 
     def __repr__(self): return self.v.__repr__()

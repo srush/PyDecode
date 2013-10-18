@@ -1,0 +1,7 @@
+[Bigram(word='the', tag='D', prevtag='ROOT'),
+ Bigram(word='dog', tag='N', prevtag='D'),
+ Bigram(word='walked', tag='V', prevtag='N'),
+ Bigram(word='in', tag='D', prevtag='V'),
+ Bigram(word='the', tag='N', prevtag='D'),
+ Bigram(word='park', tag='V', prevtag='N'),
+ Bigram(word='END', tag='END', prevtag='V')]
