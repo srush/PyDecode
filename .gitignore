@@ -73,3 +73,7 @@ build_config.py
 *.syntex.gz
 *.toc
 *.vrb
+*.synctex.gz
+*.snm
+
+generated/

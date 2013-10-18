@@ -1,0 +1,41 @@
+import os
+env = Environment(ENV=os.environ)
+diagram_tex_files = list(env.Glob("diagrams/*.tex"))
+plot_tex_files = list(env.Glob("plots/*.tex"))
+animation_tex_files = list(env.Glob("animations/*.tex"))
+custom_tex_files = list(env.Glob("custom/*.tex"))
+
+generated_tex_files = diagram_tex_files + animation_tex_files + plot_tex_files
+all_tex_files = generated_tex_files + custom_tex_files
+all_tex_files = map(str, all_tex_files)
+
+env.Command([generated_tex_files], ["scripts/generate_diagrams.py"], 
+             "python scripts/generate_diagrams.py")
+
+all_pictures = []
+for tex_file in all_tex_files:
+  name = tex_file.split(".")[0]
+  pdf_file = name + ".pdf"
+  all_pictures += env.Command([pdf_file], [tex_file], "rubber  -d -f --inplace " + str(tex_file))
+env.Command("slides.pdf", ["slides.tex"] + all_pictures, "rubber  -d -f slides.tex")
+
+# Write all the tex files as pgfdeclareimage's
+file_list = "pictures_header.tex"
+out = open(file_list, "w")
+for tex_file in all_tex_files:
+  full_name = str(tex_file).split(".")[0]
+  name = full_name.split("/")[-1]
+  print >>out, r"\pgfdeclareimage{%s}{%s}"%(name, full_name)
+
+
+for graph_file in list(env.Glob("diagrams/*.png")):
+  full_name = str(graph_file).split(".")[0]
+  name = full_name.split("/")[-1]
+  print >>out, r"\pgfdeclareimage{%s}{%s}"%(name, full_name)
+
+for graph_file in list(env.Glob("diagrams/*.pdf")):
+  full_name = str(graph_file).split(".")[0]
+  name = full_name.split("/")[-1]
+  print >>out, r"\pgfdeclareimage{%s}{%s}"%(name, full_name)
+
+out.close()
