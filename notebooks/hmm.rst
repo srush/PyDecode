@@ -8,6 +8,7 @@ A Constrained HMM Example
     import pydecode.hyper as ph
     import pydecode.display as display
     from collections import namedtuple
+    import pydecode.chart as chart
 We begin by constructing the HMM probabilities.
 
 .. code:: python
@@ -38,30 +39,70 @@ Next we specify the the index set using namedtuples.
         def __str__(self): return "%s -> %s"%(self.prevtag, self.tag)
     class Tagged(namedtuple("Tagged", ["position", "word", "tag"])):
         def __str__(self): return "%s %s"%(self.word, self.tag)
-Now we are ready to build the hypergraph topology itself.
-
-.. code:: python
-
-    hypergraph = ph.Hypergraph()                      
-    with hypergraph.builder() as b:
-        node_start = b.add_node(label = Tagged(-1, "<s>", "<t>"))
-        node_list = [(node_start, "ROOT")]
-        words = sentence.strip().split(" ") + ["END"]
-            
-        for i, word in enumerate(words):
-            next_node_list = []
-            for tag in emission[word].iterkeys():
-                edges = (([prev_node], Bigram(word, tag, prev_tag))
-                         for prev_node, prev_tag in node_list)
-                node = b.add_node(edges, label = Tagged(i, word, tag))
-                next_node_list.append((node, tag))
-            node_list = next_node_list
-Step 3: Construct the weights.
-
 .. code:: python
 
     def build_weights((word, tag, prev_tag)):
         return transition[prev_tag][tag] + emission[word][tag] 
+.. code:: python
+
+    def viterbi(chart):
+        words = ["ROOT"] + sentence.strip().split(" ") + ["END"]
+        c.init(Tagged(0, "ROOT", "ROOT"))    
+        for i, word in enumerate(words[1:], 1):
+            prev_tags = emission[words[i - 1]].keys()
+            for tag in emission[word].iterkeys():
+                ls = [c[key] * c.sr(Bigram(word, tag, prev)) 
+                         for prev in prev_tags 
+                         for key in [Tagged(i - 1, words[i - 1], prev)] if key in c]
+                c[Tagged(i, word, tag)] = c.sum(ls)
+        return c
+Now we are ready to build the hypergraph topology itself.
+
+.. code:: python
+
+    c = chart.ChartBuilder(lambda a: build_weights(Bigram(*a)))
+    the_chart = viterbi(c)
+    the_chart[Tagged(7 , "END", "END")].v
+
+.. parsed-literal::
+
+    the V 0.4
+    the D 1.2000000000000002
+    the N 0.4
+    dog V 1.4000000000000001
+    dog D 1.4000000000000001
+    dog N 2.8000000000000003
+    walked V 4.6000000000000005
+    in D 6.0
+    the V 6.2
+    the D 6.9
+    the N 6.9
+    park V 8.600000000000001
+    park N 7.800000000000001
+    END END 9.600000000000001
+
+
+
+
+.. parsed-literal::
+
+    9.600000000000001
+
+
+
+.. code:: python
+
+    hyper = ph.Hypergraph()
+    with hyper.builder() as b:
+        the_chart = chart.ChartBuilder(lambda a: Bigram(*a), b, chart.HypergraphSemiRing)
+
+.. code:: python
+
+    
+Step 3: Construct the weights.
+
+.. code:: python
+
     weights = ph.Weights(hypergraph).build(build_weights)
 .. code:: python
 
@@ -98,7 +139,7 @@ Step 3: Construct the weights.
 
 
 
-.. image:: hmm_files/hmm_11_0.png
+.. image:: hmm_files/hmm_15_0.png
 
 
 
@@ -125,7 +166,7 @@ graphviz (http://www.graphviz.org/content/attrs)
 
 
 
-.. image:: hmm_files/hmm_13_0.png
+.. image:: hmm_files/hmm_17_0.png
 
 
 
@@ -180,7 +221,7 @@ Solve instead using subgradient.
     display.report(duals)
 
 
-.. image:: hmm_files/hmm_21_0.png
+.. image:: hmm_files/hmm_25_0.png
 
 
 .. code:: python
@@ -223,7 +264,7 @@ Solve instead using subgradient.
 
 
 
-.. image:: hmm_files/hmm_25_0.png
+.. image:: hmm_files/hmm_29_0.png
 
 
 
@@ -258,7 +299,7 @@ Solve instead using subgradient.
 
 
 
-.. image:: hmm_files/hmm_27_0.png
+.. image:: hmm_files/hmm_31_0.png
 
 
 
@@ -276,7 +317,7 @@ Pruning
 
 
 
-.. image:: hmm_files/hmm_31_0.png
+.. image:: hmm_files/hmm_35_0.png
 
 
 

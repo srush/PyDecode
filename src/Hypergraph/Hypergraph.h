@@ -152,6 +152,9 @@ class Hypergraph {
 
   // Complete the hypergraph.
   void finish() {
+    if (temp_nodes_.size() == 0) {
+      throw HypergraphException("Hypergraph has size 0.");
+    }
     root_ = temp_nodes_[temp_nodes_.size() - 1];
     fill();
     // TODO(srush) Run checks to make sure we are complete.

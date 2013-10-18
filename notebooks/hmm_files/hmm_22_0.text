@@ -1,7 +1,1 @@
-ROOT -> D
-D -> N
-N -> V
-V -> D
-D -> D
-D -> N
-N -> END
+check ['tag_V', 'tag_N']
