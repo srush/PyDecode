@@ -6,20 +6,44 @@ class HypergraphLP:
     """
     Representation of a hypergraph LP.
     Requires the pulp library.
+    
     """
     def __init__(self, lp, hypergraph, node_vars, edge_vars):
+        """
+        Initialize the hypergraph LP
+    
+        Parameters
+        ------------
+
+        lp : PuLP linear program
+        hypergraph : A hypergraph.
+        node_vars : The node variables :math:`y(v)` for all :math:`v \in {\cal V}`.
+        edge_vars : The hyperedge variables :math:`y(e)` for all :math:`e \in {\cal E}`.
+        
+        """
+
         self.lp = lp
         self.hypergraph = hypergraph
         self.node_vars = node_vars
         self.edge_vars = edge_vars
 
     def solve(self, solver=None):
-        """
+        r"""
         Solve the underlying hypergraph linear program and return the best path.
 
-        :param solver: A PuLP solver
+         :math:`\arg \max_{y \in {\cal X}} \theta^{\top}y`.
 
-        :rtype: :py:class:`Path`
+        Parameters
+        ----------
+
+        solver: LP solver
+           A PuLP LP solver (glpsol, Gurobi, etc.)
+
+        Returns
+        ---------
+
+        path
+           The best path.
         """
 
         status = self.lp.solve()
@@ -32,8 +56,10 @@ class HypergraphLP:
         """
         Add hard constraints to the hypergraph.
 
-        :param constraints: A PuLP solver
-        :type constraints: :py:class:`Constraints`
+        Parameters
+        -----------
+
+        constraints : :py:class:`Constraints`
         """
 
         for constraint in constraints:
@@ -48,14 +74,18 @@ class HypergraphLP:
         """
         Construct a linear program from a hypergraph.
 
-        :param hypergraph: The hypergraph.
-        :type hypergraph: :py:class:`Hypergraph`
 
-        :param weights: The hypergraph weights.
-        :type weights: :py:class:`Weights`
+        Parameters
+        ----------
+
+        hypergraph: :py:class:`Hypergraph`
+        weights: :py:class:`Weights`
 
 
-        :rtype: :py:class:`HypergraphLP`
+        Returns
+        --------
+
+        lp : :py:class:`HypergraphLP`
 
         """
         prob = pulp.LpProblem("Hypergraph Problem", pulp.LpMinimize)

@@ -9,10 +9,12 @@ Documentation
 
    setup
    theory
+   constraints
+   lp
    notebooks/tutorial
-   notebooks/index
    api
    display
    lp
    cpp_api
    gallery
+   notebooks/index

@@ -21,7 +21,8 @@ sys.path.append(os.path.abspath('_themes'))
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../../python/'))
 
-sys.path.append( "../ext/breathe/" )
+sys.path.append(os.path.abspath("../ext/breathe/") )
+sys.path.append(os.path.abspath("../ext/") )
 
 breathe_projects = { "pydecode": os.path.abspath("../xml/") }
 breathe_default_project = "pydecode"
@@ -43,8 +44,13 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'breathe'
+    'breathe',
+    'numpydoc'
 ]
+
+autosummary_generate = True
+
+autodoc_default_flags = ['members', 'inherited-members']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

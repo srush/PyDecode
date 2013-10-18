@@ -18,7 +18,11 @@ class HypergraphFormatter:
         """
         Returns a dictionary of node properties for style hypernode.
 
-        :param node: The hypernode to style.
+        Parameters
+        -------------
+
+        node :  
+           The hypernode to style.
         """
         return {"shape": "ellipse", "label":str(self.hypergraph.node_label(node))}
 
@@ -26,7 +30,11 @@ class HypergraphFormatter:
         """
         Returns a dictionary of node properties for styling intermediate hyperedge nodes.
 
-        :param edge: The hyperedge to style.
+        Parameters
+        -------------
+
+        edge : 
+           The hyperedge to style.
         """
         return {"shape": "rect",
                 "label": str(self.hypergraph.label(edge))}
@@ -34,7 +42,11 @@ class HypergraphFormatter:
         """
         Returns a dictionary of edge properties for styling hyperedge.
 
-        :param edge: The hyperedge to style.
+        Parameters
+        -------------
+
+        edge : 
+           The hyperedge to style.
         """
         return {}
 
@@ -65,6 +77,7 @@ class HypergraphConstraintFormatter(HypergraphFormatter):
     def __init__(self, hypergraph, constraints):
         self.hypergraph = hypergraph
         self.constraints = constraints
+
     def hyperedge_attrs(self, edge):
         colors = ["red", "green", "blue", "purple"]
         for constraint, color in zip(self.constraints, colors):
@@ -76,13 +89,19 @@ class HypergraphConstraintFormatter(HypergraphFormatter):
 def to_networkx(hypergraph, graph_format):
     """Convert hypergraph to networkx graph representation.
 
-    :param hypergraph: The hypergraph to convert.
-    :type hypergraph: :py:class:`Hypergraph`
+    Parameters
+    ------------
 
-    :param graph_format: A hypergraph formatter.
-    :type graph_format: :py:class:`HypergraphFormatter`
+    hypergraph : :py:class:`Hypergraph`
+       The hypergraph to convert.
 
-    :rtype: NetworkX Graph
+    graph_format : :py:class:`HypergraphFormatter`
+       A hypergraph formatter.
+
+    Returns
+    --------
+
+    NetworkX Graph
     """
 
     graph = nx.DiGraph()
@@ -108,15 +127,25 @@ def to_networkx(hypergraph, graph_format):
 
 def to_image(hypergraph, filename, graph_format):
     """
-    :param hypergraph: The hypergraph to convert.
-    :type hypergraph: :py:class:`Hypergraph`
 
-    :param filename: A filename to writeout image.
+    Parameters
+    ------------
 
-    :param graph_format: A hypergraph formatter.
-    :type graph_format: :py:class:`HypergraphFormatter`
+    hypergraph : :py:class:`Hypergraph`
+       The hypergraph to convert.
 
-    :rtype: NetworkX Graph
+
+    filename : string
+       A filename to writeout image.
+
+    graph_format : :py:class:`HypergraphFormatter`
+       A hypergraph formatter.
+
+
+    Returns
+    ---------
+
+    NetworkX Graph
     """
     subgraphs = {}
     G = to_networkx(hypergraph, graph_format)
@@ -146,15 +175,24 @@ def to_image(hypergraph, filename, graph_format):
     agraph.draw(filename)
 
 def to_ipython(hypergraph, graph_format):
-    """Display a hypergraph in iPython.
+    ""
 
-    :param hypergraph: The hypergraph to convert.
-    :type hypergraph: :py:class:`Hypergraph`
+    """
+    Display a hypergraph in iPython.
 
-    :param graph_format: A hypergraph formatter.
-    :type graph_format: :py:class:`HypergraphFormatter`
+    Parameters
+    ------------
 
-    :rtype: IPython display object.
+    hypergraph : :py:class:`Hypergraph`
+       The hypergraph to convert.
+
+    graph_format : :py:class:`HypergraphFormatter`
+       A hypergraph formatter.
+
+    Returns
+    ---------
+
+    IPython display object.
     """
 
     from IPython.display import Image

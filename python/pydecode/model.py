@@ -2,14 +2,16 @@ import pystruct.StructuredModel
 import pydecode.hyper as ph
 import numpy as np
 
-class HypergraphBuilder:
+class HypergraphModelBuilder:
     def features(self, obj):
         pass
 
-    def ():
 
 
 class HypergraphModel(StructuredModel):
+    """
+
+    """
     def __init__(self, hypergraph_builder):
         self.hypergraph_builder = hypergraph_builder
 
