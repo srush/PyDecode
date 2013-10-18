@@ -77,3 +77,4 @@ build_config.py
 *.snm
 
 generated/
+auto/
