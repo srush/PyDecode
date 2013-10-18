@@ -83,7 +83,7 @@ def valid_path(hypergraph, path):
     while stack:
         node = stack[0]
         stack = stack[1:]
-        if node.is_terminal(): continue
+        if node.is_terminal: continue
         count = 0
         for edge in node.edges:
             if edge in path:
@@ -111,7 +111,7 @@ def test_outside():
         for node in h.nodes:
             other = chart[node] + out_chart[node]
             nt.assert_less_equal(other, best  + 1e-4)
-            if node.is_terminal():
+            if node.is_terminal:
                 nt.assert_almost_equal(other, best)
 
 def test_maxmarginals():

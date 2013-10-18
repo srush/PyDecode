@@ -6,12 +6,12 @@ class HypergraphLP:
     """
     Representation of a hypergraph LP.
     Requires the pulp library.
-    
+
     """
     def __init__(self, lp, hypergraph, node_vars, edge_vars):
         """
         Initialize the hypergraph LP
-    
+
         Parameters
         ------------
 
@@ -19,7 +19,7 @@ class HypergraphLP:
         hypergraph : A hypergraph.
         node_vars : The node variables :math:`y(v)` for all :math:`v \in {\cal V}`.
         edge_vars : The hyperedge variables :math:`y(e)` for all :math:`e \in {\cal E}`.
-        
+
         """
 
         self.lp = lp
@@ -123,7 +123,7 @@ class HypergraphLP:
 
         # x(v) = \sum_{e : h(e) = v} x(e)
         for node in hypergraph.nodes:
-            if node.is_terminal(): continue
+            if node.is_terminal: continue
             prob += node_vars[node.id] == sum([edge_vars[edge.id]
                                             for edge in node.edges])
 
