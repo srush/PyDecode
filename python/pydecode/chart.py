@@ -1,108 +1,86 @@
-class ViterbiSemiRing:
-    def __init__(self, v):
-        self.v = v
+import pydecode.hyper as ph
+from pydecode.semiring import *
+INF = 1e8
 
-    def __repr__(self):
-        return self.v.__repr__()
-
-    @staticmethod
-    def one():
-        return ViterbiSemiRing(0.0)
-
-    @staticmethod
-    def zero():
-        return ViterbiSemiRing(-100000)
-
-    def is_zero(self):
-        return self.v == -100000
-
-    @staticmethod
-    def make(v):
-        return ViterbiSemiRing(v)
-
-    def __add__(self, other):
-        return ViterbiSemiRing(max(self.v, other.v))
-
-    def __mul__(self, other):
-        return ViterbiSemiRing(self.v + other.v)
-
-class HypergraphSemiRing:
-    def __init__(self, edge_list=[], node_list=[],
-                 name=None, is_zero=False):
-        self.edge_list = edge_list
-        self.node_list = node_list
-        self.name = name
-        self._is_zero = is_zero
-
-    @staticmethod
-    def one():
-        return HypergraphSemiRing()
-
-    @staticmethod
-    def zero():
-        return HypergraphSemiRing(is_zero=True)
-
-    def is_zero(self):
-        return self._is_zero
-
-    @staticmethod
-    def make(name):
-        return HypergraphSemiRing([], [], name)
-
-    def __add__(self, other):
-        return HypergraphSemiRing(self.edge_list + [(other.node_list, other.name)],
-                                  [], None)
-
-    def __mul__(self, other):
-        zero = other.is_zero() or self.is_zero()
-        if zero: HypergraphSemiRing.zero()
-        return HypergraphSemiRing([],
-                                  self.node_list + other.node_list,
-                                  other.name)
 
 class ChartBuilder:
-    def __init__(self,
-                 scorer,
-                 builder=None,
-                 semiring=ViterbiSemiRing):
-        self.builder = builder
-        self.chart = {}
-        self.semiring = semiring
-        self.scorer = scorer
+    """
+    A dynamic programming chart parameterized by semiring.
+
+
+    """
+
+    def __init__(self, score_fn, semiring=ProbSemiRing,
+                 build_hypergraph=False):
+        """
+        Initialize the dynamic programming chart.
+
+        Parameters
+        ------------
+
+        score_fn :  label -> "score"
+           A function from edge label to score.
+
+        semiring : :py:class:`SemiRing`
+           The semiring class to use.
+
+        build_hypergraph : bool
+           Should we build a hypergraph in the chart.
+
+        """
+        self._builder = build_hypergraph
+        self._chart = {}
+        self._semiring = semiring
+        self._scorer = score_fn
+        self._hypergraph = ph.Hypergraph()
+        self._build = self._hypergraph.builder()
+        self._build.__enter__()
+        self._done = False
+        self._last = None
+
+    def finish(self):
+        if self._done:
+            raise Exception("Hypergraph not constructed")
+        if self._builder:
+            self._done = True
+            self._build.__exit__(None, None, None)
+            return self._hypergraph
+        else:
+            return self._chart[self._last].unpack()
 
     def sr(self, label):
-        return self.semiring.make(self.scorer(label))
+        return self._semiring.make(self._scorer(label))
 
-    def init(self, label):
-        if self.builder is not None:
+    def init(self, node_label):
+        if self._builder:
             print "start"
-            node = self.builder.add_node([], label=label)
-            self.chart[label] = HypergraphSemiRing([], [node], None)
+            node = self._build.add_node([], label=node_label)
+            self._chart[node_label] = HypergraphSemiRing([], [node], None)
         else:
-            self.chart[label] = self.semiring.one()
+            self._chart[node_label] = self._semiring.one()
 
+    def sum(self, edges):
+        return sum(edges, self._semiring.zero())
 
     def __setitem__(self, label, val):
-        if label in self.chart:
+        if label in self._chart:
             raise Exception(
                 "Chart already has label {}".format(label))
         print label, val
-        if self.builder is not None:
+        if self._builder:
             if not val.is_zero():
                 print val.edge_list
-                node = self.builder.add_node(val.edge_list,
+                node = self._build.add_node(val.edge_list,
                                              label=label)
-                self.chart[label] = \
+                self._chart[label] = \
                     HypergraphSemiRing([], [node], None)
         else:
             if not val.is_zero():
-                self.chart[label] = val
-
-    def sum(self, edges):
-        return sum(edges, self.semiring.zero())
+                self._chart[label] = val
+        self._last = label
 
     def __contains__(self, label):
-        return label in self.chart
+        return label in self._chart
 
     def __getitem__(self, label):
-        return self.chart.get(label, self.semiring.zero())
+        return self._chart.get(label, self._semiring.zero())
