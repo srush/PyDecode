@@ -70,20 +70,12 @@ Planned algorithms include k-best paths, marginal computations, and general semi
 
 .. autosummary::
    :toctree: generated/
-   :template: class.rst
-
-   Path
-   Chart
-   MaxMarginals
-
-.. autosummary::
-   :toctree: generated/
 
    best_path
-   outside_path
+   inside_values
+   outside_values
    prune_hypergraph
    compute_max_marginals
-
 
 
 .. _constraints:
@@ -104,7 +96,6 @@ Constrained hypergraphs can be solved in PyDecode either using a subgradient-bas
    :template: class.rst
 
    Constraints
-   Constraint
 
 .. autosummary::
    :toctree: generated/
@@ -178,9 +169,9 @@ and then uses PyGraphViz_ to render an image. The style of the graph can be easi
 
 .. autosummary::
    :toctree: generated/
-   HypergraphFormatter
-   to_image
+   :template: class.rst
 
+   HypergraphFormatter
 
    .. :toctree: generated/
    .. :template: class.rst

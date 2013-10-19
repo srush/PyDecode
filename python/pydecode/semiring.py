@@ -1,5 +1,5 @@
 INF = 1e8
-class SemiRing:
+class SemiRing(object):
     """
     A semiring operation.
 
@@ -12,14 +12,14 @@ class SemiRing:
     def __mul__(self, other):
         raise NotImplementedError()
 
-    @staticmethod
-    def one(): raise NotImplementedError()
+    @classmethod
+    def one(cls): raise NotImplementedError()
 
-    @staticmethod
-    def zero(): raise NotImplementedError()
+    @classmethod
+    def zero(cls): raise NotImplementedError()
 
-    @staticmethod
-    def make(v): raise NotImplementedError()
+    @classmethod
+    def make(cls, v): raise NotImplementedError()
 
 
 
@@ -43,14 +43,14 @@ class ViterbiSemiRing(SemiRing):
 
     def unpack(self): return self.v
 
-    @staticmethod
-    def one(): return ViterbiSemiRing(0.0)
+    @classmethod
+    def one(cls): return ViterbiSemiRing(0.0)
 
-    @staticmethod
-    def zero(): return ViterbiSemiRing(-INF)
+    @classmethod
+    def zero(cls): return ViterbiSemiRing(-INF)
 
-    @staticmethod
-    def make(v): return ViterbiSemiRing(v)
+    @classmethod
+    def make(cls, v): return ViterbiSemiRing(v)
 
 class ProbSemiRing(SemiRing):
     def __init__(self, v): self.v = v
@@ -67,14 +67,14 @@ class ProbSemiRing(SemiRing):
 
     def unpack(self): return self.v
 
-    @staticmethod
-    def one(): return ProbSemiRing(1.0)
+    @classmethod
+    def one(cls): return ProbSemiRing(1.0)
 
-    @staticmethod
-    def zero(): return ProbSemiRing(0.0)
+    @classmethod
+    def zero(cls): return ProbSemiRing(0.0)
 
-    @staticmethod
-    def make(v): return ProbSemiRing(v)
+    @classmethod
+    def make(cls, v): return ProbSemiRing(v)
 
 class HypergraphSemiRing(SemiRing):
     def __init__(self, edge_list=[], node_list=[],
@@ -86,24 +86,24 @@ class HypergraphSemiRing(SemiRing):
 
     def is_zero(self): return self._is_zero
 
-
-
     def __add__(self, other):
         return HypergraphSemiRing(self.edge_list + [(other.node_list, other.name)],
                                   [], None)
 
     def __mul__(self, other):
         zero = other.is_zero() or self.is_zero()
-        if zero: HypergraphSemiRing.zero()
+        if zero: return HypergraphSemiRing.zero()
         return HypergraphSemiRing([],
                                   self.node_list + other.node_list,
                                   other.name)
 
-    @staticmethod
-    def one(): return HypergraphSemiRing()
+    @classmethod
+    def one(cls): return HypergraphSemiRing()
 
-    @staticmethod
-    def zero(): return HypergraphSemiRing(is_zero=True)
+    @classmethod
+    def zero(cls): return HypergraphSemiRing(is_zero=True)
 
-    @staticmethod
-    def make(name): return HypergraphSemiRing([], [], name)
+    @classmethod
+    def make(cls, name):
+        print "make", name
+        return HypergraphSemiRing(name=name)

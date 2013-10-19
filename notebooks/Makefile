@@ -29,3 +29,9 @@ parsing.py: parsing.ipynb
 
 parsing.rst: parsing.ipynb
 	ipython nbconvert --to rst parsing.ipynb
+
+sequence_crf.py: sequence_crf.ipynb
+	ipython nbconvert --to python sequence_crf.ipynb
+
+sequence_crf.rst: sequence_crf.ipynb
+	ipython nbconvert --to rst sequence_crf.ipynb

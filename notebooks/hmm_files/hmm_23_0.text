@@ -1,7 +1,2 @@
-ROOT -> D
-D -> N
-N -> V
-V -> D
-D -> D
-D -> N
-N -> END
+9.6 [<pydecode.hyper.Constraint object at 0x474e270>, <pydecode.hyper.Constraint object at 0x474e230>]
+8.8 []

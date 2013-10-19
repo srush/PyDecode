@@ -172,11 +172,10 @@ def best_path(Hypergraph graph, Weights weights):
     weights : :py:class:`Weights`
       The weights :math:`\theta` of the hypergraph.
 
-
     Returns
     -------
-    :
-      The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x` and inside :py:class:`Chart` :math:`\pi`.
+    path : :py:class:`Path`
+      The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
     """
 
     cdef Chart chart = Chart()
@@ -186,11 +185,39 @@ def best_path(Hypergraph graph, Weights weights):
                      &chart.chart)
     cdef Path path = Path()
     path.init(hpath)
-    return path, chart
+    return path
 
-def outside_path(Hypergraph graph,
-                 Weights weights,
-                 Chart inside_chart):
+def inside_values(Hypergraph graph, Weights weights):
+    r"""
+    Find the inside path chart values.
+
+    Parameters
+    ----------
+
+    graph : :py:class:`Hypergraph`
+      The hypergraph :math:`({\cal V}, {\cal E})` to search.
+
+    weights : :py:class:`Weights`
+      The weights :math:`\theta` of the hypergraph.
+
+    Returns
+    -------
+
+    : :py:class:`Chart`
+       The inside chart.
+    """
+    cdef Chart chart = Chart()
+    cdef const CHyperpath *hpath = \
+        viterbi_path(graph.thisptr,
+                     deref(weights.thisptr),
+                     &chart.chart)
+    cdef Path path = Path()
+    path.init(hpath)
+    return chart
+
+def outside_values(Hypergraph graph,
+                   Weights weights,
+                   Chart inside_chart):
     """
     Find the outside scores for the hypergraph.
 
@@ -390,6 +417,7 @@ cdef class ConstrainedResult:
 
 cdef class Hypergraph:
     r"""
+
     Hypergraph consisting of a set of nodes :math:`{\cal V}`, hyperedges :math:`{\cal E}`, and a root node.
 
     Attributes
@@ -423,7 +451,7 @@ cdef class Hypergraph:
         self.node_labels = node_labels
 
     def builder(self):
-        """
+        r"""
         builder()
 
         The builder for the hypergraph ::
@@ -450,7 +478,6 @@ cdef class Hypergraph:
             return convert_node(self.thisptr.root())
 
     property edges:
-
         def __get__(self):
             return convert_edges(self.thisptr.edges())
 
@@ -475,7 +502,7 @@ cdef class Hypergraph:
         return self.node_labels[node.id]
 
 cdef class GraphBuilder:
-    """
+    r"""
     Build a hypergraph. Created using ::
 
            >> hypergraph = Hypergraph()
@@ -484,6 +511,7 @@ cdef class GraphBuilder:
 
     Methods
     -------
+
     add_node(edges=[], label="")
         Add a node (and its hyperedges) to the hypergraph.
 
@@ -606,9 +634,6 @@ cdef class Node:
        Is the node :math:`v` in terminal node.
 
     """
-    # label : any
-    #     A user-defined label associated with the node.
-
     cdef const CHypernode *nodeptr
     cdef CHypergraph *graphptr
 
@@ -754,7 +779,7 @@ cdef class Weights:
     r"""
     Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
 
-    Acts as a dictionary
+    Acts as a dictionary::
 
        >> print weights[edge]
     """
