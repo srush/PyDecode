@@ -1,4 +1,4 @@
-import pydecode.hyper as ph
+if import pydecode.hyper as ph
 from pydecode.semiring import *
 
 

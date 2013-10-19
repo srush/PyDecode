@@ -67,7 +67,12 @@ class HypergraphModel(StructuredModel):
         return self._path_features(hypergraph, x, path)
 
     def loss(self, yhat, y):
-        return 0
+        difference = 0
+        for edge in yhat:
+            if edge not in y:
+                difference += 1
+        return difference
+
 
     def max_loss(self, y):
-        return 2
+        return sum([1 for edge in y])
