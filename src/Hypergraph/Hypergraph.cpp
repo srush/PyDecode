@@ -43,30 +43,33 @@ HNode Hypergraph::add_terminal_node(string label) {
   return temp_nodes_[temp_nodes_.size() - 1];
 }
 
-double HypergraphWeights::dot(const Hyperpath &path) const {
+template<typename SemiringType>
+SemiringType HypergraphWeights<SemiringType>::dot(const Hyperpath &path) const {
   path.check(*hypergraph_);
-  double score = 0.0;
+  SemiringType score = 0.0;
   foreach (HEdge edge, path.edges()) {
     score += weights_[edge->id()];
   }
   return score + bias_;
 }
 
-HypergraphWeights *HypergraphWeights::modify(
-    const vector<double> &edge_duals,
-    double bias_dual) const {
-  vector<double> new_weights(weights_);
+template<typename SemiringType>
+HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
+    const vector<SemiringType> &edge_duals,
+    SemiringType bias_dual) const {
+  vector<SemiringType> new_weights(weights_);
   for (uint i = 0; i < edge_duals.size(); ++i) {
     new_weights[i] += edge_duals[i];
   }
-  return new HypergraphWeights(hypergraph_,
+  return new HypergraphWeights<SemiringType>(hypergraph_,
                                new_weights,
                                bias_ + bias_dual);
 }
 
-HypergraphWeights *HypergraphWeights::project_weights(
+template<typename SemiringType>
+HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::project_weights(
     const HypergraphProjection &projection) const {
-  vector<double> weights(projection.new_graph->edges().size());
+  vector<SemiringType> weights(projection.new_graph->edges().size());
   foreach (HEdge edge, projection.original_graph->edges()) {
     HEdge new_edge = projection.project(edge);
     if (new_edge != NULL && new_edge->id() >= 0) {
@@ -74,7 +77,24 @@ HypergraphWeights *HypergraphWeights::project_weights(
       weights[new_edge->id()] = score(edge);
     }
   }
-  return new HypergraphWeights(projection.new_graph, weights, bias_);
+  return new HypergraphWeights<SemiringType>(projection.new_graph, weights, bias_);
+}
+
+// DEPRECATED
+template<typename SemiringType>
+HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
+    const vector<double> &edge_duals,
+    double bias_dual) const {
+  // Refuse to allow use of this function unless underlying value type
+  // is the default semiring type. Should prevent future use.
+  assert(typeid(SemiringType) == typeid(DoubleWeight));
+  vector<SemiringType> new_weights(weights_);
+  for (uint i = 0; i < edge_duals.size(); ++i) {
+    new_weights[i] += edge_duals[i];
+  }
+  return new HypergraphWeights<SemiringType>(hypergraph_,
+                               new_weights,
+                               bias_ + bias_dual);
 }
 
 void Hypergraph::fill() {

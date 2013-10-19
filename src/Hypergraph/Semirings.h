@@ -43,8 +43,8 @@ public:
 	virtual DerivedWeight& operator*=(const DerivedWeight& rhs) = 0;
 
 protected:
-	SemiringWeight() {}
-	SemiringWeight(ValType val, ValType ann, ValType id) : value(normalize(val)), annihlator(ann), identity(id) {}
+	SemiringWeight() : annihlator(0), identity(1) {}
+	SemiringWeight(ValType ann, ValType id) : annihlator(ann), identity(id) {}
 	ValType value;
 	const ValType annihlator;
 	const ValType identity;
@@ -55,9 +55,9 @@ protected:
 // *: logical and
 // 0: 0
 // 1: 1
-class BoolWeight : SemiringWeight<BoolWeight, bool> {
+class BoolWeight : public SemiringWeight<BoolWeight, bool> {
 public:
-	BoolWeight(bool value) : SemiringWeight<BoolWeight, bool>(value, false, true) { }
+	BoolWeight(bool value) : SemiringWeight<BoolWeight, bool>(false, true) { this->value = normalize(value); }
 
 	virtual bool& normalize(bool& val) { return val; }
 
@@ -76,9 +76,9 @@ public:
 // *: *
 // 0: 0
 // 1: 1
-class ViterbiWeight : SemiringWeight<ViterbiWeight, double> {
+class ViterbiWeight : public SemiringWeight<ViterbiWeight, double> {
 public:
-	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(value, 0.0, 1.0) { }
+	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(0.0, 1.0) { this->value = normalize(value); }
 
 	virtual double& normalize(double& val)  { 
 		if (val < 0.0) val = 0.0;
@@ -101,9 +101,9 @@ public:
 // *: *
 // 0: 0
 // 1: 1
-class InsideWeight : SemiringWeight<InsideWeight, double> {
+class InsideWeight : public SemiringWeight<InsideWeight, double> {
 public:
-	InsideWeight(double value) : SemiringWeight<InsideWeight, double>(value, 0.0, 1.0) { }
+	InsideWeight(double value) : SemiringWeight<InsideWeight, double>(0.0, 1.0) { this->value = normalize(value); }
 
 	virtual double& normalize(double& val) { 
 		if (val < 0.0) val = 0.0;
@@ -125,9 +125,9 @@ public:
 // *: +
 // 0: INF
 // 1: 0
-class RealWeight : SemiringWeight<RealWeight, double> {
+class RealWeight : public SemiringWeight<RealWeight, double> {
 public:
-	RealWeight(double value) : SemiringWeight<RealWeight, double>(value, INF, 0.0) { }
+	RealWeight(double value) : SemiringWeight<RealWeight, double>(INF, 0.0) { this->value = normalize(value); }
 
 	virtual double& normalize(double& val) { return val; }
 
@@ -146,9 +146,9 @@ public:
 // *: +
 // 0: INF
 // 1: 0
-class TropicalWeight : SemiringWeight<TropicalWeight, double> {
+class TropicalWeight : public SemiringWeight<TropicalWeight, double> {
 public:
-	TropicalWeight(double value) : SemiringWeight<TropicalWeight, double>(value, INF, 0.0) { }
+	TropicalWeight(double value) : SemiringWeight<TropicalWeight, double>(INF, 0.0) { this->value = normalize(value); }
 
 	virtual double& normalize(double& val)  { 
 		if (val < 0.0) val = 0.0;
@@ -170,9 +170,9 @@ public:
 // *: *
 // 0: 0
 // 1: 1
-class CountingWeight : SemiringWeight<CountingWeight, int> {
+class CountingWeight : public SemiringWeight<CountingWeight, int> {
 public:
-	CountingWeight(int value) : SemiringWeight<CountingWeight, int>(value, 0, 1) { }
+	CountingWeight(int value) : SemiringWeight<CountingWeight, int>(0, 1) { this->value = normalize(value); }
 
 	virtual int& normalize(int& val) { 
 		if(val < 0) val = 0;
@@ -189,6 +189,30 @@ public:
 	}
 };
 
+// Implements a weight that behaves just like a regular double
+// +: +
+// *: *
+// 0: 0
+// 1: 1
+class DoubleWeight : public SemiringWeight<DoubleWeight, double> {
+public:
+	DoubleWeight(double value) : SemiringWeight<DoubleWeight, double>(0.0, 1.0) { this->value = value; }
+	DoubleWeight() : SemiringWeight<DoubleWeight, double>(0.0, 1.0) { this->value = 0.0; }
+
+	virtual double& normalize(double& val) { 
+		return val;
+	}
+
+	virtual DoubleWeight& operator+=(const DoubleWeight& rhs) {
+		value = value + rhs.value;
+		return *this;
+	}
+	virtual DoubleWeight& operator*=(const DoubleWeight& rhs) {
+		value = value * rhs.value;
+		return *this;
+	}
+};
+
 /* 
 
 These two are how the python implemented the viterbi and prob, not sure if thats what you want
@@ -198,9 +222,9 @@ These two are how the python implemented the viterbi and prob, not sure if thats
 // *: plus
 // 0: -infinity
 // 1: 0.0
-class ViterbiWeight : SemiringWeight<ViterbiWeight, double> {
+class ViterbiWeight : public SemiringWeight<ViterbiWeight, double> {
 public:
-	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(value, -INF, 0.0) { value = value; }
+	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(-INF, 0.0) { this->value = normalize(value);}
 
 	virtual ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
 		value = std::max(value, rhs.value);
@@ -219,9 +243,9 @@ public:
 // *: plus
 // 0: 1.0
 // 1: 0.0
-class ProbWeight : SemiringWeight<ProbWeight, double> {
+class ProbWeight : public SemiringWeight<ProbWeight, double> {
 public:
-	ProbWeight(double value) : SemiringWeight<ProbWeight, double>(value, 1.0, 0.0) { value = value; }
+	ProbWeight(double value) : SemiringWeight<ProbWeight, double>(1.0, 0.0) { this->value = normalize(value);}
 
 	virtual ProbWeight& operator+=(const ProbWeight& rhs) {
 		value = std::max(value, rhs.value);
@@ -243,9 +267,9 @@ Not sure the intention of this semi-ring:
 // *: combine node lists, forget edges??
 // 0: empty object flagged as not zero?? 
 // 1: empty object flagged as zero??
-class HypergraphWeight : SemiringWeight<HypergraphWeight, double> {
+class HypergraphWeight : public SemiringWeight<HypergraphWeight, double> {
 public:
-	HypergraphWeight(double value) : SemiringWeight<HypergraphWeight, double>(value, 0.0, 1.0) { value = value; }
+	HypergraphWeight(double value) : SemiringWeight<HypergraphWeight, double>(0.0, 1.0) { this->value = normalize(value);}
 
 	virtual HypergraphWeight& operator+=(const HypergraphWeight& rhs) {
 		value = std::max(value, rhs.value);
