@@ -12,14 +12,18 @@
 
 // A virtual base class of a weight with traits of a semiring
 // including + and * operators, and annihlator/identity elements.
-template<typename DerivedWeight>
+template<typename DerivedWeight, typename ValType>
 class SemiringWeight {
 public:
-	operator double() const { return value; }
-	DerivedWeight& operator=(double rhs) { 
-		std::swap(this->value, rhs);
+	operator ValType() const { return value; }
+	DerivedWeight& operator=(ValType rhs) {
+		normalize(rhs);
+		std::swap(value, rhs);
 		return *this;
 	}
+
+	// Determines range of acceptable values
+	virtual ValType& normalize(ValType& val) = 0;
 
 	friend DerivedWeight operator+(DerivedWeight lhs, const DerivedWeight &rhs) {
 		lhs += rhs;
@@ -30,153 +34,229 @@ public:
 		return lhs;
 	}
 
-	const double one() const { return identity; }
-	const double zero() const { return annihlator; }
+	const ValType& one() const { return identity; }
+	const ValType& zero() const { return annihlator; }
+	bool is_one() const { return value == identity; }
+	bool is_zero() const { return value == annihlator; }
 
 	virtual DerivedWeight& operator+=(const DerivedWeight& rhs) = 0;
 	virtual DerivedWeight& operator*=(const DerivedWeight& rhs) = 0;
 
-	virtual bool is_zero() = 0;
-
 protected:
 	SemiringWeight() {}
-	SemiringWeight(double ann, double id) : annihlator(ann), identity(id) {}
-	double value;
-	const double annihlator;
-	const double identity;
+	SemiringWeight(ValType val, ValType ann, ValType id) : value(normalize(val)), annihlator(ann), identity(id) {}
+	ValType value;
+	const ValType annihlator;
+	const ValType identity;
 };
 
-// Implements the Viterbi type of semiring weight as described in Huang 2006
-// +: max
-// *: *
-// 0: 0
-// 1: 1
-class ViterbiWeight : SemiringWeight<ViterbiWeight> {
-public:
-	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight>(0.0, 1.0) { this->value = value; }
-
-	virtual ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
-		this->value = std::max(this->value, rhs.value);
-		return *this;
-	}
-	virtual ViterbiWeight& operator*=(const ViterbiWeight& rhs) {
-		this->value = this->value + rhs.value;
-		return *this;
-	}
-
-	virtual bool is_zero() { return this->value <= this->annihlator; }
-};
-
-// Implements the Boolean type of semiring weight as described in Huang 2006
+// Implements the Boolean type of semiring as described in Huang 2006
 // +: logical or
 // *: logical and
 // 0: 0
 // 1: 1
-class BoolWeight : SemiringWeight<BoolWeight> {
+class BoolWeight : SemiringWeight<BoolWeight, bool> {
 public:
-	BoolWeight(bool value) : value(value), annihlator(false), identity(true) {}
+	BoolWeight(bool value) : SemiringWeight<BoolWeight, bool>(value, false, true) { }
 
-/*  should really delete these, but only available in c++11
-	operator double() const = delete;
-	BoolWeight& operator=(double rhs) = delete;
-	const double one() const = delete;
-	const double zero() const = delete;
-*/
-	operator bool() const { return value; }
-	BoolWeight& operator=(bool rhs) { 
-		std::swap(this->value, rhs);
-		return *this;
-	}
-
-	const bool one() const { return identity; }
-	const bool zero() const { return annihlator; }
+	virtual bool& normalize(bool& val) { return val; }
 
 	virtual BoolWeight& operator+=(const BoolWeight& rhs) {
-		this->value = this->value || rhs.value;
+		value = value || rhs.value;
 		return *this;
 	}
 	virtual BoolWeight& operator*=(const BoolWeight& rhs) {
-		this->value = this->value && rhs.value;
+		value = value && rhs.value;
 		return *this;
 	}
+};
 
-	virtual bool is_zero() { return this->value; }
+// Implements the Viterbi type of semiring as described in Huang 2006
+// +: max
+// *: *
+// 0: 0
+// 1: 1
+class ViterbiWeight : SemiringWeight<ViterbiWeight, double> {
+public:
+	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(value, 0.0, 1.0) { }
 
-protected:
-	bool value;
-	const bool annihlator /*= false  c++11*/;
-	const bool identity /*= true c++11*/;
+	virtual double& normalize(double& val)  { 
+		if (val < 0.0) val = 0.0;
+		else if (val > 1.0) val = 1.0;
+		return val;
+	}
 
+	virtual ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
+		value = std::max(value, rhs.value);
+		return *this;
+	}
+	virtual ViterbiWeight& operator*=(const ViterbiWeight& rhs) {
+		value = value * rhs.value;
+		return *this;
+	}
+};
+
+// Implements the Inside type of semiring as described in Huang 2006
+// +: +
+// *: *
+// 0: 0
+// 1: 1
+class InsideWeight : SemiringWeight<InsideWeight, double> {
+public:
+	InsideWeight(double value) : SemiringWeight<InsideWeight, double>(value, 0.0, 1.0) { }
+
+	virtual double& normalize(double& val) { 
+		if (val < 0.0) val = 0.0;
+		return val;
+	}
+
+	virtual InsideWeight& operator+=(const InsideWeight& rhs) {
+		value = value + rhs.value;
+		return *this;
+	}
+	virtual InsideWeight& operator*=(const InsideWeight& rhs) {
+		value = value * rhs.value;
+		return *this;
+	}
+};
+
+// Implements the Real type of semiring as described in Huang 2006
+// +: min
+// *: +
+// 0: INF
+// 1: 0
+class RealWeight : SemiringWeight<RealWeight, double> {
+public:
+	RealWeight(double value) : SemiringWeight<RealWeight, double>(value, INF, 0.0) { }
+
+	virtual double& normalize(double& val) { return val; }
+
+	virtual RealWeight& operator+=(const RealWeight& rhs) {
+		value = std::min(value, rhs.value);
+		return *this;
+	}
+	virtual RealWeight& operator*=(const RealWeight& rhs) {
+		value = value + rhs.value;
+		return *this;
+	}
+};
+
+// Implements the Inside type of semiring as described in Huang 2006
+// +: min
+// *: +
+// 0: INF
+// 1: 0
+class TropicalWeight : SemiringWeight<TropicalWeight, double> {
+public:
+	TropicalWeight(double value) : SemiringWeight<TropicalWeight, double>(value, INF, 0.0) { }
+
+	virtual double& normalize(double& val)  { 
+		if (val < 0.0) val = 0.0;
+		return val;
+	}
+
+	virtual TropicalWeight& operator+=(const TropicalWeight& rhs) {
+		value = value + rhs.value;
+		return *this;
+	}
+	virtual TropicalWeight& operator*=(const TropicalWeight& rhs) {
+		value = value * rhs.value;
+		return *this;
+	}
+};
+
+// Implements the Counting type of semiring as described in Huang 2006
+// +: +
+// *: *
+// 0: 0
+// 1: 1
+class CountingWeight : SemiringWeight<CountingWeight, int> {
+public:
+	CountingWeight(int value) : SemiringWeight<CountingWeight, int>(value, 0, 1) { }
+
+	virtual int& normalize(int& val) { 
+		if(val < 0) val = 0;
+		return val;
+	}
+
+	virtual CountingWeight& operator+=(const CountingWeight& rhs) {
+		value = value + rhs.value;
+		return *this;
+	}
+	virtual CountingWeight& operator*=(const CountingWeight& rhs) {
+		value = value * rhs.value;
+		return *this;
+	}
 };
 
 /* 
 
-These two are how the python implemented the one and zero
+These two are how the python implemented the viterbi and prob, not sure if thats what you want
 
-// Implements the Viterbi type of semiring weight
+// Implements the Viterbi type of semiring
 // +: max
 // *: plus
 // 0: -infinity
 // 1: 0.0
-class ViterbiWeight : SemiringWeight<ViterbiWeight> {
+class ViterbiWeight : SemiringWeight<ViterbiWeight, double> {
 public:
-	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight>(-INF, 0.0) { this->value = value; }
+	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(value, -INF, 0.0) { value = value; }
 
 	virtual ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
-		this->value = std::max(this->value, rhs.value);
+		value = std::max(value, rhs.value);
 		return *this;
 	}
 	virtual ViterbiWeight& operator*=(const ViterbiWeight& rhs) {
-		this->value = this->value + rhs.value;
+		value = value + rhs.value;
 		return *this;
 	}
 
-	virtual bool is_zero() { return this->value <= this->annihlator; }
+	virtual bool is_zero() { return value <= annihlator; }
 };
 
-// Implements the Probability type of semiring weight
+// Implements the Probability type of semiring
 // +: max
 // *: plus
 // 0: 1.0
 // 1: 0.0
-class ProbWeight : SemiringWeight<ProbWeight> {
+class ProbWeight : SemiringWeight<ProbWeight, double> {
 public:
-	ProbWeight(double value) : SemiringWeight<ProbWeight>(1.0, 0.0) { this->value = value; }
+	ProbWeight(double value) : SemiringWeight<ProbWeight, double>(value, 1.0, 0.0) { value = value; }
 
 	virtual ProbWeight& operator+=(const ProbWeight& rhs) {
-		this->value = std::max(this->value, rhs.value);
+		value = std::max(value, rhs.value);
 		return *this;
 	}
 	virtual ProbWeight& operator*=(const ProbWeight& rhs) {
-		this->value = this->value + rhs.value;
+		value = value + rhs.value;
 		return *this;
 	}
 
-	virtual bool is_zero() { return this->value == this->annihlator; }
+	virtual bool is_zero() { return value == annihlator; }
 };
 
 
 Not sure the intention of this semi-ring:
 
-// Implements the Hypergraph type of semiring weight
+// Implements the Hypergraph type of semiring
 // +: combine edge lists, forget nodes??
 // *: combine node lists, forget edges??
 // 0: empty object flagged as not zero?? 
 // 1: empty object flagged as zero??
-class HypergraphWeight : SemiringWeight<HypergraphWeight> {
+class HypergraphWeight : SemiringWeight<HypergraphWeight, double> {
 public:
-	HypergraphWeight(double value) : SemiringWeight<HypergraphWeight>(0.0, 1.0) { this->value = value; }
+	HypergraphWeight(double value) : SemiringWeight<HypergraphWeight, double>(value, 0.0, 1.0) { value = value; }
 
 	virtual HypergraphWeight& operator+=(const HypergraphWeight& rhs) {
-		this->value = std::max(this->value, rhs.value);
+		value = std::max(value, rhs.value);
 		return *this;
 	}
 	virtual HypergraphWeight& operator*=(const HypergraphWeight& rhs) {
-		this->value = this->value + rhs.value;
+		value = value + rhs.value;
 		return *this;
 	}
 
-	virtual bool is_zero() { return this->value == this->annihlator; }
+	virtual bool is_zero() { return value == annihlator; }
 };
 */
 
