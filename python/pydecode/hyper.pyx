@@ -633,13 +633,10 @@ cdef class Node:
 
     property is_terminal:
         def __get__(self):
-            return self.nodeptr.edges().size() == 0
+            return (self.nodeptr.edges().size() == 0)
 
     def __str__(self):
         return self.nodeptr.label()
-
-    # def is_terminal(self):
-    #     return self.nodeptr.edges().size() == 0
 
     def __cinit__(self):
         ""

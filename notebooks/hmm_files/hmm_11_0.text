@@ -1,1 +1,29 @@
-<IPython.core.display.Image at 0x3cb5dd0>
+start
+the V <pydecode.semiring.HypergraphSemiRing instance at 0x5379d40>
+[([<pydecode.hyper.Node object at 0x539a288>], Bigram(word='the', tag='V', prevtag='ROOT'))]
+the D <pydecode.semiring.HypergraphSemiRing instance at 0x53812d8>
+[([<pydecode.hyper.Node object at 0x539a288>], Bigram(word='the', tag='D', prevtag='ROOT'))]
+the N <pydecode.semiring.HypergraphSemiRing instance at 0x53813b0>
+[([<pydecode.hyper.Node object at 0x539a288>], Bigram(word='the', tag='N', prevtag='ROOT'))]
+dog V <pydecode.semiring.HypergraphSemiRing instance at 0x5381128>
+[([<pydecode.hyper.Node object at 0x539a350>], Bigram(word='dog', tag='V', prevtag='V')), ([<pydecode.hyper.Node object at 0x539acd8>], Bigram(word='dog', tag='V', prevtag='D')), ([<pydecode.hyper.Node object at 0x539a2b0>], Bigram(word='dog', tag='V', prevtag='N'))]
+dog D <pydecode.semiring.HypergraphSemiRing instance at 0x5381b00>
+[([<pydecode.hyper.Node object at 0x539a350>], Bigram(word='dog', tag='D', prevtag='V')), ([<pydecode.hyper.Node object at 0x539acd8>], Bigram(word='dog', tag='D', prevtag='D')), ([<pydecode.hyper.Node object at 0x539a2b0>], Bigram(word='dog', tag='D', prevtag='N'))]
+dog N <pydecode.semiring.HypergraphSemiRing instance at 0x53814d0>
+[([<pydecode.hyper.Node object at 0x539a350>], Bigram(word='dog', tag='N', prevtag='V')), ([<pydecode.hyper.Node object at 0x539acd8>], Bigram(word='dog', tag='N', prevtag='D')), ([<pydecode.hyper.Node object at 0x539a2b0>], Bigram(word='dog', tag='N', prevtag='N'))]
+walked V <pydecode.semiring.HypergraphSemiRing instance at 0x5381b48>
+[([<pydecode.hyper.Node object at 0x539aeb8>], Bigram(word='walked', tag='V', prevtag='V')), ([<pydecode.hyper.Node object at 0x539ab20>], Bigram(word='walked', tag='V', prevtag='D')), ([<pydecode.hyper.Node object at 0x539aaa8>], Bigram(word='walked', tag='V', prevtag='N'))]
+in D <pydecode.semiring.HypergraphSemiRing instance at 0x5381b00>
+[([<pydecode.hyper.Node object at 0x539a620>], Bigram(word='in', tag='D', prevtag='V'))]
+the V <pydecode.semiring.HypergraphSemiRing instance at 0x53814d0>
+[([<pydecode.hyper.Node object at 0x539a508>], Bigram(word='the', tag='V', prevtag='D'))]
+the D <pydecode.semiring.HypergraphSemiRing instance at 0x53816c8>
+[([<pydecode.hyper.Node object at 0x539a508>], Bigram(word='the', tag='D', prevtag='D'))]
+the N <pydecode.semiring.HypergraphSemiRing instance at 0x5381ab8>
+[([<pydecode.hyper.Node object at 0x539a508>], Bigram(word='the', tag='N', prevtag='D'))]
+park V <pydecode.semiring.HypergraphSemiRing instance at 0x5381998>
+[([<pydecode.hyper.Node object at 0x539a850>], Bigram(word='park', tag='V', prevtag='V')), ([<pydecode.hyper.Node object at 0x539abe8>], Bigram(word='park', tag='V', prevtag='D')), ([<pydecode.hyper.Node object at 0x539a3f0>], Bigram(word='park', tag='V', prevtag='N'))]
+park N <pydecode.semiring.HypergraphSemiRing instance at 0x5381320>
+[([<pydecode.hyper.Node object at 0x539a850>], Bigram(word='park', tag='N', prevtag='V')), ([<pydecode.hyper.Node object at 0x539abe8>], Bigram(word='park', tag='N', prevtag='D')), ([<pydecode.hyper.Node object at 0x539a3f0>], Bigram(word='park', tag='N', prevtag='N'))]
+END END <pydecode.semiring.HypergraphSemiRing instance at 0x5381248>
+[([<pydecode.hyper.Node object at 0x539a3a0>], Bigram(word='END', tag='END', prevtag='V')), ([<pydecode.hyper.Node object at 0x539a328>], Bigram(word='END', tag='END', prevtag='N'))]
