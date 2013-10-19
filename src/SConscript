@@ -5,6 +5,7 @@ sources = [
     "Hypergraph/Algorithms.cpp",
     "Hypergraph/Constraints.cpp",
     "Hypergraph/Subgradient.cpp",
+    "Hypergraph/Semirings.hpp",
     ]
 
 hyp_lib = env.Library('decoding', sources)
