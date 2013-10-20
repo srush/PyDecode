@@ -53,7 +53,6 @@ class ChartBuilder:
             return self._chart[self._last].unpack()
 
     def sr(self, label):
-        print label
         return self._semiring.make(self._scorer(label))
 
     def init(self, node_label):
@@ -76,10 +75,8 @@ class ChartBuilder:
         if label in self._chart:
             raise Exception(
                 "Chart already has label {}".format(label))
-        print label, val
         if self._builder:
             if not val.is_zero():
-                print val.edge_list
                 node = self._build.add_node(val.edge_list,
                                              label=label)
                 self._chart[label] = \
