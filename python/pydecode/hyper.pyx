@@ -2,6 +2,7 @@
 from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp cimport bool
 
 
 
@@ -87,19 +88,38 @@ cdef extern from "Hypergraph/Hypergraph.h":
         vector[const CHyperedge *] edges()
         int has_edge(const CHyperedge *)
 
-    cdef cppclass CHypergraphWeights "HypergraphWeights":
+    cdef cppclass CHypergraphWeights "HypergraphWeights<DoubleWeight>":
+        CHypergraphWeights(const CHypergraph *hypergraph,
+                           const vector[CDoubleWeight] weights,
+                           CDoubleWeight bias) except +
         CHypergraphWeights(const CHypergraph *hypergraph,
                            const vector[double] weights,
                            double bias) except +
         double dot(const CHyperpath &path) except +
         double score(const CHyperedge *edge)
-        CHypergraphWeights *project_weights(
-            const CHypergraphProjection )
+        CHypergraphWeights *project_weights(const CHypergraphProjection)
 
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHypergraph *new_graph
         const CHyperedge *project(const CHyperedge *edge)
         const CHypernode *project(const CHypernode *node)
+
+cdef extern from "Hypergraph/Semirings.h":
+    CDoubleWeight operator+(CDoubleWeight lhs, const CDoubleWeight rhs)
+    CDoubleWeight operator*(CDoubleWeight lhs, const CDoubleWeight rhs)
+    cdef cppclass CDoubleWeight "DoubleWeight":
+        CDoubleWeight(CDoubleWeight)
+        CDoubleWeight(double value) except +
+        CDoubleWeight() except +
+        # const CDoubleWeight operator=(CDoubleWeight rhs)
+        # const CDoubleWeight operator=(double rhs)
+        const double operator()()
+        # const CDoubleWeight operator+=(const CDoubleWeight rhs)
+        # const CDoubleWeight operator*=(const CDoubleWeight rhs)
+        const double one()
+        const double zero()
+        bool is_one()
+        bool is_zero()
 
 cdef extern from "Hypergraph/Constraints.h":
     cdef cppclass CConstraint "Constraint":

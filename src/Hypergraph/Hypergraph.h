@@ -248,7 +248,7 @@ class HypergraphWeights {
   // DEPRECATED:
   HypergraphWeights(const Hypergraph *hypergraph,
                     const vector<double> &weights,
-                    SemiringType bias)
+                    double bias)
   : hypergraph_(hypergraph),
     bias_(bias) {
       foreach(double weight, weights) {
