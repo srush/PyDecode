@@ -1,5 +1,7 @@
 // Copyright [2013] Alexander Rush
 
+#include <typeinfo>
+
 #include "Hypergraph/Hypergraph.h"
 
 int Hypergraph::ID = 0;
@@ -66,20 +68,6 @@ HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
                                bias_ + bias_dual);
 }
 
-template<typename SemiringType>
-HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::project_weights(
-    const HypergraphProjection &projection) const {
-  vector<SemiringType> weights(projection.new_graph->edges().size());
-  foreach (HEdge edge, projection.original_graph->edges()) {
-    HEdge new_edge = projection.project(edge);
-    if (new_edge != NULL && new_edge->id() >= 0) {
-      assert(new_edge->id() < projection.new_graph->edges().size());
-      weights[new_edge->id()] = score(edge);
-    }
-  }
-  return new HypergraphWeights<SemiringType>(projection.new_graph, weights, bias_);
-}
-
 // DEPRECATED
 template<typename SemiringType>
 HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
@@ -95,6 +83,20 @@ HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
   return new HypergraphWeights<SemiringType>(hypergraph_,
                                new_weights,
                                bias_ + bias_dual);
+}
+
+template<typename SemiringType>
+HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::project_weights(
+    const HypergraphProjection &projection) const {
+  vector<SemiringType> weights(projection.new_graph->edges().size());
+  foreach (HEdge edge, projection.original_graph->edges()) {
+    HEdge new_edge = projection.project(edge);
+    if (new_edge != NULL && new_edge->id() >= 0) {
+      assert(new_edge->id() < projection.new_graph->edges().size());
+      weights[new_edge->id()] = score(edge);
+    }
+  }
+  return new HypergraphWeights<SemiringType>(projection.new_graph, weights, bias_);
 }
 
 void Hypergraph::fill() {

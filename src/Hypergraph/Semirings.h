@@ -4,10 +4,7 @@
 
 #include <algorithm>
 
-#include <boost/serialization/strong_typedef.hpp>
-
-#include "../common.h"
-
+#include "./common.h"
 
 
 // A virtual base class of a weight with traits of a semiring
