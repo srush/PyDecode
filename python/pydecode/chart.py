@@ -1,4 +1,4 @@
-import pydecode.hyper as ph
+if import pydecode.hyper as ph
 from pydecode.semiring import *
 
 
@@ -31,11 +31,12 @@ class ChartBuilder:
         self._chart = {}
         self._semiring = semiring
         self._scorer = score_fn
-        self._hypergraph = ph.Hypergraph()
-        self._build = self._hypergraph.builder()
-        self._build.__enter__()
         self._done = False
         self._last = None
+        if self._builder:
+            self._hypergraph = ph.Hypergraph()
+            self._build = self._hypergraph.builder()
+            self._build.__enter__()
 
     def finish(self):
         """
@@ -52,6 +53,7 @@ class ChartBuilder:
             return self._chart[self._last].unpack()
 
     def sr(self, label):
+        print label
         return self._semiring.make(self._scorer(label))
 
     def init(self, node_label):
@@ -60,7 +62,6 @@ class ChartBuilder:
         """
 
         if self._builder:
-            print "start"
             node = self._build.add_node([], label=node_label)
             self._chart[node_label] = HypergraphSemiRing([], [node], None)
         else:

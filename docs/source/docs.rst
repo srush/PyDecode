@@ -8,9 +8,6 @@ Documentation
    :maxdepth: 2
 
    setup
-   theory
-   constraints
-   lp
    notebooks/tutorial
    api
    display

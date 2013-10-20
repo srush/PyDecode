@@ -7,7 +7,16 @@ class HypergraphFormatter:
 
     Full list available - http://www.graphviz.org/content/attrs
     """
+
     def __init__(self, hypergraph):
+        """
+        Parameters
+        -------------
+
+        hypergraph : :py:class:`Hypergraph`
+           The hypergraph to style.
+        """
+
         self.hypergraph = hypergraph
 
     def graph_attrs(self):
@@ -21,7 +30,7 @@ class HypergraphFormatter:
         Parameters
         -------------
 
-        node :  
+        node : :py:class:`Node`
            The hypernode to style.
         """
         return {"shape": "ellipse", "label":str(self.hypergraph.node_label(node))}
@@ -33,11 +42,12 @@ class HypergraphFormatter:
         Parameters
         -------------
 
-        edge : 
+        edge : :py:class:`Edge`
            The hyperedge to style.
         """
         return {"shape": "rect",
                 "label": str(self.hypergraph.label(edge))}
+
     def hyperedge_attrs(self, edge):
         """
         Returns a dictionary of edge properties for styling hyperedge.
@@ -45,160 +55,111 @@ class HypergraphFormatter:
         Parameters
         -------------
 
-        edge : 
+        edge : :py:class:`Edge`
            The hyperedge to style.
         """
         return {}
 
     def hypernode_subgraph(self, node): return []
+
     def hyperedge_subgraph(self, edge): return []
+
     def subgraph_format(self, subgraph): return {}
 
-class HypergraphPathFormatter(HypergraphFormatter):
-    def __init__(self, hypergraph, paths):
-        self.hypergraph = hypergraph
-        self.paths = paths
-    def hyperedge_attrs(self, edge):
-        colors = ["red", "green", "blue", "purple", "orange", "yellow"]
-        for path, color in zip(self.paths, colors):
-            if edge in path:
-                return {"color": color}
-        return {}
+    def to_networkx(self):
+        r"""
+        Convert hypergraph to networkx graph representation.
+
+        Returns
+        --------
+
+        NetworkX Graph
+        """
+
+        graph = nx.DiGraph()
+        def e(edge): return "e" + str(edge.id)
+        for node in self.hypergraph.nodes:
+            graph.add_node(node.id)
+            graph.node[node.id].update(
+                self.hypernode_attrs(node))
+            for edge in node.edges:
+                graph.add_node(e(edge))
+                graph.node[e(edge)].update(
+                    self.hyperedge_node_attrs(edge))
+
+                graph.add_edge(node.id, e(edge))
+                graph[node.id][e(edge)].update(
+                    self.hyperedge_attrs(edge))
+
+                for tail_nodes in edge.tail:
+                    graph.add_edge(e(edge), tail_nodes.id)
+                    graph[e(edge)][tail_nodes.id].update(
+                        self.hyperedge_attrs(edge))
+        return graph
+
+    def to_image(self, filename):
+        """
+        Write out to an image.
 
 
-class HypergraphWeightFormatter(HypergraphFormatter):
-    def __init__(self, hypergraph, weights):
-        self.hypergraph = hypergraph
-        self.weights = weights
-    def hyperedge_node_attrs(self, edge):
-        return {"label": self.weights[edge]}
+        Parameters
+        ------------
 
-class HypergraphConstraintFormatter(HypergraphFormatter):
-    def __init__(self, hypergraph, constraints):
-        self.hypergraph = hypergraph
-        self.constraints = constraints
+        filename : string
+           A filename to writeout image.
 
-    def hyperedge_attrs(self, edge):
-        colors = ["red", "green", "blue", "purple"]
-        for constraint, color in zip(self.constraints, colors):
-            if edge in constraint:
-                return {"color": color}
-        return {}
+        Returns
+        ---------
 
+        NetworkX Graph
+        """
+        subgraphs = {}
+        G = self.to_networkx()
+        agraph = nx.drawing.to_agraph(G)
 
-def to_networkx(hypergraph, graph_format):
-    """Convert hypergraph to networkx graph representation.
+        for node in self.hypergraph.nodes:
+            for sub, rank in self.hypernode_subgraph(node):
+                subgraphs.setdefault(sub, [])
+                subgraphs[sub].append((node.id, rank))
 
-    Parameters
-    ------------
+        for sub, node_ranks in subgraphs.iteritems():
+            node_ranks.sort(key = lambda (node, rank): rank)
+            nodes = [node for node, rank in node_ranks]
+            subgraph = agraph.subgraph(nodes, name = sub)
+            if sub[:7] != "cluster":
+                # for node in nodes:
+                #     agraph.get_node(node).attr.update({"group": sub})
 
-    hypergraph : :py:class:`Hypergraph`
-       The hypergraph to convert.
+                for n_a, n_b in zip(nodes, nodes[1:]):
+                    edge = subgraph.add_edge(n_a, n_b,
+                                             weight = 1000, style="invis")
+            subgraph.graph_attr.update(self.subgraph_format(sub))
+        agraph.graph_attr.update(self.graph_attrs())
 
-    graph_format : :py:class:`HypergraphFormatter`
-       A hypergraph formatter.
+        agraph.layout("dot")
+        agraph.write("/tmp/tmp.dot")
+        agraph.draw(filename)
 
-    Returns
-    --------
+    def to_ipython(self):
+        """
+        Display a hypergraph in iPython.
 
-    NetworkX Graph
-    """
+        Parameters
+        ------------
 
-    graph = nx.DiGraph()
-    def e(edge): return "e" + str(edge.id)
-    for node in hypergraph.nodes:
-        graph.add_node(node.id)
-        graph.node[node.id].update(
-            graph_format.hypernode_attrs(node))
-        for edge in node.edges:
-            graph.add_node(e(edge))
-            graph.node[e(edge)].update(
-                graph_format.hyperedge_node_attrs(edge))
+        hypergraph : :py:class:`Hypergraph`
+           The hypergraph to convert.
 
-            graph.add_edge(node.id, e(edge))
-            graph[node.id][e(edge)].update(
-                graph_format.hyperedge_attrs(edge))
+        Returns
+        ---------
 
-            for tail_nodes in edge.tail:
-                graph.add_edge(e(edge), tail_nodes.id)
-                graph[e(edge)][tail_nodes.id].update(
-                    graph_format.hyperedge_attrs(edge))
-    return graph
+        IPython display object.
+        """
 
-def to_image(hypergraph, filename, graph_format):
-    """
-
-    Parameters
-    ------------
-
-    hypergraph : :py:class:`Hypergraph`
-       The hypergraph to convert.
-
-
-    filename : string
-       A filename to writeout image.
-
-    graph_format : :py:class:`HypergraphFormatter`
-       A hypergraph formatter.
-
-
-    Returns
-    ---------
-
-    NetworkX Graph
-    """
-    subgraphs = {}
-    G = to_networkx(hypergraph, graph_format)
-    agraph = nx.drawing.to_agraph(G)
-
-    for node in hypergraph.nodes:
-        for sub, rank in graph_format.hypernode_subgraph(node):
-            subgraphs.setdefault(sub, [])
-            subgraphs[sub].append((node.id, rank))
-
-    for sub, node_ranks in subgraphs.iteritems():
-        node_ranks.sort(key = lambda (node, rank): rank)
-        nodes = [node for node, rank in node_ranks]
-        subgraph = agraph.subgraph(nodes, name = sub)
-        if sub[:7] != "cluster":
-            # for node in nodes:
-            #     agraph.get_node(node).attr.update({"group": sub})
-
-            for n_a, n_b in zip(nodes, nodes[1:]):
-                edge = subgraph.add_edge(n_a, n_b,
-                                         weight = 1000, style="invis")
-        subgraph.graph_attr.update(graph_format.subgraph_format(sub))
-    agraph.graph_attr.update(graph_format.graph_attrs())
-
-    agraph.layout("dot")
-    agraph.write("/tmp/tmp.dot")
-    agraph.draw(filename)
-
-def to_ipython(hypergraph, graph_format):
-    ""
-
-    """
-    Display a hypergraph in iPython.
-
-    Parameters
-    ------------
-
-    hypergraph : :py:class:`Hypergraph`
-       The hypergraph to convert.
-
-    graph_format : :py:class:`HypergraphFormatter`
-       A hypergraph formatter.
-
-    Returns
-    ---------
-
-    IPython display object.
-    """
-
-    from IPython.display import Image
-    temp_file = "/tmp/tmp.png"
-    to_image(hypergraph, temp_file, graph_format)
-    return Image(filename = temp_file)
+        from IPython.display import Image
+        temp_file = "/tmp/tmp.png"
+        self.to_image(temp_file)
+        return Image(filename = temp_file)
 
 def pretty_print(hypergraph):
     graph = nx.Graph()
@@ -230,3 +191,34 @@ def report(duals):
                 "ncons": [len(d.constraints) for d in duals]},
         index = range(len(duals)))
     df.plot()
+
+class HypergraphPathFormatter(HypergraphFormatter):
+    def __init__(self, hypergraph, paths):
+        self.hypergraph = hypergraph
+        self.paths = paths
+    def hyperedge_attrs(self, edge):
+        colors = ["red", "green", "blue", "purple", "orange", "yellow"]
+        for path, color in zip(self.paths, colors):
+            if edge in path:
+                return {"color": color}
+        return {}
+
+
+class HypergraphWeightFormatter(HypergraphFormatter):
+    def __init__(self, hypergraph, weights):
+        self.hypergraph = hypergraph
+        self.weights = weights
+    def hyperedge_node_attrs(self, edge):
+        return {"label": self.weights[edge]}
+
+class HypergraphConstraintFormatter(HypergraphFormatter):
+    def __init__(self, hypergraph, constraints):
+        self.hypergraph = hypergraph
+        self.constraints = constraints
+
+    def hyperedge_attrs(self, edge):
+        colors = ["red", "green", "blue", "purple"]
+        for constraint, color in zip(self.constraints, colors):
+            if edge in constraint:
+                return {"color": color}
+        return {}

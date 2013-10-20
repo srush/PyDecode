@@ -1,1 +1,29 @@
-<IPython.core.display.Image at 0x3cb5dd0>
+start
+the V <pydecode.semiring.HypergraphSemiRing instance at 0x5153560>
+[([<pydecode.hyper.Node object at 0x50385f8>], 84057360)]
+the D <pydecode.semiring.HypergraphSemiRing instance at 0x5153638>
+[([<pydecode.hyper.Node object at 0x50385f8>], 84058032)]
+the N <pydecode.semiring.HypergraphSemiRing instance at 0x5153b90>
+[([<pydecode.hyper.Node object at 0x50385f8>], 84189360)]
+dog V <pydecode.semiring.HypergraphSemiRing instance at 0x51535f0>
+[([<pydecode.hyper.Node object at 0x5038fa8>], 84189648), ([<pydecode.hyper.Node object at 0x5038e68>], 83181104), ([<pydecode.hyper.Node object at 0x5038530>], 84189648)]
+dog D <pydecode.semiring.HypergraphSemiRing instance at 0x5153bd8>
+[([<pydecode.hyper.Node object at 0x5038fa8>], 83181104), ([<pydecode.hyper.Node object at 0x5038e68>], 74828400), ([<pydecode.hyper.Node object at 0x5038530>], 83181104)]
+dog N <pydecode.semiring.HypergraphSemiRing instance at 0x5153950>
+[([<pydecode.hyper.Node object at 0x5038fa8>], 74828400), ([<pydecode.hyper.Node object at 0x5038e68>], 83181296), ([<pydecode.hyper.Node object at 0x5038530>], 74828400)]
+walked V <pydecode.semiring.HypergraphSemiRing instance at 0x51521b8>
+[([<pydecode.hyper.Node object at 0x5038f08>], 83181296), ([<pydecode.hyper.Node object at 0x5038b20>], 85317872), ([<pydecode.hyper.Node object at 0x50383a0>], 83181296)]
+in D <pydecode.semiring.HypergraphSemiRing instance at 0x5153950>
+[([<pydecode.hyper.Node object at 0x50388a0>], 85317872)]
+the V <pydecode.semiring.HypergraphSemiRing instance at 0x51521b8>
+[([<pydecode.hyper.Node object at 0x5038378>], 85317584)]
+the D <pydecode.semiring.HypergraphSemiRing instance at 0x5152ea8>
+[([<pydecode.hyper.Node object at 0x5038378>], 85316336)]
+the N <pydecode.semiring.HypergraphSemiRing instance at 0x51526c8>
+[([<pydecode.hyper.Node object at 0x5038378>], 85317776)]
+park V <pydecode.semiring.HypergraphSemiRing instance at 0x5152098>
+[([<pydecode.hyper.Node object at 0x50384b8>], 85317488), ([<pydecode.hyper.Node object at 0x5038f80>], 85316816), ([<pydecode.hyper.Node object at 0x5038968>], 85317488)]
+park N <pydecode.semiring.HypergraphSemiRing instance at 0x5152680>
+[([<pydecode.hyper.Node object at 0x50384b8>], 85316816), ([<pydecode.hyper.Node object at 0x5038f80>], 85317680), ([<pydecode.hyper.Node object at 0x5038968>], 85316816)]
+END END <pydecode.semiring.HypergraphSemiRing instance at 0x51527a0>
+[([<pydecode.hyper.Node object at 0x5038e18>], 85317680), ([<pydecode.hyper.Node object at 0x50388c8>], 85318736)]
