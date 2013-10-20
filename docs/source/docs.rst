@@ -10,7 +10,6 @@ Documentation
    setup
    api
    display
-   lp
    cpp_api
    notebooks/tutorial
    gallery

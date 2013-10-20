@@ -1,1 +1,49 @@
-<IPython.core.display.Image at 0x2de8f90>
+trap left 0-1 [([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4030>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4030>], None)]
+trap right 0-1 [([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4030>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4030>], None)]
+tri left 0-1 [([<pydecode.hyper.Node object at 0x33c4530>, <pydecode.hyper.Node object at 0x33c4dc8>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4530>, <pydecode.hyper.Node object at 0x33c4dc8>], None)]
+tri right 0-1 [([<pydecode.hyper.Node object at 0x33c4170>, <pydecode.hyper.Node object at 0x33c4468>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4170>, <pydecode.hyper.Node object at 0x33c4468>], None)]
+trap left 1-2 [([<pydecode.hyper.Node object at 0x33c4468>, <pydecode.hyper.Node object at 0x33c4ee0>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4468>, <pydecode.hyper.Node object at 0x33c4ee0>], None)]
+trap right 1-2 [([<pydecode.hyper.Node object at 0x33c4468>, <pydecode.hyper.Node object at 0x33c4ee0>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4468>, <pydecode.hyper.Node object at 0x33c4ee0>], None)]
+tri left 1-2 [([<pydecode.hyper.Node object at 0x33c4030>, <pydecode.hyper.Node object at 0x33c4e40>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4030>, <pydecode.hyper.Node object at 0x33c4e40>], None)]
+tri right 1-2 [([<pydecode.hyper.Node object at 0x33c4800>, <pydecode.hyper.Node object at 0x33c4878>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4800>, <pydecode.hyper.Node object at 0x33c4878>], None)]
+trap left 2-3 [([<pydecode.hyper.Node object at 0x33c4878>, <pydecode.hyper.Node object at 0x33c4f80>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4878>, <pydecode.hyper.Node object at 0x33c4f80>], None)]
+trap right 2-3 [([<pydecode.hyper.Node object at 0x33c4878>, <pydecode.hyper.Node object at 0x33c4f80>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4878>, <pydecode.hyper.Node object at 0x33c4f80>], None)]
+tri left 2-3 [([<pydecode.hyper.Node object at 0x33c4ee0>, <pydecode.hyper.Node object at 0x33c4e18>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4ee0>, <pydecode.hyper.Node object at 0x33c4e18>], None)]
+tri right 2-3 [([<pydecode.hyper.Node object at 0x33c4d78>, <pydecode.hyper.Node object at 0x33c4508>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4d78>, <pydecode.hyper.Node object at 0x33c4508>], None)]
+trap left 0-2 [([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4558>], None), ([<pydecode.hyper.Node object at 0x33c4238>, <pydecode.hyper.Node object at 0x33c4ee0>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4558>], None), ([<pydecode.hyper.Node object at 0x33c4238>, <pydecode.hyper.Node object at 0x33c4ee0>], None)]
+trap right 0-2 [([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4558>], None), ([<pydecode.hyper.Node object at 0x33c4238>, <pydecode.hyper.Node object at 0x33c4ee0>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4558>], None), ([<pydecode.hyper.Node object at 0x33c4238>, <pydecode.hyper.Node object at 0x33c4ee0>], None)]
+tri left 0-2 [([<pydecode.hyper.Node object at 0x33c4530>, <pydecode.hyper.Node object at 0x33c4378>], None), ([<pydecode.hyper.Node object at 0x33c4648>, <pydecode.hyper.Node object at 0x33c4e40>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4530>, <pydecode.hyper.Node object at 0x33c4378>], None), ([<pydecode.hyper.Node object at 0x33c4648>, <pydecode.hyper.Node object at 0x33c4e40>], None)]
+tri right 0-2 [([<pydecode.hyper.Node object at 0x33c4170>, <pydecode.hyper.Node object at 0x33c4c10>], None), ([<pydecode.hyper.Node object at 0x33c4f08>, <pydecode.hyper.Node object at 0x33c4878>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4170>, <pydecode.hyper.Node object at 0x33c4c10>], None), ([<pydecode.hyper.Node object at 0x33c4f08>, <pydecode.hyper.Node object at 0x33c4878>], None)]
+trap left 1-3 [([<pydecode.hyper.Node object at 0x33c4468>, <pydecode.hyper.Node object at 0x33c4440>], None), ([<pydecode.hyper.Node object at 0x33c4c10>, <pydecode.hyper.Node object at 0x33c4f80>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4468>, <pydecode.hyper.Node object at 0x33c4440>], None), ([<pydecode.hyper.Node object at 0x33c4c10>, <pydecode.hyper.Node object at 0x33c4f80>], None)]
+trap right 1-3 [([<pydecode.hyper.Node object at 0x33c4468>, <pydecode.hyper.Node object at 0x33c4440>], None), ([<pydecode.hyper.Node object at 0x33c4c10>, <pydecode.hyper.Node object at 0x33c4f80>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4468>, <pydecode.hyper.Node object at 0x33c4440>], None), ([<pydecode.hyper.Node object at 0x33c4c10>, <pydecode.hyper.Node object at 0x33c4f80>], None)]
+tri left 1-3 [([<pydecode.hyper.Node object at 0x33c4030>, <pydecode.hyper.Node object at 0x33c42b0>], None), ([<pydecode.hyper.Node object at 0x33c4558>, <pydecode.hyper.Node object at 0x33c4e18>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4030>, <pydecode.hyper.Node object at 0x33c42b0>], None), ([<pydecode.hyper.Node object at 0x33c4558>, <pydecode.hyper.Node object at 0x33c4e18>], None)]
+tri right 1-3 [([<pydecode.hyper.Node object at 0x33c4800>, <pydecode.hyper.Node object at 0x33c4418>], None), ([<pydecode.hyper.Node object at 0x33c4da0>, <pydecode.hyper.Node object at 0x33c4508>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4800>, <pydecode.hyper.Node object at 0x33c4418>], None), ([<pydecode.hyper.Node object at 0x33c4da0>, <pydecode.hyper.Node object at 0x33c4508>], None)]
+trap left 0-3 [([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4210>], None), ([<pydecode.hyper.Node object at 0x33c4238>, <pydecode.hyper.Node object at 0x33c4440>], None), ([<pydecode.hyper.Node object at 0x33c4b48>, <pydecode.hyper.Node object at 0x33c4f80>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4210>], None), ([<pydecode.hyper.Node object at 0x33c4238>, <pydecode.hyper.Node object at 0x33c4440>], None), ([<pydecode.hyper.Node object at 0x33c4b48>, <pydecode.hyper.Node object at 0x33c4f80>], None)]
+trap right 0-3 [([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4210>], None), ([<pydecode.hyper.Node object at 0x33c4238>, <pydecode.hyper.Node object at 0x33c4440>], None), ([<pydecode.hyper.Node object at 0x33c4b48>, <pydecode.hyper.Node object at 0x33c4f80>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c44b8>, <pydecode.hyper.Node object at 0x33c4210>], None), ([<pydecode.hyper.Node object at 0x33c4238>, <pydecode.hyper.Node object at 0x33c4440>], None), ([<pydecode.hyper.Node object at 0x33c4b48>, <pydecode.hyper.Node object at 0x33c4f80>], None)]
+tri left 0-3 [([<pydecode.hyper.Node object at 0x33c4530>, <pydecode.hyper.Node object at 0x33c4760>], None), ([<pydecode.hyper.Node object at 0x33c4648>, <pydecode.hyper.Node object at 0x33c42b0>], None), ([<pydecode.hyper.Node object at 0x33c43a0>, <pydecode.hyper.Node object at 0x33c4e18>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4530>, <pydecode.hyper.Node object at 0x33c4760>], None), ([<pydecode.hyper.Node object at 0x33c4648>, <pydecode.hyper.Node object at 0x33c42b0>], None), ([<pydecode.hyper.Node object at 0x33c43a0>, <pydecode.hyper.Node object at 0x33c4e18>], None)]
+tri right 0-3 [([<pydecode.hyper.Node object at 0x33c4170>, <pydecode.hyper.Node object at 0x33c4e68>], None), ([<pydecode.hyper.Node object at 0x33c4f08>, <pydecode.hyper.Node object at 0x33c4418>], None), ([<pydecode.hyper.Node object at 0x33c4d28>, <pydecode.hyper.Node object at 0x33c4508>], None)] [] None False
+[([<pydecode.hyper.Node object at 0x33c4170>, <pydecode.hyper.Node object at 0x33c4e68>], None), ([<pydecode.hyper.Node object at 0x33c4f08>, <pydecode.hyper.Node object at 0x33c4418>], None), ([<pydecode.hyper.Node object at 0x33c4d28>, <pydecode.hyper.Node object at 0x33c4508>], None)]
+[] [<pydecode.hyper.Node object at 0x33c4828>] None False
