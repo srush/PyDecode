@@ -8,10 +8,10 @@ Documentation
    :maxdepth: 2
 
    setup
-   notebooks/tutorial
    api
    display
    lp
    cpp_api
+   notebooks/tutorial
    gallery
    notebooks/index

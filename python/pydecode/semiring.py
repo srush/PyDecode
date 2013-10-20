@@ -83,6 +83,9 @@ class HypergraphSemiRing(SemiRing):
         self.node_list = node_list
         self.name = name
         self._is_zero = is_zero
+        
+    def __repr__(self):
+        return "%s %s %s %s"%(self.edge_list, self.node_list, self.name, self._is_zero) 
 
     def is_zero(self): return self._is_zero
 

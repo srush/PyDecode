@@ -1,4 +1,4 @@
-if import pydecode.hyper as ph
+import pydecode.hyper as ph
 from pydecode.semiring import *
 
 
@@ -66,6 +66,7 @@ class ChartBuilder:
             self._chart[node_label] = HypergraphSemiRing([], [node], None)
         else:
             self._chart[node_label] = self._semiring.one()
+        return self._chart[node_label]
 
     def sum(self, edges):
         "Combine values with + semiring operation."
@@ -87,6 +88,7 @@ class ChartBuilder:
             if not val.is_zero():
                 self._chart[label] = val
         self._last = label
+        return self._chart[label]
 
     def __contains__(self, label):
         return label in self._chart
