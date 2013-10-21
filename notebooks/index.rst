@@ -9,3 +9,4 @@ More Examples
    hmm
    parsing
    decipher
+   sequence_crf

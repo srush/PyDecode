@@ -4,12 +4,12 @@
 # Building a Hypergraph
 # ---------------------
 
-# In[31]:
+# In[9]:
 
 import pydecode.hyper as ph
 
 
-# In[32]:
+# In[10]:
 
 hyper1 = ph.Hypergraph()
 
@@ -23,7 +23,7 @@ hyper1 = ph.Hypergraph()
 #    * A list of tail nodes for that edge. 
 #    * A label for that edge. 
 
-# In[33]:
+# In[11]:
 
 with hyper1.builder() as b:
     node_a = b.add_node(label = "a")
@@ -39,19 +39,19 @@ with hyper1.builder() as b:
 
 # We can also display the hypergraph to see our work.
 
-# In[34]:
+# In[12]:
 
 import pydecode.display as display
-display.to_ipython(hyper1, display.HypergraphFormatter(hyper1))
+display.HypergraphFormatter(hyper1).to_ipython()
 
 
-# Out[34]:
+# Out[12]:
 
-#     <IPython.core.display.Image at 0x2949b50>
+#     <IPython.core.display.Image at 0x3bf8110>
 
 # After creating the hypergraph we can assign additional property information. One useful property is to add weights. We do this by defining a function to map labels to weights.
 
-# In[35]:
+# In[13]:
 
 def build_weights(label):
     if "First" in label: return 1
@@ -61,13 +61,13 @@ def build_weights(label):
 weights = ph.Weights(hyper1).build(build_weights)
 
 
-# In[36]:
+# In[14]:
 
 for edge in hyper1.edges:
     print hyper1.label(edge), weights[edge]
 
 
-# Out[36]:
+# Out[14]:
 
 #     First Edge 1.0
 #     Second Edge 5.0
@@ -76,29 +76,29 @@ for edge in hyper1.edges:
 
 # We use the best path.
 
-# In[37]:
+# In[15]:
 
-path, chart = ph.best_path(hyper1, weights)
+path = ph.best_path(hyper1, weights)
 
 
-# In[38]:
+# In[16]:
 
 print weights.dot(path)
 
 
-# Out[38]:
+# Out[16]:
 
 #     6.0
 # 
 
-# In[39]:
+# In[17]:
 
-display.to_ipython(hyper1, display.HypergraphFormatter(hyper1))
+display.HypergraphFormatter(hyper1).to_ipython()
 
 
-# Out[39]:
+# Out[17]:
 
-#     <IPython.core.display.Image at 0x2949f50>
+#     <IPython.core.display.Image at 0x3be4d90>
 
 # Hypergraph for Dynamic Programming
 # ----------------------------------
@@ -126,7 +126,7 @@ display.to_ipython(hyper1, display.HypergraphFormatter(hyper1))
 #                      LevenshteinDistance(s[0..len_s-1], t[0..len_t-1]) + cost)
 #     }
 
-# In[40]:
+# In[18]:
 
 def make_ld_hyper(s, t):
     ld_hyper = ph.Hypergraph()
@@ -146,17 +146,17 @@ def make_ld_hyper(s, t):
     return ld_hyper
 
 
-# In[41]:
+# In[19]:
 
 hyper2 = make_ld_hyper("ab", "bb")
-display.to_ipython(hyper2, display.HypergraphFormatter(hyper2))
+display.HypergraphFormatter(hyper2).to_ipython()
 
 
-# Out[41]:
+# Out[19]:
 
-#     <IPython.core.display.Image at 0x2df08d0>
+#     <IPython.core.display.Image at 0x4146790>
 
-# In[42]:
+# In[20]:
 
 def build_weights(label):
     if label in ["<", ">"]: return 0.0
@@ -165,12 +165,22 @@ def build_weights(label):
 weights2 = ph.Weights(hyper2).build(build_weights)
 
 
-# In[43]:
+# In[21]:
 
-path, chart = ph.best_path(hyper2, weights2)
-display.to_ipython(hyper2, display.HypergraphPathFormatter(hyper2, [path]))
+path = ph.best_path(hyper2, weights2)
+display.HypergraphPathFormatter(hyper2, [path]).to_ipython()
 
 
-# Out[43]:
+# Out[21]:
 
-#     <IPython.core.display.Image at 0x2df0950>
+
+    ---------------------------------------------------------------------------
+    ValueError                                Traceback (most recent call last)
+
+    <ipython-input-21-9d5702cb485c> in <module>()
+    ----> 1 path, chart = ph.best_path(hyper2, weights2)
+          2 display.HypergraphPathFormatter(hyper2, [path]).to_ipython()
+
+
+    ValueError: too many values to unpack
+

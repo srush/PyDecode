@@ -47,7 +47,7 @@ We can also display the hypergraph to see our work.
 .. code:: python
 
     import pydecode.display as display
-    display.to_ipython(hyper1, display.HypergraphFormatter(hyper1))
+    display.HypergraphFormatter(hyper1).to_ipython()
 
 
 
@@ -83,7 +83,7 @@ We use the best path.
 
 .. code:: python
 
-    path, chart = ph.best_path(hyper1, weights)
+    path = ph.best_path(hyper1, weights)
 .. code:: python
 
     print weights.dot(path)
@@ -95,7 +95,7 @@ We use the best path.
 
 .. code:: python
 
-    display.to_ipython(hyper1, display.HypergraphFormatter(hyper1))
+    display.HypergraphFormatter(hyper1).to_ipython()
 
 
 
@@ -153,7 +153,7 @@ Here is a simple dynamic programming example take from wikipedia:
 .. code:: python
 
     hyper2 = make_ld_hyper("ab", "bb")
-    display.to_ipython(hyper2, display.HypergraphFormatter(hyper2))
+    display.HypergraphFormatter(hyper2).to_ipython()
 
 
 
@@ -170,11 +170,19 @@ Here is a simple dynamic programming example take from wikipedia:
     weights2 = ph.Weights(hyper2).build(build_weights)
 .. code:: python
 
-    path, chart = ph.best_path(hyper2, weights2)
-    display.to_ipython(hyper2, display.HypergraphPathFormatter(hyper2, [path]))
+    path = ph.best_path(hyper2, weights2)
+    display.HypergraphPathFormatter(hyper2, [path]).to_ipython()
+
+::
 
 
+    ---------------------------------------------------------------------------
+    ValueError                                Traceback (most recent call last)
 
-.. image:: tutorial_files/tutorial_22_0.png
+    <ipython-input-21-9d5702cb485c> in <module>()
+    ----> 1 path, chart = ph.best_path(hyper2, weights2)
+          2 display.HypergraphPathFormatter(hyper2, [path]).to_ipython()
 
+
+    ValueError: too many values to unpack
 

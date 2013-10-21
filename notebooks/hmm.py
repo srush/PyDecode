@@ -1,10 +1,12 @@
 
-# In[30]:
+# In[70]:
 
 import pydecode.hyper as ph
 import pydecode.display as display
 from collections import namedtuple
+
 import pydecode.chart as chart
+import pydecode.semiring as semi
 
 
 # A HMM Tagger Example
@@ -17,7 +19,7 @@ import pydecode.chart as chart
 # 
 # We begin by constructing the HMM probabilities.
 
-# In[31]:
+# In[71]:
 
 # The emission probabilities.
 emission = {'ROOT' : {'ROOT' : 1.0},
@@ -40,7 +42,7 @@ sentence = 'the dog walked in the park'
 
 # Next we specify the the index set using namedtuples.
 
-# In[32]:
+# In[72]:
 
 class Bigram(namedtuple("Bigram", ["word", "tag", "prevtag"])):
     def __str__(self): return "%s -> %s"%(self.prevtag, self.tag)
@@ -54,7 +56,7 @@ def bigram_weight(bigram):
 
 # Now we write out dynamic program. 
 
-# In[33]:
+# In[73]:
 
 def viterbi(chart):
     words = ["ROOT"] + sentence.strip().split(" ") + ["END"]
@@ -70,135 +72,239 @@ def viterbi(chart):
 
 # Now we are ready to build the hypergraph topology itself.
 
-# In[35]:
+# In[74]:
 
 # Create a chart using to compute the probability of the sentence.
 c = chart.ChartBuilder(bigram_weight)
 viterbi(c).finish()
 
 
-# Out[35]:
+# Out[74]:
 
+#     ROOT -> V
 #     the V 1.4
+#     ROOT -> D
 #     the D 2.2
+#     ROOT -> N
 #     the N 1.4
+#     V -> V
+#     D -> V
+#     N -> V
 #     dog V 2.4000000000000004
+#     V -> D
+#     D -> D
+#     N -> D
 #     dog D 2.4000000000000004
+#     V -> N
+#     D -> N
+#     N -> N
 #     dog N 3.8000000000000003
+#     V -> V
+#     D -> V
+#     N -> V
 #     walked V 5.6000000000000005
+#     V -> D
 #     in D 7.0
+#     D -> V
 #     the V 7.2
+#     D -> D
 #     the D 7.9
+#     D -> N
 #     the N 7.9
+#     V -> V
+#     D -> V
+#     N -> V
 #     park V 9.600000000000001
+#     V -> N
+#     D -> N
+#     N -> N
 #     park N 8.8
+#     V -> END
+#     N -> END
 #     END END 10.600000000000001
 # 
 
 #     10.600000000000001
 
-# In[36]:
+# In[75]:
 
 # Create a chart to compute the max paths.
-c = chart.ChartBuilder(build_weights, 
+c = chart.ChartBuilder(bigram_weight, 
                        chart.ViterbiSemiRing)
 viterbi(c).finish()
 
 
-# Out[36]:
+# Out[75]:
 
+#     ROOT -> V
 #     the V 0.4
+#     ROOT -> D
 #     the D 1.2000000000000002
+#     ROOT -> N
 #     the N 0.4
+#     V -> V
+#     D -> V
+#     N -> V
 #     dog V 1.4000000000000001
+#     V -> D
+#     D -> D
+#     N -> D
 #     dog D 1.4000000000000001
+#     V -> N
+#     D -> N
+#     N -> N
 #     dog N 2.8000000000000003
+#     V -> V
+#     D -> V
+#     N -> V
 #     walked V 4.6000000000000005
+#     V -> D
 #     in D 6.0
+#     D -> V
 #     the V 6.2
+#     D -> D
 #     the D 6.9
+#     D -> N
 #     the N 6.9
+#     V -> V
+#     D -> V
+#     N -> V
 #     park V 8.600000000000001
+#     V -> N
+#     D -> N
+#     N -> N
 #     park N 7.800000000000001
+#     V -> END
+#     N -> END
 #     END END 9.600000000000001
 # 
 
 #     9.600000000000001
 
-# In[37]:
+# In[76]:
 
-c = chart.ChartBuilder(id, chart.HypergraphSemiRing, 
+c = chart.ChartBuilder(lambda a:a, semi.HypergraphSemiRing, 
                        build_hypergraph = True)
 hypergraph = viterbi(c).finish()
 
 
-# Out[37]:
+# Out[76]:
 
-#     start
-#     the V <pydecode.semiring.HypergraphSemiRing instance at 0x5153560>
-#     [([<pydecode.hyper.Node object at 0x50385f8>], 84057360)]
-#     the D <pydecode.semiring.HypergraphSemiRing instance at 0x5153638>
-#     [([<pydecode.hyper.Node object at 0x50385f8>], 84058032)]
-#     the N <pydecode.semiring.HypergraphSemiRing instance at 0x5153b90>
-#     [([<pydecode.hyper.Node object at 0x50385f8>], 84189360)]
-#     dog V <pydecode.semiring.HypergraphSemiRing instance at 0x51535f0>
-#     [([<pydecode.hyper.Node object at 0x5038fa8>], 84189648), ([<pydecode.hyper.Node object at 0x5038e68>], 83181104), ([<pydecode.hyper.Node object at 0x5038530>], 84189648)]
-#     dog D <pydecode.semiring.HypergraphSemiRing instance at 0x5153bd8>
-#     [([<pydecode.hyper.Node object at 0x5038fa8>], 83181104), ([<pydecode.hyper.Node object at 0x5038e68>], 74828400), ([<pydecode.hyper.Node object at 0x5038530>], 83181104)]
-#     dog N <pydecode.semiring.HypergraphSemiRing instance at 0x5153950>
-#     [([<pydecode.hyper.Node object at 0x5038fa8>], 74828400), ([<pydecode.hyper.Node object at 0x5038e68>], 83181296), ([<pydecode.hyper.Node object at 0x5038530>], 74828400)]
-#     walked V <pydecode.semiring.HypergraphSemiRing instance at 0x51521b8>
-#     [([<pydecode.hyper.Node object at 0x5038f08>], 83181296), ([<pydecode.hyper.Node object at 0x5038b20>], 85317872), ([<pydecode.hyper.Node object at 0x50383a0>], 83181296)]
-#     in D <pydecode.semiring.HypergraphSemiRing instance at 0x5153950>
-#     [([<pydecode.hyper.Node object at 0x50388a0>], 85317872)]
-#     the V <pydecode.semiring.HypergraphSemiRing instance at 0x51521b8>
-#     [([<pydecode.hyper.Node object at 0x5038378>], 85317584)]
-#     the D <pydecode.semiring.HypergraphSemiRing instance at 0x5152ea8>
-#     [([<pydecode.hyper.Node object at 0x5038378>], 85316336)]
-#     the N <pydecode.semiring.HypergraphSemiRing instance at 0x51526c8>
-#     [([<pydecode.hyper.Node object at 0x5038378>], 85317776)]
-#     park V <pydecode.semiring.HypergraphSemiRing instance at 0x5152098>
-#     [([<pydecode.hyper.Node object at 0x50384b8>], 85317488), ([<pydecode.hyper.Node object at 0x5038f80>], 85316816), ([<pydecode.hyper.Node object at 0x5038968>], 85317488)]
-#     park N <pydecode.semiring.HypergraphSemiRing instance at 0x5152680>
-#     [([<pydecode.hyper.Node object at 0x50384b8>], 85316816), ([<pydecode.hyper.Node object at 0x5038f80>], 85317680), ([<pydecode.hyper.Node object at 0x5038968>], 85316816)]
-#     END END <pydecode.semiring.HypergraphSemiRing instance at 0x51527a0>
-#     [([<pydecode.hyper.Node object at 0x5038e18>], 85317680), ([<pydecode.hyper.Node object at 0x50388c8>], 85318736)]
+#     ROOT -> V
+#     make ROOT -> V
+#     the V <pydecode.semiring.HypergraphSemiRing object at 0x36f4750>
+#     [([<pydecode.hyper.Node object at 0x35a0a08>], Bigram(word='the', tag='V', prevtag='ROOT'))]
+#     ROOT -> D
+#     make ROOT -> D
+#     the D <pydecode.semiring.HypergraphSemiRing object at 0x36f4810>
+#     [([<pydecode.hyper.Node object at 0x35a0a08>], Bigram(word='the', tag='D', prevtag='ROOT'))]
+#     ROOT -> N
+#     make ROOT -> N
+#     the N <pydecode.semiring.HypergraphSemiRing object at 0x36f4f50>
+#     [([<pydecode.hyper.Node object at 0x35a0a08>], Bigram(word='the', tag='N', prevtag='ROOT'))]
+#     V -> V
+#     make V -> V
+#     D -> V
+#     make D -> V
+#     N -> V
+#     make N -> V
+#     dog V <pydecode.semiring.HypergraphSemiRing object at 0x36f4750>
+#     [([<pydecode.hyper.Node object at 0x35a0c38>], Bigram(word='dog', tag='V', prevtag='V')), ([<pydecode.hyper.Node object at 0x35a0f30>], Bigram(word='dog', tag='V', prevtag='D')), ([<pydecode.hyper.Node object at 0x35a0ee0>], Bigram(word='dog', tag='V', prevtag='N'))]
+#     V -> D
+#     make V -> D
+#     D -> D
+#     make D -> D
+#     N -> D
+#     make N -> D
+#     dog D <pydecode.semiring.HypergraphSemiRing object at 0x36f4c90>
+#     [([<pydecode.hyper.Node object at 0x35a0c38>], Bigram(word='dog', tag='D', prevtag='V')), ([<pydecode.hyper.Node object at 0x35a0f30>], Bigram(word='dog', tag='D', prevtag='D')), ([<pydecode.hyper.Node object at 0x35a0ee0>], Bigram(word='dog', tag='D', prevtag='N'))]
+#     V -> N
+#     make V -> N
+#     D -> N
+#     make D -> N
+#     N -> N
+#     make N -> N
+#     dog N <pydecode.semiring.HypergraphSemiRing object at 0x36f4f10>
+#     [([<pydecode.hyper.Node object at 0x35a0c38>], Bigram(word='dog', tag='N', prevtag='V')), ([<pydecode.hyper.Node object at 0x35a0f30>], Bigram(word='dog', tag='N', prevtag='D')), ([<pydecode.hyper.Node object at 0x35a0ee0>], Bigram(word='dog', tag='N', prevtag='N'))]
+#     V -> V
+#     make V -> V
+#     D -> V
+#     make D -> V
+#     N -> V
+#     make N -> V
+#     walked V <pydecode.semiring.HypergraphSemiRing object at 0x36f4c90>
+#     [([<pydecode.hyper.Node object at 0x35a0fd0>], Bigram(word='walked', tag='V', prevtag='V')), ([<pydecode.hyper.Node object at 0x35a0be8>], Bigram(word='walked', tag='V', prevtag='D')), ([<pydecode.hyper.Node object at 0x35a0a30>], Bigram(word='walked', tag='V', prevtag='N'))]
+#     V -> D
+#     make V -> D
+#     in D <pydecode.semiring.HypergraphSemiRing object at 0x36f45d0>
+#     [([<pydecode.hyper.Node object at 0x37008f0>], Bigram(word='in', tag='D', prevtag='V'))]
+#     D -> V
+#     make D -> V
+#     the V <pydecode.semiring.HypergraphSemiRing object at 0x36ecb10>
+#     [([<pydecode.hyper.Node object at 0x3700a08>], Bigram(word='the', tag='V', prevtag='D'))]
+#     D -> D
+#     make D -> D
+#     the D <pydecode.semiring.HypergraphSemiRing object at 0x36ec250>
+#     [([<pydecode.hyper.Node object at 0x3700a08>], Bigram(word='the', tag='D', prevtag='D'))]
+#     D -> N
+#     make D -> N
+#     the N <pydecode.semiring.HypergraphSemiRing object at 0x36ecb10>
+#     [([<pydecode.hyper.Node object at 0x3700a08>], Bigram(word='the', tag='N', prevtag='D'))]
+#     V -> V
+#     make V -> V
+#     D -> V
+#     make D -> V
+#     N -> V
+#     make N -> V
+#     park V <pydecode.semiring.HypergraphSemiRing object at 0x36ec4d0>
+#     [([<pydecode.hyper.Node object at 0x3700cb0>], Bigram(word='park', tag='V', prevtag='V')), ([<pydecode.hyper.Node object at 0x3700fd0>], Bigram(word='park', tag='V', prevtag='D')), ([<pydecode.hyper.Node object at 0x3700120>], Bigram(word='park', tag='V', prevtag='N'))]
+#     V -> N
+#     make V -> N
+#     D -> N
+#     make D -> N
+#     N -> N
+#     make N -> N
+#     park N <pydecode.semiring.HypergraphSemiRing object at 0x36ec810>
+#     [([<pydecode.hyper.Node object at 0x3700cb0>], Bigram(word='park', tag='N', prevtag='V')), ([<pydecode.hyper.Node object at 0x3700fd0>], Bigram(word='park', tag='N', prevtag='D')), ([<pydecode.hyper.Node object at 0x3700120>], Bigram(word='park', tag='N', prevtag='N'))]
+#     V -> END
+#     make V -> END
+#     N -> END
+#     make N -> END
+#     END END <pydecode.semiring.HypergraphSemiRing object at 0x36ec490>
+#     [([<pydecode.hyper.Node object at 0x37004b8>], Bigram(word='END', tag='END', prevtag='V')), ([<pydecode.hyper.Node object at 0x3700620>], Bigram(word='END', tag='END', prevtag='N'))]
 # 
-
-#     <pydecode.hyper.Hypergraph at 0x504d6e0>
 
 # Step 3: Construct the weights.
 
-# In[40]:
+# In[77]:
 
-weights = ph.Weights(hypergraph).build(build_weights)
+weights = ph.Weights(hypergraph).build(bigram_weight)
 
 # Find the best path.
-path, vchart = ph.best_path(hypergraph, weights)
+path = ph.best_path(hypergraph, weights)
 print weights.dot(path)
 
 # Output the path.
 #[hypergraph.label(edge) for edge in path.edges]
 
 
-# Out[40]:
+# Out[77]:
 
 #     9.6
 # 
 
-# In[12]:
+# In[78]:
 
-format = display.HypergraphPathFormatter(hypergraph, [path])
-display.to_ipython(hypergraph, format)
+display.HypergraphPathFormatter(hypergraph, [path]).to_ipython()
 
 
-# Out[12]:
+# Out[78]:
 
-#     <IPython.core.display.Image at 0x432cf50>
+#     <IPython.core.display.Image at 0x36cd790>
 
 # We can also use a custom fancier formatter. These attributes are from graphviz (http://www.graphviz.org/content/attrs)
 
-# In[13]:
+# In[79]:
 
 class HMMFormat(display.HypergraphPathFormatter):
     def hypernode_attrs(self, node):
@@ -213,17 +319,17 @@ class HMMFormat(display.HypergraphPathFormatter):
         return {"label": (["ROOT"] + sentence.split() + ["END"])[int(subgraph.split("_")[1])],
                 "rank" : "same"}
     def graph_attrs(self): return {"rankdir":"RL"}
-format = HMMFormat(hypergraph, [path])
-display.to_ipython(hypergraph, format)
+
+HMMFormat(hypergraph, [path]).to_ipython()
 
 
-# Out[13]:
+# Out[79]:
 
-#     <IPython.core.display.Image at 0x474d210>
+#     <IPython.core.display.Image at 0x37b02d0>
 
 # PyDecode also allows you to add extra constraints to the problem. As an example we can add constraints to enfore that the tag of "dog" is the same tag as "park".
 
-# In[14]:
+# In[80]:
 
 def cons(tag): return "tag_%s"%tag
 
@@ -241,59 +347,59 @@ constraints =     ph.Constraints(hypergraph).build(
 
 # This check fails because the tags do not agree.
 
-# In[15]:
+# In[81]:
 
 print "check", constraints.check(path)
 
 
-# Out[15]:
+# Out[81]:
 
-#     check [<pydecode.hyper.Constraint object at 0x474e1f0>, <pydecode.hyper.Constraint object at 0x474e270>]
+#     check [<pydecode.hyper.Constraint object at 0x261dd90>, <pydecode.hyper.Constraint object at 0x36e9190>]
 # 
 
 # Solve instead using subgradient.
 
-# In[16]:
+# In[82]:
 
 gpath, duals = ph.best_constrained(hypergraph, weights, constraints)
 
 
-# In[17]:
+# In[83]:
 
 for d in duals:
     print d.dual, d.constraints
 
 
-# Out[17]:
+# Out[83]:
 
-#     9.6 [<pydecode.hyper.Constraint object at 0x474e270>, <pydecode.hyper.Constraint object at 0x474e230>]
+#     9.6 [<pydecode.hyper.Constraint object at 0x261dd90>, <pydecode.hyper.Constraint object at 0x36e9190>]
 #     8.8 []
 # 
 
-# In[18]:
+# In[84]:
 
 display.report(duals)
 
 
-# Out[18]:
+# Out[84]:
 
 # image file:
 
-# In[19]:
+# In[85]:
 
 import pydecode.lp as lp
 hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, weights)
 path = hypergraph_lp.solve()
 
 
-# In[20]:
+# In[86]:
 
 # Output the path.
 for edge in gpath.edges:
     print hypergraph.label(edge)
 
 
-# Out[20]:
+# Out[86]:
 
 #     ROOT -> D
 #     D -> N
@@ -304,42 +410,41 @@ for edge in gpath.edges:
 #     N -> END
 # 
 
-# In[21]:
+# In[87]:
 
 print "check", constraints.check(gpath)
 print "score", weights.dot(gpath)
 
 
-# Out[21]:
+# Out[87]:
 
 #     check []
 #     score 8.8
 # 
 
-# In[22]:
+# In[88]:
 
-format = HMMFormat(hypergraph, [path, gpath])
-display.to_ipython(hypergraph, format)
+HMMFormat(hypergraph, [path, gpath]).to_ipython()
 
 
-# Out[22]:
+# Out[88]:
 
-#     <IPython.core.display.Image at 0x488f490>
+#     <IPython.core.display.Image at 0x43e9050>
 
-# In[23]:
+# In[89]:
 
 for constraint in constraints:
     print constraint.label
 
 
-# Out[23]:
+# Out[89]:
 
 #     tag_D
 #     tag_V
 #     tag_N
 # 
 
-# In[25]:
+# In[90]:
 
 class HMMConstraintFormat(display.HypergraphConstraintFormatter):
     def hypernode_attrs(self, node):
@@ -353,37 +458,31 @@ class HMMConstraintFormat(display.HypergraphConstraintFormatter):
     def subgraph_format(self, subgraph):
         return {"label": (["ROOT"] + sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
 
-format = HMMConstraintFormat(hypergraph, constraints)
-display.to_ipython(hypergraph, format)
+HMMConstraintFormat(hypergraph, constraints).to_ipython()
 
 
-# Out[25]:
+# Out[90]:
 
-#     <IPython.core.display.Image at 0x512f690>
+#     <IPython.core.display.Image at 0x4133dd0>
 
 # Pruning
 # 
 
-# In[26]:
+# In[91]:
 
 pruned_hypergraph, pruned_weights = ph.prune_hypergraph(hypergraph, weights, 0.8)
 
 
-# In[ ]:
+# In[92]:
+
+HMMFormat(pruned_hypergraph, []).to_ipython()
 
 
+# Out[92]:
 
+#     <IPython.core.display.Image at 0x391d350>
 
-# In[27]:
-
-display.to_ipython(pruned_hypergraph, HMMFormat(pruned_hypergraph, []))
-
-
-# Out[27]:
-
-#     <IPython.core.display.Image at 0x512f6d0>
-
-# In[28]:
+# In[93]:
 
 very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
 

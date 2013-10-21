@@ -27,7 +27,7 @@ weights = ph.Weights(hyp).build(build_weights)
 
 # In[8]:
 
-display.to_ipython(hyp, display.HypergraphWeightFormatter(hyp, weights))
+display.HypergraphWeightFormatter(hyp, weights).to_ipython()
 
 
 # Out[8]:
@@ -36,8 +36,8 @@ display.to_ipython(hyp, display.HypergraphWeightFormatter(hyp, weights))
 
 # In[30]:
 
-path, _ = ph.best_path(hyp, weights)
-display.to_ipython(hyp, display.HypergraphPathFormatter(hyp, [path]))
+path = ph.best_path(hyp, weights)
+display.HypergraphPathFormatter(hyp, [path]).to_ipython()
 
 
 # Out[30]:

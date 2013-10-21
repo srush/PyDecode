@@ -85,7 +85,7 @@ Constraints
 
 Many algorithms in natural language processing, such as translation decoding, can be represented as constrained dynamic programming problems. These can be described as hypergraphs with additional constraints on hyperedges. The notation used to describe constrained hypergraphs is based on this :ref:`introduction to constraints <intro_constraints>`
 
-Constrained hypergraphs can be solved in PyDecode either using a subgradient-based solver (:py:function:`best_constrained`) or by using an :ref:`(integer) linear programming solver<lp>`.
+Constrained hypergraphs can be solved in PyDecode either using a subgradient-based solver (best_constrained) or by using an :ref:`(integer) linear programming solver<lp>`.
 
 .. automodule:: pydecode.hyper
    :no-members:
@@ -137,9 +137,9 @@ require solving problems involving dynamic programming or constrained
 dynamic programming.
 
 PyStruct_ is a general structured prediction framework that implements
-many useful training algorithms. The :py:module:`pydecode.model` module
+many useful training algorithms. The pydecode.model module
 wraps the StructuredModel class from PyStruct. This allows the user to
-train the parameters of a model by specifying a :py:class:`HypergraphModelBuilder`.
+train the parameters of a model by specifying a HypergraphModelBuilder.
 
 .. automodule:: pydecode.model
    :no-members:
@@ -161,7 +161,7 @@ Visualization
 
 One major benefit of creating a hypergraph representation is that it allows for
 easy visualization. The display package converts a hypergraph to a NetworkX_ graph
-and then uses PyGraphViz_ to render an image. The style of the graph can be easily customized by inheriting from :py:class:`HypergraphFormatter`.
+and then uses PyGraphViz_ to render an image. The style of the graph can be easily customized by inheriting from HypergraphFormatter.
 
 .. automodule:: pydecode.display
    :no-members:

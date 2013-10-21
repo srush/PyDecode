@@ -100,7 +100,7 @@ class CipherFormat(display.HypergraphPathFormatter):
     # def subgraph_format(self, subgraph):
     #     return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
 
-display.to_ipython(hyper1, CipherFormat(hyper1, []))
+CipherFormat(hyper1, []).to_ipython()
 
 
 # Out[104]:
@@ -198,7 +198,7 @@ for edge in hyper1.edges:
 
 # In[108]:
 
-path, _ = hyper.best_path(hyper1, weights)
+path = hyper.best_path(hyper1, weights)
 weights.dot(path)
 
 
@@ -213,7 +213,7 @@ cpath, duals = hyper.best_constrained(hyper1, weights, constraints)
 
 # In[110]:
 
-display.to_ipython(hyper1, CipherFormat(hyper1, [cpath]))
+CipherFormat(hyper1, [cpath]).to_ipython()
 
 
 # Out[110]:
@@ -255,7 +255,7 @@ constraints.check(cpath)
 
 #     []
 
-## Real Problem
+# Real Problem
 
 # In[114]:
 
@@ -287,7 +287,7 @@ print len(hyper2.edges)
 
 # In[118]:
 
-path2, _ = hyper.best_path(hyper2, weights2)
+path2 = hyper.best_path(hyper2, weights2)
 
 for edge in path2.edges:
     print edge.id
@@ -429,7 +429,7 @@ print len(duals)
 
 # In[129]:
 
-path2, _ = hyper.best_path(hyper2, weights2)
+path2 = hyper.best_path(hyper2, weights2)
 print weights2.dot(path2)
 for edge in path2.edges:
     print hyper2.label(edge).letter, 

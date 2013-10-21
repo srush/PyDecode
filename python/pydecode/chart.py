@@ -1,4 +1,4 @@
-if import pydecode.hyper as ph
+import pydecode.hyper as ph
 from pydecode.semiring import *
 
 
@@ -53,7 +53,6 @@ class ChartBuilder:
             return self._chart[self._last].unpack()
 
     def sr(self, label):
-        print label
         return self._semiring.make(self._scorer(label))
 
     def init(self, node_label):
@@ -66,6 +65,7 @@ class ChartBuilder:
             self._chart[node_label] = HypergraphSemiRing([], [node], None)
         else:
             self._chart[node_label] = self._semiring.one()
+        return self._chart[node_label]
 
     def sum(self, edges):
         "Combine values with + semiring operation."
@@ -75,10 +75,8 @@ class ChartBuilder:
         if label in self._chart:
             raise Exception(
                 "Chart already has label {}".format(label))
-        print label, val
         if self._builder:
             if not val.is_zero():
-                print val.edge_list
                 node = self._build.add_node(val.edge_list,
                                              label=label)
                 self._chart[label] = \
@@ -87,6 +85,7 @@ class ChartBuilder:
             if not val.is_zero():
                 self._chart[label] = val
         self._last = label
+        return self._chart[label]
 
     def __contains__(self, label):
         return label in self._chart
