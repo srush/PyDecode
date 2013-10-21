@@ -234,7 +234,7 @@ class Hyperpath {
 
 class HypergraphProjection;
 
-template<typename SemiringType = DoubleWeight>
+template<typename SemiringType = double>
 class HypergraphWeights {
  public:
   HypergraphWeights(const Hypergraph *hypergraph,
@@ -245,17 +245,6 @@ class HypergraphWeights {
     bias_(bias) {
       assert(weights.size() == hypergraph->edges().size());
   }
-  // DEPRECATED:
-  HypergraphWeights(const Hypergraph *hypergraph,
-                    const vector<double> &weights,
-                    double bias)
-  : hypergraph_(hypergraph),
-    bias_(bias) {
-      foreach(double weight, weights) {
-        weights_.push_back(weight);
-      }
-      assert(weights.size() == hypergraph->edges().size());
-  }
 
   SemiringType dot(const Hyperpath &path) const;
 
@@ -264,9 +253,7 @@ class HypergraphWeights {
   SemiringType bias() const { return bias_; }
 
   HypergraphWeights<SemiringType> *modify(const vector<SemiringType> &, SemiringType) const;
-  // DEPRECATED:
-  HypergraphWeights<SemiringType> *modify(const vector<double> &, double) const;
-
+  
   HypergraphWeights<SemiringType> *project_weights(
       const HypergraphProjection &projection) const;
 

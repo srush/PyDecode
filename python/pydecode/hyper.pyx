@@ -22,23 +22,23 @@ class HypergraphConstructionException(Exception):
 cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_path(
         const CHypergraph *graph,
-        const CHypergraphDoubleWeights theta,
+        const CHypergraphWeights theta,
         vector[double] *chart) except +
 
     void outside(
         const CHypergraph *graph,
-        const CHypergraphDoubleWeights weights,
+        const CHypergraphWeights weights,
         const vector[double] inside_chart,
         vector[double] *chart) except +
 
     const CHypergraphProjection *prune(
         const CHypergraph *original,
-        const CHypergraphDoubleWeights weights,
+        const CHypergraphWeights weights,
         double ratio) except +
 
     const CHyperpath *best_constrained_path(
         const CHypergraph *graph,
-        const CHypergraphDoubleWeights theta,
+        const CHypergraphWeights theta,
         const CHypergraphConstraints constraints,
         vector[CConstrainedResult] *constraints,
         ) except +
@@ -56,7 +56,7 @@ cdef extern from "Hypergraph/Algorithms.h":
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "MaxMarginals":
     CMaxMarginals *compute(const CHypergraph *hypergraph,
-                       const CHypergraphDoubleWeights *weights)
+                       const CHypergraphWeights *weights)
 
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass CHyperedge "Hyperedge":
@@ -88,39 +88,19 @@ cdef extern from "Hypergraph/Hypergraph.h":
         vector[const CHyperedge *] edges()
         int has_edge(const CHyperedge *)
 
-    cdef cppclass CHypergraphDoubleWeights "HypergraphWeights<DoubleWeight>":
-        CHypergraphDoubleWeights(const CHypergraph *hypergraph,
-                           const vector[CDoubleWeight] weights,
-                           CDoubleWeight bias) except +
-        CHypergraphDoubleWeights(const CHypergraph *hypergraph,
-                           const vector[double] weights,
-                           double bias) except +
+    cdef cppclass CHypergraphWeights "HypergraphWeights<double>":
         double dot(const CHyperpath &path) except +
         double score(const CHyperedge *edge)
-        CHypergraphDoubleWeights *project_weights(
-            const CHypergraphProjection ) except +
+        CHypergraphWeights *project_weights(
+            const CHypergraphProjection )
+        CHypergraphWeights(const CHypergraph *hypergraph,
+                           const vector[double] weights,
+                           double bias) except +
 
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHypergraph *new_graph
         const CHyperedge *project(const CHyperedge *edge)
         const CHypernode *project(const CHypernode *node)
-
-cdef extern from "Hypergraph/Semirings.h":
-    CDoubleWeight operator+(CDoubleWeight lhs, const CDoubleWeight rhs)
-    CDoubleWeight operator*(CDoubleWeight lhs, const CDoubleWeight rhs)
-    cdef cppclass CDoubleWeight "DoubleWeight":
-        CDoubleWeight(CDoubleWeight)
-        CDoubleWeight(double value) except +
-        CDoubleWeight() except +
-        # const CDoubleWeight operator=(CDoubleWeight rhs)
-        # const CDoubleWeight operator=(double rhs)
-        const double operator()()
-        # const CDoubleWeight operator+=(const CDoubleWeight rhs)
-        # const CDoubleWeight operator*=(const CDoubleWeight rhs)
-        const double one()
-        const double zero()
-        bool is_one()
-        bool is_zero()
 
 cdef extern from "Hypergraph/Constraints.h":
     cdef cppclass CConstraint "Constraint":
@@ -805,7 +785,7 @@ cdef class Weights:
        >> print weights[edge]
     """
     cdef Hypergraph hypergraph
-    cdef const CHypergraphDoubleWeights *thisptr
+    cdef const CHypergraphWeights *thisptr
     def __cinit__(self, Hypergraph graph):
         """
         Build the weight vector for a hypergraph.
@@ -829,11 +809,11 @@ cdef class Weights:
             if result is None: weights[i] = 0.0
             weights[i] = result
         self.thisptr =  \
-          new CHypergraphDoubleWeights(self.hypergraph.thisptr,
+          new CHypergraphWeights(self.hypergraph.thisptr,
                                  weights, 0.0)
         return self
 
-    cdef init(self, const CHypergraphDoubleWeights *ptr):
+    cdef init(self, const CHypergraphWeights *ptr):
         self.thisptr = ptr
 
     def __getitem__(self, Edge edge not None):

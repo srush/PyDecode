@@ -55,33 +55,6 @@ protected:
 	ValType identity;
 };
 
-// Implements a weight that behaves just like a regular double
-// DEPRECATED: Use InsideWeight instead
-// +: +
-// *: *
-// 0: 0
-// 1: 1
-class DoubleWeight : public SemiringWeight<DoubleWeight, double> {
-public:
-	DoubleWeight(const DoubleWeight& other) : SemiringWeight<DoubleWeight, double>(0.0, 1.0) { this->value = other.value; }
-	DoubleWeight(double value) : SemiringWeight<DoubleWeight, double>(0.0, 1.0) { this->value = value; }
-	DoubleWeight() : SemiringWeight<DoubleWeight, double>(0.0, 1.0) { this->value = 0.0; }
-
-	virtual DoubleWeight& operator+=(const DoubleWeight& rhs) {
-		value = value + rhs.value;
-		return *this;
-	}
-	virtual DoubleWeight& operator*=(const DoubleWeight& rhs) {
-		value = value * rhs.value;
-		return *this;
-	}
-
-protected:
-	virtual double& normalize(double& val) { 
-		return val;
-	}
-};
-
 // Implements the Boolean type of semiring as described in Huang 2006
 // +: logical or
 // *: logical and

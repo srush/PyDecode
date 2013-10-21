@@ -55,6 +55,16 @@ SemiringType HypergraphWeights<SemiringType>::dot(const Hyperpath &path) const {
   return score + bias_;
 }
 
+template<>
+double HypergraphWeights<double>::dot(const Hyperpath &path) const {
+  path.check(*hypergraph_);
+  double score = 0.0;
+  foreach (HEdge edge, path.edges()) {
+    score += weights_[edge->id()];
+  }
+  return score + bias_;
+}
+
 template<typename SemiringType>
 HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
     const vector<SemiringType> &edge_duals,
@@ -68,19 +78,15 @@ HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
                                bias_ + bias_dual);
 }
 
-// DEPRECATED
-template<typename SemiringType>
-HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
+template<>
+HypergraphWeights<double> *HypergraphWeights<double>::modify(
     const vector<double> &edge_duals,
     double bias_dual) const {
-  // Refuse to allow use of this function unless underlying value type
-  // is the default semiring type. Should prevent future use.
-  assert(typeid(SemiringType) == typeid(DoubleWeight));
-  vector<SemiringType> new_weights(weights_);
+  vector<double> new_weights(weights_);
   for (uint i = 0; i < edge_duals.size(); ++i) {
     new_weights[i] += edge_duals[i];
   }
-  return new HypergraphWeights<SemiringType>(hypergraph_,
+  return new HypergraphWeights<double>(hypergraph_,
                                new_weights,
                                bias_ + bias_dual);
 }
@@ -97,6 +103,20 @@ HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::project_weight
     }
   }
   return new HypergraphWeights<SemiringType>(projection.new_graph, weights, bias_);
+}
+
+template<>
+HypergraphWeights<double> *HypergraphWeights<double>::project_weights(
+    const HypergraphProjection &projection) const {
+  vector<double> weights(projection.new_graph->edges().size());
+  foreach (HEdge edge, projection.original_graph->edges()) {
+    HEdge new_edge = projection.project(edge);
+    if (new_edge != NULL && new_edge->id() >= 0) {
+      assert(new_edge->id() < projection.new_graph->edges().size());
+      weights[new_edge->id()] = score(edge);
+    }
+  }
+  return new HypergraphWeights<double>(projection.new_graph, weights, bias_);
 }
 
 void Hypergraph::fill() {
