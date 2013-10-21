@@ -14,11 +14,11 @@
 
 
 Hyperpath *viterbi_path(const Hypergraph *graph,
-                        const HypergraphWeights<double> &theta,
+                        const HypergraphWeights<> &theta,
                         vector<double> *chart);
 
 void outside(const Hypergraph *graph,
-             const HypergraphWeights<double> &weights,
+             const HypergraphWeights<> &weights,
              const vector<double> &inside_chart,
              vector<double> *chart);
 
@@ -45,7 +45,7 @@ class MaxMarginals {
  public:
 
   MaxMarginals(const Hypergraph *hypergraph,
-               const HypergraphWeights<double> *weights,
+               const HypergraphWeights<> *weights,
                const vector<double> *in_chart,
                const vector<double> *out_chart)
       : hypergraph_(hypergraph),
@@ -63,7 +63,7 @@ class MaxMarginals {
 
   // Compute the max-marginals for the weighted hypergraph.
   static const MaxMarginals *compute(const Hypergraph *hypergraph,
-                                     const HypergraphWeights<double> *weights);
+                                     const HypergraphWeights<> *weights);
 
   // Get max-marginal for edge or node.
   double max_marginal(HEdge edge) const;
@@ -71,7 +71,7 @@ class MaxMarginals {
 
  private:
   const Hypergraph *hypergraph_;
-  const HypergraphWeights<double> *weights_;
+  const HypergraphWeights<> *weights_;
 
   // Pointer to inside and outside charts.
   // Note these are owned by the object.
@@ -82,13 +82,13 @@ class MaxMarginals {
 
 const Hyperpath *best_constrained_path(
     const Hypergraph *graph,
-    const HypergraphWeights<double> &theta,
+    const HypergraphWeights<> &theta,
     const HypergraphConstraints &constraints,
     vector<ConstrainedResult> *duals);
 
 
 const HypergraphProjection *prune(const Hypergraph *original,
-                                  const HypergraphWeights<double> &weights,
+                                  const HypergraphWeights<> &weights,
                                   double ratio);
 
 
