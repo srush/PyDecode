@@ -18,6 +18,56 @@ struct IdComparator {
   }
 };
 
+template<typename SemiringType, typename ReturnType>
+ReturnType *viterbi_path(const Hypergraph *graph,
+                         const HypergraphWeights<SemiringType> &theta,
+                         vector<SemiringType> *chart) {
+  theta.check(*graph);
+
+  // Run Viterbi Hypergraph algorithm.
+  chart->clear();
+  chart->resize(graph->nodes().size(), -INF);
+
+  foreach (HNode node, graph->nodes()) {
+    if (node->terminal()) {
+      (*chart)[node->id()] = SemiringType::zero();
+    }
+  }
+  vector<HEdge> back(graph->nodes().size(), NULL);
+  foreach (HEdge edge, graph->edges()) {
+    SemiringType score = theta.score(edge);
+    int head_id = edge->head_node()->id();
+    foreach (HNode node, edge->tail_nodes()) {
+      score += (*chart)[node->id()];
+    }
+    if (score > (*chart)[head_id]) {
+      (*chart)[head_id] = score;
+      back[head_id] = edge;
+    }
+  }
+
+  // Collect backpointers.
+  vector<HEdge> path;
+  queue<HNode> to_examine;
+  to_examine.push(graph->root());
+  while (!to_examine.empty()) {
+    HNode node = to_examine.front();
+    HEdge edge = back[node->id()];
+    to_examine.pop();
+    if (edge == NULL) {
+      assert(node->terminal());
+      continue;
+    }
+    path.push_back(edge);
+    foreach (HNode node, edge->tail_nodes()) {
+      to_examine.push(node);
+    }
+  }
+  sort(path.begin(), path.end(), IdComparator());
+  return new Hyperpath(graph, path);
+}
+
+
 Hyperpath *viterbi_path(const Hypergraph *graph,
                         const HypergraphWeights<> &theta,
                         vector<double> *chart) {
