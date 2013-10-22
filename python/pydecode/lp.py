@@ -8,7 +8,8 @@ class HypergraphLP:
     Requires the pulp library.
 
     """
-    def __init__(self, lp, hypergraph, node_vars, edge_vars):
+    def __init__(self, lp, hypergraph, node_vars, edge_vars,
+                 integral = False):
         """
         Initialize the hypergraph LP
 
@@ -26,6 +27,7 @@ class HypergraphLP:
         self.hypergraph = hypergraph
         self.node_vars = node_vars
         self.edge_vars = edge_vars
+        self.integral = integral
 
     def solve(self, solver=None):
         r"""
@@ -47,12 +49,24 @@ class HypergraphLP:
         """
 
         status = self.lp.solve()
-        path_edges = [edge
-                      for edge in self.hypergraph.edges
-                      if pulp.value(self.edge_vars[edge.id]) == 1.0]
-        return ph.Path(self.hypergraph, path_edges)
+        print status
+        if self.integral and status == pulp.LpStatusOptimal:
+            path_edges = [edge
+                          for edge in self.hypergraph.edges
+                          if pulp.value(self.edge_vars[edge.id]) == 1.0]
+            return ph.Path(self.hypergraph, path_edges)
+        else:
+            return None
 
-    def add_constraints(constraints):
+    def get_edge_variables(self):
+        return {edge : pulp.value(self.edge_vars[edge.id])
+                for edge in self.hypergraph.edges
+                if pulp.value(self.edge_vars[edge.id]) > 0.0}
+
+    def objective(self):
+        return self.lp.objective
+
+    def add_constraints(self, constraints):
         """
         Add hard constraints to the hypergraph.
 
@@ -61,16 +75,16 @@ class HypergraphLP:
 
         constraints : :py:class:`Constraints`
         """
-
         for constraint in constraints:
-            self.lp += constraint.constrant == \
+            self.lp += 0 == \
+                constraint.constant + \
                 sum([coeff * self.edge_vars[edge.id]
                      for (coeff, edge) in constraint])
 
     @staticmethod
     def make_lp(hypergraph, weights,
                 name="Hypergraph Problem",
-                var_type=pulp.LpContinuous):
+                integral = False):
         """
         Construct a linear program from a hypergraph.
 
@@ -88,10 +102,16 @@ class HypergraphLP:
         lp : :py:class:`HypergraphLP`
 
         """
-        prob = pulp.LpProblem("Hypergraph Problem", pulp.LpMinimize)
+
+        if integral:
+            var_type = pulp.LpInteger
+        else:
+            var_type = pulp.LpContinuous
+        prob = pulp.LpProblem("Hypergraph Problem", pulp.LpMaximize)
 
         def node_name(node):
             return "node_{}".format(node.id)
+
         def edge_name(edge):
             return "edge_{}".format(edge.id)
         #hypergraph.label(edge))
@@ -114,7 +134,6 @@ class HypergraphLP:
                 in_edges[node.id].append(edge)
 
         # max \theta x
-
         prob += sum([weights[edge] * edge_vars[edge.id]
                      for edge in hypergraph.edges])
 
@@ -133,4 +152,4 @@ class HypergraphLP:
             prob += node_vars[node.id] == sum([edge_vars[edge.id]
                                             for edge in in_edges[node.id]])
 
-        return HypergraphLP(prob, hypergraph, node_vars, edge_vars)
+        return HypergraphLP(prob, hypergraph, node_vars, edge_vars, integral)
