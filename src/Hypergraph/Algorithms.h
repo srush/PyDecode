@@ -17,6 +17,11 @@ Hyperpath *viterbi_path(const Hypergraph *graph,
                         const HypergraphWeights<> &theta,
                         vector<double> *chart);
 
+template<typename SemiringType, typename ReturnType>
+ReturnType *viterbi_semiring(const Hypergraph *graph,
+                            const HypergraphWeights<SemiringType> &theta,
+                            vector<SemiringType> *chart);
+
 void outside(const Hypergraph *graph,
              const HypergraphWeights<> &weights,
              const vector<double> &inside_chart,

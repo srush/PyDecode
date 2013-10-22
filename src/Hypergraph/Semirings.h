@@ -7,23 +7,24 @@
 #include "./common.h"
 
 
-// A virtual base class of a weight with traits of a semiring
+// A base class of a weight with traits of a semiring
 // including + and * operators, and annihlator/identity elements.
 template<typename DerivedWeight, typename ValType>
 class SemiringWeight {
 public:
+	operator ValType() const { return value; }
+	
 	DerivedWeight& operator=(DerivedWeight rhs) {
 		normalize(rhs.value);
 		std::swap(value, rhs.value);
 		return *this;
 	}
+
 	DerivedWeight& operator=(ValType rhs) {
 		normalize(rhs);
 		std::swap(value, rhs);
 		return *this;
 	}
-
-	operator ValType() const { return value; }
 
 	friend DerivedWeight operator+(DerivedWeight lhs, const DerivedWeight &rhs) {
 		lhs += rhs;
@@ -34,47 +35,27 @@ public:
 		return lhs;
 	}
 
-	const ValType& one() const { return identity; }
-	const ValType& zero() const { return annihlator; }
-	bool is_one() const { return value == identity; }
-	bool is_zero() const { return value == annihlator; }
+	DerivedWeight& operator+=(const DerivedWeight& rhs) {
+		value = value + rhs.value;
+		return *this;
+	}
+	DerivedWeight& operator*=(const DerivedWeight& rhs) {
+		value = value * rhs.value;
+		return *this;
+	}
 
-	virtual DerivedWeight& operator+=(const DerivedWeight& rhs) = 0;
-	virtual DerivedWeight& operator*=(const DerivedWeight& rhs) = 0;
+	static const ValType one() { return 1.0; }
+	static const ValType zero() { return 0.0; }
+
+	// Determines range of acceptable values
+	ValType& normalize(ValType& val) { return val; };
 
 protected:
 	SemiringWeight(const SemiringWeight& other)
-		: value(other.value), annihlator(other.annihlator), identity(other.identity) {}
-	SemiringWeight(ValType ann, ValType id) : annihlator(ann), identity(id) {}
-
-	// Determines range of acceptable values
-	virtual ValType& normalize(ValType& val) = 0;
+		: value(other.value) {}
+	SemiringWeight(ValType val) : value(val) {}
 
 	ValType value;
-	ValType annihlator;
-	ValType identity;
-};
-
-// Implements the Boolean type of semiring as described in Huang 2006
-// +: logical or
-// *: logical and
-// 0: 0
-// 1: 1
-class BoolWeight : public SemiringWeight<BoolWeight, bool> {
-public:
-	BoolWeight(bool value) : SemiringWeight<BoolWeight, bool>(false, true) { this->value = normalize(value); }
-
-	virtual BoolWeight& operator+=(const BoolWeight& rhs) {
-		value = value || rhs.value;
-		return *this;
-	}
-	virtual BoolWeight& operator*=(const BoolWeight& rhs) {
-		value = value && rhs.value;
-		return *this;
-	}
-	
-protected:
-	virtual bool& normalize(bool& val) { return val; }
 };
 
 // Implements the Viterbi type of semiring as described in Huang 2006
@@ -84,23 +65,49 @@ protected:
 // 1: 1
 class ViterbiWeight : public SemiringWeight<ViterbiWeight, double> {
 public:
-	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(0.0, 1.0) { this->value = normalize(value); }
+	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(value) { }
 
-	virtual ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
+	ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
 		value = std::max(value, rhs.value);
 		return *this;
 	}
-	virtual ViterbiWeight& operator*=(const ViterbiWeight& rhs) {
+	ViterbiWeight& operator*=(const ViterbiWeight& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
 
-protected:
-	virtual double& normalize(double& val)  { 
+	double& normalize(double& val) const { 
 		if (val < 0.0) val = 0.0;
 		else if (val > 1.0) val = 1.0;
 		return val;
 	}
+
+	static const double one() { return 1.0; }
+	static const double zero() { return 0.0; }
+};
+
+// Implements the Boolean type of semiring as described in Huang 2006
+// +: logical or
+// *: logical and
+// 0: false
+// 1: true
+class BoolWeight : public SemiringWeight<BoolWeight, bool> {
+public:
+	BoolWeight(bool value) : SemiringWeight<BoolWeight, bool>(value) { }
+
+	BoolWeight& operator+=(const BoolWeight& rhs) {
+		value = value || rhs.value;
+		return *this;
+	}
+	BoolWeight& operator*=(const BoolWeight& rhs) {
+		value = value && rhs.value;
+		return *this;
+	}
+
+	static const bool one() { return true; }
+	static const bool zero() { return false; }
+
+	bool& normalize(bool& val) const { return val; }
 };
 
 // Implements the Inside type of semiring as described in Huang 2006
@@ -110,19 +117,21 @@ protected:
 // 1: 1
 class InsideWeight : public SemiringWeight<InsideWeight, double> {
 public:
-	InsideWeight(double value) : SemiringWeight<InsideWeight, double>(0.0, 1.0) { this->value = normalize(value); }
+	InsideWeight(double value) : SemiringWeight<InsideWeight, double>(value) { }
 
-	virtual InsideWeight& operator+=(const InsideWeight& rhs) {
+	InsideWeight& operator+=(const InsideWeight& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	virtual InsideWeight& operator*=(const InsideWeight& rhs) {
+	InsideWeight& operator*=(const InsideWeight& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
 
-protected:
-	virtual double& normalize(double& val) { 
+	static const double one() { return 1.0; }
+	static const double zero() { return 0.0; }
+
+	double& normalize(double& val) const { 
 		if (val < 0.0) val = 0.0;
 		return val;
 	}
@@ -135,19 +144,21 @@ protected:
 // 1: 0
 class RealWeight : public SemiringWeight<RealWeight, double> {
 public:
-	RealWeight(double value) : SemiringWeight<RealWeight, double>(INF, 0.0) { this->value = normalize(value); }
+	RealWeight(double value) : SemiringWeight<RealWeight, double>(value) { }
 
-	virtual RealWeight& operator+=(const RealWeight& rhs) {
+	RealWeight& operator+=(const RealWeight& rhs) {
 		value = std::min(value, rhs.value);
 		return *this;
 	}
-	virtual RealWeight& operator*=(const RealWeight& rhs) {
+	RealWeight& operator*=(const RealWeight& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
 
-protected:
-	virtual double& normalize(double& val) { return val; }
+	static const double one() { return 0.0; }
+	static const double zero() { return INF; }
+
+	double& normalize(double& val) const { return val; }
 };
 
 // Implements the Inside type of semiring as described in Huang 2006
@@ -157,19 +168,21 @@ protected:
 // 1: 0
 class TropicalWeight : public SemiringWeight<TropicalWeight, double> {
 public:
-	TropicalWeight(double value) : SemiringWeight<TropicalWeight, double>(INF, 0.0) { this->value = normalize(value); }
+	TropicalWeight(double value) : SemiringWeight<TropicalWeight, double>(value) { }
 
-	virtual TropicalWeight& operator+=(const TropicalWeight& rhs) {
+	TropicalWeight& operator+=(const TropicalWeight& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	virtual TropicalWeight& operator*=(const TropicalWeight& rhs) {
+	TropicalWeight& operator*=(const TropicalWeight& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
 
-protected:
-	virtual double& normalize(double& val)  { 
+	static const double one() { return 0.0; }
+	static const double zero() { return INF; }
+
+	double& normalize(double& val) const { 
 		if (val < 0.0) val = 0.0;
 		return val;
 	}
@@ -182,19 +195,21 @@ protected:
 // 1: 1
 class CountingWeight : public SemiringWeight<CountingWeight, int> {
 public:
-	CountingWeight(int value) : SemiringWeight<CountingWeight, int>(0, 1) { this->value = normalize(value); }
+	CountingWeight(int value) : SemiringWeight<CountingWeight, int>(value) { }
 
-	virtual CountingWeight& operator+=(const CountingWeight& rhs) {
+	CountingWeight& operator+=(const CountingWeight& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	virtual CountingWeight& operator*=(const CountingWeight& rhs) {
+	CountingWeight& operator*=(const CountingWeight& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
 
-protected:
-	virtual int& normalize(int& val) { 
+	static const int one() { return 1; }
+	static const int zero() { return 0; }
+
+	int& normalize(int& val) const { 
 		if(val < 0) val = 0;
 		return val;
 	}
@@ -212,18 +227,18 @@ These two are how the python implemented the viterbi and prob, not sure if thats
 // 1: 0.0
 class ViterbiWeight : public SemiringWeight<ViterbiWeight, double> {
 public:
-	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(-INF, 0.0) { this->value = normalize(value);}
+	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(-value) { }
 
-	virtual ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
+	ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
 		value = std::max(value, rhs.value);
 		return *this;
 	}
-	virtual ViterbiWeight& operator*=(const ViterbiWeight& rhs) {
+	ViterbiWeight& operator*=(const ViterbiWeight& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
 
-	virtual bool is_zero() { return value <= annihlator; }
+	bool is_zero() { return value <= annihlator; }
 };
 
 // Implements the Probability type of semiring
@@ -233,18 +248,18 @@ public:
 // 1: 0.0
 class ProbWeight : public SemiringWeight<ProbWeight, double> {
 public:
-	ProbWeight(double value) : SemiringWeight<ProbWeight, double>(1.0, 0.0) { this->value = normalize(value);}
+	ProbWeight(double value) : SemiringWeight<ProbWeight, double>(value) { }
 
-	virtual ProbWeight& operator+=(const ProbWeight& rhs) {
+	ProbWeight& operator+=(const ProbWeight& rhs) {
 		value = std::max(value, rhs.value);
 		return *this;
 	}
-	virtual ProbWeight& operator*=(const ProbWeight& rhs) {
+	ProbWeight& operator*=(const ProbWeight& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
 
-	virtual bool is_zero() { return value == annihlator; }
+	bool is_zero() { return value == annihlator; }
 };
 
 
@@ -257,18 +272,18 @@ Not sure the intention of this semi-ring:
 // 1: empty object flagged as zero??
 class HypergraphWeight : public SemiringWeight<HypergraphWeight, double> {
 public:
-	HypergraphWeight(double value) : SemiringWeight<HypergraphWeight, double>(0.0, 1.0) { this->value = normalize(value);}
+	HypergraphWeight(double value) : SemiringWeight<HypergraphWeight, double>(value) { }
 
-	virtual HypergraphWeight& operator+=(const HypergraphWeight& rhs) {
+	HypergraphWeight& operator+=(const HypergraphWeight& rhs) {
 		value = std::max(value, rhs.value);
 		return *this;
 	}
-	virtual HypergraphWeight& operator*=(const HypergraphWeight& rhs) {
+	HypergraphWeight& operator*=(const HypergraphWeight& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
 
-	virtual bool is_zero() { return value == annihlator; }
+	bool is_zero() { return value == annihlator; }
 };
 */
 
