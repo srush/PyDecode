@@ -388,7 +388,8 @@ Solve instead using subgradient.
 
     import pydecode.lp as lp
     hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, weights)
-    path = hypergraph_lp.solve()
+    hypergraph_lp.solve()
+    path = hypergraph_lp.path
 .. code:: python
 
     # Output the path.

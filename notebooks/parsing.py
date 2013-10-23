@@ -1,12 +1,12 @@
 
 ## Dependency Parsing
 
-# In[2]:
+# In[10]:
 
 sentence = "the man walked to the park"
 
 
-# In[3]:
+# In[11]:
 
 import pydecode.hyper as ph
 import pydecode.display as display
@@ -15,7 +15,7 @@ import random
 random.seed(0)
 
 
-# In[4]:
+# In[12]:
 
 Tri = "tri"
 Trap = "trap"
@@ -29,7 +29,7 @@ class Arc(namedtuple("Arc", ["head_index", "modifier_index"])):
     pass
 
 
-# In[16]:
+# In[13]:
 
 def first_order(sentence, c):
     tokens = ["*"] + sentence.split()
@@ -48,10 +48,10 @@ def first_order(sentence, c):
             span = (s, t)
             
             # First create incomplete items.            
-            c[NodeType(Trap, Left, span)] =                 c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))]
+            c[NodeType(Trap, Left, span)] =                 c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))] * c.sr(Arc(r, s))
                        for r in range(s, t)])
 
-            c[NodeType(Trap, Right, span)] =                 c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))]
+            c[NodeType(Trap, Right, span)] =                 c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))] * c.sr(Arc(head_index=s, modifier_index=r))
                        for r in range(s, t)])
             
             # Second create complete items.
@@ -63,23 +63,80 @@ def first_order(sentence, c):
     return c
 import pydecode.chart as chart
 sentence = "fans went wild"
-c = chart.ChartBuilder(lambda a: None, 
+c = chart.ChartBuilder(lambda a: a, 
                        chart.HypergraphSemiRing, 
                        build_hypergraph = True)
 the_chart = first_order(sentence, c)
 hypergraph = the_chart.finish()
 
 
-# In[17]:
+# Out[13]:
 
-def build_weights(_):
+#     make Arc(head_index=0, modifier_index=0)
+#     make Arc(head_index=0, modifier_index=0)
+#     make Arc(head_index=1, modifier_index=1)
+#     make Arc(head_index=1, modifier_index=1)
+#     make Arc(head_index=2, modifier_index=2)
+#     make Arc(head_index=2, modifier_index=2)
+#     make Arc(head_index=0, modifier_index=0)
+#     make Arc(head_index=1, modifier_index=0)
+#     make Arc(head_index=0, modifier_index=0)
+#     make Arc(head_index=0, modifier_index=1)
+#     make Arc(head_index=1, modifier_index=1)
+#     make Arc(head_index=2, modifier_index=1)
+#     make Arc(head_index=1, modifier_index=1)
+#     make Arc(head_index=1, modifier_index=2)
+#     make Arc(head_index=0, modifier_index=0)
+#     make Arc(head_index=1, modifier_index=0)
+#     make Arc(head_index=2, modifier_index=0)
+#     make Arc(head_index=0, modifier_index=0)
+#     make Arc(head_index=0, modifier_index=1)
+#     make Arc(head_index=0, modifier_index=2)
+# 
+
+# In[14]:
+
+def build_weights(arc):
+    print arc
     return random.random()
 weights = ph.Weights(hypergraph).build(build_weights)
 
 # phyper, pweights = ph.prune_hypergraph(hypergraph, weights, 0.5)
 
 
-# In[19]:
+# Out[14]:
+
+#     Arc(head_index=0, modifier_index=0)
+#     None
+#     Arc(head_index=1, modifier_index=1)
+#     Arc(head_index=1, modifier_index=1)
+#     None
+#     None
+#     Arc(head_index=2, modifier_index=2)
+#     Arc(head_index=2, modifier_index=2)
+#     None
+#     None
+#     Arc(head_index=0, modifier_index=0)
+#     Arc(head_index=0, modifier_index=1)
+#     None
+#     None
+#     Arc(head_index=1, modifier_index=1)
+#     Arc(head_index=2, modifier_index=1)
+#     Arc(head_index=1, modifier_index=1)
+#     Arc(head_index=1, modifier_index=2)
+#     None
+#     None
+#     None
+#     None
+#     Arc(head_index=0, modifier_index=0)
+#     Arc(head_index=0, modifier_index=1)
+#     Arc(head_index=0, modifier_index=2)
+#     None
+#     None
+#     None
+# 
+
+# In[15]:
 
 path = ph.best_path(hypergraph, weights)
 best = weights.dot(path)
@@ -97,19 +154,19 @@ for edge in hypergraph.edges:
         kept.add(edge.id)
 
 
-# In[20]:
+# In[16]:
 
 phyper, pweights = ph.prune_hypergraph(hypergraph, weights, 0.9)
 
 
-# In[21]:
+# In[17]:
 
 import pydecode.lp as lp
 hyperlp = lp.HypergraphLP.make_lp(phyper, pweights)
 hyperlp.lp.writeLP("parse.lp")
 
 
-# In[22]:
+# In[23]:
 
 class ParseFormat(display.HypergraphPathFormatter):
     def __init__(self, hypergraph, sentence, path):
@@ -148,6 +205,19 @@ class ParseFormat(display.HypergraphPathFormatter):
 ParseFormat(hypergraph, sentence, path).to_ipython()
 
 
-# Out[22]:
+# Out[23]:
 
-#     <IPython.core.display.Image at 0x35a2450>
+#     <IPython.core.display.Image at 0x3994190>
+
+# In[27]:
+
+import networkx as nx
+from networkx.readwrite import json_graph
+import json
+G = ParseFormat(hypergraph, sentence, path).to_graphviz()
+G2 = nx.from_agraph(G)
+d = json_graph.node_link_data(G2) # node-link format to serialize
+# write json 
+json.dump(d, open('force.json','w'))
+#nx.write_gexf(G2, "test_graph.gexf")
+

@@ -1,30 +1,28 @@
-5.07134788465
-5.07065375625 True
-5.07065375625 True
-5.04054715632 True
-4.23460222487 True
-5.04054715632 True
-4.23460222487 True
-5.11171809051 False
-4.34094076451 True
-5.11171809051 False
-4.34094076451 True
-4.59180413369 True
-4.85890805657 True
-3.7861513258 True
-4.85890805657 True
-5.11171809051 False
-4.14731077975 True
-4.75810766025 True
-4.23460222487 True
-5.11171809051 False
-5.04054715632 True
-3.31389319798 True
-4.75810766025 True
-5.11171809051 False
-5.07065375625 True
-4.85890805657 True
-4.75810766025 True
-4.34094076451 True
-5.11171809051 False
-5.11171809051 False
+Arc(head_index=0, modifier_index=0)
+None
+Arc(head_index=1, modifier_index=1)
+Arc(head_index=1, modifier_index=1)
+None
+None
+Arc(head_index=2, modifier_index=2)
+Arc(head_index=2, modifier_index=2)
+None
+None
+Arc(head_index=0, modifier_index=0)
+Arc(head_index=0, modifier_index=1)
+None
+None
+Arc(head_index=1, modifier_index=1)
+Arc(head_index=2, modifier_index=1)
+Arc(head_index=1, modifier_index=1)
+Arc(head_index=1, modifier_index=2)
+None
+None
+None
+None
+Arc(head_index=0, modifier_index=0)
+Arc(head_index=0, modifier_index=1)
+Arc(head_index=0, modifier_index=2)
+None
+None
+None

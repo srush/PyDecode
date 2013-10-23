@@ -45,11 +45,11 @@ Dependency Parsing
                 
                 # First create incomplete items.            
                 c[NodeType(Trap, Left, span)] = \
-                    c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))]
+                    c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))] * c.sr(Arc(r, s))
                            for r in range(s, t)])
     
                 c[NodeType(Trap, Right, span)] = \
-                    c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))]
+                    c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))] * c.sr(Arc(head_index=s, modifier_index=r))
                            for r in range(s, t)])
                 
                 # Second create complete items.
@@ -63,18 +63,77 @@ Dependency Parsing
         return c
     import pydecode.chart as chart
     sentence = "fans went wild"
-    c = chart.ChartBuilder(lambda a: None, 
+    c = chart.ChartBuilder(lambda a: a, 
                            chart.HypergraphSemiRing, 
                            build_hypergraph = True)
     the_chart = first_order(sentence, c)
     hypergraph = the_chart.finish()
+
+.. parsed-literal::
+
+    make Arc(head_index=0, modifier_index=0)
+    make Arc(head_index=0, modifier_index=0)
+    make Arc(head_index=1, modifier_index=1)
+    make Arc(head_index=1, modifier_index=1)
+    make Arc(head_index=2, modifier_index=2)
+    make Arc(head_index=2, modifier_index=2)
+    make Arc(head_index=0, modifier_index=0)
+    make Arc(head_index=1, modifier_index=0)
+    make Arc(head_index=0, modifier_index=0)
+    make Arc(head_index=0, modifier_index=1)
+    make Arc(head_index=1, modifier_index=1)
+    make Arc(head_index=2, modifier_index=1)
+    make Arc(head_index=1, modifier_index=1)
+    make Arc(head_index=1, modifier_index=2)
+    make Arc(head_index=0, modifier_index=0)
+    make Arc(head_index=1, modifier_index=0)
+    make Arc(head_index=2, modifier_index=0)
+    make Arc(head_index=0, modifier_index=0)
+    make Arc(head_index=0, modifier_index=1)
+    make Arc(head_index=0, modifier_index=2)
+
+
 .. code:: python
 
-    def build_weights(_):
+    def build_weights(arc):
+        print arc
         return random.random()
     weights = ph.Weights(hypergraph).build(build_weights)
     
     # phyper, pweights = ph.prune_hypergraph(hypergraph, weights, 0.5)
+
+.. parsed-literal::
+
+    Arc(head_index=0, modifier_index=0)
+    None
+    Arc(head_index=1, modifier_index=1)
+    Arc(head_index=1, modifier_index=1)
+    None
+    None
+    Arc(head_index=2, modifier_index=2)
+    Arc(head_index=2, modifier_index=2)
+    None
+    None
+    Arc(head_index=0, modifier_index=0)
+    Arc(head_index=0, modifier_index=1)
+    None
+    None
+    Arc(head_index=1, modifier_index=1)
+    Arc(head_index=2, modifier_index=1)
+    Arc(head_index=1, modifier_index=1)
+    Arc(head_index=1, modifier_index=2)
+    None
+    None
+    None
+    None
+    Arc(head_index=0, modifier_index=0)
+    Arc(head_index=0, modifier_index=1)
+    Arc(head_index=0, modifier_index=2)
+    None
+    None
+    None
+
+
 .. code:: python
 
     path = ph.best_path(hypergraph, weights)
@@ -142,3 +201,15 @@ Dependency Parsing
 .. image:: parsing_files/parsing_9_0.png
 
 
+
+.. code:: python
+
+    import networkx as nx
+    from networkx.readwrite import json_graph
+    import json
+    G = ParseFormat(hypergraph, sentence, path).to_graphviz()
+    G2 = nx.from_agraph(G)
+    d = json_graph.node_link_data(G2) # node-link format to serialize
+    # write json 
+    json.dump(d, open('force.json','w'))
+    #nx.write_gexf(G2, "test_graph.gexf")

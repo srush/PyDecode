@@ -4,82 +4,110 @@ import pydecode.hyper as ph
 import numpy as np
 import pydecode.chart as chart
 
-
-class HypergraphModelBuilder:
+class DynamicProgrammingModel(StructuredModel):
     """
-    An interface for building a hypergraph model.
+    An implementation of a structured model for dynamic programming.
 
-    """
-    def dynamic_program(self, x, chart):
-        raise NotImplementedError()
-
-    def labels(self, x, y):
-        raise NotImplementedError()
-
-    def gen_features(self, x, label):
-        raise NotImplementedError()
-
-
-class HypergraphModel(StructuredModel):
-    """
-    An implementation of a structured model.
+    Minimally implement
+    :py:method:`DynamicProgrammingModel.dynamic_program` and
+    :py:method:`DynamicProgrammingModel.factored_psi` to use.
 
     """
-    def __init__(self, builder):
-        self._builder = builder
+    def __init__(self):
         self._vec = DictVectorizer()
 
-    def _build_hypergraph(self, x):
-        c = chart.ChartBuilder(lambda a: a,
-                               chart.HypergraphSemiRing, True)
-        return self._builder.dynamic_program(x, c).finish()
+    def dynamic_program(self, x, chart):
+        r"""
+        Construct the dynamic program for this input example.
 
-    def _build_weights(self, hypergraph, x, w):
-        def weight_builder(label):
-            return self._features(x, label).dot(w)
-        return ph.Weights(hypergraph).build(weight_builder)
+        Parameters
+        ----------
 
-    def _features(self, x, label):
-        print label
-        d = self._builder.gen_features(x, label)
-        return self._vec.transform({s: 1 for s in d})
+        x : any
+           The input structure
 
-    def _path_features(self, hypergraph, x, path):
-        return sum([self._features(x, hypergraph.label(edge))
-                    for edge in path])
+        chart : :py:class:`ChartBuilder`
+           A chart builder object.
+           
+        """
+        
+        raise NotImplementedError()
+
+    def factored_psi(self, x, index):
+        """
+        Compute the features for a given index.
+
+        Parameters
+        ----------
+
+        x : any
+           The input structure
+
+        index : any
+           A factored index for the problem.
+
+        Returns
+        --------
+        
+        A set of features.
+           
+        """
+        raise NotImplementedError()
 
     def psi(self, x, y):
         features = set()
-        for label in self._builder.labels(x, y):
-            features |= self._builder.gen_features(x, label)
+        for index in y:
+            features |= self.factored_psi(x, index)
         f2 = {s: 1 for s in features}
-        return self._vec.fit_transform(f2)
+        final_features = self._vec.transform(f2)
+        return final_features
 
     def initialize(self, X, Y):
         features = set()
-        sets = (self._builder.gen_features(x, label)
+        sets = (self.factored_psi(x, index)
                 for x, y in zip(X, Y)
-                for label in self._builder.labels(x, y))
+                for index in y)
         for s in sets:
             features |= s
 
         features2 = {s: 1 for s in features}
         t = self._vec.fit_transform(features2)
-
         self.size_psi = t.size
 
     def inference(self, x, w):
         hypergraph = self._build_hypergraph(x)
         weights = self._build_weights(hypergraph, x, w)
         path = ph.best_path(hypergraph, weights)
-        return self._path_features(hypergraph, x, path)
+        y = set()
+        for edge in path:
+            y.add(hypergraph.label(edge))
+        return y
 
     def loss(self, yhat, y):
         difference = 0
-        for edge in yhat:
-            if edge not in y:
+        for y1 in y:
+            if y1 not in yhat:
                 difference += 1
         return difference
 
     def max_loss(self, y):
-        return sum([1 for edge in y])
+        return sum([1 for index in y])
+
+    def _build_hypergraph(self, x):
+        c = chart.ChartBuilder(lambda a: a,
+                               chart.HypergraphSemiRing, True)
+        self.dynamic_program(x, c)
+        return c.finish()
+
+    def _build_weights(self, hypergraph, x, w):
+        def weight_builder(index):
+            return self._features(x, index).dot(w.T)
+        return ph.Weights(hypergraph).build(weight_builder)
+
+    def _features(self, x, index):
+        d = self.factored_psi(x, index)
+        return self._vec.transform({s: 1 for s in d})
+
+    def _path_features(self, hypergraph, x, path):
+        return sum([self._features(x, hypergraph.label(edge))
+                    for edge in path])

@@ -74,7 +74,7 @@ class HypergraphLP:
 
     @property
     def path(self):
-        if self._status != pulp.LPStatusOptimal:
+        if self._status != pulp.LpStatusOptimal:
             raise Exception("No optimal solution.")
         path_edges = [edge
                       for edge in self.hypergraph.edges

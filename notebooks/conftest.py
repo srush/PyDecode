@@ -59,15 +59,16 @@ class IPyNbCell(pytest.Item):
         if reply['status'] == 'error':
             raise IPyNbException(self.cell_num, self.cell.input, '\n'.join(reply['traceback']))
 
-    # def repr_failure(self, excinfo):
-    #     """ called when self.runtest() raises an exception. """
-    #     if isinstance(excinfo.value, IPyNbException):
-    #         return "\n".join([
-    #             "notebook worksheet execution failed",
-    #             " cell %d\n\n"
-    #             "   input: %r\n\n"
-    #             "   raised: %r\n" % excinfo.value.args[1:3],
-    #         ])
+    def repr_failure(self, excinfo):
+        """ called when self.runtest() raises an exception. """
+        if isinstance(excinfo.value, IPyNbException):
+            return "\n".join([
+                "notebook worksheet execution failed",
+                " cell %s\n\n"
+                "   input: %s\n\n"
+                "   raised: %s\n" % excinfo.value.args[0:3],
+            ])
+
 
     def reportinfo(self):
         return self.fspath, 0, "cell %d" % self.cell_num
