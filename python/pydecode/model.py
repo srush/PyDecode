@@ -4,6 +4,7 @@ import pydecode.hyper as ph
 import numpy as np
 import pydecode.chart as chart
 
+
 class DynamicProgrammingModel(StructuredModel):
     """
     An implementation of a structured model for dynamic programming.
@@ -28,9 +29,8 @@ class DynamicProgrammingModel(StructuredModel):
 
         chart : :py:class:`ChartBuilder`
            A chart builder object.
-           
         """
-        
+
         raise NotImplementedError()
 
     def factored_psi(self, x, index):
@@ -48,9 +48,9 @@ class DynamicProgrammingModel(StructuredModel):
 
         Returns
         --------
-        
+
         A set of features.
-           
+
         """
         raise NotImplementedError()
 
