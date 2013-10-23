@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="Tests_8cpp" kind="file">
+    <compoundname>Tests.cpp</compoundname>
+    <includes local="yes">gtest/gtest.h</includes>
+    <includes refid="Hypergraph_8h" local="yes">Hypergraph/Hypergraph.h</includes>
+    <incdepgraph>
+      <node id="118">
+        <label>src/Tests.cpp</label>
+        <link refid="Tests.cpp"/>
+        <childnode refid="119" relation="include">
+        </childnode>
+        <childnode refid="120" relation="include">
+        </childnode>
+      </node>
+      <node id="128">
+        <label>./foreach.h</label>
+        <link refid="foreach_8h_source"/>
+      </node>
+      <node id="121">
+        <label>cassert</label>
+      </node>
+      <node id="124">
+        <label>string</label>
+      </node>
+      <node id="122">
+        <label>exception</label>
+      </node>
+      <node id="127">
+        <label>ctime</label>
+      </node>
+      <node id="125">
+        <label>vector</label>
+      </node>
+      <node id="119">
+        <label>gtest/gtest.h</label>
+      </node>
+      <node id="126">
+        <label>./common.h</label>
+        <link refid="common_8h_source"/>
+        <childnode refid="127" relation="include">
+        </childnode>
+        <childnode refid="128" relation="include">
+        </childnode>
+      </node>
+      <node id="120">
+        <label>Hypergraph/Hypergraph.h</label>
+        <link refid="Hypergraph_8h_source"/>
+        <childnode refid="121" relation="include">
+        </childnode>
+        <childnode refid="122" relation="include">
+        </childnode>
+        <childnode refid="123" relation="include">
+        </childnode>
+        <childnode refid="124" relation="include">
+        </childnode>
+        <childnode refid="125" relation="include">
+        </childnode>
+        <childnode refid="126" relation="include">
+        </childnode>
+      </node>
+      <node id="123">
+        <label>set</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="Tests_8cpp_1a3e1543cfb1418106c463639f26be6c88" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>TEST</definition>
+        <argsstring>(Decode, TestHypergraph)</argsstring>
+        <name>TEST</name>
+        <param>
+          <type>Decode</type>
+        </param>
+        <param>
+          <type>TestHypergraph</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Tests.cpp" line="5" bodyfile="/home/srush/Projects/decoding/src/Tests.cpp" bodystart="5" bodyend="19"/>
+      </memberdef>
+      <memberdef kind="function" id="Tests_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int main</definition>
+        <argsstring>(int argc, char **argv)</argsstring>
+        <name>main</name>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Tests.cpp" line="21" bodyfile="/home/srush/Projects/decoding/src/Tests.cpp" bodystart="21" bodyend="24"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//test.cpp</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;gtest/gtest.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Hypergraph.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal">TEST(Decode,<sp/>TestHypergraph)<sp/>{</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>test;</highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/>vector&lt;HNode&gt;<sp/>nodes;</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/>nodes.push_back(test.add_terminal_node(</highlight><highlight class="stringliteral">&quot;one&quot;</highlight><highlight class="normal">));</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/>nodes.push_back(test.add_terminal_node(</highlight><highlight class="stringliteral">&quot;two&quot;</highlight><highlight class="normal">));</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/>nodes.push_back(test.add_terminal_node(</highlight><highlight class="stringliteral">&quot;three&quot;</highlight><highlight class="normal">));</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/>test.start_node(</highlight><highlight class="stringliteral">&quot;root&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/>test.add_edge(nodes,<sp/></highlight><highlight class="stringliteral">&quot;Edgy&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/>test.end_node();</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/>test.finish();</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/>ASSERT_EQ(test.<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>().size(),<sp/>4);</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/>ASSERT_EQ(test.<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>().size(),<sp/>1);</highlight></codeline>
+<codeline lineno="19"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">**<sp/>argv)<sp/>{</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/>::testing::InitGoogleTest(&amp;argc,<sp/>argv);</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>RUN_ALL_TESTS();</highlight></codeline>
+<codeline lineno="24"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="/home/srush/Projects/decoding/src/Tests.cpp"/>
+  </compounddef>
+</doxygen>
