@@ -2,14 +2,14 @@ import pydecode.hyper as ph
 from pydecode.semiring import *
 
 
-
 class ChartBuilder:
     """
     A dynamic programming chart parameterized by semiring.
 
     """
 
-    def __init__(self, score_fn, semiring=ProbSemiRing,
+    def __init__(self, score_fn,
+                 semiring=ProbSemiRing,
                  build_hypergraph=False):
         """
         Initialize the dynamic programming chart.
@@ -53,11 +53,23 @@ class ChartBuilder:
             return self._chart[self._last].unpack()
 
     def sr(self, label):
+        """
+
+        Parameters
+        ------------
+
+        label : edge label
+           Get the semiring value of the label.
+        """
         return self._semiring.make(self._scorer(label))
 
     def init(self, node_label):
         """
         Initialize a chart cell to 1.
+
+        Parameters
+        ------------
+
         """
 
         if self._builder:
@@ -78,7 +90,7 @@ class ChartBuilder:
         if self._builder:
             if not val.is_zero():
                 node = self._build.add_node(val.edge_list,
-                                             label=label)
+                                            label=label)
                 self._chart[label] = \
                     HypergraphSemiRing([], [node], None)
         else:

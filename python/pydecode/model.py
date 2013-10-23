@@ -4,6 +4,7 @@ import pydecode.hyper as ph
 import numpy as np
 import pydecode.chart as chart
 
+
 class HypergraphModelBuilder:
     def dynamic_program(self, x, chart):
         raise NotImplementedError()
@@ -23,7 +24,8 @@ class HypergraphModel(StructuredModel):
         self._vec = DictVectorizer()
 
     def _build_hypergraph(self, x):
-        c = chart.ChartBuilder(lambda a:a, chart.HypergraphSemiRing, True)
+        c = chart.ChartBuilder(lambda a: a,
+                               chart.HypergraphSemiRing, True)
         return self._builder.dynamic_program(x, c).finish()
 
     def _build_weights(self, hypergraph, x, w):
@@ -34,7 +36,7 @@ class HypergraphModel(StructuredModel):
     def _features(self, x, label):
         print label
         d = self._builder.gen_features(x, label)
-        return self._vec.transform({s:1 for s in d})
+        return self._vec.transform({s: 1 for s in d})
 
     def _path_features(self, hypergraph, x, path):
         return sum([self._features(x, hypergraph.label(edge))
@@ -44,7 +46,7 @@ class HypergraphModel(StructuredModel):
         features = set()
         for label in self._builder.labels(x, y):
             features |= self._builder.gen_features(x, label)
-        f2 =  {s: 1 for s in features}
+        f2 = {s: 1 for s in features}
         return self._vec.fit_transform(f2)
 
     def initialize(self, X, Y):
@@ -55,7 +57,7 @@ class HypergraphModel(StructuredModel):
         for s in sets:
             features |= s
 
-        features2  = {s: 1 for s in features}
+        features2 = {s: 1 for s in features}
         t = self._vec.fit_transform(features2)
 
         self.size_psi = t.size
@@ -72,7 +74,6 @@ class HypergraphModel(StructuredModel):
             if edge not in y:
                 difference += 1
         return difference
-
 
     def max_loss(self, y):
         return sum([1 for edge in y])

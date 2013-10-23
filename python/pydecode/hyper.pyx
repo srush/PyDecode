@@ -3,8 +3,6 @@ from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
-
-
 class HypergraphAccessException(Exception):
     def __init__(self, value):
         self.value = value
@@ -380,7 +378,8 @@ cdef class ConstrainedResult:
     -----------
 
     path : :py:class:`Path`
-      The hyperpath :math:`y \in {\cal X}` associated with this round.
+      The hyperpath :math:`y \in {\cal X}`
+      associated with this round.
 
     dual : float
        The dual value for this round.

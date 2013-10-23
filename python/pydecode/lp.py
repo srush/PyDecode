@@ -2,14 +2,28 @@ import pulp
 import pydecode.hyper as ph
 from collections import defaultdict
 
+
 class HypergraphLP:
     """
     Representation of a hypergraph LP.
     Requires the pulp library.
 
+    Attributes
+    -----------
+
+    objective : float
+       Get the objective of the solved LP.
+
+    path : The hyperpath (if ILP)
+       Get the path of the solved LP.
+
+    edge_variables : Dict of edge values.
+       Get the (fractional) path of the solved LP.
+
     """
+
     def __init__(self, lp, hypergraph, node_vars, edge_vars,
-                 integral = False):
+                 integral=False):
         """
         Initialize the hypergraph LP
 
@@ -17,10 +31,17 @@ class HypergraphLP:
         ------------
 
         lp : PuLP linear program
-        hypergraph : A hypergraph.
-        node_vars : The node variables :math:`y(v)` for all :math:`v \in {\cal V}`.
-        edge_vars : The hyperedge variables :math:`y(e)` for all :math:`e \in {\cal E}`.
 
+        hypergraph : :py:class:`Hypergraph`
+           The hypergraph.
+
+        node_vars :
+           The node variables :math:`y(v)`
+           for all :math:`v \in {\cal V}`.
+
+        edge_vars :
+           The hyperedge variables :math:`y(e)`
+           for all :math:`e \in {\cal E}`.
         """
 
         self.lp = lp
@@ -31,7 +52,8 @@ class HypergraphLP:
 
     def solve(self, solver=None):
         r"""
-        Solve the underlying hypergraph linear program and return the best path.
+        Solve the underlying hypergraph linear program
+        and return the best path.
 
          :math:`\arg \max_{y \in {\cal X}} \theta^{\top}y`.
 
@@ -48,23 +70,26 @@ class HypergraphLP:
            The best path.
         """
 
-        status = self.lp.solve()
-        print status
-        if self.integral and status == pulp.LpStatusOptimal:
-            path_edges = [edge
-                          for edge in self.hypergraph.edges
-                          if pulp.value(self.edge_vars[edge.id]) == 1.0]
-            return ph.Path(self.hypergraph, path_edges)
-        else:
-            return None
+        self._status = self.lp.solve()
 
-    def get_edge_variables(self):
-        return {edge : pulp.value(self.edge_vars[edge.id])
+    @property
+    def path(self):
+        if self._status != pulp.LPStatusOptimal:
+            raise Exception("No optimal solution.")
+        path_edges = [edge
+                      for edge in self.hypergraph.edges
+                      if pulp.value(self.edge_vars[edge.id]) == 1.0]
+        return ph.Path(self.hypergraph, path_edges)
+
+    @property
+    def objective(self):
+        return pulp.value(self.lp.objective)
+
+    @property
+    def edge_variables(self):
+        return {edge: pulp.value(self.edge_vars[edge.id])
                 for edge in self.hypergraph.edges
                 if pulp.value(self.edge_vars[edge.id]) > 0.0}
-
-    def objective(self):
-        return self.lp.objective
 
     def add_constraints(self, constraints):
         """
@@ -84,17 +109,21 @@ class HypergraphLP:
     @staticmethod
     def make_lp(hypergraph, weights,
                 name="Hypergraph Problem",
-                integral = False):
-        """
+                integral=False):
+        r"""
         Construct a linear program from a hypergraph.
 
+        .. math::
+          \max \theta^{\top} x
+          x(r) = 1
+          x(v) = \sum_{e \in {\cal E} : h(e) = v} x(e)
+          x(v) = \sum_{e \in {\cal E} : v \in t(e)} x(e)
 
         Parameters
         ----------
 
         hypergraph: :py:class:`Hypergraph`
         weights: :py:class:`Weights`
-
 
         Returns
         --------
@@ -114,17 +143,14 @@ class HypergraphLP:
 
         def edge_name(edge):
             return "edge_{}".format(edge.id)
-        #hypergraph.label(edge))
 
         # Make variables for the nodes.
-        node_vars = {node.id :
-                     pulp.LpVariable(node_name(node), 0, 1,
-                                     var_type)
+        node_vars = {node.id: pulp.LpVariable(node_name(node), 0, 1,
+                                              var_type)
                      for node in hypergraph.nodes}
 
-        edge_vars = {edge.id :
-                     pulp.LpVariable(edge_name(edge), 0, 1,
-                                     var_type)
+        edge_vars = {edge.id: pulp.LpVariable(edge_name(edge), 0, 1,
+                                              var_type)
                      for edge in hypergraph.edges}
 
         # Build table of incoming edges
@@ -142,14 +168,19 @@ class HypergraphLP:
 
         # x(v) = \sum_{e : h(e) = v} x(e)
         for node in hypergraph.nodes:
-            if node.is_terminal: continue
-            prob += node_vars[node.id] == sum([edge_vars[edge.id]
-                                            for edge in node.edges])
+            if node.is_terminal:
+                continue
+            prob += node_vars[node.id] == \
+                sum([edge_vars[edge.id]
+                     for edge in node.edges])
 
         # x(v) = \sum_{e : v \in t(e)} x(e)
         for node in hypergraph.nodes:
-            if node.id == hypergraph.root.id: continue
-            prob += node_vars[node.id] == sum([edge_vars[edge.id]
-                                            for edge in in_edges[node.id]])
+            if node.id == hypergraph.root.id:
+                continue
+            prob += node_vars[node.id] == \
+                sum([edge_vars[edge.id]
+                     for edge in in_edges[node.id]])
 
-        return HypergraphLP(prob, hypergraph, node_vars, edge_vars, integral)
+        return HypergraphLP(prob, hypergraph, node_vars,
+                            edge_vars, integral)

@@ -1,4 +1,6 @@
 import networkx as nx
+from tempfile import NamedTemporaryFile
+
 
 class HypergraphFormatter:
     """
@@ -33,11 +35,13 @@ class HypergraphFormatter:
         node : :py:class:`Node`
            The hypernode to style.
         """
-        return {"shape": "ellipse", "label":str(self.hypergraph.node_label(node))}
+        return {"shape": "ellipse",
+                "label": str(self.hypergraph.node_label(node))}
 
     def hyperedge_node_attrs(self, edge):
         """
-        Returns a dictionary of node properties for styling intermediate hyperedge nodes.
+        Returns a dictionary of node properties
+        for styling intermediate hyperedge nodes.
 
         Parameters
         -------------
@@ -60,11 +64,14 @@ class HypergraphFormatter:
         """
         return {}
 
-    def hypernode_subgraph(self, node): return []
+    def hypernode_subgraph(self, node):
+        return []
 
-    def hyperedge_subgraph(self, edge): return []
+    def hyperedge_subgraph(self, edge):
+        return []
 
-    def subgraph_format(self, subgraph): return {}
+    def subgraph_format(self, subgraph):
+        return {}
 
     def to_networkx(self):
         r"""
@@ -77,7 +84,10 @@ class HypergraphFormatter:
         """
 
         graph = nx.DiGraph()
-        def e(edge): return "e" + str(edge.id)
+
+        def e(edge):
+            return "e" + str(edge.id)
+
         for node in self.hypergraph.nodes:
             graph.add_node(node.id)
             graph.node[node.id].update(
@@ -103,10 +113,10 @@ class HypergraphFormatter:
 
 
         Parameters
-        ------------
+d        ------------
 
         filename : string
-           A filename to writeout image.
+           A filename to write out image.
 
         Returns
         ---------
@@ -123,16 +133,17 @@ class HypergraphFormatter:
                 subgraphs[sub].append((node.id, rank))
 
         for sub, node_ranks in subgraphs.iteritems():
-            node_ranks.sort(key = lambda (node, rank): rank)
+            node_ranks.sort(key=lambda (node, rank): rank)
             nodes = [node for node, rank in node_ranks]
-            subgraph = agraph.subgraph(nodes, name = sub)
+            subgraph = agraph.subgraph(nodes, name=sub)
             if sub[:7] != "cluster":
                 # for node in nodes:
                 #     agraph.get_node(node).attr.update({"group": sub})
 
                 for n_a, n_b in zip(nodes, nodes[1:]):
                     edge = subgraph.add_edge(n_a, n_b,
-                                             weight = 1000, style="invis")
+                                             weight=1000,
+                                             style="invis")
             subgraph.graph_attr.update(self.subgraph_format(sub))
         agraph.graph_attr.update(self.graph_attrs())
 
@@ -159,7 +170,8 @@ class HypergraphFormatter:
         from IPython.display import Image
         temp_file = "/tmp/tmp.png"
         self.to_image(temp_file)
-        return Image(filename = temp_file)
+        return Image(filename=temp_file)
+
 
 def pretty_print(hypergraph):
     graph = nx.Graph()
@@ -170,32 +182,36 @@ def pretty_print(hypergraph):
             artificial_node = str(edge.id) + "*"
             graph.add_node(artificial_node)
             graph.add_edge(head_node, artificial_node)
-            for tail_node_id in edge.tail_node_ids :
+            for tail_node_id in edge.tail_node_ids:
                 graph.add_edge(artificial_node, tail_node_id)
+
 
 def pretty_print_path(path):
     out = ""
     for edge in path.edges:
         out += "{} -> {}\n".format(edge.head.id,
-                                " ".join([node.id for node in edge.tail]))
+                                   " ".join([node.id for node in edge.tail]))
     return out
 
 
 def report(duals):
-    """Display a constrained result in IPython
+    """
+    Display a constrained result in IPython.
     """
 
     import pandas as pd
     df = pd.DataFrame(
-        data = {"dual": [d.dual for d in duals],
-                "ncons": [len(d.constraints) for d in duals]},
-        index = range(len(duals)))
+        data={"dual": [d.dual for d in duals],
+              "ncons": [len(d.constraints) for d in duals]},
+        index=range(len(duals)))
     df.plot()
+
 
 class HypergraphPathFormatter(HypergraphFormatter):
     def __init__(self, hypergraph, paths):
         self.hypergraph = hypergraph
         self.paths = paths
+
     def hyperedge_attrs(self, edge):
         colors = ["red", "green", "blue", "purple", "orange", "yellow"]
         for path, color in zip(self.paths, colors):
@@ -208,8 +224,10 @@ class HypergraphWeightFormatter(HypergraphFormatter):
     def __init__(self, hypergraph, weights):
         self.hypergraph = hypergraph
         self.weights = weights
+
     def hyperedge_node_attrs(self, edge):
         return {"label": self.weights[edge]}
+
 
 class HypergraphConstraintFormatter(HypergraphFormatter):
     def __init__(self, hypergraph, constraints):
