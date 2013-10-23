@@ -1,25 +1,14 @@
 srush
 -----
 
-- paste in thesis
-
-- Switch to + * notation
-
 - allow primal setting.
 
 - beam search...
 
-- write note describing construction disclaimers
-
 - profile
-
-- better construction error messages
 
 - delete memory
 
 - k-best
 
-
-on2
----
-- implement semirings
+- paste in thesis
