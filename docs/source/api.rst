@@ -149,8 +149,7 @@ train the parameters of a model by specifying a HypergraphModelBuilder.
    :toctree: generated/
    :template: class.rst
 
-    HypergraphModel
-    HypergraphModelBuilder
+    DynamicProgrammingModel
 
 
 .. _display:

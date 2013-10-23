@@ -1,3 +1,6 @@
+Build Commands
+----------------
+
 > scons
 
 Run to build a debug, profile and optimized version of the libdecode library.
@@ -26,6 +29,16 @@ Runs a python lint check. (Requires pep8)
 
 Builds a clean version of the library and Cython code.
 
+> python setup.py config
+> python setup.py build
+> python setup.py build_ext --inplace
+> sudo python setup.py install
+
+Build (and install) the python extension.
+
+
+Documentation
+--------------
 
 C++ indoc documentation is in Doxygen format.
 
@@ -35,6 +48,9 @@ Python indoc documentation is in numpydoc format.
 
 https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt
 
+
+Directories
+-----------
 
 src/ - C++ library code.
 python/ - Python library code.
