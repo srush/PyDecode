@@ -2,6 +2,7 @@
 from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp cimport bool
 
 class HypergraphAccessException(Exception):
     def __init__(self, value):
@@ -53,7 +54,7 @@ cdef extern from "Hypergraph/Algorithms.h":
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "MaxMarginals":
     CMaxMarginals *compute(const CHypergraph *hypergraph,
-                       const CHypergraphWeights *weights)
+                           const CHypergraphWeights *weights)
 
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass CHyperedge "Hyperedge":
@@ -76,7 +77,7 @@ cdef extern from "Hypergraph/Hypergraph.h":
         vector[const CHyperedge *] edges()
         void end_node()
         const CHyperedge *add_edge(vector[const CHypernode *],
-                                  string label) except +
+                                   string label) except +
         void finish() except +
 
     cdef cppclass CHyperpath "Hyperpath":
@@ -85,14 +86,14 @@ cdef extern from "Hypergraph/Hypergraph.h":
         vector[const CHyperedge *] edges()
         int has_edge(const CHyperedge *)
 
-    cdef cppclass CHypergraphWeights "HypergraphWeights":
-        CHypergraphWeights(const CHypergraph *hypergraph,
-                           const vector[double] weights,
-                           double bias) except +
+    cdef cppclass CHypergraphWeights "HypergraphWeights<>":
         double dot(const CHyperpath &path) except +
         double score(const CHyperedge *edge)
         CHypergraphWeights *project_weights(
             const CHypergraphProjection )
+        CHypergraphWeights(const CHypergraph *hypergraph,
+                           const vector[double] weights,
+                           double bias) except +
 
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHypergraph *new_graph

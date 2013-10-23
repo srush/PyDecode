@@ -21,7 +21,6 @@ class HypergraphLP:
        Get the (fractional) path of the solved LP.
 
     """
-
     def __init__(self, lp, hypergraph, node_vars, edge_vars,
                  integral=False):
         r"""
@@ -69,7 +68,6 @@ class HypergraphLP:
         path
            The best path.
         """
-
         self._status = self.lp.solve()
 
     @property

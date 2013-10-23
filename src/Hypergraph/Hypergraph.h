@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "./common.h"
+#include "Hypergraph/Semirings.h"
 using namespace std;
 
 class Hypernode;
@@ -233,26 +234,27 @@ class Hyperpath {
 
 class HypergraphProjection;
 
+template<typename SemiringType = double>
 class HypergraphWeights {
  public:
   HypergraphWeights(const Hypergraph *hypergraph,
-                    const vector<double> &weights,
-                    double bias)
+                    const vector<SemiringType> &weights,
+                    SemiringType bias)
   : hypergraph_(hypergraph),
     weights_(weights),
     bias_(bias) {
       assert(weights.size() == hypergraph->edges().size());
   }
 
-  double dot(const Hyperpath &path) const;
+  SemiringType dot(const Hyperpath &path) const;
 
-  double score(HEdge edge) const { return weights_[edge->id()]; }
+  SemiringType score(HEdge edge) const { return weights_[edge->id()]; }
 
-  double bias() const { return bias_; }
+  SemiringType bias() const { return bias_; }
 
-  HypergraphWeights *modify(const vector<double> &, double) const;
-
-  HypergraphWeights *project_weights(
+  HypergraphWeights<SemiringType> *modify(const vector<SemiringType> &, SemiringType) const;
+  
+  HypergraphWeights<SemiringType> *project_weights(
       const HypergraphProjection &projection) const;
 
   void check(const Hypergraph &graph) const {
@@ -263,8 +265,8 @@ class HypergraphWeights {
 
  private:
   const Hypergraph *hypergraph_;
-  vector<double> weights_;
-  double bias_;
+  vector<SemiringType> weights_;
+  SemiringType bias_;
 };
 
 class HypergraphProjection {
