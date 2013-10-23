@@ -1,5 +1,6 @@
 import os
 
+local_libs = {}
 for build_mode in ['debug', 'profile', 'opt']:
     env = Environment(CC = 'g++', ENV=os.environ)
 
@@ -28,4 +29,11 @@ for build_mode in ['debug', 'profile', 'opt']:
     cpppath = ('.', tuple(sub_dirs))
     env.Append(CPPPATH=[cpppath])
     env.Append(LIBS=libs)
-    local_libs = env.SConscript(dirs=sub_dirs, exports=['env'])
+    local_libs[build_mode] = env.SConscript(dirs=sub_dirs, exports=['env'])
+
+env = Environment(CC = 'g++', ENV=os.environ, CPPPATH = ["src/"])
+
+b = env.Program("build/test", 'src/Tests.cpp',
+                LIBS = ["pthread", "gtest"] + local_libs["debug"])
+b2 = env.Command("build/test.out", b, "build/test")
+env.Alias("test", b2)
