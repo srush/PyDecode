@@ -123,6 +123,11 @@ d        ------------
 
         NetworkX Graph
         """
+        agraph = self.to_graphviz()
+        agraph.write("/tmp/tmp.dot")
+        agraph.draw(filename)
+
+    def to_graphviz(self):
         subgraphs = {}
         G = self.to_networkx()
         agraph = nx.drawing.to_agraph(G)
@@ -136,10 +141,7 @@ d        ------------
             node_ranks.sort(key=lambda (node, rank): rank)
             nodes = [node for node, rank in node_ranks]
             subgraph = agraph.subgraph(nodes, name=sub)
-            if sub[:7] != "cluster":
-                # for node in nodes:
-                #     agraph.get_node(node).attr.update({"group": sub})
-
+            if sub[:len("cluster")] != "cluster":
                 for n_a, n_b in zip(nodes, nodes[1:]):
                     edge = subgraph.add_edge(n_a, n_b,
                                              weight=1000,
@@ -148,8 +150,7 @@ d        ------------
         agraph.graph_attr.update(self.graph_attrs())
 
         agraph.layout("dot")
-        agraph.write("/tmp/tmp.dot")
-        agraph.draw(filename)
+        return agraph
 
     def to_ipython(self):
         """

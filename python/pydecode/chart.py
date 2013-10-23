@@ -54,6 +54,8 @@ class ChartBuilder:
 
     def sr(self, label):
         """
+        Get the semiring value of the label.
+
 
         Parameters
         ------------
@@ -63,24 +65,34 @@ class ChartBuilder:
         """
         return self._semiring.make(self._scorer(label))
 
-    def init(self, node_label):
+    def init(self, label):
         """
-        Initialize a chart cell to 1.
+        Initialize a chart cell to the 1 value.
 
         Parameters
         ------------
 
+        label : any
+           The node to initialize.
         """
 
         if self._builder:
-            node = self._build.add_node([], label=node_label)
-            self._chart[node_label] = HypergraphSemiRing([], [node], None)
+            node = self._build.add_node([], label=label)
+            self._chart[label] = HypergraphSemiRing([], [node], None)
         else:
-            self._chart[node_label] = self._semiring.one()
-        return self._chart[node_label]
+            self._chart[label] = self._semiring.one()
+        return self._chart[label]
 
     def sum(self, edges):
-        "Combine values with + semiring operation."
+        """
+        Combine values with + semiring operation.
+
+        Parameters
+        ------------
+
+        edges : any
+
+        """
         return sum(edges, self._semiring.zero())
 
     def __setitem__(self, label, val):

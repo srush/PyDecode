@@ -41,7 +41,7 @@ The main data structure used PyDecode is a weighted directed hypergraph, which
 is a graphical representation of a dynamic program.
 The algorithms and tools in the rest package make heavy use of this data structure.
 
-The notation used to describe hypergraphs is based on this :ref:`introduction to hypergraphs <theory>`.
+The notation used to describe hypergraphs is based on this :ref:`introduction to hypergraphs <theory>`. :py:class:`Hypergraph`
 
 .. automodule:: pydecode.hyper
    :no-members:

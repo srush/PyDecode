@@ -24,7 +24,7 @@ class HypergraphLP:
 
     def __init__(self, lp, hypergraph, node_vars, edge_vars,
                  integral=False):
-        """
+        r"""
         Initialize the hypergraph LP
 
         Parameters
@@ -60,7 +60,7 @@ class HypergraphLP:
         Parameters
         ----------
 
-        solver: LP solver
+        solver : LP solver
            A PuLP LP solver (glpsol, Gurobi, etc.)
 
         Returns
@@ -107,23 +107,21 @@ class HypergraphLP:
                      for (coeff, edge) in constraint])
 
     @staticmethod
-    def make_lp(hypergraph, weights,
-                name="Hypergraph Problem",
-                integral=False):
+    def make_lp(hypergraph, weights, name="", integral=False):
         r"""
         Construct a linear program from a hypergraph.
 
         .. math::
-          \max \theta^{\top} x
-          x(r) = 1
-          x(v) = \sum_{e \in {\cal E} : h(e) = v} x(e)
+          \max \theta^{\top} x \\
+          x(1) = 1 \\
+          x(v) = \sum_{e \in {\cal E} : h(e) = v} x(e) \\
           x(v) = \sum_{e \in {\cal E} : v \in t(e)} x(e)
 
         Parameters
         ----------
 
-        hypergraph: :py:class:`Hypergraph`
-        weights: :py:class:`Weights`
+        hypergraph : :py:class:`pydecode.hyper.Hypergraph`
+        weights : :py:class:`pydecode.hyper.Weights`
 
         Returns
         --------

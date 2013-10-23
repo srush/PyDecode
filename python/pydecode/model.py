@@ -6,6 +6,10 @@ import pydecode.chart as chart
 
 
 class HypergraphModelBuilder:
+    """
+    An interface for building a hypergraph model.
+
+    """
     def dynamic_program(self, x, chart):
         raise NotImplementedError()
 
@@ -18,6 +22,8 @@ class HypergraphModelBuilder:
 
 class HypergraphModel(StructuredModel):
     """
+    An implementation of a structured model.
+
     """
     def __init__(self, builder):
         self._builder = builder
