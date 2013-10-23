@@ -96,9 +96,9 @@ def valid_path(hypergraph, path):
                 count += 1
                 for tail_node in edge.tail:
                     stack.append(tail_node)
-        assert count == 1,
-        " Count is {}. Path is {}".format(count,
-                                          pretty_print_path(path))
+        assert count == 1,\
+            " Count is {}. Path is {}".format(count,
+                                              pretty_print_path(path))
 
 
 def test_construction():
@@ -236,9 +236,9 @@ def test_subgradient():
 def test_lp():
     import pydecode.lp as lp
     for h, w in [simple_hypergraph()]:
-
         g = lp.HypergraphLP.make_lp(h, w)
-        path = g.solve()
+        g.solve()
+        path = g.path
         opath = ph.best_path(h, w)
         nt.assert_almost_equal(w.dot(path), w.dot(opath))
 

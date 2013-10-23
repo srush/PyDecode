@@ -6,6 +6,7 @@
     <innerfile refid="common_8h">common.h</innerfile>
     <innerfile refid="foreach_8h">foreach.h</innerfile>
     <innerfile refid="run_8cpp">run.cpp</innerfile>
+    <innerfile refid="Tests_8cpp">Tests.cpp</innerfile>
     <briefdescription>
     </briefdescription>
     <detaileddescription>

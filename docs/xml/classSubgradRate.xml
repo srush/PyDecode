@@ -34,20 +34,20 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="77">
+      <node id="75">
         <label>SubgradRate</label>
         <link refid="classSubgradRate"/>
       </node>
-      <node id="79">
+      <node id="77">
         <label>DecreasingRate</label>
         <link refid="classDecreasingRate"/>
-        <childnode refid="77" relation="public-inheritance">
+        <childnode refid="75" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="78">
+      <node id="76">
         <label>ConstantRate</label>
         <link refid="classConstantRate"/>
-        <childnode refid="77" relation="public-inheritance">
+        <childnode refid="75" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>

@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="262" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="262" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="265" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="265" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHypergraphWeights_1ae1fb2b216235e9840fc068dac7268a67" prot="private" static="no" mutable="no">
         <type>vector&lt; double &gt;</type>
@@ -27,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="263" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="263" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="266" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="266" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHypergraphWeights_1aed6afcc481e7ab269b889bc6b9f2e709" prot="private" static="no" mutable="no">
         <type>double</type>
@@ -40,7 +40,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="264" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="264" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="267" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="267" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -67,7 +67,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="240" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="235" bodyend="242"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="243" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="238" bodyend="245"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphWeights_1ada9571950a004625a6d83e7b8ab1fdff" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type>double</type>
@@ -84,7 +84,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="244" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="46" bodyend="53"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="247" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="46" bodyend="53"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphWeights_1a225f7101da09c896d791f68203573940" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>double</type>
@@ -101,7 +101,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="246" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="246" bodyend="246"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="249" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="249" bodyend="249"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphWeights_1a3e57918b764043fc60505e5bb43b2f7c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>double</type>
@@ -114,7 +114,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="248" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="248" bodyend="248"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="251" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="251" bodyend="251"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphWeights_1a5471d9be06b54978a720e8c3e137b815" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> *</type>
@@ -135,7 +135,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="250" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="55" bodyend="65"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="253" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="55" bodyend="65"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphWeights_1a034f783e7f1016d45db899e432173163" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> *</type>
@@ -152,7 +152,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="253" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="67" bodyend="78"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="256" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="67" bodyend="78"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphWeights_1a22a11e7186e0ec131e884f16a2c45240" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -169,14 +169,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="255" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="255" bodyend="259"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="258" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="258" bodyend="262"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="233" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="233" bodyend="265"/>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="236" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="236" bodyend="268"/>
     <listofallmembers>
       <member refid="classHypergraphWeights_1a3e57918b764043fc60505e5bb43b2f7c" prot="public" virt="non-virtual"><scope>HypergraphWeights</scope><name>bias</name></member>
       <member refid="classHypergraphWeights_1aed6afcc481e7ab269b889bc6b9f2e709" prot="private" virt="non-virtual"><scope>HypergraphWeights</scope><name>bias_</name></member>

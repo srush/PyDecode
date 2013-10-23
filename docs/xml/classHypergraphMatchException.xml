@@ -8,36 +8,36 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="55">
+      <node id="53">
         <label>exception</label>
       </node>
-      <node id="53">
+      <node id="51">
         <label>HypergraphMatchException</label>
         <link refid="classHypergraphMatchException"/>
-        <childnode refid="54" relation="public-inheritance">
+        <childnode refid="52" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="54">
+      <node id="52">
         <label>HypergraphException</label>
         <link refid="structHypergraphException"/>
-        <childnode refid="55" relation="public-inheritance">
+        <childnode refid="53" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="58">
+      <node id="56">
         <label>exception</label>
       </node>
-      <node id="56">
+      <node id="54">
         <label>HypergraphMatchException</label>
         <link refid="classHypergraphMatchException"/>
-        <childnode refid="57" relation="public-inheritance">
+        <childnode refid="55" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="57">
+      <node id="55">
         <label>HypergraphException</label>
         <link refid="structHypergraphException"/>
-        <childnode refid="58" relation="public-inheritance">
+        <childnode refid="56" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

@@ -103,9 +103,6 @@
     <member refid="structHypergraphException_1ae7c3962239a0c4677915a9129f3772d2" kind="function"><name>~HypergraphException</name></member>
     <member refid="structHypergraphException_1a2ef7ad97e32d6699e85219b72470fd58" kind="function"><name>what</name></member>
   </compound>
-  <compound refid="classHypergraphILP" kind="class"><name>HypergraphILP</name>
-    <member refid="classHypergraphILP_1a74810be6c853b8d37bb88eb06c666c3e" kind="function"><name>build_ILP</name></member>
-  </compound>
   <compound refid="classHypergraphMatchException" kind="class"><name>HypergraphMatchException</name>
   </compound>
   <compound refid="classHypergraphProjection" kind="class"><name>HypergraphProjection</name>
@@ -244,10 +241,6 @@
     <member refid="Hypergraph_8h_1abee4bec57d36208496c915f5e04acd4c" kind="typedef"><name>HEdges</name></member>
     <member refid="Hypergraph_8h_1a424f9f23747a3a71c102cbde6edf1618" kind="function"><name>build_pruned_hypergraph</name></member>
   </compound>
-  <compound refid="ILP_8cpp" kind="file"><name>ILP.cpp</name>
-  </compound>
-  <compound refid="ILP_8h" kind="file"><name>ILP.h</name>
-  </compound>
   <compound refid="Subgradient_8cpp" kind="file"><name>Subgradient.cpp</name>
     <member refid="Subgradient_8cpp_1a51b7a9c320bb9b58fc5632da0a44ab84" kind="define"><name>TIMING</name></member>
   </compound>
@@ -255,6 +248,10 @@
   </compound>
   <compound refid="run_8cpp" kind="file"><name>run.cpp</name>
     <member refid="run_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="Tests_8cpp" kind="file"><name>Tests.cpp</name>
+    <member refid="Tests_8cpp_1a3e1543cfb1418106c463639f26be6c88" kind="function"><name>TEST</name></member>
+    <member refid="Tests_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627" kind="function"><name>main</name></member>
   </compound>
   <compound refid="dir_9b2ae68cbf8bd6acfc003760eea03839" kind="dir"><name>src/Hypergraph</name>
   </compound>

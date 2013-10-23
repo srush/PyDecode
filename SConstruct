@@ -35,5 +35,25 @@ env = Environment(CC = 'g++', ENV=os.environ, CPPPATH = ["src/"])
 
 b = env.Program("build/test", 'src/Tests.cpp',
                 LIBS = ["pthread", "gtest"] + local_libs["debug"])
+
 b2 = env.Command("build/test.out", b, "build/test")
 env.Alias("test", b2)
+
+
+notebooks = env.Command("ignore_note", [], "cd notebooks;make all")
+env.AlwaysBuild(notebooks)
+
+doxygen = env.Command("ignore_dox", [], "doxygen Doxyfile")
+env.AlwaysBuild(doxygen)
+
+docs = env.Command("ignore_docs", [], "cd docs; make html")
+env.AlwaysBuild(docs)
+
+env.Alias("docs", [notebooks, doxygen, docs])
+
+
+pytests = env.Command("ignore_test", [], "nosetests python/pydecode")
+env.AlwaysBuild(pytests)
+pytests2 = env.Command("ignore_test2", [], "py.test notebooks")
+env.AlwaysBuild(pytests)
+env.Alias("pytest", [pytests, pytests2])
