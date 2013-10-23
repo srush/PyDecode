@@ -2,6 +2,7 @@
 from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp cimport bool
 
 class HypergraphAccessException(Exception):
     def __init__(self, value):
@@ -85,14 +86,14 @@ cdef extern from "Hypergraph/Hypergraph.h":
         vector[const CHyperedge *] edges()
         int has_edge(const CHyperedge *)
 
-    cdef cppclass CHypergraphWeights "HypergraphWeights":
-        CHypergraphWeights(const CHypergraph *hypergraph,
-                           const vector[double] weights,
-                           double bias) except +
+    cdef cppclass CHypergraphWeights "HypergraphWeights<double>":
         double dot(const CHyperpath &path) except +
         double score(const CHyperedge *edge)
         CHypergraphWeights *project_weights(
             const CHypergraphProjection )
+        CHypergraphWeights(const CHypergraph *hypergraph,
+                           const vector[double] weights,
+                           double bias) except +
 
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHypergraph *new_graph

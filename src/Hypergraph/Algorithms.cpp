@@ -18,8 +18,58 @@ struct IdComparator {
   }
 };
 
+template<typename SemiringType, typename ReturnType>
+ReturnType *viterbi_path(const Hypergraph *graph,
+                         const HypergraphWeights<SemiringType> &theta,
+                         vector<SemiringType> *chart) {
+  theta.check(*graph);
+
+  // Run Viterbi Hypergraph algorithm.
+  chart->clear();
+  chart->resize(graph->nodes().size(), -INF);
+
+  foreach (HNode node, graph->nodes()) {
+    if (node->terminal()) {
+      (*chart)[node->id()] = SemiringType::zero();
+    }
+  }
+  vector<HEdge> back(graph->nodes().size(), NULL);
+  foreach (HEdge edge, graph->edges()) {
+    SemiringType score = theta.score(edge);
+    int head_id = edge->head_node()->id();
+    foreach (HNode node, edge->tail_nodes()) {
+      score += (*chart)[node->id()];
+    }
+    if (score > (*chart)[head_id]) {
+      (*chart)[head_id] = score;
+      back[head_id] = edge;
+    }
+  }
+
+  // Collect backpointers.
+  vector<HEdge> path;
+  queue<HNode> to_examine;
+  to_examine.push(graph->root());
+  while (!to_examine.empty()) {
+    HNode node = to_examine.front();
+    HEdge edge = back[node->id()];
+    to_examine.pop();
+    if (edge == NULL) {
+      assert(node->terminal());
+      continue;
+    }
+    path.push_back(edge);
+    foreach (HNode node, edge->tail_nodes()) {
+      to_examine.push(node);
+    }
+  }
+  sort(path.begin(), path.end(), IdComparator());
+  return new Hyperpath(graph, path);
+}
+
+
 Hyperpath *viterbi_path(const Hypergraph *graph,
-                        const HypergraphWeights &theta,
+                        const HypergraphWeights<> &theta,
                         vector<double> *chart) {
   theta.check(*graph);
 
@@ -67,7 +117,7 @@ Hyperpath *viterbi_path(const Hypergraph *graph,
 }
 
 void outside(const Hypergraph *graph,
-             const HypergraphWeights &weights,
+             const HypergraphWeights<> &weights,
              const vector<double> &inside_chart,
              vector<double> *chart) {
   weights.check(*graph);
@@ -103,7 +153,7 @@ void outside(const Hypergraph *graph,
 
 const MaxMarginals *MaxMarginals::compute(
     const Hypergraph *hypergraph,
-    const HypergraphWeights *weights) {
+    const HypergraphWeights<> *weights) {
   weights->check(*hypergraph);
   vector<double> *in_chart = new vector<double>();
   vector<double> *out_chart = new vector<double>();
@@ -130,7 +180,7 @@ double MaxMarginals::max_marginal(HNode node) const {
 }
 
 const HypergraphProjection *prune(const Hypergraph *original,
-                                  const HypergraphWeights &weights,
+                                  const HypergraphWeights<> &weights,
                                   double ratio) {
   weights.check(*original);
   const MaxMarginals *max_marginals =
@@ -162,7 +212,7 @@ class ConstrainedProducer : public SubgradientProducer {
  public:
   ConstrainedProducer(
       const Hypergraph *graph,
-      const HypergraphWeights *weights,
+      const HypergraphWeights<> *weights,
       const HypergraphConstraints *constraints)
       : graph_(graph),
         weights_(weights),
@@ -175,7 +225,7 @@ class ConstrainedProducer : public SubgradientProducer {
     constraints_->convert(*cur_state.duals,
                           &edge_duals,
                           &bias_dual);
-    HypergraphWeights *dual_weights =
+    HypergraphWeights<> *dual_weights =
         weights_->modify(edge_duals, bias_dual);
     vector<double> chart;
     Hyperpath *path = viterbi_path(graph_,
@@ -207,14 +257,14 @@ class ConstrainedProducer : public SubgradientProducer {
 
  private:
   const Hypergraph *graph_;
-  const HypergraphWeights *weights_;
+  const HypergraphWeights<> *weights_;
   const HypergraphConstraints *constraints_;
   vector<ConstrainedResult> constrained_results_;
 };
 
 const Hyperpath *best_constrained_path(
     const Hypergraph *graph,
-    const HypergraphWeights &theta,
+    const HypergraphWeights<> &theta,
     const HypergraphConstraints &constraints,
     vector<ConstrainedResult> *result) {
   theta.check(*graph);
