@@ -136,5 +136,5 @@ class HypergraphSemiRing(SemiRing):
 
     @classmethod
     def make(cls, name):
-        print "make", name
+
         return HypergraphSemiRing(name=name)
