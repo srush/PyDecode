@@ -8,9 +8,10 @@ Documentation
    :maxdepth: 2
 
    setup
+   notebooks/index
    api
    display
    cpp_api
-   notebooks/tutorial
+   development
    gallery
-   notebooks/index
+

@@ -1,12 +1,13 @@
 
-Tutorial: Fibonacci
-===================
+Tutorial 1: Fibonacci
+=====================
 
 
 .. code:: python
 
     import pydecode.hyper as ph
     import pydecode.chart as chart
+    import pydecode.display as display
 .. code:: python
 
     def fibo_dp(c, n):
@@ -35,7 +36,6 @@ Tutorial: Fibonacci
     hypergraph = fibo_dp(c, 10).finish()
 .. code:: python
 
-    import pydecode.display as display
     display.HypergraphFormatter(hypergraph, show_hyperedges=False).to_ipython()
 
 

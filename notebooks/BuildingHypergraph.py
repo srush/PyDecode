@@ -1,6 +1,5 @@
 
-# Building a Hypergraph
-# ---------------------
+## Hypergraph Interface
 
 # In[ ]:
 

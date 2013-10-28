@@ -1,6 +1,6 @@
 
-Tutorial: Edit Distance
-=======================
+Tutorial 2: Edit Distance
+=========================
 
 
 .. code:: python

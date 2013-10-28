@@ -1,5 +1,5 @@
 ========
-More Examples
+Examples
 ========
 
 .. toctree::
@@ -7,8 +7,9 @@ More Examples
 
    Fibonacci
    EditDistance 
-   BuildingHypergraph
    hmm
    parsing
-   decipher
    sequence_crf
+   BuildingHypergraph
+   decipher
+

@@ -1,44 +1,50 @@
+To contribute to development please email srush at csail mit edu or send a pull request.
+
+
+
 Build Commands
-----------------
+===============
 
-> scons
+Run to build a debug, profile and optimized version of the libdecode library ::
 
-Run to build a debug, profile and optimized version of the libdecode library.
+   > scons
 
-> scons docs
 
-Run to build the C++ and python documentation. The index page is in "docs/build/index.html"
+Run to build the C++ and python documentation. The index page is in "docs/build/index.html" ::
 
-> scons test
+   > scons docs
 
-Builds and runs the C++ tests. (Requires gtest).
 
-> scons pytest
+Builds and runs the C++ tests. (Requires gtest). ::
 
-Runs the python tests. (Requires py.test and nosetests).
+   > scons test
 
-> bash script/check_syntax.sh
+Runs the python tests. (Requires py.test and nosetests). ::
 
-Runs a C++ lint check. Uses the Google C++ style guide.
+   > scons pytest
 
-> bash script/check_python_syntax.sh
+Runs a C++ lint check. Uses the Google C++ style guide. ::
 
-Runs a python lint check. (Requires pep8)
+   > bash script/check_syntax.sh
 
-> bash script/build.sh
+Runs a python lint check. (Requires pep8) ::
 
-Builds a clean version of the library and Cython code.
+   > bash script/check_python_syntax.sh
 
-> python setup.py config
-> python setup.py build
-> python setup.py build_ext --inplace
-> sudo python setup.py install
+Builds a clean version of the library and Cython code. ::
+
+   > bash script/build.sh
 
 Build (and install) the python extension.
 
+   > python setup.py config
+   > python setup.py build
+   > python setup.py build_ext --inplace
+   > sudo python setup.py install
+
 
 Documentation
---------------
+=============
 
 C++ indoc documentation is in Doxygen format.
 
@@ -50,11 +56,16 @@ https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt
 
 
 Directories
------------
+============
 
 src/ - C++ library code.
+
 python/ - Python library code.
+
 notebooks/ - IPython notebooks (Included as documentation).
+
 docs/ - Sphinx documentation.
+
 scripts/ - misc. scripts
+
 writing/ - misc. associated documents.

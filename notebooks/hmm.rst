@@ -8,8 +8,8 @@
     import pydecode.chart as chart
     import pydecode.semiring as semi
     import pandas as pd
-A HMM Tagger Example
---------------------
+Tutorial 3: HMM Tagger (with constraints)
+=========================================
 
 
 We begin by constructing the HMM probabilities.

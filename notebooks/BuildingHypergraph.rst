@@ -1,6 +1,6 @@
 
-Building a Hypergraph
----------------------
+Hypergraph Interface
+====================
 
 
 .. code:: python

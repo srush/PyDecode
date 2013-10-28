@@ -1,5 +1,5 @@
 
-## Sequence CRF
+## Tutorial 5: Training a CRF
 
 # In[228]:
 
