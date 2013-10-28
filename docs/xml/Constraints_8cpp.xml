@@ -4,69 +4,82 @@
     <compoundname>Constraints.cpp</compoundname>
     <includes refid="Constraints_8h" local="yes">Hypergraph/Constraints.h</includes>
     <incdepgraph>
-      <node id="51">
+      <node id="56">
         <label>./foreach.h</label>
         <link refid="foreach_8h_source"/>
       </node>
-      <node id="53">
+      <node id="58">
         <label>cassert</label>
       </node>
-      <node id="47">
+      <node id="52">
         <label>string</label>
       </node>
-      <node id="54">
+      <node id="59">
         <label>exception</label>
       </node>
-      <node id="50">
+      <node id="61">
+        <label>Hypergraph/Semirings.h</label>
+        <link refid="Semirings_8h_source"/>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+      </node>
+      <node id="55">
         <label>ctime</label>
       </node>
-      <node id="48">
+      <node id="53">
         <label>vector</label>
       </node>
-      <node id="46">
+      <node id="51">
         <label>Hypergraph/Constraints.h</label>
         <link refid="Constraints_8h_source"/>
-        <childnode refid="47" relation="include">
-        </childnode>
-        <childnode refid="48" relation="include">
-        </childnode>
-        <childnode refid="49" relation="include">
-        </childnode>
         <childnode refid="52" relation="include">
         </childnode>
-      </node>
-      <node id="49">
-        <label>./common.h</label>
-        <link refid="common_8h_source"/>
-        <childnode refid="50" relation="include">
-        </childnode>
-        <childnode refid="51" relation="include">
-        </childnode>
-      </node>
-      <node id="52">
-        <label>Hypergraph/Hypergraph.h</label>
-        <link refid="Hypergraph_8h_source"/>
         <childnode refid="53" relation="include">
         </childnode>
         <childnode refid="54" relation="include">
         </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+      </node>
+      <node id="54">
+        <label>./common.h</label>
+        <link refid="common_8h_source"/>
         <childnode refid="55" relation="include">
         </childnode>
-        <childnode refid="47" relation="include">
-        </childnode>
-        <childnode refid="48" relation="include">
-        </childnode>
-        <childnode refid="49" relation="include">
+        <childnode refid="56" relation="include">
         </childnode>
       </node>
-      <node id="55">
+      <node id="57">
+        <label>Hypergraph/Hypergraph.h</label>
+        <link refid="Hypergraph_8h_source"/>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+        <childnode refid="61" relation="include">
+        </childnode>
+      </node>
+      <node id="60">
         <label>set</label>
       </node>
-      <node id="45">
+      <node id="50">
         <label>src/Hypergraph/Constraints.cpp</label>
         <link refid="Constraints.cpp"/>
-        <childnode refid="46" relation="include">
+        <childnode refid="51" relation="include">
         </childnode>
+      </node>
+      <node id="62">
+        <label>algorithm</label>
       </node>
     </incdepgraph>
     <briefdescription>

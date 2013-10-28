@@ -8,40 +8,40 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="53">
+      <node id="61">
         <label>exception</label>
       </node>
-      <node id="51">
+      <node id="59">
         <label>HypergraphMatchException</label>
         <link refid="classHypergraphMatchException"/>
-        <childnode refid="52" relation="public-inheritance">
+        <childnode refid="60" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="52">
+      <node id="60">
         <label>HypergraphException</label>
         <link refid="structHypergraphException"/>
-        <childnode refid="53" relation="public-inheritance">
+        <childnode refid="61" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="56">
+      <node id="64">
         <label>exception</label>
       </node>
-      <node id="54">
+      <node id="62">
         <label>HypergraphMatchException</label>
         <link refid="classHypergraphMatchException"/>
-        <childnode refid="55" relation="public-inheritance">
+        <childnode refid="63" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="55">
+      <node id="63">
         <label>HypergraphException</label>
         <link refid="structHypergraphException"/>
-        <childnode refid="56" relation="public-inheritance">
+        <childnode refid="64" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="32" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="32" bodyend="34"/>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="33" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="33" bodyend="35"/>
     <listofallmembers>
       <member refid="structHypergraphException_1a0d2a42fc6d68f2f128b7c14144d3fe66" prot="public" virt="non-virtual"><scope>HypergraphMatchException</scope><name>HypergraphException</name></member>
       <member refid="structHypergraphException_1aa9ad558de18804fa3e42e6a9dada8a8f" prot="public" virt="non-virtual"><scope>HypergraphMatchException</scope><name>s</name></member>

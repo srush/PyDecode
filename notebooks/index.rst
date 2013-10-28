@@ -5,7 +5,9 @@ More Examples
 .. toctree::
    :maxdepth: 2
 
-   hypergraphs
+   Fibonacci
+   EditDistance 
+   BuildingHypergraph
    hmm
    parsing
    decipher

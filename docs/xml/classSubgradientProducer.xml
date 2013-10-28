@@ -33,13 +33,13 @@
     <detaileddescription>
 <para>Interface for subgradient clients. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="73">
+      <node id="92">
         <label>ConstrainedProducer</label>
         <link refid="classConstrainedProducer"/>
-        <childnode refid="72" relation="public-inheritance">
+        <childnode refid="91" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="72">
+      <node id="91">
         <label>SubgradientProducer</label>
         <link refid="classSubgradientProducer"/>
       </node>
