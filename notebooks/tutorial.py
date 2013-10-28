@@ -1,5 +1,108 @@
 
-## Tutorial 
+## Tutorial: Edit Distance
+
+# In[59]:
+
+import pydecode.hyper as ph
+import pydecode.chart as chart
+import pydecode.semiring as semi
+
+
+# In this tutorial, we will consider solving an edit distance problem using PyDecode. This will provide an overview of 
+# 
+# * Constructing a dynamic program.
+# * Assigning scores to operations. 
+# * Using more advanced queries.
+# 
+# For an overview of the edit distance problem, see the wikipedia article on Levenshtein distance, http://en.wikipedia.org/wiki/Levenshtein_distance.
+# 
+
+# In[79]:
+
+class State:
+    def __init__(self, i, j, prob):
+        self.i = i
+        self.j = j
+        self.prob = prob
+
+    def __cmp__(self, other):
+        return cmp((self.i, self.j), (other.i, other.j))
+
+    def __hash__(self): return hash((self.i, self.j))
+
+    def __str__(self):
+        return str((self.i, self.j))
+
+    def op(self, op):
+        if op == Op.Ins:
+            return State(self.i-1, self.j, self.prob)
+        elif op == Op.Del:
+            return State(self.i, self.j-1, self.prob)
+        elif op == Op.Mat:
+            return State(self.i-1, self.j-1, self.prob)
+
+class Op:
+    def __init__(self, op):
+        self.op = op
+    Ins = 1 
+    Del = 2 
+    Mat = 3
+
+
+# In[94]:
+
+def edit_distance(c, prob):
+    c.init(State(-1, -1, prob))
+    for i, s_char in enumerate(prob[0]):
+        for j, t_char in enumerate(prob[1]):
+            state = State(i, j, prob)
+            c[state] =                 c.sum(( c[state.op(m)] * c.sr(m) 
+                        for m in [Op.Ins, Op.Del, Op.Mat] ))
+    final_state = State(len(prob[0]), len(prob[1]), prob)
+    c[final_state] = c[final_state.op(Op.Mat)] * c.sr(Op.Mat)
+    return c
+
+
+# In[97]:
+
+c = chart.ChartBuilder(lambda a:True, semi.LogicSemiRing)
+c = edit_distance(c, ("aab", "bbb"))
+print c.finish()
+c.show()
+
+
+# Out[97]:
+
+#     True
+#     (-1, -1) True
+#     (0, 0) True
+#     (0, 1) True
+#     (0, 2) True
+#     (1, 0) True
+#     (1, 1) True
+#     (1, 2) True
+#     (2, 0) True
+#     (2, 1) True
+#     (2, 2) True
+#     (3, 3) True
+# 
+
+# In[102]:
+
+c = chart.ChartBuilder(lambda a:a, chart.HypergraphSemiRing, 
+                       build_hypergraph=True, debug=Trued)
+hypergraph = edit_distance(c, ("aab", "bbb")).finish()
+
+
+# In[101]:
+
+import pydecode.display as display
+display.HypergraphFormatter(hypergraph).to_ipython()
+
+
+# Out[101]:
+
+#     <IPython.core.display.Image at 0x270d390>
 
 # Building a Hypergraph
 # ---------------------

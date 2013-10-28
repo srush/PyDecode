@@ -1,0 +1,4 @@
+/usr/local/lib/python2.7/dist-packages/pystruct/learners/structured_perceptron.py:149: DeprecationWarning: Implicitly casting between incompatible kinds. In a future numpy release, this will raise an error. Use casting="unsafe" if this is intentional.
+  self.model.psi(x, y_hat))
+/usr/local/lib/python2.7/dist-packages/pystruct/learners/structured_perceptron.py:149: DeprecationWarning: Implicitly casting between incompatible kinds. In a future numpy release, this will raise an error. Use casting="unsafe" if this is intentional.
+  self.model.psi(x, y_hat))

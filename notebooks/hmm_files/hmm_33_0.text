@@ -1,1 +1,7 @@
-<IPython.core.display.Image at 0x391d350>
+ROOT -> D
+D -> N
+N -> V
+V -> D
+D -> D
+D -> N
+N -> END

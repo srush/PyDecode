@@ -7,12 +7,10 @@
     
     import pydecode.chart as chart
     import pydecode.semiring as semi
+    import pandas as pd
 A HMM Tagger Example
 --------------------
 
-In this example.
-
-Construction
 
 We begin by constructing the HMM probabilities.
 
@@ -32,10 +30,140 @@ We begin by constructing the HMM probabilities.
                   'N' :    {'D' : 0.1, 'N' : 0.1, 'V' : 0.8, 'END' : 0},
                   'V' :    {'D' : 0.4, 'N' : 0.3, 'V' : 0.3, 'END' : 0},
                   'ROOT' : {'D' : 0.4, 'N' : 0.3, 'V' : 0.3}}
-    
-    # The sentence to be tagged.
-    sentence = 'the dog walked in the park'
-Next we specify the the index set using namedtuples.
+.. code:: python
+
+    pd.DataFrame(transition).fillna(0) 
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>D</th>
+          <th>N</th>
+          <th>ROOT</th>
+          <th>V</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>D</th>
+          <td> 0.1</td>
+          <td> 0.1</td>
+          <td> 0.4</td>
+          <td> 0.4</td>
+        </tr>
+        <tr>
+          <th>END</th>
+          <td> 0.0</td>
+          <td> 0.0</td>
+          <td> 0.0</td>
+          <td> 0.0</td>
+        </tr>
+        <tr>
+          <th>N</th>
+          <td> 0.8</td>
+          <td> 0.1</td>
+          <td> 0.3</td>
+          <td> 0.3</td>
+        </tr>
+        <tr>
+          <th>V</th>
+          <td> 0.1</td>
+          <td> 0.8</td>
+          <td> 0.3</td>
+          <td> 0.3</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+.. code:: python
+
+    pd.DataFrame(emission).fillna(0)
+
+
+
+.. raw:: html
+
+    <div style="max-height:1000px;max-width:1500px;overflow:auto;">
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>END</th>
+          <th>ROOT</th>
+          <th>dog</th>
+          <th>in</th>
+          <th>park</th>
+          <th>the</th>
+          <th>walked</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>D</th>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.1</td>
+          <td> 1</td>
+          <td> 0.0</td>
+          <td> 0.8</td>
+          <td> 0</td>
+        </tr>
+        <tr>
+          <th>END</th>
+          <td> 1</td>
+          <td> 0</td>
+          <td> 0.0</td>
+          <td> 0</td>
+          <td> 0.0</td>
+          <td> 0.0</td>
+          <td> 0</td>
+        </tr>
+        <tr>
+          <th>N</th>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.8</td>
+          <td> 0</td>
+          <td> 0.1</td>
+          <td> 0.1</td>
+          <td> 0</td>
+        </tr>
+        <tr>
+          <th>ROOT</th>
+          <td> 0</td>
+          <td> 1</td>
+          <td> 0.0</td>
+          <td> 0</td>
+          <td> 0.0</td>
+          <td> 0.0</td>
+          <td> 0</td>
+        </tr>
+        <tr>
+          <th>V</th>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 0.1</td>
+          <td> 0</td>
+          <td> 0.9</td>
+          <td> 0.1</td>
+          <td> 1</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+Next we specify the labels for the transitions.
 
 .. code:: python
 
@@ -45,8 +173,14 @@ Next we specify the the index set using namedtuples.
     class Tagged(namedtuple("Tagged", ["position", "word", "tag"])):
         def __str__(self): return "%s %s"%(self.word, self.tag)
     
+
+And the scoring function.
+
+.. code:: python
+
     def bigram_weight(bigram):
-        return transition[bigram.prevtag][bigram.tag] + emission[bigram.word][bigram.tag] 
+        return transition[bigram.prevtag][bigram.tag] + \
+        emission[bigram.word][bigram.tag] 
 Now we write out dynamic program.
 
 .. code:: python
@@ -60,60 +194,20 @@ Now we write out dynamic program.
                 c[Tagged(i, word, tag)] = \
                     c.sum([c[key] * c.sr(Bigram(word, tag, prev)) 
                            for prev in prev_tags 
-                           for key in [Tagged(i - 1, words[i - 1], prev)] if key in c])
+                           for key in [Tagged(i - 1, words[i - 1], prev)] 
+                           if key in c])
         return c
-Now we are ready to build the hypergraph topology itself.
+Now we are ready to build the structure itself.
 
+.. code:: python
+
+    # The sentence to be tagged.
+    sentence = 'the dog walked in the park'
 .. code:: python
 
     # Create a chart using to compute the probability of the sentence.
     c = chart.ChartBuilder(bigram_weight)
     viterbi(c).finish()
-
-.. parsed-literal::
-
-    ROOT -> V
-    the V 1.4
-    ROOT -> D
-    the D 2.2
-    ROOT -> N
-    the N 1.4
-    V -> V
-    D -> V
-    N -> V
-    dog V 2.4000000000000004
-    V -> D
-    D -> D
-    N -> D
-    dog D 2.4000000000000004
-    V -> N
-    D -> N
-    N -> N
-    dog N 3.8000000000000003
-    V -> V
-    D -> V
-    N -> V
-    walked V 5.6000000000000005
-    V -> D
-    in D 7.0
-    D -> V
-    the V 7.2
-    D -> D
-    the D 7.9
-    D -> N
-    the N 7.9
-    V -> V
-    D -> V
-    N -> V
-    park V 9.600000000000001
-    V -> N
-    D -> N
-    N -> N
-    park N 8.8
-    V -> END
-    N -> END
-    END END 10.600000000000001
-
 
 
 
@@ -130,51 +224,6 @@ Now we are ready to build the hypergraph topology itself.
                            chart.ViterbiSemiRing)
     viterbi(c).finish()
 
-.. parsed-literal::
-
-    ROOT -> V
-    the V 0.4
-    ROOT -> D
-    the D 1.2000000000000002
-    ROOT -> N
-    the N 0.4
-    V -> V
-    D -> V
-    N -> V
-    dog V 1.4000000000000001
-    V -> D
-    D -> D
-    N -> D
-    dog D 1.4000000000000001
-    V -> N
-    D -> N
-    N -> N
-    dog N 2.8000000000000003
-    V -> V
-    D -> V
-    N -> V
-    walked V 4.6000000000000005
-    V -> D
-    in D 6.0
-    D -> V
-    the V 6.2
-    D -> D
-    the D 6.9
-    D -> N
-    the N 6.9
-    V -> V
-    D -> V
-    N -> V
-    park V 8.600000000000001
-    V -> N
-    D -> N
-    N -> N
-    park N 7.800000000000001
-    V -> END
-    N -> END
-    END END 9.600000000000001
-
-
 
 
 .. parsed-literal::
@@ -183,100 +232,13 @@ Now we are ready to build the hypergraph topology itself.
 
 
 
+But even better we can construct the entrire search space.
+
 .. code:: python
 
     c = chart.ChartBuilder(lambda a:a, semi.HypergraphSemiRing, 
                            build_hypergraph = True)
     hypergraph = viterbi(c).finish()
-
-.. parsed-literal::
-
-    ROOT -> V
-    make ROOT -> V
-    the V <pydecode.semiring.HypergraphSemiRing object at 0x36f4750>
-    [([<pydecode.hyper.Node object at 0x35a0a08>], Bigram(word='the', tag='V', prevtag='ROOT'))]
-    ROOT -> D
-    make ROOT -> D
-    the D <pydecode.semiring.HypergraphSemiRing object at 0x36f4810>
-    [([<pydecode.hyper.Node object at 0x35a0a08>], Bigram(word='the', tag='D', prevtag='ROOT'))]
-    ROOT -> N
-    make ROOT -> N
-    the N <pydecode.semiring.HypergraphSemiRing object at 0x36f4f50>
-    [([<pydecode.hyper.Node object at 0x35a0a08>], Bigram(word='the', tag='N', prevtag='ROOT'))]
-    V -> V
-    make V -> V
-    D -> V
-    make D -> V
-    N -> V
-    make N -> V
-    dog V <pydecode.semiring.HypergraphSemiRing object at 0x36f4750>
-    [([<pydecode.hyper.Node object at 0x35a0c38>], Bigram(word='dog', tag='V', prevtag='V')), ([<pydecode.hyper.Node object at 0x35a0f30>], Bigram(word='dog', tag='V', prevtag='D')), ([<pydecode.hyper.Node object at 0x35a0ee0>], Bigram(word='dog', tag='V', prevtag='N'))]
-    V -> D
-    make V -> D
-    D -> D
-    make D -> D
-    N -> D
-    make N -> D
-    dog D <pydecode.semiring.HypergraphSemiRing object at 0x36f4c90>
-    [([<pydecode.hyper.Node object at 0x35a0c38>], Bigram(word='dog', tag='D', prevtag='V')), ([<pydecode.hyper.Node object at 0x35a0f30>], Bigram(word='dog', tag='D', prevtag='D')), ([<pydecode.hyper.Node object at 0x35a0ee0>], Bigram(word='dog', tag='D', prevtag='N'))]
-    V -> N
-    make V -> N
-    D -> N
-    make D -> N
-    N -> N
-    make N -> N
-    dog N <pydecode.semiring.HypergraphSemiRing object at 0x36f4f10>
-    [([<pydecode.hyper.Node object at 0x35a0c38>], Bigram(word='dog', tag='N', prevtag='V')), ([<pydecode.hyper.Node object at 0x35a0f30>], Bigram(word='dog', tag='N', prevtag='D')), ([<pydecode.hyper.Node object at 0x35a0ee0>], Bigram(word='dog', tag='N', prevtag='N'))]
-    V -> V
-    make V -> V
-    D -> V
-    make D -> V
-    N -> V
-    make N -> V
-    walked V <pydecode.semiring.HypergraphSemiRing object at 0x36f4c90>
-    [([<pydecode.hyper.Node object at 0x35a0fd0>], Bigram(word='walked', tag='V', prevtag='V')), ([<pydecode.hyper.Node object at 0x35a0be8>], Bigram(word='walked', tag='V', prevtag='D')), ([<pydecode.hyper.Node object at 0x35a0a30>], Bigram(word='walked', tag='V', prevtag='N'))]
-    V -> D
-    make V -> D
-    in D <pydecode.semiring.HypergraphSemiRing object at 0x36f45d0>
-    [([<pydecode.hyper.Node object at 0x37008f0>], Bigram(word='in', tag='D', prevtag='V'))]
-    D -> V
-    make D -> V
-    the V <pydecode.semiring.HypergraphSemiRing object at 0x36ecb10>
-    [([<pydecode.hyper.Node object at 0x3700a08>], Bigram(word='the', tag='V', prevtag='D'))]
-    D -> D
-    make D -> D
-    the D <pydecode.semiring.HypergraphSemiRing object at 0x36ec250>
-    [([<pydecode.hyper.Node object at 0x3700a08>], Bigram(word='the', tag='D', prevtag='D'))]
-    D -> N
-    make D -> N
-    the N <pydecode.semiring.HypergraphSemiRing object at 0x36ecb10>
-    [([<pydecode.hyper.Node object at 0x3700a08>], Bigram(word='the', tag='N', prevtag='D'))]
-    V -> V
-    make V -> V
-    D -> V
-    make D -> V
-    N -> V
-    make N -> V
-    park V <pydecode.semiring.HypergraphSemiRing object at 0x36ec4d0>
-    [([<pydecode.hyper.Node object at 0x3700cb0>], Bigram(word='park', tag='V', prevtag='V')), ([<pydecode.hyper.Node object at 0x3700fd0>], Bigram(word='park', tag='V', prevtag='D')), ([<pydecode.hyper.Node object at 0x3700120>], Bigram(word='park', tag='V', prevtag='N'))]
-    V -> N
-    make V -> N
-    D -> N
-    make D -> N
-    N -> N
-    make N -> N
-    park N <pydecode.semiring.HypergraphSemiRing object at 0x36ec810>
-    [([<pydecode.hyper.Node object at 0x3700cb0>], Bigram(word='park', tag='N', prevtag='V')), ([<pydecode.hyper.Node object at 0x3700fd0>], Bigram(word='park', tag='N', prevtag='D')), ([<pydecode.hyper.Node object at 0x3700120>], Bigram(word='park', tag='N', prevtag='N'))]
-    V -> END
-    make V -> END
-    N -> END
-    make N -> END
-    END END <pydecode.semiring.HypergraphSemiRing object at 0x36ec490>
-    [([<pydecode.hyper.Node object at 0x37004b8>], Bigram(word='END', tag='END', prevtag='V')), ([<pydecode.hyper.Node object at 0x3700620>], Bigram(word='END', tag='END', prevtag='N'))]
-
-
-Step 3: Construct the weights.
-
 .. code:: python
 
     weights = ph.Weights(hypergraph).build(bigram_weight)
@@ -284,13 +246,21 @@ Step 3: Construct the weights.
     # Find the best path.
     path = ph.best_path(hypergraph, weights)
     print weights.dot(path)
-    
-    # Output the path.
-    #[hypergraph.label(edge) for edge in path.edges]
 
 .. parsed-literal::
 
     9.6
+
+
+We can also output the path itself.
+
+.. code:: python
+
+    print [hypergraph.label(edge) for edge in path.edges]
+
+.. parsed-literal::
+
+    [Bigram(word='the', tag='D', prevtag='ROOT'), Bigram(word='dog', tag='N', prevtag='D'), Bigram(word='walked', tag='V', prevtag='N'), Bigram(word='in', tag='D', prevtag='V'), Bigram(word='the', tag='N', prevtag='D'), Bigram(word='park', tag='V', prevtag='N'), Bigram(word='END', tag='END', prevtag='V')]
 
 
 .. code:: python
@@ -299,7 +269,7 @@ Step 3: Construct the weights.
 
 
 
-.. image:: hmm_files/hmm_14_0.png
+.. image:: hmm_files/hmm_21_0.png
 
 
 
@@ -326,7 +296,7 @@ graphviz (http://www.graphviz.org/content/attrs)
 
 
 
-.. image:: hmm_files/hmm_16_0.png
+.. image:: hmm_files/hmm_23_0.png
 
 
 
@@ -381,7 +351,7 @@ Solve instead using subgradient.
     display.report(duals)
 
 
-.. image:: hmm_files/hmm_24_0.png
+.. image:: hmm_files/hmm_31_0.png
 
 
 .. code:: python
@@ -425,7 +395,7 @@ Solve instead using subgradient.
 
 
 
-.. image:: hmm_files/hmm_28_0.png
+.. image:: hmm_files/hmm_35_0.png
 
 
 
@@ -459,7 +429,7 @@ Solve instead using subgradient.
 
 
 
-.. image:: hmm_files/hmm_30_0.png
+.. image:: hmm_files/hmm_37_0.png
 
 
 
@@ -474,7 +444,7 @@ Pruning
 
 
 
-.. image:: hmm_files/hmm_33_0.png
+.. image:: hmm_files/hmm_40_0.png
 
 
 

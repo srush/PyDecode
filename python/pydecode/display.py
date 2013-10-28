@@ -10,7 +10,7 @@ class HypergraphFormatter:
     Full list available - http://www.graphviz.org/content/attrs
     """
 
-    def __init__(self, hypergraph):
+    def __init__(self, hypergraph, show_hyperedges=True):
         """
         Parameters
         -------------
@@ -20,6 +20,7 @@ class HypergraphFormatter:
         """
 
         self.hypergraph = hypergraph
+        self._show_hyperedges = show_hyperedges
 
     def graph_attrs(self):
         "Returns a dictionary of graph properties."
@@ -49,8 +50,11 @@ class HypergraphFormatter:
         edge : :py:class:`Edge`
            The hyperedge to style.
         """
-        return {"shape": "rect",
-                "label": str(self.hypergraph.label(edge))}
+        if self._show_hyperedges:
+            return {"shape": "rect",
+                    "label": str(self.hypergraph.label(edge))}
+        else:
+            return {"shape": "point"}
 
     def hyperedge_attrs(self, edge):
         """
