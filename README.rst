@@ -30,12 +30,17 @@ Benefits
 
 * **Efficient implementation.** Python front-end constructs C++ data structures.
 
+
   * If you need even more efficiency, you can use the hypergraph interface directly. 
+
+
  
 * **Easy-to-use extensions.** Write only the max dynamic program. 
 
   * PyDecode provides the derivations, posteriors, max-marginals, and oracle scoring. 
+
   * Add some features and it can do structured training. 
+
   * Add constraints and it can run Lagrangian relaxation.
 
 
@@ -64,7 +69,7 @@ Dynamic Programming
 
 * Simple imperative construction of dynamic programming structures.
 * Customizable GraphViz output for debugging.
-* Finding the best path, inside scores, outside scores, and oracle scores.
+* Algorithms for best path, inside scores, outside scores, and oracle scores.
 * Pruning based on max-marginals.
 * Semiring operations over hypergraph structures.
 * Integration with an LP solver.

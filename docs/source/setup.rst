@@ -12,21 +12,17 @@ Install using pip
 Running Notebooks
 =================
 
-All of the examples in the documentation consist of IPython notebooks available in the notebooks/ directory. 
+All of the documentation examples are written as IPython notebooks. They are available in the notebooks/ directory. 
 
-To get up and running, install IPython and run ::
+To modify examples locally, install IPython and run ::
 
     $ cd notebooks
     $ ipython notebook --pylab inline 
 
-( You can also run IPython notebook on a research server using ssh tunneling. 
+( You can also run IPython notebook on a remote server using ssh tunneling_ and in emacs_.)
 
-http://wisdomthroughknowledge.blogspot.com/2012/07/accessing-ipython-notebook-remotely.html
-
-and in emacs 
-
-http://tkf.github.io/emacs-ipython-notebook/
-)
+.. _tunneling: http://wisdomthroughknowledge.blogspot.com/2012/07/accessing-ipython-notebook-remotely.html
+.. _emacs: http://tkf.github.io/emacs-ipython-notebook/
 
 Optional Dependencies
 =====================
