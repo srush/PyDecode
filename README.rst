@@ -20,26 +20,26 @@ Benefits
 * **Simple imperative interface.** Algorithms look like pseudo-code ::
 
     def viterbi(chart, words):
-        c.init(Tagged(0, "ROOT"))    
+        c.init(Tagged(0, "ROOT"))
         for i, word in enumerate(words[1:], 1):
             for tag in emission[word]:
                 c[Tagged(i, tag)] = \
                    c.sum((c[Tagged(i - 1, prev)] * \
-                          c.sr(Bigram(word, tag, prev)) 
+                          c.sr(Bigram(word, tag, prev))
                           for prev in emission[words[i-1]]))
 
 * **Efficient implementation.** Python front-end constructs C++ data structures.
 
 
-  * If you need even more efficiency, you can use the hypergraph interface directly. 
+  * If you need even more efficiency, you can use the hypergraph interface directly.
 
 
- 
-* **Easy-to-use extensions.** Write only the max dynamic program. 
 
-  * PyDecode provides the derivations, posteriors, max-marginals, and oracle scoring. 
+* **Easy-to-use extensions.** Write only the max dynamic program.
 
-  * Add some features and it can do structured training. 
+  * PyDecode provides the derivations, posteriors, max-marginals, and oracle scoring.
+
+  * Add some features and it can do structured training.
 
   * Add constraints and it can run Lagrangian relaxation.
 
@@ -92,6 +92,8 @@ Coming Soon
 * A*, beam search, coarse-to-fine extensions.
 * Faster K-best algorithms.
 
+
+.. image:: https://travis-ci.org/srush/PyDecode.png?branch=master   :target: https://travis-ci.org/srush/PyDecode
 
 .. _gallery: http://pydecode.readthedocs.org/en/latest/notebooks/gallery.html
 .. _tutorial: http://pydecode.readthedocs.org/en/latest/notebooks/tutorial.html
