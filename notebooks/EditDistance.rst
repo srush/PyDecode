@@ -30,9 +30,10 @@ http://en.wikipedia.org/wiki/Levenshtein\_distance.
         def __str__(self):
             return {(1,0): "<", (0,1): ">", (1,1): "="}[self.v]
     
-        Ins = Op((1, 0)) 
-        Del = Op((0, 1)) 
-        Mat = Op((1, 1))
+    
+    Op.Ins = Op((1, 0)) 
+    Op.Del = Op((0, 1)) 
+    Op.Mat = Op((1, 1))
     
     class Problem:
         def __init__(self, str1, str2):
@@ -214,28 +215,6 @@ http://en.wikipedia.org/wiki/Levenshtein\_distance.
 
 
 
-
-
-.. parsed-literal::
-
-    (217, 413)
-
-
-
-
-
-.. parsed-literal::
-
-    (217, 413)
-
-
-
 .. code:: python
 
     display.HypergraphFormatter(pruned_hypergraph).to_ipython()
-
-
-
-.. image:: EditDistance_files/EditDistance_14_0.png
-
-
