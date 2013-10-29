@@ -216,6 +216,7 @@ class HypergraphPathFormatter(HypergraphFormatter):
     def __init__(self, hypergraph, paths):
         self.hypergraph = hypergraph
         self.paths = paths
+        self._show_hyperedges = False
 
     def hyperedge_attrs(self, edge):
         colors = ["red", "green", "blue", "purple", "orange", "yellow"]
@@ -229,6 +230,7 @@ class HypergraphWeightFormatter(HypergraphFormatter):
     def __init__(self, hypergraph, weights):
         self.hypergraph = hypergraph
         self.weights = weights
+        self._show_hyperedges = False
 
     def hyperedge_node_attrs(self, edge):
         return {"label": self.weights[edge]}
@@ -238,6 +240,7 @@ class HypergraphConstraintFormatter(HypergraphFormatter):
     def __init__(self, hypergraph, constraints):
         self.hypergraph = hypergraph
         self.constraints = constraints
+        self._show_hyperedges = False
 
     def hyperedge_attrs(self, edge):
         colors = ["red", "green", "blue", "purple"]

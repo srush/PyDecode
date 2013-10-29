@@ -93,7 +93,8 @@ Coming Soon
 * Faster K-best algorithms.
 
 
-.. image:: https://travis-ci.org/srush/PyDecode.png?branch=master   :target: https://travis-ci.org/srush/PyDecode
+.. image:: https://travis-ci.org/srush/PyDecode.png?branch=master
+    :target: https://travis-ci.org/srush/PyDecode
 
 .. _gallery: http://pydecode.readthedocs.org/en/latest/notebooks/gallery.html
 .. _tutorial: http://pydecode.readthedocs.org/en/latest/notebooks/tutorial.html
