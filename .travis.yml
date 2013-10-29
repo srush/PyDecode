@@ -3,12 +3,9 @@ python:
   - "2.7"
 # command to install dependencies
 before_install:
- - deactivate
  - sudo apt-get update -qq
  - sudo apt-get install -qq graphviz
  - sudo apt-get install -qq cython
- - source ~/virtualenv/this/bin/activate
- - virtualenv --system-site-packages ~/virtualenv/this
  - pip install -r requirements.txt -r optional-requirements.txt --use-mirrors
 install:
   - pip install .
