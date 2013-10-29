@@ -97,5 +97,5 @@ Coming Soon
     :target: https://travis-ci.org/srush/PyDecode
 
 .. _gallery: http://pydecode.readthedocs.org/en/latest/notebooks/gallery.html
-.. _tutorial: http://pydecode.readthedocs.org/en/latest/notebooks/tutorial.html
-.. _api: http://pydecode.readthedocs.org/en/latest/notebooks/api.html
+.. _tutorial: http://pydecode.readthedocs.org/en/latest/notebooks/index.html
+.. _api: http://pydecode.readthedocs.org/en/latest/api.html
