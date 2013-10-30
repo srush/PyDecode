@@ -219,4 +219,6 @@ public:
 	}
 };
 
+
+
 #endif // HYPERGRAPH_SEMIRING_H_

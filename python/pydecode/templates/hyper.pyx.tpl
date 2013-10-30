@@ -57,16 +57,6 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "MaxMarginals":
     CMaxMarginals *compute(const CHypergraph *hypergraph,
                            const CHypergraphWeights *weights)
 
-{% for semiring in semirings %}
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass {{semiring.ctype}}:
-        double normalize(double)
-
-cdef extern from "Hypergraph/Semirings.h" namespace "{{semiring.ctype}}":
-    {{semiring.ctype}} {{semiring.type}}_one "{{semiring.ctype}}::one" ()
-    {{semiring.ctype}} {{semiring.type}}_zero "{{semiring.ctype}}::zero" ()
-{% endfor %}
-
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass CHyperedge "Hyperedge":
         string label()
@@ -105,18 +95,6 @@ cdef extern from "Hypergraph/Hypergraph.h":
         CHypergraphWeights(const CHypergraph *hypergraph,
                            const vector[double] weights,
                            double bias) except +
-
-{% for semiring in semirings %}
-    cdef cppclass CHypergraph{{semiring.type}}Weights "HypergraphWeights<{{semiring.ctype}}>":
-        {{semiring.ctype}} dot(const CHyperpath &path) except +
-        double score(const CHyperedge *edge)
-        CHypergraph{{semiring.type}}Weights *project_weights(
-            const CHypergraphProjection )
-        CHypergraph{{semiring.type}}Weights(
-            const CHypergraph *hypergraph,
-            const vector[{{semiring.ctype}}] weights,
-            {{semiring.ctype}} bias) except +
-{% endfor %}
 
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHypergraph *new_graph
@@ -853,71 +831,6 @@ cdef class Weights:
         cdef double result = self.thisptr.dot(deref(path.thisptr))
         return result
 
-
-{% for semiring in semirings %}
-cdef class {{semiring.type}}Weights:
-    r"""
-    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
-
-    Acts as a dictionary::
-       >> print weights[edge]
-    """
-    cdef Hypergraph hypergraph
-    cdef const CHypergraph{{semiring.type}}Weights *thisptr
-
-    def __cinit__(self, Hypergraph graph):
-        """
-        Build the weight vector for a hypergraph.
-
-        :param hypergraph: The underlying hypergraph.
-        """
-        self.hypergraph = graph
-
-    def build(self, fn):
-        """
-        build(fn)
-
-        Build the weight vector for a hypergraph.
-
-        :param fn: A function from edge labels to weights.
-        """
-        cdef vector[{{semiring.ctype}}] weights = \
-             vector[{{semiring.ctype}}](self.hypergraph.thisptr.edges().size(), {{semiring.type}}_zero())
-        cdef {{semiring.python_type}} result
-        for i, ty in enumerate(self.hypergraph.edge_labels):
-            result = fn(ty)
-            if result is None: weights[i] = {{semiring.type}}_zero()
-            weights[i] = result.wrap
-        self.thisptr =  \
-          new CHypergraph{{semiring.type}}Weights(self.hypergraph.thisptr,
-                                                  weights, {{semiring.type}}_zero())
-        return self
-
-    cdef init(self, const CHypergraph{{semiring.type}}Weights *ptr):
-        self.thisptr = ptr
-
-    def __getitem__(self, Edge edge not None):
-        return self.thisptr.score(edge.edgeptr)
-
-    def dot(self, Path path not None):
-        r"""
-        dot(path)
-
-        Take the dot product with `path` :math:`\theta^{\top} y`.
-        """
-        return {{semiring.python_type}}().init(self.thisptr.dot(deref(path.thisptr)))
-
-cdef class {{semiring.python_type}}:
-    cdef {{semiring.ctype}} wrap
-
-    def __cinit__(self):
-        self.wrap = {{semiring.type}}_zero()
-
-    cdef init(self, {{semiring.ctype}} wrap):
-        self.wrap = wrap
-        return self
-{% endfor %}
-
 cdef class Constraint:
     r"""
     A single linear hypergraph constraint, for instance the i'th constraint
@@ -1117,3 +1030,137 @@ cdef class MaxMarginals:
             raise HypergraphAccessException(
                 "Only nodes and edges have max-marginal values." + \
                 "Passed %s."%obj)
+
+
+############# This is the templated semiring part. ##############
+
+{% for S in semirings %}
+
+cdef extern from "Hypergraph/Algorithms.h":
+    CHyperpath * inside_{{S.type}} "viterbi_path[S.ctype]" (
+        const CHypergraph *graph,
+        const CHypergraphWeights theta,
+        vector[{{S.ctype}}] *chart) except +
+
+    cdef cppclass C{{S.type}}Marginals "Marginals<{{S.ctype}}>":
+        {{S.ctype}} marginal(const CHyperedge *edge)
+        {{S.ctype}} marginal(const CHypernode *node)
+
+cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<{{S.ctype}}>":
+    C{{S.type}}Marginals *{{S.type}}_compute "Marginals<{{S.ctype}}>::compute" (
+                           const CHypergraph *hypergraph,
+                           const CHypergraph{{S.type}}Weights *weights)
+
+cdef extern from "Hypergraph/Semirings.h":
+    cdef cppclass {{S.ctype}}:
+        double normalize(double)
+
+cdef extern from "Hypergraph/Semirings.h" namespace "{{S.ctype}}":
+    {{S.ctype}} {{S.type}}_one "{{S.ctype}}::one" ()
+    {{S.ctype}} {{S.type}}_zero "{{S.ctype}}::zero" ()
+
+cdef extern from "Hypergraph/Algorithms.h" namespace "{{S.ctype}}":
+    cdef cppclass CHypergraph{{S.type}}Weights "{{S.type}}Weights":
+        {{S.ctype}} dot(const CHyperpath &path) except +
+        double score(const CHyperedge *edge)
+        CHypergraph{{S.type}}Weights *project_weights(
+            const CHypergraphProjection )
+        CHypergraph{{S.type}}Weights(
+            const CHypergraph *hypergraph,
+            const vector[{{S.ctype}}] weights,
+            {{S.ctype}} bias) except +
+
+
+
+cdef class {{S.type}}Weights:
+    r"""
+    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
+
+    Acts as a dictionary::
+       >> print weights[edge]
+    """
+    cdef Hypergraph hypergraph
+    cdef const CHypergraph{{S.type}}Weights *thisptr
+
+    def __cinit__(self, Hypergraph graph):
+        """
+        Build the weight vector for a hypergraph.
+
+        :param hypergraph: The underlying hypergraph.
+        """
+        self.hypergraph = graph
+
+    def build(self, fn):
+        """
+        build(fn)
+
+        Build the weight vector for a hypergraph.
+
+        :param fn: A function from edge labels to weights.
+        """
+        cdef vector[{{S.ctype}}] weights = \
+             vector[{{S.ctype}}](self.hypergraph.thisptr.edges().size(),
+             {{S.type}}_zero())
+        cdef {{S.ptype}} result
+        for i, ty in enumerate(self.hypergraph.edge_labels):
+            result = fn(ty)
+            if result is None: weights[i] = {{S.type}}_zero()
+            weights[i] = result.wrap
+        self.thisptr =  \
+          new CHypergraph{{S.type}}Weights(self.hypergraph.thisptr,
+                                                  weights, {{S.type}}_zero())
+        return self
+
+    cdef init(self, const CHypergraph{{S.type}}Weights *ptr):
+        self.thisptr = ptr
+
+    def __getitem__(self, Edge edge not None):
+        return self.thisptr.score(edge.edgeptr)
+
+    def dot(self, Path path not None):
+        r"""
+        dot(path)
+
+        Take the dot product with `path` :math:`\theta^{\top} y`.
+        """
+        return {{S.ptype}}().init(self.thisptr.dot(deref(path.thisptr)))
+
+cdef class {{S.ptype}}:
+    cdef {{S.ctype}} wrap
+
+    def __cinit__(self):
+        self.wrap = {{S.type}}_zero()
+
+    cdef init(self, {{S.ctype}} wrap):
+        self.wrap = wrap
+        return self
+
+cdef class {{S.type}}Chart:
+    cdef vector[{{S.ctype}}] chart
+
+    def __getitem__(self, Node node):
+        return {{S.ptype}}().init(self.chart[node.id])
+
+cdef class {{S.type}}Marginals:
+    cdef const C{{S.type}}Marginals *thisptr
+
+    cdef init(self, const C{{S.type}}Marginals *ptr):
+        self.thisptr = ptr
+
+    def __getitem__(self, obj):
+        if isinstance(obj, Edge):
+            return {{S.ptype}}().init(self.thisptr.marginal((<Edge>obj).edgeptr))
+        elif isinstance(obj, Node):
+            return {{S.ptype}}().init(self.thisptr.marginal((<Node>obj).nodeptr))
+        else:
+            raise HypergraphAccessException(
+                "Only nodes and edges have {{S.type}} marginal values." + \
+                "Passed %s."%obj)
+
+def compute_{{S.type}}_marginals(Hypergraph graph,
+                                 {{S.type}}Weights weights):
+    cdef const C{{S.type}}Marginals *marginals = \
+        {{S.type}}_compute(graph.thisptr, weights.thisptr)
+    return {{S.type}}Marginals().init(marginals)
+
+{% endfor %}

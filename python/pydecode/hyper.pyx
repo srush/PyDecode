@@ -57,16 +57,6 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "MaxMarginals":
     CMaxMarginals *compute(const CHypergraph *hypergraph,
                            const CHypergraphWeights *weights)
 
-
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass ViterbiWeight:
-        double normalize(double)
-
-cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiWeight":
-    ViterbiWeight Viterbi_one "ViterbiWeight::one" ()
-    ViterbiWeight Viterbi_zero "ViterbiWeight::zero" ()
-
-
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass CHyperedge "Hyperedge":
         string label()
@@ -105,18 +95,6 @@ cdef extern from "Hypergraph/Hypergraph.h":
         CHypergraphWeights(const CHypergraph *hypergraph,
                            const vector[double] weights,
                            double bias) except +
-
-
-    cdef cppclass CHypergraphViterbiWeights "HypergraphWeights<ViterbiWeight>":
-        ViterbiWeight dot(const CHyperpath &path) except +
-        double score(const CHyperedge *edge)
-        CHypergraphViterbiWeights *project_weights(
-            const CHypergraphProjection )
-        CHypergraphViterbiWeights(
-            const CHypergraph *hypergraph,
-            const vector[ViterbiWeight] weights,
-            ViterbiWeight bias) except +
-
 
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHypergraph *new_graph
@@ -853,71 +831,6 @@ cdef class Weights:
         cdef double result = self.thisptr.dot(deref(path.thisptr))
         return result
 
-
-
-cdef class ViterbiWeights:
-    r"""
-    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
-
-    Acts as a dictionary::
-       >> print weights[edge]
-    """
-    cdef Hypergraph hypergraph
-    cdef const CHypergraphViterbiWeights *thisptr
-
-    def __cinit__(self, Hypergraph graph):
-        """
-        Build the weight vector for a hypergraph.
-
-        :param hypergraph: The underlying hypergraph.
-        """
-        self.hypergraph = graph
-
-    def build(self, fn):
-        """
-        build(fn)
-
-        Build the weight vector for a hypergraph.
-
-        :param fn: A function from edge labels to weights.
-        """
-        cdef vector[ViterbiWeight] weights = \
-             vector[ViterbiWeight](self.hypergraph.thisptr.edges().size(), Viterbi_zero())
-        cdef ViterbiW result
-        for i, ty in enumerate(self.hypergraph.edge_labels):
-            result = fn(ty)
-            if result is None: weights[i] = Viterbi_zero()
-            weights[i] = result.wrap
-        self.thisptr =  \
-          new CHypergraphViterbiWeights(self.hypergraph.thisptr,
-                                                  weights, Viterbi_zero())
-        return self
-
-    cdef init(self, const CHypergraphViterbiWeights *ptr):
-        self.thisptr = ptr
-
-    def __getitem__(self, Edge edge not None):
-        return self.thisptr.score(edge.edgeptr)
-
-    def dot(self, Path path not None):
-        r"""
-        dot(path)
-
-        Take the dot product with `path` :math:`\theta^{\top} y`.
-        """
-        return ViterbiW().init(self.thisptr.dot(deref(path.thisptr)))
-
-cdef class ViterbiW:
-    cdef ViterbiWeight wrap
-
-    def __cinit__(self):
-        self.wrap = Viterbi_zero()
-
-    cdef init(self, ViterbiWeight wrap):
-        self.wrap = wrap
-        return self
-
-
 cdef class Constraint:
     r"""
     A single linear hypergraph constraint, for instance the i'th constraint
@@ -1117,3 +1030,137 @@ cdef class MaxMarginals:
             raise HypergraphAccessException(
                 "Only nodes and edges have max-marginal values." + \
                 "Passed %s."%obj)
+
+
+############# This is the templated semiring part. ##############
+
+
+
+cdef extern from "Hypergraph/Algorithms.h":
+    CHyperpath * inside_Viterbi "viterbi_path[S.ctype]" (
+        const CHypergraph *graph,
+        const CHypergraphWeights theta,
+        vector[ViterbiWeight] *chart) except +
+
+    cdef cppclass CViterbiMarginals "Marginals<ViterbiWeight>":
+        ViterbiWeight marginal(const CHyperedge *edge)
+        ViterbiWeight marginal(const CHypernode *node)
+
+cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<ViterbiWeight>":
+    CViterbiMarginals *Viterbi_compute "Marginals<ViterbiWeight>::compute" (
+                           const CHypergraph *hypergraph,
+                           const CHypergraphViterbiWeights *weights)
+
+cdef extern from "Hypergraph/Semirings.h":
+    cdef cppclass ViterbiWeight:
+        double normalize(double)
+
+cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiWeight":
+    ViterbiWeight Viterbi_one "ViterbiWeight::one" ()
+    ViterbiWeight Viterbi_zero "ViterbiWeight::zero" ()
+
+cdef extern from "Hypergraph/Algorithms.h" namespace "ViterbiWeight":
+    cdef cppclass CHypergraphViterbiWeights "ViterbiWeights":
+        ViterbiWeight dot(const CHyperpath &path) except +
+        double score(const CHyperedge *edge)
+        CHypergraphViterbiWeights *project_weights(
+            const CHypergraphProjection )
+        CHypergraphViterbiWeights(
+            const CHypergraph *hypergraph,
+            const vector[ViterbiWeight] weights,
+            ViterbiWeight bias) except +
+
+
+
+cdef class ViterbiWeights:
+    r"""
+    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
+
+    Acts as a dictionary::
+       >> print weights[edge]
+    """
+    cdef Hypergraph hypergraph
+    cdef const CHypergraphViterbiWeights *thisptr
+
+    def __cinit__(self, Hypergraph graph):
+        """
+        Build the weight vector for a hypergraph.
+
+        :param hypergraph: The underlying hypergraph.
+        """
+        self.hypergraph = graph
+
+    def build(self, fn):
+        """
+        build(fn)
+
+        Build the weight vector for a hypergraph.
+
+        :param fn: A function from edge labels to weights.
+        """
+        cdef vector[ViterbiWeight] weights = \
+             vector[ViterbiWeight](self.hypergraph.thisptr.edges().size(),
+             Viterbi_zero())
+        cdef ViterbiW result
+        for i, ty in enumerate(self.hypergraph.edge_labels):
+            result = fn(ty)
+            if result is None: weights[i] = Viterbi_zero()
+            weights[i] = result.wrap
+        self.thisptr =  \
+          new CHypergraphViterbiWeights(self.hypergraph.thisptr,
+                                                  weights, Viterbi_zero())
+        return self
+
+    cdef init(self, const CHypergraphViterbiWeights *ptr):
+        self.thisptr = ptr
+
+    def __getitem__(self, Edge edge not None):
+        return self.thisptr.score(edge.edgeptr)
+
+    def dot(self, Path path not None):
+        r"""
+        dot(path)
+
+        Take the dot product with `path` :math:`\theta^{\top} y`.
+        """
+        return ViterbiW().init(self.thisptr.dot(deref(path.thisptr)))
+
+cdef class ViterbiW:
+    cdef ViterbiWeight wrap
+
+    def __cinit__(self):
+        self.wrap = Viterbi_zero()
+
+    cdef init(self, ViterbiWeight wrap):
+        self.wrap = wrap
+        return self
+
+cdef class ViterbiChart:
+    cdef vector[ViterbiWeight] chart
+
+    def __getitem__(self, Node node):
+        return ViterbiW().init(self.chart[node.id])
+
+cdef class ViterbiMarginals:
+    cdef const CViterbiMarginals *thisptr
+
+    cdef init(self, const CViterbiMarginals *ptr):
+        self.thisptr = ptr
+
+    def __getitem__(self, obj):
+        if isinstance(obj, Edge):
+            return ViterbiW().init(self.thisptr.marginal((<Edge>obj).edgeptr))
+        elif isinstance(obj, Node):
+            return ViterbiW().init(self.thisptr.marginal((<Node>obj).nodeptr))
+        else:
+            raise HypergraphAccessException(
+                "Only nodes and edges have Viterbi marginal values." + \
+                "Passed %s."%obj)
+
+def compute_Viterbi_marginals(Hypergraph graph,
+                                 ViterbiWeights weights):
+    cdef const CViterbiMarginals *marginals = \
+        Viterbi_compute(graph.thisptr, weights.thisptr)
+    return ViterbiMarginals().init(marginals)
+
+

@@ -18,10 +18,10 @@ struct IdComparator {
   }
 };
 
-template<typename SemiringType, typename ReturnType>
-ReturnType *viterbi_path(const Hypergraph *graph,
-                         const HypergraphWeights<SemiringType> &theta,
-                         vector<SemiringType> *chart) {
+template<typename SemiringType>
+void viterbi_path(const Hypergraph *graph,
+                  const HypergraphWeights<SemiringType> &theta,
+                  vector<SemiringType> *chart) {
   theta.check(*graph);
 
   // Run Viterbi Hypergraph algorithm.
@@ -45,26 +45,6 @@ ReturnType *viterbi_path(const Hypergraph *graph,
       back[head_id] = edge;
     }
   }
-
-  // Collect backpointers.
-  vector<HEdge> path;
-  queue<HNode> to_examine;
-  to_examine.push(graph->root());
-  while (!to_examine.empty()) {
-    HNode node = to_examine.front();
-    HEdge edge = back[node->id()];
-    to_examine.pop();
-    if (edge == NULL) {
-      assert(node->terminal());
-      continue;
-    }
-    path.push_back(edge);
-    foreach (HNode node, edge->tail_nodes()) {
-      to_examine.push(node);
-    }
-  }
-  sort(path.begin(), path.end(), IdComparator());
-  return new Hyperpath(graph, path);
 }
 
 

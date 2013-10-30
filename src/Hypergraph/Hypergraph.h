@@ -253,7 +253,7 @@ class HypergraphWeights {
   SemiringType bias() const { return bias_; }
 
   HypergraphWeights<SemiringType> *modify(const vector<SemiringType> &, SemiringType) const;
-  
+
   HypergraphWeights<SemiringType> *project_weights(
       const HypergraphProjection &projection) const;
 
@@ -268,6 +268,7 @@ class HypergraphWeights {
   vector<SemiringType> weights_;
   SemiringType bias_;
 };
+
 
 class HypergraphProjection {
  public:

@@ -46,6 +46,45 @@ class ConstrainedResult {
   vector<const Constraint *> constraints;
 };
 
+template<typename SemiringType>
+class Marginals {
+ public:
+
+  Marginals(const Hypergraph *hypergraph,
+            const HypergraphWeights<SemiringType> *weights,
+            const vector<SemiringType> *in_chart,
+            const vector<SemiringType> *out_chart)
+      : hypergraph_(hypergraph),
+      weights_(weights),
+      in_chart_(in_chart),
+      out_chart_(out_chart) {
+        assert(in_chart->size() == out_chart->size());
+        assert(hypergraph->nodes().size() == out_chart->size());
+      }
+
+  ~Marginals() {
+    delete in_chart_;
+    delete out_chart_;
+  }
+
+  // Compute the max-marginals for the weighted hypergraph.
+  static const Marginals *compute(const Hypergraph *hypergraph,
+                                  const HypergraphWeights<SemiringType> *weights) {}
+
+  // Get max-marginal for edge or node.
+  SemiringType marginal(HEdge edge) const {}
+  SemiringType marginal(HNode node) const {}
+
+ private:
+  const Hypergraph *hypergraph_;
+  const HypergraphWeights<SemiringType> *weights_;
+
+  // Pointer to inside and outside charts.
+  // Note these are owned by the object.
+  const vector<SemiringType> *in_chart_;
+  const vector<SemiringType> *out_chart_;
+};
+
 class MaxMarginals {
  public:
 
@@ -85,6 +124,7 @@ class MaxMarginals {
 };
 
 
+
 const Hyperpath *best_constrained_path(
     const Hypergraph *graph,
     const HypergraphWeights<> &theta,
@@ -96,5 +136,15 @@ const HypergraphProjection *prune(const Hypergraph *original,
                                   const HypergraphWeights<> &weights,
                                   double ratio);
 
+
+class ViterbiWeights : public HypergraphWeights<ViterbiWeight> {
+  ViterbiWeights(const Hypergraph *hypergraph,
+                 const vector<ViterbiWeight> &weights,
+                 ViterbiWeight bias)
+      : HypergraphWeights<ViterbiWeight>(hypergraph_(hypergraph),
+                                         weights_(weights),
+                                         bias_(bias)) {}
+
+};
 
 #endif  // HYPERGRAPH_ALGORITHMS_H_
