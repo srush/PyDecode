@@ -57,15 +57,15 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "MaxMarginals":
     CMaxMarginals *compute(const CHypergraph *hypergraph,
                            const CHypergraphWeights *weights)
 
-
+{% for semiring in semirings %}
 cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass ViterbiWeight:
+    cdef cppclass {{semiring.ctype}}:
         double normalize(double)
 
-cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiWeight":
-    ViterbiWeight Viterbi_one "ViterbiWeight::one" ()
-    ViterbiWeight Viterbi_zero "ViterbiWeight::zero" ()
-
+cdef extern from "Hypergraph/Semirings.h" namespace "{{semiring.ctype}}":
+    {{semiring.ctype}} {{semiring.type}}_one "{{semiring.ctype}}::one" ()
+    {{semiring.ctype}} {{semiring.type}}_zero "{{semiring.ctype}}::zero" ()
+{% endfor %}
 
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass CHyperedge "Hyperedge":
@@ -106,17 +106,17 @@ cdef extern from "Hypergraph/Hypergraph.h":
                            const vector[double] weights,
                            double bias) except +
 
-
-    cdef cppclass CHypergraphViterbiWeights "HypergraphWeights<ViterbiWeight>":
-        ViterbiWeight dot(const CHyperpath &path) except +
+{% for semiring in semirings %}
+    cdef cppclass CHypergraph{{semiring.type}}Weights "HypergraphWeights<{{semiring.ctype}}>":
+        {{semiring.ctype}} dot(const CHyperpath &path) except +
         double score(const CHyperedge *edge)
-        CHypergraphViterbiWeights *project_weights(
+        CHypergraph{{semiring.type}}Weights *project_weights(
             const CHypergraphProjection )
-        CHypergraphViterbiWeights(
+        CHypergraph{{semiring.type}}Weights(
             const CHypergraph *hypergraph,
-            const vector[ViterbiWeight] weights,
-            ViterbiWeight bias) except +
-
+            const vector[{{semiring.ctype}}] weights,
+            {{semiring.ctype}} bias) except +
+{% endfor %}
 
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHypergraph *new_graph
@@ -854,8 +854,8 @@ cdef class Weights:
         return result
 
 
-
-cdef class ViterbiWeights:
+{% for semiring in semirings %}
+cdef class {{semiring.type}}Weights:
     r"""
     Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
 
@@ -863,7 +863,7 @@ cdef class ViterbiWeights:
        >> print weights[edge]
     """
     cdef Hypergraph hypergraph
-    cdef const CHypergraphViterbiWeights *thisptr
+    cdef const CHypergraph{{semiring.type}}Weights *thisptr
 
     def __cinit__(self, Hypergraph graph):
         """
@@ -881,19 +881,19 @@ cdef class ViterbiWeights:
 
         :param fn: A function from edge labels to weights.
         """
-        cdef vector[ViterbiWeight] weights = \
-             vector[ViterbiWeight](self.hypergraph.thisptr.edges().size(), Viterbi_zero())
-        cdef ViterbiW result
+        cdef vector[{{semiring.ctype}}] weights = \
+             vector[{{semiring.ctype}}](self.hypergraph.thisptr.edges().size(), {{semiring.type}}_zero())
+        cdef {{semiring.python_type}} result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
-            if result is None: weights[i] = Viterbi_zero()
+            if result is None: weights[i] = {{semiring.type}}_zero()
             weights[i] = result.wrap
         self.thisptr =  \
-          new CHypergraphViterbiWeights(self.hypergraph.thisptr,
-                                                  weights, Viterbi_zero())
+          new CHypergraph{{semiring.type}}Weights(self.hypergraph.thisptr,
+                                                  weights, {{semiring.type}}_zero())
         return self
 
-    cdef init(self, const CHypergraphViterbiWeights *ptr):
+    cdef init(self, const CHypergraph{{semiring.type}}Weights *ptr):
         self.thisptr = ptr
 
     def __getitem__(self, Edge edge not None):
@@ -905,18 +905,18 @@ cdef class ViterbiWeights:
 
         Take the dot product with `path` :math:`\theta^{\top} y`.
         """
-        return ViterbiW().init(self.thisptr.dot(deref(path.thisptr)))
+        return {{semiring.python_type}}().init(self.thisptr.dot(deref(path.thisptr)))
 
-cdef class ViterbiW:
-    cdef ViterbiWeight wrap
+cdef class {{semiring.python_type}}:
+    cdef {{semiring.ctype}} wrap
 
     def __cinit__(self):
-        self.wrap = Viterbi_zero()
+        self.wrap = {{semiring.type}}_zero()
 
-    cdef init(self, ViterbiWeight wrap):
+    cdef init(self, {{semiring.ctype}} wrap):
         self.wrap = wrap
         return self
-
+{% endfor %}
 
 cdef class Constraint:
     r"""

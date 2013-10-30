@@ -13,7 +13,7 @@ template<typename DerivedWeight, typename ValType>
 class SemiringWeight {
 public:
 	operator ValType() const { return value; }
-	
+
 	DerivedWeight& operator=(DerivedWeight rhs) {
 		normalize(rhs.value);
 		std::swap(value, rhs.value);
@@ -54,7 +54,7 @@ protected:
 	SemiringWeight(const SemiringWeight& other)
 		: value(other.value) {}
 	SemiringWeight(ValType val) : value(val) {}
-
+    //SemiringWeight() {}
 	ValType value;
 };
 
@@ -66,7 +66,7 @@ protected:
 class ViterbiWeight : public SemiringWeight<ViterbiWeight, double> {
 public:
 	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(value) { }
-
+    ViterbiWeight() : SemiringWeight<ViterbiWeight, double>(ViterbiWeight::zero()) {}
 	ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
 		value = std::max(value, rhs.value);
 		return *this;
@@ -76,7 +76,7 @@ public:
 		return *this;
 	}
 
-	double& normalize(double& val) const { 
+	double& normalize(double& val) const {
 		if (val < 0.0) val = 0.0;
 		else if (val > 1.0) val = 1.0;
 		return val;
@@ -131,7 +131,7 @@ public:
 	static const double one() { return 1.0; }
 	static const double zero() { return 0.0; }
 
-	double& normalize(double& val) const { 
+	double& normalize(double& val) const {
 		if (val < 0.0) val = 0.0;
 		return val;
 	}
@@ -182,7 +182,7 @@ public:
 	static const double one() { return 0.0; }
 	static const double zero() { return INF; }
 
-	double& normalize(double& val) const { 
+	double& normalize(double& val) const {
 		if (val < 0.0) val = 0.0;
 		return val;
 	}
@@ -209,14 +209,14 @@ public:
 	static const int one() { return 1; }
 	static const int zero() { return 0; }
 
-	int& normalize(int& val) const { 
+	int& normalize(int& val) const {
 		if(val < 0) val = 0;
 		return val;
 	}
 };
 
 
-/* 
+/*
 
 These two are how the python implemented the viterbi and prob, not sure if thats what you want
 
@@ -268,7 +268,7 @@ Not sure the intention of this semi-ring:
 // Implements the Hypergraph type of semiring
 // +: combine edge lists, forget nodes??
 // *: combine node lists, forget edges??
-// 0: empty object flagged as not zero?? 
+// 0: empty object flagged as not zero??
 // 1: empty object flagged as zero??
 class HypergraphWeight : public SemiringWeight<HypergraphWeight, double> {
 public:
