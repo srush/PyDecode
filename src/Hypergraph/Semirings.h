@@ -9,52 +9,56 @@
 
 // A base class of a weight with traits of a semiring
 // including + and * operators, and annihlator/identity elements.
-template<typename DerivedWeight, typename ValType>
+template<typename ValType>
 class SemiringWeight {
 public:
+	SemiringWeight(const SemiringWeight& other)
+		: value(normalize(other.value)) {}
+	SemiringWeight(ValType val) : value(normalize(val)) {}
+
 	operator ValType() const { return value; }
 	
-	DerivedWeight& operator=(DerivedWeight rhs) {
+	SemiringWeight& operator=(SemiringWeight rhs) {
 		normalize(rhs.value);
 		std::swap(value, rhs.value);
 		return *this;
 	}
 
-	DerivedWeight& operator=(ValType rhs) {
+	SemiringWeight& operator=(ValType rhs) {
 		normalize(rhs);
 		std::swap(value, rhs);
 		return *this;
 	}
 
-	friend DerivedWeight operator+(DerivedWeight lhs, const DerivedWeight &rhs) {
+	friend bool operator==(const SemiringWeight& lhs,const SemiringWeight& rhs) {
+		return lhs.value == rhs.value;
+	}
+
+	friend SemiringWeight operator+(SemiringWeight lhs, const SemiringWeight &rhs) {
 		lhs += rhs;
 		return lhs;
 	}
-	friend DerivedWeight operator*(DerivedWeight lhs, const DerivedWeight &rhs) {
+	friend SemiringWeight operator*(SemiringWeight lhs, const SemiringWeight &rhs) {
 		lhs *= rhs;
 		return lhs;
 	}
 
-	DerivedWeight& operator+=(const DerivedWeight& rhs) {
+	SemiringWeight& operator+=(const SemiringWeight& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	DerivedWeight& operator*=(const DerivedWeight& rhs) {
+	SemiringWeight& operator*=(const SemiringWeight& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
 
-	static const ValType one() { return 1.0; }
-	static const ValType zero() { return 0.0; }
+	static const SemiringWeight one() { return SemiringWeight(1.0); }
+	static const SemiringWeight zero() { return SemiringWeight(0.0); }
 
 	// Determines range of acceptable values
-	ValType& normalize(ValType& val) { return val; };
+	ValType normalize(ValType val) { return val; };
 
 protected:
-	SemiringWeight(const SemiringWeight& other)
-		: value(other.value) {}
-	SemiringWeight(ValType val) : value(val) {}
-
 	ValType value;
 };
 
@@ -63,9 +67,9 @@ protected:
 // *: *
 // 0: 0
 // 1: 1
-class ViterbiWeight : public SemiringWeight<ViterbiWeight, double> {
+class ViterbiWeight : public SemiringWeight<double> {
 public:
-	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(value) { }
+	ViterbiWeight(double value) : SemiringWeight<double>(normalize(value)) { }
 
 	ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
 		value = std::max(value, rhs.value);
@@ -76,14 +80,14 @@ public:
 		return *this;
 	}
 
-	double& normalize(double& val) const { 
+	double normalize(double val) const { 
 		if (val < 0.0) val = 0.0;
 		else if (val > 1.0) val = 1.0;
 		return val;
 	}
 
-	static const double one() { return 1.0; }
-	static const double zero() { return 0.0; }
+	static const ViterbiWeight one() { return ViterbiWeight(1.0); }
+	static const ViterbiWeight zero() { return ViterbiWeight(0.0); }
 };
 
 // Implements the Boolean type of semiring as described in Huang 2006
@@ -91,9 +95,9 @@ public:
 // *: logical and
 // 0: false
 // 1: true
-class BoolWeight : public SemiringWeight<BoolWeight, bool> {
+class BoolWeight : public SemiringWeight<bool> {
 public:
-	BoolWeight(bool value) : SemiringWeight<BoolWeight, bool>(value) { }
+	BoolWeight(bool value) : SemiringWeight<bool>(normalize(value)) { }
 
 	BoolWeight& operator+=(const BoolWeight& rhs) {
 		value = value || rhs.value;
@@ -104,10 +108,10 @@ public:
 		return *this;
 	}
 
-	static const bool one() { return true; }
-	static const bool zero() { return false; }
+	static const BoolWeight one() { return BoolWeight(true); }
+	static const BoolWeight zero() { return BoolWeight(false); }
 
-	bool& normalize(bool& val) const { return val; }
+	bool normalize(bool val) const { return val; }
 };
 
 // Implements the Inside type of semiring as described in Huang 2006
@@ -115,9 +119,9 @@ public:
 // *: *
 // 0: 0
 // 1: 1
-class InsideWeight : public SemiringWeight<InsideWeight, double> {
+class InsideWeight : public SemiringWeight<double> {
 public:
-	InsideWeight(double value) : SemiringWeight<InsideWeight, double>(value) { }
+	InsideWeight(double value) : SemiringWeight<double>(normalize(value)) { }
 
 	InsideWeight& operator+=(const InsideWeight& rhs) {
 		value = value + rhs.value;
@@ -128,10 +132,10 @@ public:
 		return *this;
 	}
 
-	static const double one() { return 1.0; }
-	static const double zero() { return 0.0; }
+	static const InsideWeight one() { return InsideWeight(1.0); }
+	static const InsideWeight zero() { return InsideWeight(0.0); }
 
-	double& normalize(double& val) const { 
+	double normalize(double val) const { 
 		if (val < 0.0) val = 0.0;
 		return val;
 	}
@@ -142,9 +146,9 @@ public:
 // *: +
 // 0: INF
 // 1: 0
-class RealWeight : public SemiringWeight<RealWeight, double> {
+class RealWeight : public SemiringWeight<double> {
 public:
-	RealWeight(double value) : SemiringWeight<RealWeight, double>(value) { }
+	RealWeight(double value) : SemiringWeight<double>(normalize(value)) { }
 
 	RealWeight& operator+=(const RealWeight& rhs) {
 		value = std::min(value, rhs.value);
@@ -155,10 +159,10 @@ public:
 		return *this;
 	}
 
-	static const double one() { return 0.0; }
-	static const double zero() { return INF; }
+	static const RealWeight one() { return RealWeight(0.0); }
+	static const RealWeight zero() { return RealWeight(INF); }
 
-	double& normalize(double& val) const { return val; }
+	double normalize(double val) const { return val; }
 };
 
 // Implements the Inside type of semiring as described in Huang 2006
@@ -166,9 +170,9 @@ public:
 // *: +
 // 0: INF
 // 1: 0
-class TropicalWeight : public SemiringWeight<TropicalWeight, double> {
+class TropicalWeight : public SemiringWeight<double> {
 public:
-	TropicalWeight(double value) : SemiringWeight<TropicalWeight, double>(value) { }
+	TropicalWeight(double value) : SemiringWeight<double>(normalize(value)) { }
 
 	TropicalWeight& operator+=(const TropicalWeight& rhs) {
 		value = value + rhs.value;
@@ -179,10 +183,10 @@ public:
 		return *this;
 	}
 
-	static const double one() { return 0.0; }
-	static const double zero() { return INF; }
+	static const TropicalWeight one() { return TropicalWeight(0.0); }
+	static const TropicalWeight zero() { return TropicalWeight(INF); }
 
-	double& normalize(double& val) const { 
+	double normalize(double val) const { 
 		if (val < 0.0) val = 0.0;
 		return val;
 	}
@@ -193,9 +197,9 @@ public:
 // *: *
 // 0: 0
 // 1: 1
-class CountingWeight : public SemiringWeight<CountingWeight, int> {
+class CountingWeight : public SemiringWeight<int> {
 public:
-	CountingWeight(int value) : SemiringWeight<CountingWeight, int>(value) { }
+	CountingWeight(int value) : SemiringWeight<int>(normalize(value)) { }
 
 	CountingWeight& operator+=(const CountingWeight& rhs) {
 		value = value + rhs.value;
@@ -206,85 +210,13 @@ public:
 		return *this;
 	}
 
-	static const int one() { return 1; }
-	static const int zero() { return 0; }
+	static const CountingWeight one() { return CountingWeight(1); }
+	static const CountingWeight zero() { return CountingWeight(0); }
 
-	int& normalize(int& val) const { 
+	int normalize(int val) const { 
 		if(val < 0) val = 0;
 		return val;
 	}
 };
-
-
-/* 
-
-These two are how the python implemented the viterbi and prob, not sure if thats what you want
-
-// Implements the Viterbi type of semiring
-// +: max
-// *: plus
-// 0: -infinity
-// 1: 0.0
-class ViterbiWeight : public SemiringWeight<ViterbiWeight, double> {
-public:
-	ViterbiWeight(double value) : SemiringWeight<ViterbiWeight, double>(-value) { }
-
-	ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
-		value = std::max(value, rhs.value);
-		return *this;
-	}
-	ViterbiWeight& operator*=(const ViterbiWeight& rhs) {
-		value = value + rhs.value;
-		return *this;
-	}
-
-	bool is_zero() { return value <= annihlator; }
-};
-
-// Implements the Probability type of semiring
-// +: max
-// *: plus
-// 0: 1.0
-// 1: 0.0
-class ProbWeight : public SemiringWeight<ProbWeight, double> {
-public:
-	ProbWeight(double value) : SemiringWeight<ProbWeight, double>(value) { }
-
-	ProbWeight& operator+=(const ProbWeight& rhs) {
-		value = std::max(value, rhs.value);
-		return *this;
-	}
-	ProbWeight& operator*=(const ProbWeight& rhs) {
-		value = value + rhs.value;
-		return *this;
-	}
-
-	bool is_zero() { return value == annihlator; }
-};
-
-
-Not sure the intention of this semi-ring:
-
-// Implements the Hypergraph type of semiring
-// +: combine edge lists, forget nodes??
-// *: combine node lists, forget edges??
-// 0: empty object flagged as not zero?? 
-// 1: empty object flagged as zero??
-class HypergraphWeight : public SemiringWeight<HypergraphWeight, double> {
-public:
-	HypergraphWeight(double value) : SemiringWeight<HypergraphWeight, double>(value) { }
-
-	HypergraphWeight& operator+=(const HypergraphWeight& rhs) {
-		value = std::max(value, rhs.value);
-		return *this;
-	}
-	HypergraphWeight& operator*=(const HypergraphWeight& rhs) {
-		value = value + rhs.value;
-		return *this;
-	}
-
-	bool is_zero() { return value == annihlator; }
-};
-*/
 
 #endif // HYPERGRAPH_SEMIRING_H_

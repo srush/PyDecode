@@ -18,6 +18,37 @@ TEST(Decode, TestHypergraph) {
   ASSERT_EQ(test.edges().size(), 1);
 }
 
+TEST(Decode, ViterbiWeight) {
+  // Test for correct normalization
+  ViterbiWeight high = ViterbiWeight(1.1);
+  std::cerr << high;
+  ASSERT_EQ(high, ViterbiWeight(1.0));
+  ViterbiWeight low = ViterbiWeight(-0.1);
+  ASSERT_EQ(low, ViterbiWeight(0.0));
+
+  // Test assignment
+  high = 0.5;
+  ASSERT_EQ(high, ViterbiWeight(0.5));
+
+  // Test Operators
+  high += low;
+  ASSERT_EQ(high, ViterbiWeight(0.5));
+  low += high;
+  ASSERT_EQ(low, ViterbiWeight(0.5));
+  high *= low;
+  ASSERT_EQ(high, ViterbiWeight(0.25));
+  high *= ViterbiWeight::one();
+  ASSERT_EQ(high, ViterbiWeight(0.25));
+  high *= ViterbiWeight::zero();
+  ASSERT_EQ(high, ViterbiWeight::zero());
+
+  // Test casting
+  double d = 0.5;
+  high = 0.25;
+  d = (double)high + d;
+  ASSERT_EQ(d, 0.75);
+}
+
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
