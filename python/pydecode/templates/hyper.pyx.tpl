@@ -1060,6 +1060,7 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<{{S.ctype}}>":
 
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass {{S.ctype}}:
+        {{S.ctype}}()
         {{S.ctype}}({{S.vtype}})
         double normalize(double)
 
@@ -1079,8 +1080,7 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "{{S.ctype}}":
             {{S.ctype}} bias) except +
 
 
-
-cdef class {{S.type}}Weights:
+cdef class _{{S.type}}Weights:
     r"""
     Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
 
@@ -1113,7 +1113,7 @@ cdef class {{S.type}}Weights:
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
             if result is None: weights[i] = {{S.type}}_zero()
-            weights[i] = {{S.ptype}}(result.wrap)
+            weights[i] = {{S.ctype}}(<{{S.vtype}}> result)
         self.thisptr =  \
           new CHypergraph{{S.type}}Weights(self.hypergraph.thisptr,
                                                   weights, {{S.type}}_zero())
@@ -1132,25 +1132,22 @@ cdef class {{S.type}}Weights:
 
         Take the dot product with `path` :math:`\theta^{\top} y`.
         """
-        return {{S.ptype}}().init(self.thisptr.dot(deref(path.thisptr)))
+        return _{{S.ptype}}().init(self.thisptr.dot(deref(path.thisptr)))
 
-cdef class {{S.ptype}}:
+cdef class _{{S.ptype}}:
     cdef {{S.ctype}} wrap
-
-    def __cinit__(self, {{S.vtype}} val):
-        self.wrap = {{S.ctype}}(val)
 
     cdef init(self, {{S.ctype}} wrap):
         self.wrap = wrap
         return self
 
-cdef class {{S.type}}Chart:
+cdef class _{{S.type}}Chart:
     cdef vector[{{S.ctype}}] chart
 
     def __getitem__(self, Node node):
-        return {{S.ptype}}().init(self.chart[node.id])
+        return _{{S.ptype}}().init(self.chart[node.id])
 
-cdef class {{S.type}}Marginals:
+cdef class _{{S.type}}Marginals:
     cdef const C{{S.type}}Marginals *thisptr
 
     cdef init(self, const C{{S.type}}Marginals *ptr):
@@ -1159,18 +1156,25 @@ cdef class {{S.type}}Marginals:
 
     def __getitem__(self, obj):
         if isinstance(obj, Edge):
-            return {{S.ptype}}().init(self.thisptr.marginal((<Edge>obj).edgeptr))
+            return _{{S.ptype}}().init(self.thisptr.marginal((<Edge>obj).edgeptr))
         elif isinstance(obj, Node):
-            return {{S.ptype}}().init(self.thisptr.marginal((<Node>obj).nodeptr))
+            return _{{S.ptype}}().init(self.thisptr.marginal((<Node>obj).nodeptr))
         else:
             raise HypergraphAccessException(
                 "Only nodes and edges have {{S.type}} marginal values." + \
                 "Passed %s."%obj)
 
 def compute_{{S.type}}_marginals(Hypergraph graph,
-                                 {{S.type}}Weights weights):
+                                 _{{S.type}}Weights weights):
     cdef const C{{S.type}}Marginals *marginals = \
         {{S.type}}_compute(graph.thisptr, weights.thisptr)
-    return {{S.type}}Marginals().init(marginals)
+    return _{{S.type}}Marginals().init(marginals)
+
+class {{S.type}}:
+    compute_marginals = compute_{{S.type}}_marginals
+    Chart = _{{S.type}}Chart
+    Marginals = _{{S.type}}Marginals
+    Semi = _{{S.ptype}}
+    Weights = _{{S.type}}Weights
 
 {% endfor %}

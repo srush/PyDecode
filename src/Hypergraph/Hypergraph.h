@@ -234,7 +234,7 @@ class Hyperpath {
 
 class HypergraphProjection;
 
-template<typename SemiringType = double>
+template<typename SemiringType>
 class HypergraphWeights {
  public:
   HypergraphWeights(const Hypergraph *hypergraph,
@@ -246,7 +246,14 @@ class HypergraphWeights {
       assert(weights.size() == hypergraph->edges().size());
   }
 
-  SemiringType dot(const Hyperpath &path) const;
+ SemiringType dot(const Hyperpath &path) const {
+   path.check(*hypergraph_);
+   SemiringType score = SemiringType::one();
+   foreach (HEdge edge, path.edges()) {
+     score *= weights_[edge->id()];
+   }
+   return score + bias_;
+ }
 
   SemiringType score(HEdge edge) const { return weights_[edge->id()]; }
 
@@ -328,15 +335,16 @@ Hypergraph *build_pruned_hypergraph(
     vector<HEdge *> edge_map);
 
 
-template<typename SemiringType>
-SemiringType HypergraphWeights<SemiringType>::dot(const Hyperpath &path) const {
+template <>
+inline double HypergraphWeights<double>::dot(const Hyperpath &path) const {
   path.check(*hypergraph_);
-  SemiringType score;
+  double score = 0.0;
   foreach (HEdge edge, path.edges()) {
     score += weights_[edge->id()];
   }
   return score + bias_;
 }
+
 
 
 template<typename SemiringType>

@@ -137,14 +137,3 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
   return new HypergraphProjection(hypergraph, new_graph,
                                   node_map, edge_map);
 }
-
-
-template <>
-double HypergraphWeights<double>::dot(const Hyperpath &path) const {
-  path.check(*hypergraph_);
-  double score = 0.0;
-  foreach (HEdge edge, path.edges()) {
-    score += weights_[edge->id()];
-  }
-  return score + bias_;
-}

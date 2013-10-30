@@ -1060,6 +1060,7 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<ViterbiWeight>":
 
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass ViterbiWeight:
+        ViterbiWeight()
         ViterbiWeight(double)
         double normalize(double)
 
@@ -1079,8 +1080,7 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "ViterbiWeight":
             ViterbiWeight bias) except +
 
 
-
-cdef class ViterbiWeights:
+cdef class _ViterbiWeights:
     r"""
     Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
 
@@ -1113,7 +1113,7 @@ cdef class ViterbiWeights:
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
             if result is None: weights[i] = Viterbi_zero()
-            weights[i] = ViterbiW(result.wrap)
+            weights[i] = ViterbiWeight(<double> result)
         self.thisptr =  \
           new CHypergraphViterbiWeights(self.hypergraph.thisptr,
                                                   weights, Viterbi_zero())
@@ -1132,25 +1132,22 @@ cdef class ViterbiWeights:
 
         Take the dot product with `path` :math:`\theta^{\top} y`.
         """
-        return ViterbiW().init(self.thisptr.dot(deref(path.thisptr)))
+        return _ViterbiW().init(self.thisptr.dot(deref(path.thisptr)))
 
-cdef class ViterbiW:
+cdef class _ViterbiW:
     cdef ViterbiWeight wrap
-
-    def __cinit__(self, double val):
-        self.wrap = ViterbiWeight(val)
 
     cdef init(self, ViterbiWeight wrap):
         self.wrap = wrap
         return self
 
-cdef class ViterbiChart:
+cdef class _ViterbiChart:
     cdef vector[ViterbiWeight] chart
 
     def __getitem__(self, Node node):
-        return ViterbiW().init(self.chart[node.id])
+        return _ViterbiW().init(self.chart[node.id])
 
-cdef class ViterbiMarginals:
+cdef class _ViterbiMarginals:
     cdef const CViterbiMarginals *thisptr
 
     cdef init(self, const CViterbiMarginals *ptr):
@@ -1159,18 +1156,25 @@ cdef class ViterbiMarginals:
 
     def __getitem__(self, obj):
         if isinstance(obj, Edge):
-            return ViterbiW().init(self.thisptr.marginal((<Edge>obj).edgeptr))
+            return _ViterbiW().init(self.thisptr.marginal((<Edge>obj).edgeptr))
         elif isinstance(obj, Node):
-            return ViterbiW().init(self.thisptr.marginal((<Node>obj).nodeptr))
+            return _ViterbiW().init(self.thisptr.marginal((<Node>obj).nodeptr))
         else:
             raise HypergraphAccessException(
                 "Only nodes and edges have Viterbi marginal values." + \
                 "Passed %s."%obj)
 
 def compute_Viterbi_marginals(Hypergraph graph,
-                                 ViterbiWeights weights):
+                                 _ViterbiWeights weights):
     cdef const CViterbiMarginals *marginals = \
         Viterbi_compute(graph.thisptr, weights.thisptr)
-    return ViterbiMarginals().init(marginals)
+    return _ViterbiMarginals().init(marginals)
+
+class Viterbi:
+    compute_marginals = compute_Viterbi_marginals
+    Chart = _ViterbiChart
+    Marginals = _ViterbiMarginals
+    Semi = _ViterbiW
+    Weights = _ViterbiWeights
 
 

@@ -36,8 +36,8 @@ def random_hypergraph():
 
 def test_semirings():
     hypergraph = simple_hypergraph()[0]
-    weights = ph.ViterbiWeights(hypergraph).build(lambda l: ph.ViterbiW())
-    marg = ph.compute_Viterbi_marginals(hypergraph, weights)
+    weights = ph.Viterbi.Weights(hypergraph).build(lambda l: 10.0)
+    marg = ph.Viterbi.compute_marginals(hypergraph, weights)
     for edge in hypergraph.edges:
         marg[edge]
 
