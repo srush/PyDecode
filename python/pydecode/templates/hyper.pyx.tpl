@@ -534,6 +534,7 @@ cdef class GraphBuilder:
         self.edge_labels = []
         self.node_labels = []
         self.started = False
+        return self
 
     def __enter__(self):
         # """
@@ -643,6 +644,7 @@ cdef class Node:
 
     cdef init(self, const CHypernode *nodeptr):
         self.nodeptr = nodeptr
+        return self
 
     def __hash__(self):
         return self.id
@@ -701,6 +703,7 @@ cdef class Edge:
 
     cdef init(self, const CHyperedge *ptr):
         self.edgeptr = ptr
+        return self
 
     def __str__(self):
         return self.edgeptr.label()
@@ -765,6 +768,7 @@ cdef class Path:
 
     cdef init(self, const CHyperpath *path):
         self.thisptr = path
+        return self
 
     property edges:
         def __get__(self):
@@ -818,6 +822,7 @@ cdef class Weights:
 
     cdef init(self, const CHypergraphWeights *ptr):
         self.thisptr = ptr
+        return self
 
     def __getitem__(self, Edge edge not None):
         return self.thisptr.score(edge.edgeptr)
@@ -858,6 +863,7 @@ cdef class Constraint:
     cdef const CConstraint *thisptr
     cdef init(self, const CConstraint *ptr):
         self.thisptr = ptr
+        return self
 
     def __str__(self): return self.thisptr.label
 
@@ -1010,6 +1016,7 @@ cdef class MaxMarginals:
 
     cdef init(self, const CMaxMarginals *ptr):
         self.thisptr = ptr
+        return self
 
     def __getitem__(self, obj):
         """
@@ -1037,9 +1044,9 @@ cdef class MaxMarginals:
 {% for S in semirings %}
 
 cdef extern from "Hypergraph/Algorithms.h":
-    CHyperpath * inside_{{S.type}} "viterbi_path[S.ctype]" (
+    CHyperpath * inside_{{S.type}} "general_inside<S.ctype>" (
         const CHypergraph *graph,
-        const CHypergraphWeights theta,
+        const CHypergraph{{S.type}}Weights theta,
         vector[{{S.ctype}}] *chart) except +
 
     cdef cppclass C{{S.type}}Marginals "Marginals<{{S.ctype}}>":
@@ -1053,6 +1060,7 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<{{S.ctype}}>":
 
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass {{S.ctype}}:
+        {{S.ctype}}({{S.vtype}})
         double normalize(double)
 
 cdef extern from "Hypergraph/Semirings.h" namespace "{{S.ctype}}":
@@ -1060,7 +1068,7 @@ cdef extern from "Hypergraph/Semirings.h" namespace "{{S.ctype}}":
     {{S.ctype}} {{S.type}}_zero "{{S.ctype}}::zero" ()
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "{{S.ctype}}":
-    cdef cppclass CHypergraph{{S.type}}Weights "{{S.type}}Weights":
+    cdef cppclass CHypergraph{{S.type}}Weights "HypergraphWeights<{{S.ctype}}>":
         {{S.ctype}} dot(const CHyperpath &path) except +
         double score(const CHyperedge *edge)
         CHypergraph{{S.type}}Weights *project_weights(
@@ -1101,11 +1109,11 @@ cdef class {{S.type}}Weights:
         cdef vector[{{S.ctype}}] weights = \
              vector[{{S.ctype}}](self.hypergraph.thisptr.edges().size(),
              {{S.type}}_zero())
-        cdef {{S.ptype}} result
+        # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
             if result is None: weights[i] = {{S.type}}_zero()
-            weights[i] = result.wrap
+            weights[i] = {{S.ptype}}(result.wrap)
         self.thisptr =  \
           new CHypergraph{{S.type}}Weights(self.hypergraph.thisptr,
                                                   weights, {{S.type}}_zero())
@@ -1113,6 +1121,7 @@ cdef class {{S.type}}Weights:
 
     cdef init(self, const CHypergraph{{S.type}}Weights *ptr):
         self.thisptr = ptr
+        return self
 
     def __getitem__(self, Edge edge not None):
         return self.thisptr.score(edge.edgeptr)
@@ -1128,8 +1137,8 @@ cdef class {{S.type}}Weights:
 cdef class {{S.ptype}}:
     cdef {{S.ctype}} wrap
 
-    def __cinit__(self):
-        self.wrap = {{S.type}}_zero()
+    def __cinit__(self, {{S.vtype}} val):
+        self.wrap = {{S.ctype}}(val)
 
     cdef init(self, {{S.ctype}} wrap):
         self.wrap = wrap
@@ -1146,6 +1155,7 @@ cdef class {{S.type}}Marginals:
 
     cdef init(self, const C{{S.type}}Marginals *ptr):
         self.thisptr = ptr
+        return self
 
     def __getitem__(self, obj):
         if isinstance(obj, Edge):

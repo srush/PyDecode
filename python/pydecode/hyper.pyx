@@ -534,6 +534,7 @@ cdef class GraphBuilder:
         self.edge_labels = []
         self.node_labels = []
         self.started = False
+        return self
 
     def __enter__(self):
         # """
@@ -643,6 +644,7 @@ cdef class Node:
 
     cdef init(self, const CHypernode *nodeptr):
         self.nodeptr = nodeptr
+        return self
 
     def __hash__(self):
         return self.id
@@ -701,6 +703,7 @@ cdef class Edge:
 
     cdef init(self, const CHyperedge *ptr):
         self.edgeptr = ptr
+        return self
 
     def __str__(self):
         return self.edgeptr.label()
@@ -765,6 +768,7 @@ cdef class Path:
 
     cdef init(self, const CHyperpath *path):
         self.thisptr = path
+        return self
 
     property edges:
         def __get__(self):
@@ -818,6 +822,7 @@ cdef class Weights:
 
     cdef init(self, const CHypergraphWeights *ptr):
         self.thisptr = ptr
+        return self
 
     def __getitem__(self, Edge edge not None):
         return self.thisptr.score(edge.edgeptr)
@@ -858,6 +863,7 @@ cdef class Constraint:
     cdef const CConstraint *thisptr
     cdef init(self, const CConstraint *ptr):
         self.thisptr = ptr
+        return self
 
     def __str__(self): return self.thisptr.label
 
@@ -1010,6 +1016,7 @@ cdef class MaxMarginals:
 
     cdef init(self, const CMaxMarginals *ptr):
         self.thisptr = ptr
+        return self
 
     def __getitem__(self, obj):
         """
@@ -1037,9 +1044,9 @@ cdef class MaxMarginals:
 
 
 cdef extern from "Hypergraph/Algorithms.h":
-    CHyperpath * inside_Viterbi "viterbi_path[S.ctype]" (
+    CHyperpath * inside_Viterbi "general_inside<S.ctype>" (
         const CHypergraph *graph,
-        const CHypergraphWeights theta,
+        const CHypergraphViterbiWeights theta,
         vector[ViterbiWeight] *chart) except +
 
     cdef cppclass CViterbiMarginals "Marginals<ViterbiWeight>":
@@ -1053,6 +1060,7 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<ViterbiWeight>":
 
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass ViterbiWeight:
+        ViterbiWeight(double)
         double normalize(double)
 
 cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiWeight":
@@ -1060,7 +1068,7 @@ cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiWeight":
     ViterbiWeight Viterbi_zero "ViterbiWeight::zero" ()
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "ViterbiWeight":
-    cdef cppclass CHypergraphViterbiWeights "ViterbiWeights":
+    cdef cppclass CHypergraphViterbiWeights "HypergraphWeights<ViterbiWeight>":
         ViterbiWeight dot(const CHyperpath &path) except +
         double score(const CHyperedge *edge)
         CHypergraphViterbiWeights *project_weights(
@@ -1101,11 +1109,11 @@ cdef class ViterbiWeights:
         cdef vector[ViterbiWeight] weights = \
              vector[ViterbiWeight](self.hypergraph.thisptr.edges().size(),
              Viterbi_zero())
-        cdef ViterbiW result
+        # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
             if result is None: weights[i] = Viterbi_zero()
-            weights[i] = result.wrap
+            weights[i] = ViterbiW(result.wrap)
         self.thisptr =  \
           new CHypergraphViterbiWeights(self.hypergraph.thisptr,
                                                   weights, Viterbi_zero())
@@ -1113,6 +1121,7 @@ cdef class ViterbiWeights:
 
     cdef init(self, const CHypergraphViterbiWeights *ptr):
         self.thisptr = ptr
+        return self
 
     def __getitem__(self, Edge edge not None):
         return self.thisptr.score(edge.edgeptr)
@@ -1128,8 +1137,8 @@ cdef class ViterbiWeights:
 cdef class ViterbiW:
     cdef ViterbiWeight wrap
 
-    def __cinit__(self):
-        self.wrap = Viterbi_zero()
+    def __cinit__(self, double val):
+        self.wrap = ViterbiWeight(val)
 
     cdef init(self, ViterbiWeight wrap):
         self.wrap = wrap
@@ -1146,6 +1155,7 @@ cdef class ViterbiMarginals:
 
     cdef init(self, const CViterbiMarginals *ptr):
         self.thisptr = ptr
+        return self
 
     def __getitem__(self, obj):
         if isinstance(obj, Edge):

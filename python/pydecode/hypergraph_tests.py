@@ -34,6 +34,12 @@ def random_hypergraph():
     weights = ph.Weights(hypergraph).build(lambda t: random.random())
     return hypergraph, weights
 
+def test_semirings():
+    hypergraph = simple_hypergraph()[0]
+    weights = ph.ViterbiWeights(hypergraph).build(lambda l: ph.ViterbiW())
+    marg = ph.compute_Viterbi_marginals(hypergraph, weights)
+    for edge in hypergraph.edges:
+        marg[edge]
 
 def test_numbering():
     for hypergraph, _ in [random_hypergraph() for i in range(10)]:

@@ -19,9 +19,9 @@ struct IdComparator {
 };
 
 template<typename SemiringType>
-void viterbi_path(const Hypergraph *graph,
-                  const HypergraphWeights<SemiringType> &theta,
-                  vector<SemiringType> *chart) {
+void general_inside(const Hypergraph *graph,
+                    const HypergraphWeights<SemiringType> &theta,
+                    vector<SemiringType> *chart) {
   theta.check(*graph);
 
   // Run Viterbi Hypergraph algorithm.
@@ -260,3 +260,10 @@ const Hyperpath *best_constrained_path(
   *result = producer.results();
   return (*result)[result->size() - 1].path;
 }
+
+template class HypergraphWeights<ViterbiWeight>;
+template class Marginals<ViterbiWeight>;
+template void general_inside<ViterbiWeight>(
+    const Hypergraph *graph,
+    const HypergraphWeights<ViterbiWeight> &theta,
+    vector<ViterbiWeight> *chart);

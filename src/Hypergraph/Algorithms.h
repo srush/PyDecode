@@ -17,10 +17,10 @@ Hyperpath *viterbi_path(const Hypergraph *graph,
                         const HypergraphWeights<> &theta,
                         vector<double> *chart);
 
-template<typename SemiringType, typename ReturnType>
-ReturnType *viterbi_semiring(const Hypergraph *graph,
-                            const HypergraphWeights<SemiringType> &theta,
-                            vector<SemiringType> *chart);
+template<typename SemiringType>
+void viterbi_semiring(const Hypergraph *graph,
+                      const HypergraphWeights<SemiringType> &theta,
+                      vector<SemiringType> *chart);
 
 void outside(const Hypergraph *graph,
              const HypergraphWeights<> &weights,
@@ -124,27 +124,15 @@ class MaxMarginals {
 };
 
 
-
 const Hyperpath *best_constrained_path(
     const Hypergraph *graph,
     const HypergraphWeights<> &theta,
     const HypergraphConstraints &constraints,
     vector<ConstrainedResult> *duals);
 
-
 const HypergraphProjection *prune(const Hypergraph *original,
                                   const HypergraphWeights<> &weights,
                                   double ratio);
 
-
-class ViterbiWeights : public HypergraphWeights<ViterbiWeight> {
-  ViterbiWeights(const Hypergraph *hypergraph,
-                 const vector<ViterbiWeight> &weights,
-                 ViterbiWeight bias)
-      : HypergraphWeights<ViterbiWeight>(hypergraph_(hypergraph),
-                                         weights_(weights),
-                                         bias_(bias)) {}
-
-};
 
 #endif  // HYPERGRAPH_ALGORITHMS_H_
