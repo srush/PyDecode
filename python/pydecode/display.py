@@ -10,7 +10,7 @@ class HypergraphFormatter:
     Full list available - http://www.graphviz.org/content/attrs
     """
 
-    def __init__(self, hypergraph):
+    def __init__(self, hypergraph, show_hyperedges=True):
         """
         Parameters
         -------------
@@ -20,6 +20,7 @@ class HypergraphFormatter:
         """
 
         self.hypergraph = hypergraph
+        self._show_hyperedges = show_hyperedges
 
     def graph_attrs(self):
         "Returns a dictionary of graph properties."
@@ -49,8 +50,11 @@ class HypergraphFormatter:
         edge : :py:class:`Edge`
            The hyperedge to style.
         """
-        return {"shape": "rect",
-                "label": str(self.hypergraph.label(edge))}
+        if self._show_hyperedges:
+            return {"shape": "rect",
+                    "label": str(self.hypergraph.label(edge))}
+        else:
+            return {"shape": "point"}
 
     def hyperedge_attrs(self, edge):
         """
@@ -212,6 +216,7 @@ class HypergraphPathFormatter(HypergraphFormatter):
     def __init__(self, hypergraph, paths):
         self.hypergraph = hypergraph
         self.paths = paths
+        self._show_hyperedges = False
 
     def hyperedge_attrs(self, edge):
         colors = ["red", "green", "blue", "purple", "orange", "yellow"]
@@ -225,6 +230,7 @@ class HypergraphWeightFormatter(HypergraphFormatter):
     def __init__(self, hypergraph, weights):
         self.hypergraph = hypergraph
         self.weights = weights
+        self._show_hyperedges = False
 
     def hyperedge_node_attrs(self, edge):
         return {"label": self.weights[edge]}
@@ -234,6 +240,7 @@ class HypergraphConstraintFormatter(HypergraphFormatter):
     def __init__(self, hypergraph, constraints):
         self.hypergraph = hypergraph
         self.constraints = constraints
+        self._show_hyperedges = False
 
     def hyperedge_attrs(self, edge):
         colors = ["red", "green", "blue", "purple"]

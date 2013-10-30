@@ -9,6 +9,21 @@ Install using pip
 
     $ pip install pydecode
 
+Running Notebooks
+=================
+
+All of the documentation examples are written as IPython notebooks. They are available in the notebooks/ directory. 
+
+To modify examples locally, install IPython and run ::
+
+    $ cd notebooks
+    $ ipython notebook --pylab inline 
+
+( You can also run IPython notebook on a remote server using ssh tunneling_ and in emacs_.)
+
+.. _tunneling: http://wisdomthroughknowledge.blogspot.com/2012/07/accessing-ipython-notebook-remotely.html
+.. _emacs: http://tkf.github.io/emacs-ipython-notebook/
+
 Optional Dependencies
 =====================
 

@@ -1,5 +1,5 @@
 
-## Decipherment Note
+## A Decipherment Example
 
 # This is a note on running decipherment.
 

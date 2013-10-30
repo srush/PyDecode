@@ -9,74 +9,87 @@
     <includedby refid="Algorithms_8h" local="yes">src/Hypergraph/Algorithms.h</includedby>
     <includedby refid="Constraints_8cpp" local="yes">src/Hypergraph/Constraints.cpp</includedby>
     <incdepgraph>
-      <node id="62">
+      <node id="69">
         <label>./foreach.h</label>
         <link refid="foreach_8h_source"/>
       </node>
-      <node id="64">
+      <node id="71">
         <label>cassert</label>
       </node>
-      <node id="58">
+      <node id="65">
         <label>string</label>
       </node>
-      <node id="65">
+      <node id="72">
         <label>exception</label>
       </node>
-      <node id="61">
+      <node id="74">
+        <label>Hypergraph/Semirings.h</label>
+        <link refid="Semirings_8h_source"/>
+        <childnode refid="75" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+      </node>
+      <node id="68">
         <label>ctime</label>
       </node>
-      <node id="59">
+      <node id="66">
         <label>vector</label>
       </node>
-      <node id="57">
+      <node id="64">
         <label>src/Hypergraph/Constraints.h</label>
         <link refid="Constraints.h"/>
-        <childnode refid="58" relation="include">
+        <childnode refid="65" relation="include">
         </childnode>
-        <childnode refid="59" relation="include">
+        <childnode refid="66" relation="include">
         </childnode>
-        <childnode refid="60" relation="include">
+        <childnode refid="67" relation="include">
         </childnode>
-        <childnode refid="63" relation="include">
+        <childnode refid="70" relation="include">
         </childnode>
       </node>
-      <node id="60">
+      <node id="67">
         <label>./common.h</label>
         <link refid="common_8h_source"/>
-        <childnode refid="61" relation="include">
+        <childnode refid="68" relation="include">
         </childnode>
-        <childnode refid="62" relation="include">
+        <childnode refid="69" relation="include">
         </childnode>
       </node>
-      <node id="63">
+      <node id="70">
         <label>Hypergraph/Hypergraph.h</label>
         <link refid="Hypergraph_8h_source"/>
-        <childnode refid="64" relation="include">
+        <childnode refid="71" relation="include">
+        </childnode>
+        <childnode refid="72" relation="include">
+        </childnode>
+        <childnode refid="73" relation="include">
         </childnode>
         <childnode refid="65" relation="include">
         </childnode>
         <childnode refid="66" relation="include">
         </childnode>
-        <childnode refid="58" relation="include">
+        <childnode refid="67" relation="include">
         </childnode>
-        <childnode refid="59" relation="include">
-        </childnode>
-        <childnode refid="60" relation="include">
+        <childnode refid="74" relation="include">
         </childnode>
       </node>
-      <node id="66">
+      <node id="73">
         <label>set</label>
+      </node>
+      <node id="75">
+        <label>algorithm</label>
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="68">
+      <node id="77">
         <label>src/Hypergraph/Algorithms.h</label>
         <link refid="Algorithms_8h_source"/>
       </node>
-      <node id="67">
+      <node id="76">
         <label>src/Hypergraph/Constraints.h</label>
         <link refid="Constraints.h"/>
-        <childnode refid="68" relation="include">
+        <childnode refid="77" relation="include">
         </childnode>
       </node>
     </invincdepgraph>

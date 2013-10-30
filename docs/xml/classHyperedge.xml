@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="70" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="70" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="71" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="71" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHyperedge_1ad1b23820d5272cb79961de5b4db07c48" prot="private" static="no" mutable="no">
         <type>string</type>
@@ -27,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="71" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="71" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="72" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="72" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHyperedge_1a8392f0c014d680cca438ff5761f9df36" prot="private" static="no" mutable="no">
         <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
@@ -40,7 +40,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="72" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="72" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="73" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="73" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHyperedge_1a982912dfc561bfbc151d350dec9523dc" prot="private" static="no" mutable="no">
         <type>vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt;</type>
@@ -53,7 +53,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="73" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="73" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="74" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="74" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -80,7 +80,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="49" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="43" bodyend="49"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="50" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="44" bodyend="50"/>
       </memberdef>
       <memberdef kind="function" id="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>int</type>
@@ -93,7 +93,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="52" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="52" bodyend="52"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="53" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="53" bodyend="53"/>
       </memberdef>
       <memberdef kind="function" id="classHyperedge_1a011a4d2393b8f6d6657d928261ce23a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -110,7 +110,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="54" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="54" bodyend="54"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="55" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="55" bodyend="55"/>
       </memberdef>
       <memberdef kind="function" id="classHyperedge_1af86bd5095660cfe3f8fdcaa2da957f10" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>string</type>
@@ -123,7 +123,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="57" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="57" bodyend="57"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="58" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="58" bodyend="58"/>
       </memberdef>
       <memberdef kind="function" id="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
@@ -136,7 +136,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="60" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="60" bodyend="60"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="61" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="61" bodyend="61"/>
       </memberdef>
       <memberdef kind="function" id="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; &amp;</type>
@@ -149,7 +149,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="63" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="63" bodyend="63"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="64" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="64" bodyend="64"/>
       </memberdef>
       <memberdef kind="function" id="classHyperedge_1ad06abb5ea5573b23a00421d79ef35b20" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -166,14 +166,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="65" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="65" bodyend="67"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="66" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="66" bodyend="68"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="41" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="41" bodyend="74"/>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="42" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="42" bodyend="75"/>
     <listofallmembers>
       <member refid="classHyperedge_1a8392f0c014d680cca438ff5761f9df36" prot="private" virt="non-virtual"><scope>Hyperedge</scope><name>head_</name></member>
       <member refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" prot="public" virt="non-virtual"><scope>Hyperedge</scope><name>head_node</name></member>

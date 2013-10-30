@@ -1,6 +1,6 @@
 import pydecode.hyper as ph
 from pydecode.semiring import *
-
+import sys
 
 class ChartBuilder:
     """
@@ -8,9 +8,10 @@ class ChartBuilder:
 
     """
 
-    def __init__(self, score_fn,
+    def __init__(self, score_fn=lambda a: a,
                  semiring=ProbSemiRing,
-                 build_hypergraph=False):
+                 build_hypergraph=False,
+                 debug=False):
         """
         Initialize the dynamic programming chart.
 
@@ -33,6 +34,7 @@ class ChartBuilder:
         self._scorer = score_fn
         self._done = False
         self._last = None
+        self._debug = debug
         if self._builder:
             self._hypergraph = ph.Hypergraph()
             self._build = self._hypergraph.builder()
@@ -81,6 +83,8 @@ class ChartBuilder:
             self._chart[label] = HypergraphSemiRing([], [node], None)
         else:
             self._chart[label] = self._semiring.one()
+        if self._debug: 
+            print >>sys.stderr, "Initing", label, label in self._chart
         return self._chart[label]
 
     def sum(self, edges):
@@ -101,13 +105,18 @@ class ChartBuilder:
                 "Chart already has label {}".format(label))
         if self._builder:
             if not val.is_zero():
-                node = self._build.add_node(val.edge_list,
+                if self._debug:
+                    print >>sys.stderr, "Adding node", label
+                    for edge in val.edges():
+                        print >>sys.stderr, "\t with edge", edge
+                node = self._build.add_node(val.edges(),
                                             label=label)
                 self._chart[label] = \
                     HypergraphSemiRing([], [node], None)
+            else:
+                self._chart[label] = val.zero()
         else:
-            if not val.is_zero():
-                self._chart[label] = val
+            self._chart[label] = val
         self._last = label
         return self._chart[label]
 
@@ -115,4 +124,12 @@ class ChartBuilder:
         return label in self._chart
 
     def __getitem__(self, label):
+        if self._debug: 
+            print >>sys.stderr, "Getting",label, label in self._chart
         return self._chart.get(label, self._semiring.zero())
+    
+    def show(self):
+        keys = self._chart.keys()
+        keys.sort()
+        for key in keys:
+            print key, self._chart[key]

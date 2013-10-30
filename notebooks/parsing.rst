@@ -1,6 +1,6 @@
 
-Dependency Parsing
-==================
+Tutorial 4: Dependency Parsing
+==============================
 
 
 .. code:: python

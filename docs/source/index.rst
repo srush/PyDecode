@@ -10,6 +10,7 @@ PyDecode
 .. include:: ../../README.rst
 
 .. toctree::
+   :hide:
    :maxdepth: 2
 
    docs

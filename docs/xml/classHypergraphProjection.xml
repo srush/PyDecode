@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="309" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="309" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="311" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="311" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHypergraphProjection_1ac4b7e4c0d7da068ebc8c50f029984876" prot="public" static="no" mutable="no">
         <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
@@ -27,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="310" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="310" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="312" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="312" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -42,7 +42,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="315" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="315" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="317" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="317" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHypergraphProjection_1a2591ec6227618cb024cf1873983c29fa" prot="private" static="no" mutable="no">
         <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt; *</type>
@@ -55,7 +55,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="316" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="316" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="318" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="318" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -86,7 +86,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="279" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="272" bodyend="290"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="281" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="274" bodyend="292"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphProjection_1a00593a4957786c81decf47496d98b7e9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -99,7 +99,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="292" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="292" bodyend="295"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="294" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="294" bodyend="297"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphProjection_1a7415d20ef626a5491a89155fac95214d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
@@ -116,7 +116,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="301" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="301" bodyend="303"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="303" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="303" bodyend="305"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphProjection_1a0acb98ee5f83cf812539c38f72fe4f53" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
@@ -133,7 +133,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="305" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="305" bodyend="307"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="307" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="307" bodyend="309"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
@@ -156,7 +156,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="299" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="121" bodyend="171"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="301" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.cpp" bodystart="163" bodyend="213"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -164,20 +164,20 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="59">
+      <node id="67">
         <label>Hypergraph</label>
         <link refid="classHypergraph"/>
       </node>
-      <node id="58">
+      <node id="66">
         <label>HypergraphProjection</label>
         <link refid="classHypergraphProjection"/>
-        <childnode refid="59" relation="usage">
+        <childnode refid="67" relation="usage">
           <edgelabel>new_graph</edgelabel>
           <edgelabel>original_graph</edgelabel>
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="270" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="270" bodyend="317"/>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="272" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="272" bodyend="319"/>
     <listofallmembers>
       <member refid="classHypergraphProjection_1a2591ec6227618cb024cf1873983c29fa" prot="private" virt="non-virtual"><scope>HypergraphProjection</scope><name>edge_map_</name></member>
       <member refid="classHypergraphProjection_1a47ce7226419eb74c575fd33f19187f95" prot="public" virt="non-virtual"><scope>HypergraphProjection</scope><name>HypergraphProjection</name></member>

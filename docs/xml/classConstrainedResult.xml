@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="37" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="37" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="43" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="43" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classConstrainedResult_1ad1ff7fb635e135a98060f2f38aefab40" prot="public" static="no" mutable="no">
         <type>double</type>
@@ -27,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="38" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="38" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="44" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="44" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classConstrainedResult_1a159e007636d3ae73820f8de175933e3a" prot="public" static="no" mutable="no">
         <type>double</type>
@@ -40,7 +40,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="39" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="39" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="45" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="45" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classConstrainedResult_1ae3d7dc011ee02cc7e39e9bc512c2c0bb" prot="public" static="no" mutable="no">
         <type>vector&lt; const <ref refid="structConstraint" kindref="compound">Constraint</ref> * &gt;</type>
@@ -53,7 +53,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="40" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="40" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="46" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="46" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -68,7 +68,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="26" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="26" bodyend="26"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="32" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="32" bodyend="32"/>
       </memberdef>
       <memberdef kind="function" id="classConstrainedResult_1a7672654c37dee58801bfcc9b1d506d4e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -97,7 +97,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="35" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="27" bodyend="35"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="41" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="33" bodyend="41"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -105,19 +105,19 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="19">
+      <node id="23">
         <label>Hyperpath</label>
         <link refid="classHyperpath"/>
       </node>
-      <node id="18">
+      <node id="22">
         <label>ConstrainedResult</label>
         <link refid="classConstrainedResult"/>
-        <childnode refid="19" relation="usage">
+        <childnode refid="23" relation="usage">
           <edgelabel>path</edgelabel>
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="24" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="24" bodyend="41"/>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="30" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="30" bodyend="47"/>
     <listofallmembers>
       <member refid="classConstrainedResult_1a28c0ddf054e36f248b787dc8d20dd21e" prot="public" virt="non-virtual"><scope>ConstrainedResult</scope><name>ConstrainedResult</name></member>
       <member refid="classConstrainedResult_1a7672654c37dee58801bfcc9b1d506d4e" prot="public" virt="non-virtual"><scope>ConstrainedResult</scope><name>ConstrainedResult</name></member>

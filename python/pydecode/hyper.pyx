@@ -599,7 +599,7 @@ cdef class GraphBuilder:
             nodeptr = self.thisptr.add_terminal_node(str(label))
         else:
             nodeptr = self.thisptr.start_node(str(label))
-            for edge_cons  in edges:
+            for edge_cons in edges:
                 try:
                     tail_nodes, t = edge_cons
                 except:
@@ -607,6 +607,9 @@ cdef class GraphBuilder:
                         "Edges must be pairs of the form (tail_nodes, label)." + \
                         "Received %s"%(edge_cons)
                         )
+                if len(tail_nodes) == 0:
+                    raise HypergraphConstructionException(
+                        "An edge must have at least one tail node.")
 
                 tail_node_ptrs.clear()
                 for tail_node in tail_nodes:

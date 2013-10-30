@@ -32,26 +32,26 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="10">
+      <node id="14">
         <label>SubgradRate</label>
         <link refid="classSubgradRate"/>
       </node>
-      <node id="9">
+      <node id="13">
         <label>ConstantRate</label>
         <link refid="classConstantRate"/>
-        <childnode refid="10" relation="public-inheritance">
+        <childnode refid="14" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="12">
+      <node id="16">
         <label>SubgradRate</label>
         <link refid="classSubgradRate"/>
       </node>
-      <node id="11">
+      <node id="15">
         <label>ConstantRate</label>
         <link refid="classConstantRate"/>
-        <childnode refid="12" relation="public-inheritance">
+        <childnode refid="16" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

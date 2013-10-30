@@ -7,98 +7,114 @@
     <includes refid="common_8h" local="yes">./common.h</includes>
     <includes refid="Hypergraph_8h" local="yes">Hypergraph/Hypergraph.h</includes>
     <includes refid="Constraints_8h" local="yes">Hypergraph/Constraints.h</includes>
+    <includes refid="Semirings_8h" local="yes">Hypergraph/Semirings.h</includes>
     <includedby refid="Algorithms_8cpp" local="yes">src/Hypergraph/Algorithms.cpp</includedby>
     <incdepgraph>
-      <node id="33">
+      <node id="36">
         <label>queue</label>
       </node>
-      <node id="37">
+      <node id="40">
         <label>./foreach.h</label>
         <link refid="foreach_8h_source"/>
       </node>
-      <node id="39">
+      <node id="42">
         <label>cassert</label>
       </node>
-      <node id="42">
+      <node id="45">
         <label>string</label>
       </node>
-      <node id="40">
+      <node id="43">
         <label>exception</label>
       </node>
-      <node id="32">
-        <label>src/Hypergraph/Algorithms.h</label>
-        <link refid="Algorithms.h"/>
-        <childnode refid="33" relation="include">
-        </childnode>
-        <childnode refid="34" relation="include">
-        </childnode>
-        <childnode refid="35" relation="include">
-        </childnode>
-        <childnode refid="38" relation="include">
-        </childnode>
-        <childnode refid="43" relation="include">
-        </childnode>
-      </node>
-      <node id="36">
-        <label>ctime</label>
-      </node>
-      <node id="34">
-        <label>vector</label>
-      </node>
-      <node id="43">
-        <label>Hypergraph/Constraints.h</label>
-        <link refid="Constraints_8h_source"/>
-        <childnode refid="42" relation="include">
-        </childnode>
-        <childnode refid="34" relation="include">
-        </childnode>
-        <childnode refid="35" relation="include">
+      <node id="46">
+        <label>Hypergraph/Semirings.h</label>
+        <link refid="Semirings_8h_source"/>
+        <childnode refid="47" relation="include">
         </childnode>
         <childnode refid="38" relation="include">
         </childnode>
       </node>
       <node id="35">
-        <label>./common.h</label>
-        <link refid="common_8h_source"/>
+        <label>src/Hypergraph/Algorithms.h</label>
+        <link refid="Algorithms.h"/>
         <childnode refid="36" relation="include">
         </childnode>
         <childnode refid="37" relation="include">
         </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+      </node>
+      <node id="39">
+        <label>ctime</label>
+      </node>
+      <node id="37">
+        <label>vector</label>
+      </node>
+      <node id="48">
+        <label>Hypergraph/Constraints.h</label>
+        <link refid="Constraints_8h_source"/>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
       </node>
       <node id="38">
-        <label>Hypergraph/Hypergraph.h</label>
-        <link refid="Hypergraph_8h_source"/>
+        <label>./common.h</label>
+        <link refid="common_8h_source"/>
         <childnode refid="39" relation="include">
         </childnode>
         <childnode refid="40" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
-        </childnode>
-        <childnode refid="42" relation="include">
-        </childnode>
-        <childnode refid="34" relation="include">
-        </childnode>
-        <childnode refid="35" relation="include">
-        </childnode>
       </node>
       <node id="41">
+        <label>Hypergraph/Hypergraph.h</label>
+        <link refid="Hypergraph_8h_source"/>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+      </node>
+      <node id="44">
         <label>set</label>
+      </node>
+      <node id="47">
+        <label>algorithm</label>
       </node>
     </incdepgraph>
     <innerclass refid="classConstrainedResult" prot="public">ConstrainedResult</innerclass>
     <innerclass refid="classMaxMarginals" prot="public">MaxMarginals</innerclass>
       <sectiondef kind="func">
-      <memberdef kind="function" id="Algorithms_8h_1a7b4461ac85185721fc0b1f93beb173b2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="Algorithms_8h_1a3e01bbbc6def189370869e211517e3ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classHyperpath" kindref="compound">Hyperpath</ref> *</type>
         <definition>Hyperpath* viterbi_path</definition>
-        <argsstring>(const Hypergraph *graph, const HypergraphWeights &amp;theta, vector&lt; double &gt; *chart)</argsstring>
+        <argsstring>(const Hypergraph *graph, const HypergraphWeights&lt;&gt; &amp;theta, vector&lt; double &gt; *chart)</argsstring>
         <name>viterbi_path</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>graph</declname>
         </param>
         <param>
-          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> &amp;</type>
+          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref>&lt;&gt; &amp;</type>
           <declname>theta</declname>
         </param>
         <param>
@@ -111,19 +127,52 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="17" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="21" bodyend="67"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="18" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="71" bodyend="117"/>
       </memberdef>
-      <memberdef kind="function" id="Algorithms_8h_1a9ca689303cc8270c333c0a1e7b860854" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="Algorithms_8h_1ac9eceb89310075da6f13d0b2afb80ba7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SemiringType</type>
+          </param>
+          <param>
+            <type>typename ReturnType</type>
+          </param>
+        </templateparamlist>
+        <type>ReturnType *</type>
+        <definition>ReturnType* viterbi_semiring</definition>
+        <argsstring>(const Hypergraph *graph, const HypergraphWeights&lt; SemiringType &gt; &amp;theta, vector&lt; SemiringType &gt; *chart)</argsstring>
+        <name>viterbi_semiring</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref>&lt; SemiringType &gt; &amp;</type>
+          <declname>theta</declname>
+        </param>
+        <param>
+          <type>vector&lt; SemiringType &gt; *</type>
+          <declname>chart</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="23"/>
+      </memberdef>
+      <memberdef kind="function" id="Algorithms_8h_1aa21d44f5fcc6ecc22d8fb703b52038ed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void outside</definition>
-        <argsstring>(const Hypergraph *graph, const HypergraphWeights &amp;weights, const vector&lt; double &gt; &amp;inside_chart, vector&lt; double &gt; *chart)</argsstring>
+        <argsstring>(const Hypergraph *graph, const HypergraphWeights&lt;&gt; &amp;weights, const vector&lt; double &gt; &amp;inside_chart, vector&lt; double &gt; *chart)</argsstring>
         <name>outside</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>graph</declname>
         </param>
         <param>
-          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> &amp;</type>
+          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref>&lt;&gt; &amp;</type>
           <declname>weights</declname>
         </param>
         <param>
@@ -140,19 +189,19 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="22" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="69" bodyend="102"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="28" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="119" bodyend="152"/>
       </memberdef>
-      <memberdef kind="function" id="Algorithms_8h_1aa2b730eb0eb14c30e161880fc5c28cc6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="Algorithms_8h_1ab785139e6579cf10394f97ff78bd8075" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>const <ref refid="classHyperpath" kindref="compound">Hyperpath</ref> *</type>
         <definition>const Hyperpath* best_constrained_path</definition>
-        <argsstring>(const Hypergraph *graph, const HypergraphWeights &amp;theta, const HypergraphConstraints &amp;constraints, vector&lt; ConstrainedResult &gt; *duals)</argsstring>
+        <argsstring>(const Hypergraph *graph, const HypergraphWeights&lt;&gt; &amp;theta, const HypergraphConstraints &amp;constraints, vector&lt; ConstrainedResult &gt; *duals)</argsstring>
         <name>best_constrained_path</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>graph</declname>
         </param>
         <param>
-          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> &amp;</type>
+          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref>&lt;&gt; &amp;</type>
           <declname>theta</declname>
         </param>
         <param>
@@ -169,19 +218,19 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="86" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="215" bodyend="232"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="92" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="265" bodyend="282"/>
       </memberdef>
-      <memberdef kind="function" id="Algorithms_8h_1ad5d64c1dc525d4c82268460f08018bcc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="Algorithms_8h_1a3a495b115052162ffacca98dd058ed82" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>const <ref refid="classHypergraphProjection" kindref="compound">HypergraphProjection</ref> *</type>
         <definition>const HypergraphProjection* prune</definition>
-        <argsstring>(const Hypergraph *original, const HypergraphWeights &amp;weights, double ratio)</argsstring>
+        <argsstring>(const Hypergraph *original, const HypergraphWeights&lt;&gt; &amp;weights, double ratio)</argsstring>
         <name>prune</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>original</declname>
         </param>
         <param>
-          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref> &amp;</type>
+          <type>const <ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref>&lt;&gt; &amp;</type>
           <declname>weights</declname>
         </param>
         <param>
@@ -194,7 +243,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="91" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="132" bodyend="159"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="97" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="182" bodyend="209"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -214,88 +263,94 @@
 <codeline lineno="10"><highlight class="normal"></highlight></codeline>
 <codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Hypergraph.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Constraints.h&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Semirings.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="14"><highlight class="normal"></highlight></codeline>
-<codeline lineno="15"><highlight class="normal"><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*viterbi_path(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref><sp/>&amp;theta,</highlight></codeline>
-<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;double&gt;<sp/>*chart);</highlight></codeline>
-<codeline lineno="18"><highlight class="normal"></highlight></codeline>
-<codeline lineno="19"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>outside(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref><sp/>&amp;weights,</highlight></codeline>
-<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;double&gt;<sp/>&amp;inside_chart,</highlight></codeline>
-<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;double&gt;<sp/>*chart);</highlight></codeline>
-<codeline lineno="23"><highlight class="normal"></highlight></codeline>
-<codeline lineno="24" refid="classConstrainedResult" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classConstrainedResult" kindref="compound">ConstrainedResult</ref><sp/>{</highlight></codeline>
-<codeline lineno="25"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
-<codeline lineno="26"><highlight class="normal"><sp/><sp/><ref refid="classConstrainedResult" kindref="compound">ConstrainedResult</ref>()<sp/>{}</highlight></codeline>
-<codeline lineno="27"><highlight class="normal"><sp/><sp/><ref refid="classConstrainedResult" kindref="compound">ConstrainedResult</ref>(</highlight></codeline>
-<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*path_,</highlight></codeline>
-<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>dual_,</highlight></codeline>
-<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>primal_,</highlight></codeline>
-<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;const<sp/>Constraint<sp/>*&gt;<sp/>&amp;constraints_)</highlight></codeline>
-<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>path(path_),</highlight></codeline>
-<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dual(dual_),</highlight></codeline>
-<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>primal(primal_),</highlight></codeline>
-<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>constraints(constraints_)<sp/>{}</highlight></codeline>
-<codeline lineno="36"><highlight class="normal"></highlight></codeline>
-<codeline lineno="37"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*path;</highlight></codeline>
-<codeline lineno="38"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>dual;</highlight></codeline>
-<codeline lineno="39"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>primal;</highlight></codeline>
-<codeline lineno="40"><highlight class="normal"><sp/><sp/>vector&lt;const<sp/>Constraint<sp/>*&gt;<sp/>constraints;</highlight></codeline>
-<codeline lineno="41"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*viterbi_path(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights&lt;&gt;</ref><sp/>&amp;theta,</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;double&gt;<sp/>*chart);</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>ReturnType&gt;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal">ReturnType<sp/>*viterbi_semiring(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights&lt;SemiringType&gt;</ref><sp/>&amp;theta,</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;SemiringType&gt;<sp/>*chart);</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>outside(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights&lt;&gt;</ref><sp/>&amp;weights,</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;double&gt;<sp/>&amp;inside_chart,</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;double&gt;<sp/>*chart);</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30" refid="classConstrainedResult" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classConstrainedResult" kindref="compound">ConstrainedResult</ref><sp/>{</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><ref refid="classConstrainedResult" kindref="compound">ConstrainedResult</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><ref refid="classConstrainedResult" kindref="compound">ConstrainedResult</ref>(</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*path_,</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>dual_,</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>primal_,</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;const<sp/>Constraint<sp/>*&gt;<sp/>&amp;constraints_)</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>path(path_),</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dual(dual_),</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>primal(primal_),</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>constraints(constraints_)<sp/>{}</highlight></codeline>
 <codeline lineno="42"><highlight class="normal"></highlight></codeline>
-<codeline lineno="43" refid="classMaxMarginals" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classMaxMarginals" kindref="compound">MaxMarginals</ref><sp/>{</highlight></codeline>
-<codeline lineno="44"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
-<codeline lineno="45"><highlight class="normal"></highlight></codeline>
-<codeline lineno="46"><highlight class="normal"><sp/><sp/><ref refid="classMaxMarginals" kindref="compound">MaxMarginals</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph,</highlight></codeline>
-<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref><sp/>*weights,</highlight></codeline>
-<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;double&gt;<sp/>*in_chart,</highlight></codeline>
-<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;double&gt;<sp/>*out_chart)</highlight></codeline>
-<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>hypergraph_(hypergraph),</highlight></codeline>
-<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>weights_(weights),</highlight></codeline>
-<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>in_chart_(in_chart),</highlight></codeline>
-<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>out_chart_(out_chart)<sp/>{</highlight></codeline>
-<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>assert(in_chart-&gt;size()<sp/>==<sp/>out_chart-&gt;size());</highlight></codeline>
-<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>assert(hypergraph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>().size()<sp/>==<sp/>out_chart-&gt;size());</highlight></codeline>
-<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="57"><highlight class="normal"></highlight></codeline>
-<codeline lineno="58"><highlight class="normal"><sp/><sp/>~<ref refid="classMaxMarginals" kindref="compound">MaxMarginals</ref>()<sp/>{</highlight></codeline>
-<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>in_chart_;</highlight></codeline>
-<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>out_chart_;</highlight></codeline>
-<codeline lineno="61"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="62"><highlight class="normal"></highlight></codeline>
-<codeline lineno="63"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Compute<sp/>the<sp/>max-marginals<sp/>for<sp/>the<sp/>weighted<sp/>hypergraph.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="64"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classMaxMarginals" kindref="compound">MaxMarginals</ref><sp/>*compute(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph,</highlight></codeline>
-<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref><sp/>*weights);</highlight></codeline>
-<codeline lineno="66"><highlight class="normal"></highlight></codeline>
-<codeline lineno="67"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Get<sp/>max-marginal<sp/>for<sp/>edge<sp/>or<sp/>node.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="68"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>max_marginal(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline lineno="69"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>max_marginal(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
-<codeline lineno="70"><highlight class="normal"></highlight></codeline>
-<codeline lineno="71"><highlight class="normal"><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
-<codeline lineno="72"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph_;</highlight></codeline>
-<codeline lineno="73"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref><sp/>*weights_;</highlight></codeline>
-<codeline lineno="74"><highlight class="normal"></highlight></codeline>
-<codeline lineno="75"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Pointer<sp/>to<sp/>inside<sp/>and<sp/>outside<sp/>charts.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="76"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Note<sp/>these<sp/>are<sp/>owned<sp/>by<sp/>the<sp/>object.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="77"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;double&gt;<sp/>*in_chart_;</highlight></codeline>
-<codeline lineno="78"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;double&gt;<sp/>*out_chart_;</highlight></codeline>
-<codeline lineno="79"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*path;</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>dual;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>primal;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/>vector&lt;const<sp/>Constraint<sp/>*&gt;<sp/>constraints;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49" refid="classMaxMarginals" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classMaxMarginals" kindref="compound">MaxMarginals</ref><sp/>{</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><ref refid="classMaxMarginals" kindref="compound">MaxMarginals</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph,</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights&lt;&gt;</ref><sp/>*weights,</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;double&gt;<sp/>*in_chart,</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;double&gt;<sp/>*out_chart)</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>hypergraph_(hypergraph),</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>weights_(weights),</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>in_chart_(in_chart),</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>out_chart_(out_chart)<sp/>{</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>assert(in_chart-&gt;size()<sp/>==<sp/>out_chart-&gt;size());</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>assert(hypergraph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>().size()<sp/>==<sp/>out_chart-&gt;size());</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/>~<ref refid="classMaxMarginals" kindref="compound">MaxMarginals</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>in_chart_;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>out_chart_;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Compute<sp/>the<sp/>max-marginals<sp/>for<sp/>the<sp/>weighted<sp/>hypergraph.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classMaxMarginals" kindref="compound">MaxMarginals</ref><sp/>*compute(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph,</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights&lt;&gt;</ref><sp/>*weights);</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Get<sp/>max-marginal<sp/>for<sp/>edge<sp/>or<sp/>node.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>max_marginal(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>max_marginal(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph_;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights&lt;&gt;</ref><sp/>*weights_;</highlight></codeline>
 <codeline lineno="80"><highlight class="normal"></highlight></codeline>
-<codeline lineno="81"><highlight class="normal"></highlight></codeline>
-<codeline lineno="82"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*best_constrained_path(</highlight></codeline>
-<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref><sp/>&amp;theta,</highlight></codeline>
-<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphConstraints" kindref="compound">HypergraphConstraints</ref><sp/>&amp;constraints,</highlight></codeline>
-<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;ConstrainedResult&gt;<sp/>*duals);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Pointer<sp/>to<sp/>inside<sp/>and<sp/>outside<sp/>charts.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Note<sp/>these<sp/>are<sp/>owned<sp/>by<sp/>the<sp/>object.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;double&gt;<sp/>*in_chart_;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;double&gt;<sp/>*out_chart_;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
 <codeline lineno="87"><highlight class="normal"></highlight></codeline>
-<codeline lineno="88"><highlight class="normal"></highlight></codeline>
-<codeline lineno="89"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphProjection" kindref="compound">HypergraphProjection</ref><sp/>*prune(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*original,</highlight></codeline>
-<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights</ref><sp/>&amp;weights,</highlight></codeline>
-<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>ratio);</highlight></codeline>
-<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*best_constrained_path(</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights&lt;&gt;</ref><sp/>&amp;theta,</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphConstraints" kindref="compound">HypergraphConstraints</ref><sp/>&amp;constraints,</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;ConstrainedResult&gt;<sp/>*duals);</highlight></codeline>
 <codeline lineno="93"><highlight class="normal"></highlight></codeline>
-<codeline lineno="94"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/><sp/>//<sp/>HYPERGRAPH_ALGORITHMS_H_</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphProjection" kindref="compound">HypergraphProjection</ref><sp/>*prune(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*original,</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphWeights" kindref="compound">HypergraphWeights&lt;&gt;</ref><sp/>&amp;weights,</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>ratio);</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/><sp/>//<sp/>HYPERGRAPH_ALGORITHMS_H_</highlight></codeline>
     </programlisting>
     <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h"/>
   </compounddef>

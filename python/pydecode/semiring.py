@@ -27,6 +27,41 @@ class SemiRing(object):
         raise NotImplementedError()
 
 
+class LogicSemiRing(SemiRing):
+    """
+
+    """
+
+    def __init__(self, v):
+        self.v = v
+
+    def __repr__(self):
+        return self.v.__repr__()
+
+    def is_zero(self):
+        return not self.v
+
+    def __add__(self, other):
+        return LogicSemiRing(self.v or other.v)
+
+    def __mul__(self, other):
+        return LogicSemiRing(self.v and other.v)
+
+    def unpack(self):
+        return self.v
+
+    @classmethod
+    def one(cls):
+        return LogicSemiRing(True)
+
+    @classmethod
+    def zero(cls):
+        return LogicSemiRing(False)
+
+    @classmethod
+    def make(cls, v):
+        return LogicSemiRing(v)
+
 class ViterbiSemiRing(SemiRing):
     """
     The viterbi max semiring.
@@ -115,8 +150,13 @@ class HypergraphSemiRing(SemiRing):
 
     def __add__(self, other):
         return HypergraphSemiRing(
-            self.edge_list + [(other.node_list, other.name)],
-            [], None)
+            self.edges() + other.edges())
+
+    def edges(self):
+        if self.node_list:
+            return self.edge_list + [(self.node_list, self.name)]
+        else:
+            return self.edge_list
 
     def __mul__(self, other):
         zero = other.is_zero() or self.is_zero()

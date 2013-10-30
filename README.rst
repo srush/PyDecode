@@ -1,11 +1,10 @@
 
-PyDecode is a dynamic programming toolkit being developed to help researchers studying natural language processing.
+PyDecode is a dynamic programming toolkit for researchers studying natural language processing.
 
 The interface and visualization code is written Python, the core algorithms are written in C++.
-For full description of the project see the documentation_.
+For a full description of the project see the documentation_.
 
 .. _documentation: http://pydecode.readthedocs.org/
-
 
 
 .. image:: _images/parsing_9_0.png
@@ -13,15 +12,36 @@ For full description of the project see the documentation_.
    :align: center
 
 
-.. Motivation
-.. -------------
 
-.. We built this toolkit because:
 
-.. * **Dynamic programming is hard** to get right and painful to debug.
-.. * **Run-time efficiency** is crucial for many NLP tasks.
-.. * **Extensions** to dynamic programming often require extensive extra programming.
+Benefits
+-------------
 
+* **Simple imperative interface.** Algorithms look like pseudo-code ::
+
+    def viterbi(chart, words):
+        c.init(Tagged(0, "ROOT"))
+        for i, word in enumerate(words[1:], 1):
+            for tag in emission[word]:
+                c[Tagged(i, tag)] = \
+                   c.sum((c[Tagged(i - 1, prev)] * \
+                          c.sr(Bigram(word, tag, prev))
+                          for prev in emission[words[i-1]]))
+
+* **Efficient implementation.** Python front-end constructs C++ data structures.
+
+
+  * If you need even more efficiency, you can use the hypergraph interface directly.
+
+
+
+* **Easy-to-use extensions.** Write only the max dynamic program.
+
+  * PyDecode provides the derivations, posteriors, max-marginals, and oracle scoring.
+
+  * Add some features and it can do structured training.
+
+  * Add constraints and it can run Lagrangian relaxation.
 
 
 Documentation, Tutorial and Gallery
@@ -47,31 +67,35 @@ This presentation_ discusses the background for this work.
 Dynamic Programming
 ======================
 
-* Construction of dynamic programming algorithms.
-* Graphical output for debugging.
-* Finding the best path, inside scores, outside scores, and oracle scores.
+* Simple imperative construction of dynamic programming structures.
+* Customizable GraphViz output for debugging.
+* Algorithms for best path, inside scores, outside scores, and oracle scores.
 * Pruning based on max-marginals.
+* Semiring operations over hypergraph structures.
 * Integration with an LP solver.
 
 Constrained Dynamic Programming
 ===============================
 
 * Hypergraphs with additional constraints.
-* Subgradient-style optimization for constraints.
-* ILP optimization with constraints.
+* Lagrangian Relaxation optimization of constrained problems.
+* ILP optimization optimization of constrained problems.
 
-Future Additions
+Structured Prediction
 ===============================
 
-* Hooks for features and training.
-* Formal A* and beam search extensions.
-* K-best algorithms.
+* Hooks into PyStruct for structured training.
 
-While the interface is in Python, the underlying algorithms and data
-structures are written in C++ with Cython bindings. Our aim is to keep
-the C++ codebase as small as possible.
+Coming Soon
+===============================
 
+* A*, beam search, coarse-to-fine extensions.
+* Faster K-best algorithms.
+
+
+.. image:: https://travis-ci.org/srush/PyDecode.png?branch=master
+    :target: https://travis-ci.org/srush/PyDecode
 
 .. _gallery: http://pydecode.readthedocs.org/en/latest/notebooks/gallery.html
-.. _tutorial: http://pydecode.readthedocs.org/en/latest/notebooks/tutorial.html
-.. _api: http://pydecode.readthedocs.org/en/latest/notebooks/api.html
+.. _tutorial: http://pydecode.readthedocs.org/en/latest/notebooks/index.html
+.. _api: http://pydecode.readthedocs.org/en/latest/api.html
