@@ -30,20 +30,15 @@ void general_inside(const Hypergraph *graph,
 
   foreach (HNode node, graph->nodes()) {
     if (node->terminal()) {
-      (*chart)[node->id()] = SemiringType::zero();
+      (*chart)[node->id()] = SemiringType::one();
     }
   }
-  vector<HEdge> back(graph->nodes().size(), NULL);
   foreach (HEdge edge, graph->edges()) {
     SemiringType score = theta.score(edge);
-    int head_id = edge->head_node()->id();
     foreach (HNode node, edge->tail_nodes()) {
-      score += (*chart)[node->id()];
+      score *= (*chart)[node->id()];
     }
-    if (score > (*chart)[head_id]) {
-      (*chart)[head_id] = score;
-      back[head_id] = edge;
-    }
+    (*chart)[edge->head_node()->id()] += score;
   }
 }
 
@@ -267,3 +262,10 @@ template void general_inside<ViterbiWeight>(
     const Hypergraph *graph,
     const HypergraphWeights<ViterbiWeight> &theta,
     vector<ViterbiWeight> *chart);
+
+template class HypergraphWeights<LogViterbiWeight>;
+template class Marginals<LogViterbiWeight>;
+template void general_inside<LogViterbiWeight>(
+    const Hypergraph *graph,
+    const HypergraphWeights<LogViterbiWeight> &theta,
+    vector<LogViterbiWeight> *chart);

@@ -126,37 +126,6 @@ cdef extern from "Hypergraph/Constraints.h":
 #     cdef cppclass CSubgradient "Subgradient":
 #          vector[double] duals()
 
-cdef class Chart:
-    r"""
-    A dynamic programming chart :math:`\pi \in R^{|{\cal V}|}`.
-
-    Act as a dictionary ::
-
-       >> print chart[node]
-
-    """
-
-    cdef vector[double] chart
-
-    def __getitem__(self, Node node):
-        r"""
-        __getitem__(self, node)
-
-        Get the chart score for a node.
-
-        Parameters
-        ----------
-        node : :py:class:`Node`
-          A node :math:`v \in {\cal V}`.
-
-        Returns
-        -------
-         : float
-          The score of the node, :math:`\pi[v]`.
-        """
-        return self.chart[node.id]
-
-
 
 def best_path(Hypergraph graph, Weights weights):
     r"""
@@ -183,9 +152,7 @@ def best_path(Hypergraph graph, Weights weights):
         viterbi_path(graph.thisptr,
                      deref(weights.thisptr),
                      &chart.chart)
-    cdef Path path = Path()
-    path.init(hpath)
-    return path
+    return Path().init(hpath)
 
 def inside_values(Hypergraph graph, Weights weights):
     r"""
@@ -783,59 +750,6 @@ cdef class Path:
     def __iter__(self):
         return iter(convert_edges(self.thisptr.edges()))
 
-cdef class Weights:
-    r"""
-    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
-
-    Acts as a dictionary::
-
-       >> print weights[edge]
-    """
-    cdef Hypergraph hypergraph
-    cdef const CHypergraphWeights *thisptr
-    def __cinit__(self, Hypergraph graph):
-        """
-        Build the weight vector for a hypergraph.
-
-        :param hypergraph: The underlying hypergraph.
-        """
-        self.hypergraph = graph
-
-    def build(self, fn):
-        """
-        build(fn)
-
-        Build the weight vector for a hypergraph.
-
-        :param fn: A function from edge labels to weights.
-        """
-        cdef vector[double] weights
-        weights.resize(self.hypergraph.thisptr.edges().size(), 0.0)
-        for i, ty in enumerate(self.hypergraph.edge_labels):
-            result = fn(ty)
-            if result is None: weights[i] = 0.0
-            weights[i] = result
-        self.thisptr =  \
-          new CHypergraphWeights(self.hypergraph.thisptr,
-                                 weights, 0.0)
-        return self
-
-    cdef init(self, const CHypergraphWeights *ptr):
-        self.thisptr = ptr
-        return self
-
-    def __getitem__(self, Edge edge not None):
-        return self.thisptr.score(edge.edgeptr)
-
-    def dot(self, Path path not None):
-        r"""
-        dot(path)
-
-        Take the dot product with `path` :math:`\theta^{\top} y`.
-        """
-        cdef double result = self.thisptr.dot(deref(path.thisptr))
-        return result
-
 cdef class Constraint:
     r"""
     A single linear hypergraph constraint, for instance the i'th constraint
@@ -995,56 +909,13 @@ cdef class Constraints:
                                        &count)
         return convert_constraints(failed)
 
-cdef class MaxMarginals:
-    r"""
-    The max-marginal scores of a weighted hypergraph.
-
-    .. math::
-
-        m(e) =  max_{y \in {\cal X}: y(e) = 1} \theta^{\top} y \\
-        m(v) =  max_{y \in {\cal X}: y(v) = 1} \theta^{\top} y
-
-
-    Usage is
-        >> max_marginals = compute_max_marginals(graph, weights)
-        >> m_e = max_marginals[edge]
-        >> m_v = max_marginals[node]
-
-    """
-
-    cdef const CMaxMarginals *thisptr
-
-    cdef init(self, const CMaxMarginals *ptr):
-        self.thisptr = ptr
-        return self
-
-    def __getitem__(self, obj):
-        """
-        Get the max-marginal value of a node or an edge.
-
-        :param obj: The node/edge to check..
-        :type obj: A :py:class:`Node` or :py:class:`Edge`
-
-        :returns: The max-marginal value.
-        :rtype: float
-
-        """
-        if isinstance(obj, Edge):
-            return self.thisptr.max_marginal((<Edge>obj).edgeptr)
-        elif isinstance(obj, Node):
-            return self.thisptr.max_marginal((<Node>obj).nodeptr)
-        else:
-            raise HypergraphAccessException(
-                "Only nodes and edges have max-marginal values." + \
-                "Passed %s."%obj)
-
 
 ############# This is the templated semiring part. ##############
 
 {% for S in semirings %}
 
 cdef extern from "Hypergraph/Algorithms.h":
-    CHyperpath * inside_{{S.type}} "general_inside<S.ctype>" (
+    void inside_{{S.type}} "general_inside<{{S.ctype}}>" (
         const CHypergraph *graph,
         const CHypergraph{{S.type}}Weights theta,
         vector[{{S.ctype}}] *chart) except +
@@ -1141,6 +1012,11 @@ cdef class _{{S.ptype}}:
         self.wrap = wrap
         return self
 
+    {% if S.float %}
+    def __float__(self):
+        return <float>self.wrap
+    {% endif %}
+
 cdef class _{{S.type}}Chart:
     cdef vector[{{S.ctype}}] chart
 
@@ -1164,17 +1040,155 @@ cdef class _{{S.type}}Marginals:
                 "Only nodes and edges have {{S.type}} marginal values." + \
                 "Passed %s."%obj)
 
-def compute_{{S.type}}_marginals(Hypergraph graph,
-                                 _{{S.type}}Weights weights):
-    cdef const C{{S.type}}Marginals *marginals = \
-        {{S.type}}_compute(graph.thisptr, weights.thisptr)
-    return _{{S.type}}Marginals().init(marginals)
 
 class {{S.type}}:
-    compute_marginals = compute_{{S.type}}_marginals
+
     Chart = _{{S.type}}Chart
     Marginals = _{{S.type}}Marginals
     Semi = _{{S.ptype}}
     Weights = _{{S.type}}Weights
 
+    @staticmethod
+    def inside(Hypergraph graph,
+               _{{S.type}}Weights weights):
+        cdef _{{S.type}}Chart chart = _{{S.type}}Chart()
+        inside_{{S.type}}(graph.thisptr, deref(weights.thisptr), &chart.chart)
+        return chart
+
+    @staticmethod
+    def compute_marginals(Hypergraph graph,
+                          _{{S.type}}Weights weights):
+        cdef const C{{S.type}}Marginals *marginals = \
+            {{S.type}}_compute(graph.thisptr, weights.thisptr)
+        return _{{S.type}}Marginals().init(marginals)
+
 {% endfor %}
+
+
+####### These are the non-templated versions, now obsolete ########
+
+cdef class Chart:
+    r"""
+    A dynamic programming chart :math:`\pi \in R^{|{\cal V}|}`.
+
+    Act as a dictionary ::
+
+       >> print chart[node]
+
+    """
+
+    cdef vector[double] chart
+
+    def __getitem__(self, Node node):
+        r"""
+        __getitem__(self, node)
+
+        Get the chart score for a node.
+
+        Parameters
+        ----------
+        node : :py:class:`Node`
+          A node :math:`v \in {\cal V}`.
+
+        Returns
+        -------
+         : float
+          The score of the node, :math:`\pi[v]`.
+        """
+        return self.chart[node.id]
+
+cdef class Weights:
+    r"""
+    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
+
+    Acts as a dictionary::
+
+       >> print weights[edge]
+    """
+    cdef Hypergraph hypergraph
+    cdef const CHypergraphWeights *thisptr
+    def __cinit__(self, Hypergraph graph):
+        """
+        Build the weight vector for a hypergraph.
+
+        :param hypergraph: The underlying hypergraph.
+        """
+        self.hypergraph = graph
+
+    def build(self, fn):
+        """
+        build(fn)
+
+        Build the weight vector for a hypergraph.
+
+        :param fn: A function from edge labels to weights.
+        """
+        cdef vector[double] weights
+        weights.resize(self.hypergraph.thisptr.edges().size(), 0.0)
+        for i, ty in enumerate(self.hypergraph.edge_labels):
+            result = fn(ty)
+            if result is None: weights[i] = 0.0
+            weights[i] = result
+        self.thisptr =  \
+          new CHypergraphWeights(self.hypergraph.thisptr,
+                                 weights, 0.0)
+        return self
+
+    cdef init(self, const CHypergraphWeights *ptr):
+        self.thisptr = ptr
+        return self
+
+    def __getitem__(self, Edge edge not None):
+        return self.thisptr.score(edge.edgeptr)
+
+    def dot(self, Path path not None):
+        r"""
+        dot(path)
+
+        Take the dot product with `path` :math:`\theta^{\top} y`.
+        """
+        cdef double result = self.thisptr.dot(deref(path.thisptr))
+        return result
+
+cdef class MaxMarginals:
+    r"""
+    The max-marginal scores of a weighted hypergraph.
+
+    .. math::
+
+        m(e) =  max_{y \in {\cal X}: y(e) = 1} \theta^{\top} y \\
+        m(v) =  max_{y \in {\cal X}: y(v) = 1} \theta^{\top} y
+
+
+    Usage is
+        >> max_marginals = compute_max_marginals(graph, weights)
+        >> m_e = max_marginals[edge]
+        >> m_v = max_marginals[node]
+
+    """
+
+    cdef const CMaxMarginals *thisptr
+
+    cdef init(self, const CMaxMarginals *ptr):
+        self.thisptr = ptr
+        return self
+
+    def __getitem__(self, obj):
+        """
+        Get the max-marginal value of a node or an edge.
+
+        :param obj: The node/edge to check..
+        :type obj: A :py:class:`Node` or :py:class:`Edge`
+
+        :returns: The max-marginal value.
+        :rtype: float
+
+        """
+        if isinstance(obj, Edge):
+            return self.thisptr.max_marginal((<Edge>obj).edgeptr)
+        elif isinstance(obj, Node):
+            return self.thisptr.max_marginal((<Node>obj).nodeptr)
+        else:
+            raise HypergraphAccessException(
+                "Only nodes and edges have max-marginal values." + \
+                "Passed %s."%obj)

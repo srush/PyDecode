@@ -289,6 +289,7 @@ class HypergraphProjection {
       edge_map_(edge_map) {
         assert(node_map->size() == original_graph->nodes().size());
         assert(edge_map->size() == original_graph->edges().size());
+#ifndef NDEBUG
         foreach (HNode node, *node_map) {
           assert(node == NULL ||
                  node->id() < (int)_new_graph->nodes().size());
@@ -297,6 +298,7 @@ class HypergraphProjection {
           assert(edge == NULL ||
                  edge->id() < (int)_new_graph->edges().size());
         }
+#endif
       }
 
   ~HypergraphProjection() {

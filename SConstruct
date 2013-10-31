@@ -2,7 +2,7 @@ import os
 
 local_libs = {}
 for build_mode in ['debug', 'profile', 'opt']:
-    env = Environment(CC = 'g++', ENV=os.environ)
+    env = Environment(CXX="clang", ENV=os.environ)
 
     if build_mode == "debug":
         env.Prepend(CCFLAGS =('-g', '-fPIC', '-Wall'))
@@ -31,7 +31,8 @@ for build_mode in ['debug', 'profile', 'opt']:
     env.Append(LIBS=libs)
     local_libs[build_mode] = env.SConscript(dirs=sub_dirs, exports=['env'])
 
-env = Environment(CC = 'g++', ENV=os.environ, CPPPATH = ["src/"])
+# Run the C++ tests.
+env = Environment(ENV=os.environ, CPPPATH = ["src/"], CXX="clang")
 
 b = env.Program("build/test", 'src/Tests.cpp',
                 LIBS = ["pthread", "gtest"] + local_libs["debug"])
@@ -40,6 +41,7 @@ b2 = env.Command("build/test.out", b, "build/test")
 env.Alias("test", b2)
 
 
+# Build the docs.
 notebooks = env.Command("ignore_note", [], "cd notebooks;make all")
 env.AlwaysBuild(notebooks)
 
@@ -51,9 +53,24 @@ env.AlwaysBuild(docs)
 
 env.Alias("docs", [notebooks, doxygen, docs])
 
-
+# Run the python tests.
 pytests = env.Command("ignore_test", [], "nosetests python/pydecode")
 env.AlwaysBuild(pytests)
+
 pytests2 = env.Command("ignore_test2", [], "py.test notebooks")
 env.AlwaysBuild(pytests)
+
 env.Alias("pytest", [pytests, pytests2])
+
+
+
+# Building the python library.
+
+env.Command(["python/pydecode/hyper.pyx"],
+            ["python/pydecode/templates/hyper.pyx.tpl"],
+            "python cython_jinja.py")
+
+py_lib = env.Command(["python/pydecode/hyper.so"],
+            ["build/debug/src/libdecoding.a", "python/pydecode/hyper.pyx"],
+            "python setup.py config; python setup.py build_ext --inplace")
+env.Alias("pylib", [py_lib])

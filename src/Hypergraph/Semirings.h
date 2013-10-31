@@ -90,6 +90,37 @@ ViterbiWeight() : BaseSemiringWeight<double, ViterbiWeight>(ViterbiWeight::zero(
 	static const ViterbiWeight zero() { return ViterbiWeight(0.0); }
 };
 
+// Implements the log-space Viterbi type of semiring.
+// +: max
+// *: +
+// 0: -INF
+// 1: 0
+class LogViterbiWeight : public BaseSemiringWeight<double, LogViterbiWeight> {
+public:
+     LogViterbiWeight(double value) :
+       BaseSemiringWeight<double, LogViterbiWeight>(normalize(value)) { }
+     LogViterbiWeight() :
+       BaseSemiringWeight<double, LogViterbiWeight>(LogViterbiWeight::zero()) {}
+
+     LogViterbiWeight& operator+=(const LogViterbiWeight& rhs) {
+       value = std::max(value, rhs.value);
+       return *this;
+     }
+     LogViterbiWeight& operator*=(const LogViterbiWeight& rhs) {
+       value = value + rhs.value;
+       return *this;
+     }
+
+     double normalize(double val) const {
+       if (val < -INF) return -INF;
+       return val;
+     }
+
+     static const LogViterbiWeight one() { return LogViterbiWeight(0.0); }
+     static const LogViterbiWeight zero() { return LogViterbiWeight(-INF); }
+};
+
+
 // Implements the Boolean type of semiring as described in Huang 2006
 // +: logical or
 // *: logical and

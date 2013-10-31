@@ -18,9 +18,9 @@ Hyperpath *viterbi_path(const Hypergraph *graph,
                         vector<double> *chart);
 
 template<typename SemiringType>
-void viterbi_semiring(const Hypergraph *graph,
-                      const HypergraphWeights<SemiringType> &theta,
-                      vector<SemiringType> *chart);
+void general_inside(const Hypergraph *graph,
+                    const HypergraphWeights<SemiringType> &theta,
+                    vector<SemiringType> *chart);
 
 void outside(const Hypergraph *graph,
              const HypergraphWeights<double> &weights,
@@ -69,11 +69,31 @@ class Marginals {
 
   // Compute the max-marginals for the weighted hypergraph.
   static const Marginals *compute(const Hypergraph *hypergraph,
-                                  const HypergraphWeights<SemiringType> *weights) {}
+                                  const HypergraphWeights<SemiringType> *weights) {
+    weights->check(*hypergraph);
+    vector<SemiringType> *in_chart = new vector<SemiringType>();
+    vector<SemiringType> *out_chart = new vector<SemiringType>();
+
+    general_inside<SemiringType>(hypergraph, *weights, in_chart);
+    //outside(hypergraph, *weights, *in_chart, out_chart);
+    // TODO: fix me!
+    return new Marginals<SemiringType>(hypergraph, weights, in_chart, out_chart);
+
+  }
 
   // Get max-marginal for edge or node.
-  SemiringType marginal(HEdge edge) const {}
-  SemiringType marginal(HNode node) const {}
+  SemiringType marginal(HEdge edge) const {
+      SemiringType score = (*out_chart_)[edge->head_node()->id()];
+      score *= weights_->score(edge);
+      foreach (HNode node, edge->tail_nodes()) {
+        score *= (*in_chart_)[node->id()];
+      }
+      return score;
+  }
+
+  SemiringType marginal(HNode node) const {
+    return (*in_chart_)[node->id()] * (*out_chart_)[node->id()];
+  }
 
  private:
   const Hypergraph *hypergraph_;
@@ -92,10 +112,9 @@ class MaxMarginals {
                const HypergraphWeights<double> *weights,
                const vector<double> *in_chart,
                const vector<double> *out_chart)
-      : hypergraph_(hypergraph),
-      weights_(weights),
-      in_chart_(in_chart),
-      out_chart_(out_chart) {
+      : weights_(weights),
+        in_chart_(in_chart),
+        out_chart_(out_chart) {
         assert(in_chart->size() == out_chart->size());
         assert(hypergraph->nodes().size() == out_chart->size());
       }
@@ -114,7 +133,6 @@ class MaxMarginals {
   double max_marginal(HNode node) const;
 
  private:
-  const Hypergraph *hypergraph_;
   const HypergraphWeights<double> *weights_;
 
   // Pointer to inside and outside charts.

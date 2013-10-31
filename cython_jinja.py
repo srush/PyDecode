@@ -1,11 +1,12 @@
 from jinja2 import Environment, PackageLoader
 
 vars = {"semirings":
- [{"type": "Viterbi",
-   "ptype": "ViterbiW",
-   "ctype": "ViterbiWeight",
-   "vtype": "double"
-   }]
+ [{"type": "Viterbi", "ptype": "ViterbiW",
+   "ctype": "ViterbiWeight", "vtype": "double",
+   "float" : True},
+  {"type": "LogViterbi", "ptype": "LogViterbiW",
+   "ctype": "LogViterbiWeight", "vtype": "double",
+   "float" : True}]
 }
 
 env = Environment(loader=PackageLoader('pydecode', 'templates'))
