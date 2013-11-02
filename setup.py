@@ -19,13 +19,17 @@ cmdclass = {}
 if use_cython:
     ext_modules = [Extension("pydecode.hyper",
                              ["python/pydecode/hyper.pyx",
+                              "python/pydecode/hypergraph.pyx",
+                              "python/pydecode/constraints.pyx",
+                              "python/pydecode/algorithms.pyx",
                               "src/Hypergraph/Hypergraph.cpp",
                               "src/Hypergraph/Algorithms.cpp",
                               "src/Hypergraph/Constraints.cpp",
                               "src/Hypergraph/Subgradient.cpp",
                               ],
+
                              language='c++',
-                             #extra_compile_args=['-std=c++11'],
+                             extra_compile_args=['-O0'],
                              include_dirs=[r'src/', "."],
                              )]
                              #extra_objects=['build/debug/src/libdecoding.a'],
