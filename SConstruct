@@ -2,7 +2,7 @@ import os
 
 local_libs = {}
 for build_mode in ['debug', 'profile', 'opt']:
-    env = Environment(CXX="clang", ENV=os.environ)
+    env = Environment(CXX="clang++", ENV=os.environ)
 
     if build_mode == "debug":
         env.Prepend(CCFLAGS =('-g', '-fPIC', '-Wall'))
@@ -32,7 +32,7 @@ for build_mode in ['debug', 'profile', 'opt']:
     local_libs[build_mode] = env.SConscript(dirs=sub_dirs, exports=['env'])
 
 # Run the C++ tests.
-env = Environment(ENV=os.environ, CPPPATH = ["src/"], CXX="clang")
+env = Environment(ENV=os.environ, CPPPATH = ["src/"], CXX="clang++")
 
 b = env.Program("build/test", 'src/Tests.cpp',
                 LIBS = ["pthread", "gtest"] + local_libs["debug"])

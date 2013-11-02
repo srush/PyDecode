@@ -19,9 +19,6 @@ cmdclass = {}
 if use_cython:
     ext_modules = [Extension("pydecode.hyper",
                              ["python/pydecode/hyper.pyx",
-                              "python/pydecode/hypergraph.pyx",
-                              "python/pydecode/constraints.pyx",
-                              "python/pydecode/algorithms.pyx",
                               "src/Hypergraph/Hypergraph.cpp",
                               "src/Hypergraph/Algorithms.cpp",
                               "src/Hypergraph/Constraints.cpp",

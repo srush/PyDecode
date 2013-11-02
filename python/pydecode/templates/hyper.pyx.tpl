@@ -3,12 +3,14 @@ from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
-from hypergraph cimport *
-from hypergraph import *
-from constraints cimport *
-from constraints import *
-from algorithms cimport *
-from algorithms import *
+
+include "wrap.pxd"
+
+
+
+include "hypergraph.pyx"
+include "constraints.pyx"
+include "algorithms.pyx"
 
 
 ############# This is the templated semiring part. ##############
