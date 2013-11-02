@@ -12,6 +12,8 @@
 
 using namespace std;
 
+// General code.
+
 struct IdComparator {
   bool operator()(HEdge edge1, HEdge edge2) const {
     return edge1->id() < edge2->id();
@@ -19,29 +21,79 @@ struct IdComparator {
 };
 
 template<typename SemiringType>
-void general_inside(const Hypergraph *graph,
-                    const HypergraphWeights<SemiringType> &theta,
-                    vector<SemiringType> *chart) {
-  theta.check(*graph);
+Chart<SemiringType> *
+general_inside(const Hypergraph *graph,
+               const HypergraphWeights<SemiringType> &weights) {
+  weights.check(*graph);
 
   // Run Viterbi Hypergraph algorithm.
-  chart->clear();
-  chart->resize(graph->nodes().size(), -INF);
+  Chart<SemiringType> *chart = new Chart<SemiringType>(graph);
 
   foreach (HNode node, graph->nodes()) {
     if (node->terminal()) {
-      (*chart)[node->id()] = SemiringType::one();
+      (*chart)[node] = SemiringType::one();
     }
   }
   foreach (HEdge edge, graph->edges()) {
-    SemiringType score = theta.score(edge);
+    SemiringType score = weights.score(edge);
     foreach (HNode node, edge->tail_nodes()) {
-      score *= (*chart)[node->id()];
+      score *= (*chart)[node];
     }
-    (*chart)[edge->head_node()->id()] += score;
+    (*chart)[edge->head_node()] += score * weights.bias();
   }
+  return chart;
 }
 
+template<typename SemiringType>
+Chart<SemiringType> *
+general_outside(const Hypergraph *graph,
+                const HypergraphWeights<SemiringType> &weights,
+                const Chart<SemiringType> &inside_chart) {
+  weights.check(*graph);
+  inside_chart.check(graph);
+  Chart<SemiringType> *chart = new Chart<SemiringType>(graph);
+  const vector<HEdge> &edges = graph->edges();
+  (*chart)[graph->root()] = weights.bias();
+
+  for (int i = edges.size() - 1; i >= 0; --i) {
+    HEdge edge = edges[i];
+    SemiringType head_score = (*chart)[edge->head_node()];
+    foreach (HNode node, edge->tail_nodes()) {
+      SemiringType other_score = SemiringType::one();
+      foreach (HNode other_node, edge->tail_nodes()) {
+        if (other_node->id() == node->id()) continue;
+        other_score *= inside_chart[other_node];
+      }
+      (*chart)[node] += head_score * other_score * weights.score(edge);
+    }
+  }
+  return chart;
+}
+
+template class Chart<ViterbiWeight>;
+template Chart<ViterbiWeight> *general_inside<ViterbiWeight>(
+    const Hypergraph *graph,
+    const HypergraphWeights<ViterbiWeight> &theta);
+template Chart<ViterbiWeight> *general_outside(
+    const Hypergraph *graph,
+    const HypergraphWeights<ViterbiWeight> &weights,
+    const Chart<ViterbiWeight> &inside_chart);
+template class HypergraphWeights<ViterbiWeight>;
+template class Marginals<ViterbiWeight>;
+
+template class Chart<LogViterbiWeight>;
+template Chart<LogViterbiWeight> *general_inside<LogViterbiWeight>(
+    const Hypergraph *graph,
+    const HypergraphWeights<LogViterbiWeight> &theta);
+template Chart<LogViterbiWeight> *general_outside(
+    const Hypergraph *graph,
+    const HypergraphWeights<LogViterbiWeight> &weights,
+    const Chart<LogViterbiWeight> &inside_chart);
+template class HypergraphWeights<LogViterbiWeight>;
+template class Marginals<LogViterbiWeight>;
+
+
+// End General code.
 
 Hyperpath *viterbi_path(const Hypergraph *graph,
                         const HypergraphWeights<double> &theta,
@@ -255,17 +307,3 @@ const Hyperpath *best_constrained_path(
   *result = producer.results();
   return (*result)[result->size() - 1].path;
 }
-
-template class HypergraphWeights<ViterbiWeight>;
-template class Marginals<ViterbiWeight>;
-template void general_inside<ViterbiWeight>(
-    const Hypergraph *graph,
-    const HypergraphWeights<ViterbiWeight> &theta,
-    vector<ViterbiWeight> *chart);
-
-template class HypergraphWeights<LogViterbiWeight>;
-template class Marginals<LogViterbiWeight>;
-template void general_inside<LogViterbiWeight>(
-    const Hypergraph *graph,
-    const HypergraphWeights<LogViterbiWeight> &theta,
-    vector<LogViterbiWeight> *chart);

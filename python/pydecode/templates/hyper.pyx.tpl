@@ -5,9 +5,6 @@ from libcpp.vector cimport vector
 from libcpp cimport bool
 
 include "wrap.pxd"
-
-
-
 include "hypergraph.pyx"
 include "constraints.pyx"
 include "algorithms.pyx"
@@ -18,14 +15,16 @@ include "algorithms.pyx"
 {% for S in semirings %}
 
 cdef extern from "Hypergraph/Algorithms.h":
-    void inside_{{S.type}} "general_inside<{{S.ctype}}>" (
+    C{{S.type}}Chart *inside_{{S.type}} "general_inside<{{S.ctype}}>" (
         const CHypergraph *graph,
-        const CHypergraph{{S.type}}Weights theta,
-        vector[{{S.ctype}}] *chart) except +
+        const CHypergraph{{S.type}}Weights theta) except +
 
     cdef cppclass C{{S.type}}Marginals "Marginals<{{S.ctype}}>":
         {{S.ctype}} marginal(const CHyperedge *edge)
         {{S.ctype}} marginal(const CHypernode *node)
+
+    cdef cppclass C{{S.type}}Chart "Chart<{{S.ctype}}>":
+        {{S.ctype}} get(const CHypernode *node)
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<{{S.ctype}}>":
     C{{S.type}}Marginals *{{S.type}}_compute "Marginals<{{S.ctype}}>::compute" (
@@ -90,7 +89,7 @@ cdef class _{{S.type}}Weights:
             weights[i] = {{S.ctype}}(<{{S.vtype}}> result)
         self.thisptr =  \
           new CHypergraph{{S.type}}Weights(self.hypergraph.thisptr,
-                                                  weights, {{S.type}}_zero())
+                                                  weights, {{S.type}}_one())
         return self
 
     cdef init(self, const CHypergraph{{S.type}}Weights *ptr):
@@ -121,10 +120,10 @@ cdef class _{{S.ptype}}:
     {% endif %}
 
 cdef class _{{S.type}}Chart:
-    cdef vector[{{S.ctype}}] chart
+    cdef C{{S.type}}Chart *chart
 
     def __getitem__(self, Node node):
-        return _{{S.ptype}}().init(self.chart[node.id])
+        return _{{S.ptype}}().init(self.chart.get(node.nodeptr))
 
 cdef class _{{S.type}}Marginals:
     cdef const C{{S.type}}Marginals *thisptr
@@ -144,6 +143,8 @@ cdef class _{{S.type}}Marginals:
                 "Passed %s."%obj)
 
 
+
+
 class {{S.type}}:
 
     Chart = _{{S.type}}Chart
@@ -155,7 +156,7 @@ class {{S.type}}:
     def inside(Hypergraph graph,
                _{{S.type}}Weights weights):
         cdef _{{S.type}}Chart chart = _{{S.type}}Chart()
-        inside_{{S.type}}(graph.thisptr, deref(weights.thisptr), &chart.chart)
+        chart.chart = inside_{{S.type}}(graph.thisptr, deref(weights.thisptr))
         return chart
 
     @staticmethod

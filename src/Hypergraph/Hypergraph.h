@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "./common.h"
-#include "Hypergraph/Semirings.h"
+
 using namespace std;
 
 class Hypernode;
@@ -234,48 +234,6 @@ class Hyperpath {
 
 class HypergraphProjection;
 
-template<typename SemiringType>
-class HypergraphWeights {
- public:
-  HypergraphWeights(const Hypergraph *hypergraph,
-                    const vector<SemiringType> &weights,
-                    SemiringType bias)
-  : hypergraph_(hypergraph),
-    weights_(weights),
-    bias_(bias) {
-      assert(weights.size() == hypergraph->edges().size());
-  }
-
- SemiringType dot(const Hyperpath &path) const {
-   path.check(*hypergraph_);
-   SemiringType score = SemiringType::one();
-   foreach (HEdge edge, path.edges()) {
-     score *= weights_[edge->id()];
-   }
-   return score + bias_;
- }
-
-  SemiringType score(HEdge edge) const { return weights_[edge->id()]; }
-
-  SemiringType bias() const { return bias_; }
-
-  HypergraphWeights<SemiringType> *modify(const vector<SemiringType> &,
-                                          SemiringType) const;
-
-  HypergraphWeights<SemiringType> *project_weights(
-      const HypergraphProjection &projection) const;
-
-  void check(const Hypergraph &graph) const {
-    if (!graph.same(*hypergraph_)) {
-      throw HypergraphException("Hypergraph does not match weights.");
-    }
-  }
-
- protected:
-  const Hypergraph *hypergraph_;
-  vector<SemiringType> weights_;
-  SemiringType bias_;
-};
 
 class HypergraphProjection {
  public:
@@ -337,30 +295,6 @@ Hypergraph *build_pruned_hypergraph(
     vector<HEdge *> edge_map);
 
 
-template <>
-inline double HypergraphWeights<double>::dot(const Hyperpath &path) const {
-  path.check(*hypergraph_);
-  double score = 0.0;
-  foreach (HEdge edge, path.edges()) {
-    score += weights_[edge->id()];
-  }
-  return score + bias_;
-}
-
-
-
-template<typename SemiringType>
-HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
-    const vector<SemiringType> &edge_duals,
-    SemiringType bias_dual) const {
-  vector<SemiringType> new_weights(weights_);
-  for (uint i = 0; i < edge_duals.size(); ++i) {
-    new_weights[i] += edge_duals[i];
-  }
-  return new HypergraphWeights<SemiringType>(hypergraph_,
-                               new_weights,
-                               bias_ + bias_dual);
-}
 
 // template<>
 // HypergraphWeights<double> *HypergraphWeights<double>::modify(
@@ -375,19 +309,7 @@ HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
 //                                bias_ + bias_dual);
 // }
 
-template<typename SemiringType>
-HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::project_weights(
-    const HypergraphProjection &projection) const {
-  vector<SemiringType> weights(projection.new_graph->edges().size());
-  foreach (HEdge edge, projection.original_graph->edges()) {
-    HEdge new_edge = projection.project(edge);
-    if (new_edge != NULL && new_edge->id() >= 0) {
-      assert(new_edge->id() < projection.new_graph->edges().size());
-      weights[new_edge->id()] = score(edge);
-    }
-  }
-  return new HypergraphWeights<SemiringType>(projection.new_graph, weights, bias_);
-}
+
 
 /* template<> */
 /* HypergraphWeights<double> *HypergraphWeights<double>::project_weights( */

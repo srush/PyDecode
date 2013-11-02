@@ -5,9 +5,6 @@ from libcpp.vector cimport vector
 from libcpp cimport bool
 
 include "wrap.pxd"
-
-
-
 include "hypergraph.pyx"
 include "constraints.pyx"
 include "algorithms.pyx"
@@ -18,14 +15,16 @@ include "algorithms.pyx"
 
 
 cdef extern from "Hypergraph/Algorithms.h":
-    void inside_Viterbi "general_inside<ViterbiWeight>" (
+    CViterbiChart *inside_Viterbi "general_inside<ViterbiWeight>" (
         const CHypergraph *graph,
-        const CHypergraphViterbiWeights theta,
-        vector[ViterbiWeight] *chart) except +
+        const CHypergraphViterbiWeights theta) except +
 
     cdef cppclass CViterbiMarginals "Marginals<ViterbiWeight>":
         ViterbiWeight marginal(const CHyperedge *edge)
         ViterbiWeight marginal(const CHypernode *node)
+
+    cdef cppclass CViterbiChart "Chart<ViterbiWeight>":
+        ViterbiWeight get(const CHypernode *node)
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<ViterbiWeight>":
     CViterbiMarginals *Viterbi_compute "Marginals<ViterbiWeight>::compute" (
@@ -90,7 +89,7 @@ cdef class _ViterbiWeights:
             weights[i] = ViterbiWeight(<double> result)
         self.thisptr =  \
           new CHypergraphViterbiWeights(self.hypergraph.thisptr,
-                                                  weights, Viterbi_zero())
+                                                  weights, Viterbi_one())
         return self
 
     cdef init(self, const CHypergraphViterbiWeights *ptr):
@@ -121,10 +120,10 @@ cdef class _ViterbiW:
     
 
 cdef class _ViterbiChart:
-    cdef vector[ViterbiWeight] chart
+    cdef CViterbiChart *chart
 
     def __getitem__(self, Node node):
-        return _ViterbiW().init(self.chart[node.id])
+        return _ViterbiW().init(self.chart.get(node.nodeptr))
 
 cdef class _ViterbiMarginals:
     cdef const CViterbiMarginals *thisptr
@@ -144,6 +143,8 @@ cdef class _ViterbiMarginals:
                 "Passed %s."%obj)
 
 
+
+
 class Viterbi:
 
     Chart = _ViterbiChart
@@ -155,7 +156,7 @@ class Viterbi:
     def inside(Hypergraph graph,
                _ViterbiWeights weights):
         cdef _ViterbiChart chart = _ViterbiChart()
-        inside_Viterbi(graph.thisptr, deref(weights.thisptr), &chart.chart)
+        chart.chart = inside_Viterbi(graph.thisptr, deref(weights.thisptr))
         return chart
 
     @staticmethod
@@ -168,14 +169,16 @@ class Viterbi:
 
 
 cdef extern from "Hypergraph/Algorithms.h":
-    void inside_LogViterbi "general_inside<LogViterbiWeight>" (
+    CLogViterbiChart *inside_LogViterbi "general_inside<LogViterbiWeight>" (
         const CHypergraph *graph,
-        const CHypergraphLogViterbiWeights theta,
-        vector[LogViterbiWeight] *chart) except +
+        const CHypergraphLogViterbiWeights theta) except +
 
     cdef cppclass CLogViterbiMarginals "Marginals<LogViterbiWeight>":
         LogViterbiWeight marginal(const CHyperedge *edge)
         LogViterbiWeight marginal(const CHypernode *node)
+
+    cdef cppclass CLogViterbiChart "Chart<LogViterbiWeight>":
+        LogViterbiWeight get(const CHypernode *node)
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<LogViterbiWeight>":
     CLogViterbiMarginals *LogViterbi_compute "Marginals<LogViterbiWeight>::compute" (
@@ -240,7 +243,7 @@ cdef class _LogViterbiWeights:
             weights[i] = LogViterbiWeight(<double> result)
         self.thisptr =  \
           new CHypergraphLogViterbiWeights(self.hypergraph.thisptr,
-                                                  weights, LogViterbi_zero())
+                                                  weights, LogViterbi_one())
         return self
 
     cdef init(self, const CHypergraphLogViterbiWeights *ptr):
@@ -271,10 +274,10 @@ cdef class _LogViterbiW:
     
 
 cdef class _LogViterbiChart:
-    cdef vector[LogViterbiWeight] chart
+    cdef CLogViterbiChart *chart
 
     def __getitem__(self, Node node):
-        return _LogViterbiW().init(self.chart[node.id])
+        return _LogViterbiW().init(self.chart.get(node.nodeptr))
 
 cdef class _LogViterbiMarginals:
     cdef const CLogViterbiMarginals *thisptr
@@ -294,6 +297,8 @@ cdef class _LogViterbiMarginals:
                 "Passed %s."%obj)
 
 
+
+
 class LogViterbi:
 
     Chart = _LogViterbiChart
@@ -305,7 +310,7 @@ class LogViterbi:
     def inside(Hypergraph graph,
                _LogViterbiWeights weights):
         cdef _LogViterbiChart chart = _LogViterbiChart()
-        inside_LogViterbi(graph.thisptr, deref(weights.thisptr), &chart.chart)
+        chart.chart = inside_LogViterbi(graph.thisptr, deref(weights.thisptr))
         return chart
 
     @staticmethod
