@@ -2,6 +2,7 @@
 #include <string>
 #include <gtest/gtest.h>
 #include "Hypergraph/Hypergraph.h"
+#include "Hypergraph/Semirings.h"
 
 TEST(Decode, TestHypergraph) {
   Hypergraph test;
