@@ -9,15 +9,15 @@
 
 // A base class of a weight with traits of a semiring
 // including + and * operators, and annihlator/identity elements.
-template<typename ValType>
-class SemiringWeight {
+template<typename ValType, typename SemiringWeight>
+class BaseSemiringWeight {
 public:
-	SemiringWeight(const SemiringWeight& other)
+	BaseSemiringWeight(const SemiringWeight& other)
 		: value(normalize(other.value)) {}
-	SemiringWeight(ValType val) : value(normalize(val)) {}
+	BaseSemiringWeight(ValType val) : value(normalize(val)) {}
 
 	operator ValType() const { return value; }
-	
+
 	SemiringWeight& operator=(SemiringWeight rhs) {
 		normalize(rhs.value);
 		std::swap(value, rhs.value);
@@ -67,10 +67,10 @@ protected:
 // *: *
 // 0: 0
 // 1: 1
-class ViterbiWeight : public SemiringWeight<double> {
+class ViterbiWeight : public BaseSemiringWeight<double, ViterbiWeight> {
 public:
-	ViterbiWeight(double value) : SemiringWeight<double>(normalize(value)) { }
-
+ViterbiWeight(double value) : BaseSemiringWeight<double, ViterbiWeight>(normalize(value)) { }
+ViterbiWeight() : BaseSemiringWeight<double, ViterbiWeight>(ViterbiWeight::zero()) {}
 	ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
 		value = std::max(value, rhs.value);
 		return *this;
@@ -80,7 +80,7 @@ public:
 		return *this;
 	}
 
-	double normalize(double val) const { 
+	double normalize(double val) const {
 		if (val < 0.0) val = 0.0;
 		else if (val > 1.0) val = 1.0;
 		return val;
@@ -90,14 +90,45 @@ public:
 	static const ViterbiWeight zero() { return ViterbiWeight(0.0); }
 };
 
+// Implements the log-space Viterbi type of semiring.
+// +: max
+// *: +
+// 0: -INF
+// 1: 0
+class LogViterbiWeight : public BaseSemiringWeight<double, LogViterbiWeight> {
+public:
+     LogViterbiWeight(double value) :
+       BaseSemiringWeight<double, LogViterbiWeight>(normalize(value)) { }
+     LogViterbiWeight() :
+       BaseSemiringWeight<double, LogViterbiWeight>(LogViterbiWeight::zero()) {}
+
+     LogViterbiWeight& operator+=(const LogViterbiWeight& rhs) {
+       value = std::max(value, rhs.value);
+       return *this;
+     }
+     LogViterbiWeight& operator*=(const LogViterbiWeight& rhs) {
+       value = value + rhs.value;
+       return *this;
+     }
+
+     double normalize(double val) const {
+       if (val < -INF) return -INF;
+       return val;
+     }
+
+     static const LogViterbiWeight one() { return LogViterbiWeight(0.0); }
+     static const LogViterbiWeight zero() { return LogViterbiWeight(-INF); }
+};
+
+
 // Implements the Boolean type of semiring as described in Huang 2006
 // +: logical or
 // *: logical and
 // 0: false
 // 1: true
-class BoolWeight : public SemiringWeight<bool> {
+class BoolWeight : public BaseSemiringWeight<bool, BoolWeight> {
 public:
-	BoolWeight(bool value) : SemiringWeight<bool>(normalize(value)) { }
+BoolWeight(bool value) : BaseSemiringWeight<bool, BoolWeight>(normalize(value)) { }
 
 	BoolWeight& operator+=(const BoolWeight& rhs) {
 		value = value || rhs.value;
@@ -119,9 +150,9 @@ public:
 // *: *
 // 0: 0
 // 1: 1
-class InsideWeight : public SemiringWeight<double> {
+class InsideWeight : public BaseSemiringWeight<double, InsideWeight> {
 public:
-	InsideWeight(double value) : SemiringWeight<double>(normalize(value)) { }
+InsideWeight(double value) : BaseSemiringWeight<double, InsideWeight>(normalize(value)) { }
 
 	InsideWeight& operator+=(const InsideWeight& rhs) {
 		value = value + rhs.value;
@@ -135,7 +166,7 @@ public:
 	static const InsideWeight one() { return InsideWeight(1.0); }
 	static const InsideWeight zero() { return InsideWeight(0.0); }
 
-	double normalize(double val) const { 
+	double normalize(double val) const {
 		if (val < 0.0) val = 0.0;
 		return val;
 	}
@@ -146,9 +177,9 @@ public:
 // *: +
 // 0: INF
 // 1: 0
-class RealWeight : public SemiringWeight<double> {
+class RealWeight : public BaseSemiringWeight<double, RealWeight> {
 public:
-	RealWeight(double value) : SemiringWeight<double>(normalize(value)) { }
+RealWeight(double value) : BaseSemiringWeight<double, RealWeight>(normalize(value)) { }
 
 	RealWeight& operator+=(const RealWeight& rhs) {
 		value = std::min(value, rhs.value);
@@ -170,9 +201,9 @@ public:
 // *: +
 // 0: INF
 // 1: 0
-class TropicalWeight : public SemiringWeight<double> {
+class TropicalWeight : public BaseSemiringWeight<double, TropicalWeight> {
 public:
-	TropicalWeight(double value) : SemiringWeight<double>(normalize(value)) { }
+TropicalWeight(double value) : BaseSemiringWeight<double, TropicalWeight>(normalize(value)) { }
 
 	TropicalWeight& operator+=(const TropicalWeight& rhs) {
 		value = value + rhs.value;
@@ -186,7 +217,7 @@ public:
 	static const TropicalWeight one() { return TropicalWeight(0.0); }
 	static const TropicalWeight zero() { return TropicalWeight(INF); }
 
-	double normalize(double val) const { 
+	double normalize(double val) const {
 		if (val < 0.0) val = 0.0;
 		return val;
 	}
@@ -197,9 +228,9 @@ public:
 // *: *
 // 0: 0
 // 1: 1
-class CountingWeight : public SemiringWeight<int> {
+class CountingWeight : public BaseSemiringWeight<int, CountingWeight> {
 public:
-	CountingWeight(int value) : SemiringWeight<int>(normalize(value)) { }
+CountingWeight(int value) : BaseSemiringWeight<int, CountingWeight>(normalize(value)) { }
 
 	CountingWeight& operator+=(const CountingWeight& rhs) {
 		value = value + rhs.value;
@@ -213,10 +244,12 @@ public:
 	static const CountingWeight one() { return CountingWeight(1); }
 	static const CountingWeight zero() { return CountingWeight(0); }
 
-	int normalize(int val) const { 
+	int normalize(int val) const {
 		if(val < 0) val = 0;
 		return val;
 	}
 };
+
+
 
 #endif // HYPERGRAPH_SEMIRING_H_

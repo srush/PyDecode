@@ -34,6 +34,21 @@ def random_hypergraph():
     weights = ph.Weights(hypergraph).build(lambda t: random.random())
     return hypergraph, weights
 
+def test_semirings():
+    hypergraph = simple_hypergraph()[0]
+    weights = ph.Viterbi.Weights(hypergraph).build(lambda l: 10.0)
+    marg = ph.Viterbi.compute_marginals(hypergraph, weights)
+    # for edge in hypergraph.edges:
+    #     marg[edge]
+
+
+
+    log_weights = ph.LogViterbi.Weights(hypergraph).build(lambda l: 10.0)
+    weights = ph.Weights(hypergraph).build(lambda l: 10.0)
+    marg = ph.LogViterbi.compute_marginals(hypergraph, log_weights)
+    # marg2 = ph.compute_max_marginals(hypergraph, weights)
+    # for edge in hypergraph.edges:
+    #     nt.assert_almost_equal(marg[edge].__float__(), marg2[edge])
 
 def test_numbering():
     for hypergraph, _ in [random_hypergraph() for i in range(10)]:

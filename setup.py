@@ -24,8 +24,9 @@ if use_cython:
                               "src/Hypergraph/Constraints.cpp",
                               "src/Hypergraph/Subgradient.cpp",
                               ],
+
                              language='c++',
-                             #extra_compile_args=['-std=c++11'],
+                             extra_compile_args=['-O0'],
                              include_dirs=[r'src/', "."],
                              )]
                              #extra_objects=['build/debug/src/libdecoding.a'],

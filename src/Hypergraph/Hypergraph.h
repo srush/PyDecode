@@ -234,7 +234,7 @@ class Hyperpath {
 
 class HypergraphProjection;
 
-template<typename SemiringType = double>
+template<typename SemiringType>
 class HypergraphWeights {
  public:
   HypergraphWeights(const Hypergraph *hypergraph,
@@ -246,14 +246,22 @@ class HypergraphWeights {
       assert(weights.size() == hypergraph->edges().size());
   }
 
-  SemiringType dot(const Hyperpath &path) const;
+ SemiringType dot(const Hyperpath &path) const {
+   path.check(*hypergraph_);
+   SemiringType score = SemiringType::one();
+   foreach (HEdge edge, path.edges()) {
+     score *= weights_[edge->id()];
+   }
+   return score + bias_;
+ }
 
   SemiringType score(HEdge edge) const { return weights_[edge->id()]; }
 
   SemiringType bias() const { return bias_; }
 
-  HypergraphWeights<SemiringType> *modify(const vector<SemiringType> &, SemiringType) const;
-  
+  HypergraphWeights<SemiringType> *modify(const vector<SemiringType> &,
+                                          SemiringType) const;
+
   HypergraphWeights<SemiringType> *project_weights(
       const HypergraphProjection &projection) const;
 
@@ -263,7 +271,7 @@ class HypergraphWeights {
     }
   }
 
- private:
+ protected:
   const Hypergraph *hypergraph_;
   vector<SemiringType> weights_;
   SemiringType bias_;
@@ -281,6 +289,7 @@ class HypergraphProjection {
       edge_map_(edge_map) {
         assert(node_map->size() == original_graph->nodes().size());
         assert(edge_map->size() == original_graph->edges().size());
+#ifndef NDEBUG
         foreach (HNode node, *node_map) {
           assert(node == NULL ||
                  node->id() < (int)_new_graph->nodes().size());
@@ -289,6 +298,7 @@ class HypergraphProjection {
           assert(edge == NULL ||
                  edge->id() < (int)_new_graph->edges().size());
         }
+#endif
       }
 
   ~HypergraphProjection() {
@@ -325,5 +335,73 @@ Hypergraph *build_pruned_hypergraph(
     const Hypergraph *hypergraph,
     vector<bool> edge_mask,
     vector<HEdge *> edge_map);
+
+
+template <>
+inline double HypergraphWeights<double>::dot(const Hyperpath &path) const {
+  path.check(*hypergraph_);
+  double score = 0.0;
+  foreach (HEdge edge, path.edges()) {
+    score += weights_[edge->id()];
+  }
+  return score + bias_;
+}
+
+
+
+template<typename SemiringType>
+HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
+    const vector<SemiringType> &edge_duals,
+    SemiringType bias_dual) const {
+  vector<SemiringType> new_weights(weights_);
+  for (uint i = 0; i < edge_duals.size(); ++i) {
+    new_weights[i] += edge_duals[i];
+  }
+  return new HypergraphWeights<SemiringType>(hypergraph_,
+                               new_weights,
+                               bias_ + bias_dual);
+}
+
+// template<>
+// HypergraphWeights<double> *HypergraphWeights<double>::modify(
+//     const vector<double> &edge_duals,
+//     double bias_dual) const {
+//   vector<double> new_weights(weights_);
+//   for (uint i = 0; i < edge_duals.size(); ++i) {
+//     new_weights[i] += edge_duals[i];
+//   }
+//   return new HypergraphWeights<double>(hypergraph_,
+//                                new_weights,
+//                                bias_ + bias_dual);
+// }
+
+template<typename SemiringType>
+HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::project_weights(
+    const HypergraphProjection &projection) const {
+  vector<SemiringType> weights(projection.new_graph->edges().size());
+  foreach (HEdge edge, projection.original_graph->edges()) {
+    HEdge new_edge = projection.project(edge);
+    if (new_edge != NULL && new_edge->id() >= 0) {
+      assert(new_edge->id() < projection.new_graph->edges().size());
+      weights[new_edge->id()] = score(edge);
+    }
+  }
+  return new HypergraphWeights<SemiringType>(projection.new_graph, weights, bias_);
+}
+
+/* template<> */
+/* HypergraphWeights<double> *HypergraphWeights<double>::project_weights( */
+/*     const HypergraphProjection &projection) const { */
+/*   vector<double> weights(projection.new_graph->edges().size()); */
+/*   foreach (HEdge edge, projection.original_graph->edges()) { */
+/*     HEdge new_edge = projection.project(edge); */
+/*     if (new_edge != NULL && new_edge->id() >= 0) { */
+/*       assert(new_edge->id() < projection.new_graph->edges().size()); */
+/*       weights[new_edge->id()] = score(edge); */
+/*     } */
+/*   } */
+/*   return new HypergraphWeights<double>(projection.new_graph, weights, bias_); */
+/* } */
+
 
 #endif  // HYPERGRAPH_HYPERGRAPH_H_
