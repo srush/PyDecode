@@ -1,17 +1,12 @@
 srush
 -----
 - Write tutorials
-
 - make crf work
-
 - allow primal setting.
-
 - beam search...
-
 - profile
-
 - delete memory
-
 - k-best
-
 - paste in thesis
+- Move constraints to semi ring
+- Make lazy weights
