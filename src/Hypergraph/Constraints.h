@@ -9,6 +9,7 @@
 #include "./common.h"
 
 #include "Hypergraph/Hypergraph.h"
+#include "Hypergraph/Semirings.h"
 
 struct Constraint {
  public:
@@ -53,17 +54,38 @@ class HypergraphConstraints {
     return cons;
   }
 
-  bool check_constraints(
-      const Hyperpath &path,
-      vector<const Constraint *> *failed_constraints,
-      vector<int> *count) const;
+  /* bool check_constraints( */
+  /*     const Hyperpath &path, */
+  /*     vector<const Constraint *> *failed_constraints, */
+  /*     vector<int> *count) const; */
 
-  void convert(const vector<double> &dual_vector,
-               vector<double> *edge_duals,
-               double *bias_dual) const;
+  /* HypergraphWeights<LogViterbiWeight> * */
+  /*     convert(const vector<double> &dual_vector) const; */
 
-  void subgradient(const Hyperpath &path,
-                   vector<double> *subgrad) const;
+  /* void subgradient(const Hyperpath &path, */
+  /*                  vector<double> *subgrad) const; */
+
+  HypergraphWeights<SparseVectorWeight> *semi() const {
+    HypergraphWeights<SparseVectorWeight> *weights =
+        new HypergraphWeights<SparseVectorWeight>(hypergraph_);
+
+    for (uint i = 0; i < constraints_.size(); ++i) {
+      const Constraint &cons = *constraints_[i];
+      SparseVector vec;
+      vec.push_back(pair<int, int>(i, cons.bias));
+
+      weights->set_bias(weights->bias() *
+                       SparseVectorWeight(vec));
+
+      for (uint j = 0; j < cons.edges.size(); ++j) {
+        SparseVector vec;
+        vec.push_back(pair<int, int>(i, cons.coefficients[j]));
+        (*weights)[cons.edges[j]] *= SparseVectorWeight(vec);
+
+      }
+    }
+    return weights;
+  }
 
   const Hypergraph *hypergraph() const { return hypergraph_; }
 

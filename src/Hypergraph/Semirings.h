@@ -6,8 +6,6 @@
 #include "Hypergraph/Hypergraph.h"
 #include "./common.h"
 
-
-
 // A base class of a weight with traits of a semiring
 // including + and * operators, and annihlator/identity elements.
 template<typename ValType, typename SemiringWeight>
@@ -155,6 +153,9 @@ class InsideWeight : public BaseSemiringWeight<double, InsideWeight> {
 public:
 InsideWeight(double value) : BaseSemiringWeight<double, InsideWeight>(normalize(value)) { }
 
+InsideWeight() :
+  BaseSemiringWeight<double, InsideWeight>(InsideWeight::zero()) {}
+
 	InsideWeight& operator+=(const InsideWeight& rhs) {
 		value = value + rhs.value;
 		return *this;
@@ -164,11 +165,17 @@ InsideWeight(double value) : BaseSemiringWeight<double, InsideWeight>(normalize(
 		return *this;
 	}
 
+    friend InsideWeight operator/(InsideWeight lhs, const InsideWeight &rhs) {
+      lhs.value /= rhs.value;
+      return lhs;
+	}
+
 	static const InsideWeight one() { return InsideWeight(1.0); }
 	static const InsideWeight zero() { return InsideWeight(0.0); }
 
 	double normalize(double val) const {
 		if (val < 0.0) val = 0.0;
+        if (val >= 1.0) val = 1.0;
 		return val;
 	}
 };
@@ -320,6 +327,50 @@ public:
 };
 
 
+
+typedef pair<int, int> SparsePair;
+typedef vector<SparsePair> SparseVector;
+
+
+class SparseVectorWeight : public BaseSemiringWeight<SparseVector, SparseVectorWeight> {
+public:
+SparseVectorWeight(const SparseVector vec) : BaseSemiringWeight<SparseVector, SparseVectorWeight>(vec) { }
+SparseVectorWeight() : BaseSemiringWeight<SparseVector, SparseVectorWeight>(SparseVectorWeight::zero()) { }
+
+  	SparseVectorWeight& operator+=(const SparseVectorWeight& rhs) {
+		return *this;
+	}
+
+	SparseVectorWeight& operator*=(const SparseVectorWeight& rhs) {
+      int i = 0, j = 0;
+      SparseVector vec;
+      if (value[i].first < rhs.value[j].first) {
+        vec.push_back(pair<int, int>(value[i].first, value[i].second));
+        ++i;
+      } else if (value[i].first > rhs.value[j].first) {
+        vec.push_back(pair<int, int>(rhs.value[j].first, rhs.value[j].second));
+        ++j;
+      } else {
+        vec.push_back(pair<int, int>(i, value[i].second + rhs.value[j].second));
+        ++i;
+        ++j;
+      }
+      value = vec;
+      return *this;
+	}
+
+	static const SparseVectorWeight one() { return SparseVectorWeight(SparseVector()); }
+	static const SparseVectorWeight zero() { return SparseVectorWeight(SparseVector()); }
+
+	int normalize(int val) const {
+		return val;
+	}
+};
+
+
+
+class HypergraphProjection;
+
 template<typename SemiringType>
 class HypergraphWeights {
  public:
@@ -332,6 +383,11 @@ class HypergraphWeights {
       assert(weights.size() == hypergraph->edges().size());
   }
 
+HypergraphWeights(const Hypergraph *hypergraph)
+    : hypergraph_(hypergraph),
+      weights_(hypergraph->edges().size(), SemiringType::one()),
+      bias_(SemiringType::one()) {}
+
  SemiringType dot(const Hyperpath &path) const {
    path.check(*hypergraph_);
    SemiringType score = SemiringType::one();
@@ -343,10 +399,15 @@ class HypergraphWeights {
 
   SemiringType score(HEdge edge) const { return weights_[edge->id()]; }
 
-  SemiringType bias() const { return bias_; }
+  SemiringType& operator[] (HEdge edge) {
+    return weights_[edge->id()];
+  }
 
-  HypergraphWeights<SemiringType> *modify(const vector<SemiringType> &,
-                                          SemiringType) const;
+  SemiringType bias() const { return bias_; }
+  void set_bias(SemiringType bias) { bias_ = bias; }
+
+  HypergraphWeights <SemiringType> *times(
+      const HypergraphWeights<SemiringType> &weights) const;
 
   HypergraphWeights<SemiringType> *project_weights(
       const HypergraphProjection &projection) const;
@@ -357,11 +418,71 @@ class HypergraphWeights {
     }
   }
 
+  void check(const HypergraphWeights<SemiringType> &weights) const {
+    if (!weights.hypergraph_->same(*hypergraph_)) {
+      throw HypergraphException("Hypergraph does not match weights.");
+    }
+  }
+
  protected:
   const Hypergraph *hypergraph_;
   vector<SemiringType> weights_;
   SemiringType bias_;
 };
+
+
+
+class HypergraphProjection {
+ public:
+  HypergraphProjection(const Hypergraph *original,
+                       const Hypergraph *_new_graph,
+                       const vector<HNode> *node_map,
+                       const vector<HEdge> *edge_map)
+      : original_graph(original),
+      new_graph(_new_graph),
+      node_map_(node_map),
+      edge_map_(edge_map) {
+        assert(node_map->size() == original_graph->nodes().size());
+        assert(edge_map->size() == original_graph->edges().size());
+#ifndef NDEBUG
+        foreach (HNode node, *node_map) {
+          assert(node == NULL ||
+                 node->id() < (int)_new_graph->nodes().size());
+        }
+        foreach (HEdge edge, *edge_map) {
+          assert(edge == NULL ||
+                 edge->id() < (int)_new_graph->edges().size());
+        }
+#endif
+      }
+
+  ~HypergraphProjection() {
+    delete node_map_;
+    delete edge_map_;
+  }
+
+  static HypergraphProjection *project_hypergraph(
+      const Hypergraph *hypergraph,
+      HypergraphWeights<BoolWeight> edge_mask);
+
+  HEdge project(HEdge original) const {
+    return (*edge_map_)[original->id()];
+  }
+
+  HNode project(HNode original) const {
+    return (*node_map_)[original->id()];
+  }
+
+  const Hypergraph *original_graph;
+  const Hypergraph *new_graph;
+
+ private:
+
+  // Owned.
+  const vector<HNode> *node_map_;
+  const vector<HEdge> *edge_map_;
+};
+
 
 
 template <>
@@ -374,19 +495,16 @@ inline double HypergraphWeights<double>::dot(const Hyperpath &path) const {
   return score + bias_;
 }
 
-
-
 template<typename SemiringType>
-HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::modify(
-    const vector<SemiringType> &edge_duals,
-    SemiringType bias_dual) const {
+HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::times(const HypergraphWeights<SemiringType> &other) const {
+  check(other);
   vector<SemiringType> new_weights(weights_);
-  for (uint i = 0; i < edge_duals.size(); ++i) {
-    new_weights[i] += edge_duals[i];
+  for (uint i = 0; i < other.weights_.size(); ++i) {
+    new_weights[i] *= other.weights_[i];
   }
   return new HypergraphWeights<SemiringType>(hypergraph_,
                                new_weights,
-                               bias_ + bias_dual);
+                               bias_ * other.bias_);
 }
 
 template<typename SemiringType>
@@ -402,5 +520,59 @@ HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::project_weight
   }
   return new HypergraphWeights<SemiringType>(projection.new_graph, weights, bias_);
 }
+
+
+inline HypergraphProjection *HypergraphProjection::project_hypergraph(
+    const Hypergraph *hypergraph,
+    HypergraphWeights<BoolWeight> edge_mask) {
+  vector<HNode> *node_map =
+      new vector<HNode>(hypergraph->nodes().size(), NULL);
+  vector<HEdge> *edge_map =
+      new vector<HEdge>(hypergraph->edges().size(), NULL);
+
+  Hypergraph *new_graph = new Hypergraph();
+  foreach (HNode node, hypergraph->nodes()) {
+    if (node->terminal()) {
+      // The node is a terminal, so just add it.
+      (*node_map)[node->id()] =
+          new_graph->add_terminal_node(node->label());
+    } else {
+      (*node_map)[node->id()] = new_graph->start_node(node->label());
+
+      // Try to add each of the edges of the node.
+      foreach (HEdge edge, node->edges()) {
+        if (!(bool)edge_mask[edge]) continue;
+        vector<HNode> tails;
+        bool all_tails_exist = true;
+        foreach (HNode tail_node, edge->tail_nodes()) {
+          HNode new_tail_node = (*node_map)[tail_node->id()];
+          if (new_tail_node == NULL) {
+            // The tail node was pruned.
+            all_tails_exist = false;
+            break;
+          } else {
+            tails.push_back(new_tail_node);
+          }
+        }
+        if (all_tails_exist) {
+          HEdge new_edge = new_graph->add_edge(tails, edge->label());
+          (*edge_map)[edge->id()] = new_edge;
+        }
+      }
+      bool success = true;
+      if (!new_graph->end_node()) {
+        (*node_map)[node->id()] = NULL;
+        success = false;
+      }
+      if (hypergraph->root()->id() == node->id()) {
+        assert(success);
+      }
+    }
+  }
+  new_graph->finish();
+  return new HypergraphProjection(hypergraph, new_graph,
+                                  node_map, edge_map);
+}
+
 
 #endif // HYPERGRAPH_SEMIRING_H_

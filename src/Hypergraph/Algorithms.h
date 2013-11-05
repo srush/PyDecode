@@ -98,11 +98,21 @@ class Marginals {
       foreach (HNode node, edge->tail_nodes()) {
         score *= (*in_chart_)[node];
       }
-      return score;
+      return score / (*in_chart_)[hypergraph_->root()];
   }
 
   SemiringType marginal(HNode node) const {
-    return (*in_chart_)[node] * (*out_chart_)[node];
+    return (*in_chart_)[node] * (*out_chart_)[node] /
+        (*in_chart_)[node];
+  }
+
+  template<typename OtherSemi>
+  OtherSemi dot(HypergraphWeights<OtherSemi> other) const {
+    OtherSemi out_score = OtherSemi::one();
+    foreach (HEdge edge, hypergraph_->edges()) {
+      out_score += marginal(edge) * other.score(edge);
+    }
+    return out_score;
   }
 
  private:
@@ -118,15 +128,15 @@ class Marginals {
 // TODO(srush): deprecate / specialize
 // Viterbi Specific code
 
-Hyperpath *viterbi_path(const Hypergraph *graph,
-                        const HypergraphWeights<double> &theta,
-                        vector<double> *chart);
+/* Hyperpath *viterbi_path(const Hypergraph *graph, */
+/*                         const HypergraphWeights<double> &theta, */
+/*                         vector<double> *chart); */
 
 
-void outside(const Hypergraph *graph,
-             const HypergraphWeights<double> &weights,
-             const vector<double> &inside_chart,
-             vector<double> *chart);
+/* void outside(const Hypergraph *graph, */
+/*              const HypergraphWeights<double> &weights, */
+/*              const vector<double> &inside_chart, */
+/*              vector<double> *chart); */
 
 class ConstrainedResult {
  public:
@@ -147,52 +157,55 @@ class ConstrainedResult {
   vector<const Constraint *> constraints;
 };
 
-class MaxMarginals {
- public:
+/* class MaxMarginals { */
+/*  public: */
 
-  MaxMarginals(const Hypergraph *hypergraph,
-               const HypergraphWeights<double> *weights,
-               const vector<double> *in_chart,
-               const vector<double> *out_chart)
-      : weights_(weights),
-        in_chart_(in_chart),
-        out_chart_(out_chart) {
-        assert(in_chart->size() == out_chart->size());
-        assert(hypergraph->nodes().size() == out_chart->size());
-      }
+/*   MaxMarginals(const Hypergraph *hypergraph, */
+/*                const HypergraphWeights<double> *weights, */
+/*                const vector<double> *in_chart, */
+/*                const vector<double> *out_chart) */
+/*       : weights_(weights), */
+/*         in_chart_(in_chart), */
+/*         out_chart_(out_chart) { */
+/*         assert(in_chart->size() == out_chart->size()); */
+/*         assert(hypergraph->nodes().size() == out_chart->size()); */
+/*       } */
 
-  ~MaxMarginals() {
-    delete in_chart_;
-    delete out_chart_;
-  }
+/*   ~MaxMarginals() { */
+/*     delete in_chart_; */
+/*     delete out_chart_; */
+/*   } */
 
-  // Compute the max-marginals for the weighted hypergraph.
-  static const MaxMarginals *compute(const Hypergraph *hypergraph,
-                                     const HypergraphWeights<double> *weights);
+/*   // Compute the max-marginals for the weighted hypergraph. */
+/*   static const MaxMarginals *compute(const Hypergraph *hypergraph, */
+/*                                      const HypergraphWeights<double> *weights); */
 
-  // Get max-marginal for edge or node.
-  double max_marginal(HEdge edge) const;
-  double max_marginal(HNode node) const;
+/*   // Get max-marginal for edge or node. */
+/*   double max_marginal(HEdge edge) const; */
+/*   double max_marginal(HNode node) const; */
 
- private:
-  const HypergraphWeights<double> *weights_;
+/*  private: */
+/*   const HypergraphWeights<double> *weights_; */
 
-  // Pointer to inside and outside charts.
-  // Note these are owned by the object.
-  const vector<double> *in_chart_;
-  const vector<double> *out_chart_;
-};
+/*   // Pointer to inside and outside charts. */
+/*   // Note these are owned by the object. */
+/*   const vector<double> *in_chart_; */
+/*   const vector<double> *out_chart_; */
+/* }; */
 
 
 const Hyperpath *best_constrained_path(
     const Hypergraph *graph,
     const HypergraphWeights<double> &theta,
-    const HypergraphConstraints &constraints,
+    const HypergraphWeights<SparseVectorWeight> &constraints,
     vector<ConstrainedResult> *duals);
 
-const HypergraphProjection *prune(const Hypergraph *original,
-                                  const HypergraphWeights<double> &weights,
-                                  double ratio);
+/* const HypergraphProjection *prune(const Hypergraph *original, */
+/*                                   const HypergraphWeights<double> &weights, */
+/*                                   double ratio); */
+
+
+
 
 
 #endif  // HYPERGRAPH_ALGORITHMS_H_

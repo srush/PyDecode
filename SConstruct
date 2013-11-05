@@ -68,7 +68,8 @@ env.Alias("pytest", [pytests, pytests2])
 
 env.Command(["python/pydecode/hyper.pyx",
              ],
-            ["python/pydecode/templates/hyper.pyx.tpl"],
+            ["python/pydecode/templates/hyper.pyx.tpl",
+             "cython_jinja.py"],
             "python cython_jinja.py")
 
 py_lib = env.Command(["python/pydecode/hyper.so"],

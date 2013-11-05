@@ -6,8 +6,9 @@ from libcpp cimport bool
 
 include "wrap.pxd"
 include "hypergraph.pyx"
-include "constraints.pyx"
+# include "constraints.pyx"
 include "algorithms.pyx"
+
 
 
 ############# This is the templated semiring part. ##############
@@ -18,6 +19,11 @@ cdef extern from "Hypergraph/Algorithms.h":
     C{{S.type}}Chart *inside_{{S.type}} "general_inside<{{S.ctype}}>" (
         const CHypergraph *graph,
         const CHypergraph{{S.type}}Weights theta) except +
+
+    C{{S.type}}Chart *outside_{{S.type}} "general_outside<{{S.ctype}}>" (
+        const CHypergraph *graph,
+        const CHypergraph{{S.type}}Weights theta,
+        C{{S.type}}Chart inside_chart) except +
 
     cdef cppclass C{{S.type}}Marginals "Marginals<{{S.ctype}}>":
         {{S.ctype}} marginal(const CHyperedge *edge)
@@ -158,6 +164,14 @@ class {{S.type}}:
         cdef _{{S.type}}Chart chart = _{{S.type}}Chart()
         chart.chart = inside_{{S.type}}(graph.thisptr, deref(weights.thisptr))
         return chart
+
+    @staticmethod
+    def outside(Hypergraph graph,
+                _{{S.type}}Weights weights,
+                _{{S.type}}Chart inside_chart):
+        cdef _{{S.type}}Chart out_chart = _{{S.type}}Chart()
+        out_chart.chart = outside_{{S.type}}(graph.thisptr, deref(weights.thisptr), deref(inside_chart.chart))
+        return out_chart
 
     @staticmethod
     def compute_marginals(Hypergraph graph,

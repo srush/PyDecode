@@ -232,67 +232,13 @@ class Hyperpath {
 
 };
 
-class HypergraphProjection;
-
-
-class HypergraphProjection {
- public:
-  HypergraphProjection(const Hypergraph *original,
-                       const Hypergraph *_new_graph,
-                       const vector<HNode> *node_map,
-                       const vector<HEdge> *edge_map)
-      : original_graph(original),
-      new_graph(_new_graph),
-      node_map_(node_map),
-      edge_map_(edge_map) {
-        assert(node_map->size() == original_graph->nodes().size());
-        assert(edge_map->size() == original_graph->edges().size());
-#ifndef NDEBUG
-        foreach (HNode node, *node_map) {
-          assert(node == NULL ||
-                 node->id() < (int)_new_graph->nodes().size());
-        }
-        foreach (HEdge edge, *edge_map) {
-          assert(edge == NULL ||
-                 edge->id() < (int)_new_graph->edges().size());
-        }
-#endif
-      }
-
-  ~HypergraphProjection() {
-    delete node_map_;
-    delete edge_map_;
-  }
-
-  static HypergraphProjection *project_hypergraph(
-      const Hypergraph *hypergraph,
-      vector<bool> edge_mask);
-
-  HEdge project(HEdge original) const {
-    return (*edge_map_)[original->id()];
-  }
-
-  HNode project(HNode original) const {
-    return (*node_map_)[original->id()];
-  }
-
-  const Hypergraph *original_graph;
-  const Hypergraph *new_graph;
-
- private:
-
-  // Owned.
-  const vector<HNode> *node_map_;
-  const vector<HEdge> *edge_map_;
-};
-
 
 // Given an original hypergraph, builds a pruned hypergraph with only
 // edges in the mask.
-Hypergraph *build_pruned_hypergraph(
-    const Hypergraph *hypergraph,
-    vector<bool> edge_mask,
-    vector<HEdge *> edge_map);
+/* Hypergraph *build_pruned_hypergraph( */
+/*     const Hypergraph *hypergraph, */
+/*     vector<bool> edge_mask, */
+/*     vector<HEdge *> edge_map); */
 
 
 

@@ -41,8 +41,6 @@ def test_semirings():
     # for edge in hypergraph.edges:
     #     marg[edge]
 
-
-
     log_weights = ph.LogViterbi.Weights(hypergraph).build(lambda l: 10.0)
     weights = ph.Weights(hypergraph).build(lambda l: 10.0)
     chart = ph.LogViterbi.inside(hypergraph, log_weights)
@@ -54,6 +52,14 @@ def test_semirings():
     marg2 = ph.compute_max_marginals(hypergraph, weights)
     for edge in hypergraph.edges:
         nt.assert_almost_equal(float(marg[edge]), marg2[edge])
+
+
+    weights = ph.Inside.Weights(hypergraph).build(lambda l: 0.5)
+    chart = ph.Inside.inside(hypergraph, weights)
+
+    weights = ph.Inside.Weights(hypergraph).build(lambda l: 0.5)
+
+
 
 def test_numbering():
     for hypergraph, _ in [random_hypergraph() for i in range(10)]:

@@ -6,6 +6,9 @@ vars = {"semirings":
    "float" : True},
   {"type": "LogViterbi", "ptype": "LogViterbiW",
    "ctype": "LogViterbiWeight", "vtype": "double",
+   "float" : True},
+  {"type": "Inside", "ptype": "InsideW",
+   "ctype": "InsideWeight", "vtype": "double",
    "float" : True}]
 }
 
