@@ -361,61 +361,6 @@ cdef class Path:
     def __iter__(self):
         return iter(convert_edges(self.thisptr.edges()))
 
-
-# cdef class Weights:
-#     r"""
-#     Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
-
-#     Acts as a dictionary::
-
-#        >> print weights[edge]
-#     """
-#     cdef Hypergraph hypergraph
-#     cdef const CHypergraphWeights *thisptr
-
-#     def __cinit__(self, Hypergraph graph):
-#         """
-#         Build the weight vector for a hypergraph.
-
-#         :param hypergraph: The underlying hypergraph.
-#         """
-#         self.hypergraph = graph
-
-#     def build(self, fn):
-#         """
-#         build(fn)
-
-#         Build the weight vector for a hypergraph.
-
-#         :param fn: A function from edge labels to weights.
-#         """
-#         cdef vector[double] weights
-#         weights.resize(self.hypergraph.thisptr.edges().size(), 0.0)
-#         for i, ty in enumerate(self.hypergraph.edge_labels):
-#             result = fn(ty)
-#             if result is None: weights[i] = 0.0
-#             weights[i] = result
-#         self.thisptr =  \
-#           new CHypergraphWeights(self.hypergraph.thisptr,
-#                                  weights, 0.0)
-#         return self
-
-#     cdef Weights init(self, const CHypergraphWeights *ptr):
-#         self.thisptr = ptr
-#         return self
-
-#     def __getitem__(self, Edge edge not None):
-#         return self.thisptr.score(edge.edgeptr)
-
-#     def dot(self, Path path not None):
-#         r"""
-#         dot(path)
-
-#         Take the dot product with `path` :math:`\theta^{\top} y`.
-#         """
-#         cdef double result = self.thisptr.dot(deref(path.thisptr))
-#         return result
-
 class HypergraphAccessException(Exception):
     def __init__(self, value):
         self.value = value

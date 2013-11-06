@@ -2,46 +2,6 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
 
-# cdef extern from "Hypergraph/Algorithms.h":
-#     CHyperpath *viterbi_path(
-#         const CHypergraph *graph,
-#         const CHypergraphWeights theta,
-#         vector[double] *chart) except +
-
-# cdef extern from "Hypergraph/Algorithms.h":
-    # void outside(
-    #     const CHypergraph *graph,
-    #     const CHypergraphWeights weights,
-    #     const vector[double] inside_chart,
-    #     vector[double] *chart) except +
-
-    # const CHypergraphProjection *prune(
-    #     const CHypergraph *original,
-    #     const CHypergraphWeights weights,
-    #     double ratio) except +
-
-    # cdef cppclass CConstrainedResult "ConstrainedResult":
-    #     const CHyperpath *path
-    #     double dual
-    #     double primal
-    #     vector[const CConstraint *] constraints
-
-    # const CHyperpath *best_constrained_path(
-    #     const CHypergraph *graph,
-    #     const CHypergraphWeights theta,
-    #     const CHypergraphConstraints constraints,
-    #     vector[CConstrainedResult] *constraints,
-    #     ) except +
-
-    # cdef cppclass CMaxMarginals "MaxMarginals":
-    #     const CHyperpath *path
-    #     double max_marginal(const CHyperedge *edge)
-    #     double max_marginal(const CHypernode *node)
-
-# cdef extern from "Hypergraph/Algorithms.h" namespace "MaxMarginals":
-#     CMaxMarginals *compute(const CHypergraph *hypergraph,
-#                            const CHypergraphWeights *weights)
-
 cdef extern from "Hypergraph/Hypergraph.h":
     cdef cppclass CHyperedge "Hyperedge":
         string label()

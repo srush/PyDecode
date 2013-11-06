@@ -260,7 +260,7 @@ def test_subgradient():
             nt.assert_equal(match[0], "have")
 
         cpath = opt.best_constrained_path(h, w,
-                                          constraints.weights)
+                                          constraints)
         assert edge in cpath
 
 
