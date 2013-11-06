@@ -6,14 +6,17 @@
 #include "Hypergraph/Hypergraph.h"
 #include "./common.h"
 
-// A base class of a weight with traits of a semiring
-// including + and * operators, and annihlator/identity elements.
+/**
+ * A base class of a weight with traits of a semiring
+ * including + and * operators, and annihlator/identity elements.
+ */
 template<typename ValType, typename SemiringWeight>
 class BaseSemiringWeight {
 public:
 	BaseSemiringWeight(const SemiringWeight& other)
 		: value(normalize(other.value)) {}
 	BaseSemiringWeight(ValType val) : value(normalize(val)) {}
+    BaseSemiringWeight() : value(zero()) {}
 
 	operator ValType() const { return value; }
 
@@ -28,6 +31,14 @@ public:
 		std::swap(value, rhs);
 		return *this;
 	}
+
+    static SemiringWeight add(SemiringWeight lhs, const SemiringWeight &rhs) {
+      return lhs + rhs;
+    }
+
+    static SemiringWeight times(SemiringWeight lhs, const SemiringWeight &rhs) {
+      return lhs * rhs;
+    }
 
 	friend bool operator==(const SemiringWeight& lhs,const SemiringWeight& rhs) {
 		return lhs.value == rhs.value;
@@ -61,15 +72,17 @@ protected:
 	ValType value;
 };
 
-// Implements the Viterbi type of semiring as described in Huang 2006
-// +: max
-// *: *
-// 0: 0
-// 1: 1
+/**
+ * Implements the Viterbi type of semiring as described in Huang 2006.
+ * +: max
+ * *: *
+ * 0: 0
+ * 1: 1
+ */
 class ViterbiWeight : public BaseSemiringWeight<double, ViterbiWeight> {
 public:
 ViterbiWeight(double value) : BaseSemiringWeight<double, ViterbiWeight>(normalize(value)) { }
-ViterbiWeight() : BaseSemiringWeight<double, ViterbiWeight>(ViterbiWeight::zero()) {}
+  ViterbiWeight() : BaseSemiringWeight<double, ViterbiWeight>() { }
 	ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
 		value = std::max(value, rhs.value);
 		return *this;
@@ -89,11 +102,13 @@ ViterbiWeight() : BaseSemiringWeight<double, ViterbiWeight>(ViterbiWeight::zero(
 	static const ViterbiWeight zero() { return ViterbiWeight(0.0); }
 };
 
-// Implements the log-space Viterbi type of semiring.
-// +: max
-// *: +
-// 0: -INF
-// 1: 0
+/**
+ * Implements the log-space Viterbi type of semiring.
+ * +: max
+ * *: +
+ * 0: -INF
+ * 1: 0
+ */
 class LogViterbiWeight : public BaseSemiringWeight<double, LogViterbiWeight> {
 public:
      LogViterbiWeight(double value) :
@@ -120,14 +135,17 @@ public:
 };
 
 
-// Implements the Boolean type of semiring as described in Huang 2006
-// +: logical or
-// *: logical and
-// 0: false
-// 1: true
+/**
+ * Implements the Boolean type of semiring as described in Huang 2006
+ * +: logical or
+ * *: logical and
+ * 0: false
+ * 1: true
+ */
 class BoolWeight : public BaseSemiringWeight<bool, BoolWeight> {
 public:
 BoolWeight(bool value) : BaseSemiringWeight<bool, BoolWeight>(normalize(value)) { }
+  BoolWeight() : BaseSemiringWeight<bool, BoolWeight>() { }
 
 	BoolWeight& operator+=(const BoolWeight& rhs) {
 		value = value || rhs.value;
@@ -144,16 +162,18 @@ BoolWeight(bool value) : BaseSemiringWeight<bool, BoolWeight>(normalize(value)) 
 	bool normalize(bool val) const { return val; }
 };
 
-// Implements the Inside type of semiring as described in Huang 2006
-// +: +
-// *: *
-// 0: 0
-// 1: 1
+/**
+ * Implements the Inside type of semiring as described in Huang 2006
+ * +: +
+ * *: *
+ * 0: 0
+ * 1: 1
+ */
 class InsideWeight : public BaseSemiringWeight<double, InsideWeight> {
 public:
-InsideWeight(double value) : BaseSemiringWeight<double, InsideWeight>(normalize(value)) { }
+  InsideWeight(double value) : BaseSemiringWeight<double, InsideWeight>(normalize(value)) { }
 
-InsideWeight() :
+  InsideWeight() :
   BaseSemiringWeight<double, InsideWeight>(InsideWeight::zero()) {}
 
 	InsideWeight& operator+=(const InsideWeight& rhs) {
@@ -180,11 +200,13 @@ InsideWeight() :
 	}
 };
 
-// Implements the Real type of semiring as described in Huang 2006
-// +: min
-// *: +
-// 0: INF
-// 1: 0
+/**
+ * Implements the Real type of semiring as described in Huang 2006
+ * +: min
+ * *: +
+ * 0: INF
+ * 1: 0
+ */
 class RealWeight : public BaseSemiringWeight<double, RealWeight> {
 public:
 RealWeight(double value) : BaseSemiringWeight<double, RealWeight>(normalize(value)) { }
@@ -204,11 +226,13 @@ RealWeight(double value) : BaseSemiringWeight<double, RealWeight>(normalize(valu
 	double normalize(double val) const { return val; }
 };
 
-// Implements the Inside type of semiring as described in Huang 2006
-// +: min
-// *: +
-// 0: INF
-// 1: 0
+/**
+ * Implements the Inside type of semiring as described in Huang 2006
+ * +: min
+ * *: +
+ * 0: INF
+ * 1: 0
+ */
 class TropicalWeight : public BaseSemiringWeight<double, TropicalWeight> {
 public:
 TropicalWeight(double value) : BaseSemiringWeight<double, TropicalWeight>(normalize(value)) { }
@@ -234,11 +258,13 @@ TropicalWeight(double value) : BaseSemiringWeight<double, TropicalWeight>(normal
 
 
 
-// Implements the Counting type of semiring as described in Huang 2006
-// +: +
-// *: *
-// 0: 0
-// 1: 1
+/**
+ * Implements the Counting type of semiring as described in Huang 2006
+ * +: +
+ * *: *
+ * 0: 0
+ * 1: 1
+ */
 class CountingWeight : public BaseSemiringWeight<int, CountingWeight> {
 public:
 CountingWeight(int value) : BaseSemiringWeight<int, CountingWeight>(normalize(value)) { }
@@ -261,41 +287,14 @@ CountingWeight(int value) : BaseSemiringWeight<int, CountingWeight>(normalize(va
 	}
 };
 
-
-class TreeWeight : public BaseSemiringWeight<Hypernode *, TreeWeight> {
-public:
-TreeWeight(Hypernode *value) : BaseSemiringWeight<Hypernode *, TreeWeight>(normalize(value)) { }
-
-	TreeWeight& operator+=(const TreeWeight& rhs) {
-		return *this;
-	}
-
-	TreeWeight& operator*=(const TreeWeight& rhs) {
-      if (rhs.value == NULL or value == NULL) {
-        value = NULL;
-      } else {
-        vector<HNode> tails;
-        tails.push_back(value);
-        tails.push_back(rhs.value);
-        Hypernode *node = new Hypernode("");
-        Hyperedge *edge = new Hyperedge("", node, tails);
-        node->add_edge(edge);
-        value = node;
-      }
-      return *this;
-	}
-
-	static const TreeWeight one() {
-      return TreeWeight(new Hypernode(""));
-    }
-	static const TreeWeight zero() { return TreeWeight(NULL); }
-
-	Hypernode *normalize(Hypernode *val) const {
-		return val;
-	}
-};
-
-
+/**
+ * Comparison pair. *Experimental*
+ * Type (s, t) op (s', t')
+ * +: if (s > s') then (s, t) else (s', t')
+ * *: (s * s', t * t')
+ * 0: (0, 0)
+ * 1: (1, 1)
+ */
 template<typename SemiringComp, typename SemiringOther>
 class CompWeight : public BaseSemiringWeight<std::pair<SemiringComp, SemiringOther>, CompWeight<SemiringComp, SemiringOther> > {
 public:
@@ -326,12 +325,17 @@ public:
   }
 };
 
-
-
 typedef pair<int, int> SparsePair;
 typedef vector<SparsePair> SparseVector;
 
-
+/**
+ * Sparse vector. *Experimental*
+ *
+ * +: Elementwise min
+ * *: Elementwise +
+ * 0: Empty Vector
+ * 1: Empty Vector
+ */
 class SparseVectorWeight : public BaseSemiringWeight<SparseVector, SparseVectorWeight> {
 public:
 SparseVectorWeight(const SparseVector vec) : BaseSemiringWeight<SparseVector, SparseVectorWeight>(vec) { }
@@ -367,7 +371,38 @@ SparseVectorWeight() : BaseSemiringWeight<SparseVector, SparseVectorWeight>(Spar
 	}
 };
 
+class TreeWeight : public BaseSemiringWeight<Hypernode *, TreeWeight> {
+public:
+TreeWeight(Hypernode *value) : BaseSemiringWeight<Hypernode *, TreeWeight>(normalize(value)) { }
 
+	TreeWeight& operator+=(const TreeWeight& rhs) {
+		return *this;
+	}
+
+	TreeWeight& operator*=(const TreeWeight& rhs) {
+      if (rhs.value == NULL or value == NULL) {
+        value = NULL;
+      } else {
+        vector<HNode> tails;
+        tails.push_back(value);
+        tails.push_back(rhs.value);
+        Hypernode *node = new Hypernode("");
+        Hyperedge *edge = new Hyperedge("", node, tails);
+        node->add_edge(edge);
+        value = node;
+      }
+      return *this;
+	}
+
+	static const TreeWeight one() {
+      return TreeWeight(new Hypernode(""));
+    }
+	static const TreeWeight zero() { return TreeWeight(NULL); }
+
+	Hypernode *normalize(Hypernode *val) const {
+		return val;
+	}
+};
 
 class HypergraphProjection;
 
@@ -383,7 +418,7 @@ class HypergraphWeights {
       assert(weights.size() == hypergraph->edges().size());
   }
 
-HypergraphWeights(const Hypergraph *hypergraph)
+  HypergraphWeights(const Hypergraph *hypergraph)
     : hypergraph_(hypergraph),
       weights_(hypergraph->edges().size(), SemiringType::one()),
       bias_(SemiringType::one()) {}
@@ -398,19 +433,26 @@ HypergraphWeights(const Hypergraph *hypergraph)
  }
 
   SemiringType score(HEdge edge) const { return weights_[edge->id()]; }
-
+  const SemiringType& operator[] (HEdge edge) const {
+    return weights_[edge->id()];
+  }
   SemiringType& operator[] (HEdge edge) {
     return weights_[edge->id()];
   }
 
-  SemiringType bias() const { return bias_; }
-  void set_bias(SemiringType bias) { bias_ = bias; }
-
-  HypergraphWeights <SemiringType> *times(
-      const HypergraphWeights<SemiringType> &weights) const;
+  const SemiringType &bias() const { return bias_; }
+  SemiringType &bias() { return bias_; }
 
   HypergraphWeights<SemiringType> *project_weights(
-      const HypergraphProjection &projection) const;
+    const HypergraphProjection &projection) const;
+
+  /**
+   * Pairwise "times" with another set of weights.
+   *
+   * @return New hypergraphweights.
+   */
+  HypergraphWeights <SemiringType> *times(
+      const HypergraphWeights<SemiringType> &weights) const;
 
   void check(const Hypergraph &graph) const {
     if (!graph.same(*hypergraph_)) {
@@ -420,7 +462,7 @@ HypergraphWeights(const Hypergraph *hypergraph)
 
   void check(const HypergraphWeights<SemiringType> &weights) const {
     if (!weights.hypergraph_->same(*hypergraph_)) {
-      throw HypergraphException("Hypergraph does not match weights.");
+      throw HypergraphException("Hypergraph weights do not match weights.");
     }
   }
 
@@ -463,7 +505,7 @@ class HypergraphProjection {
 
   static HypergraphProjection *project_hypergraph(
       const Hypergraph *hypergraph,
-      HypergraphWeights<BoolWeight> edge_mask);
+      const HypergraphWeights<BoolWeight> &edge_mask);
 
   HEdge project(HEdge original) const {
     return (*edge_map_)[original->id()];
@@ -482,7 +524,6 @@ class HypergraphProjection {
   const vector<HNode> *node_map_;
   const vector<HEdge> *edge_map_;
 };
-
 
 
 template <>
@@ -522,9 +563,10 @@ HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::project_weight
 }
 
 
+
 inline HypergraphProjection *HypergraphProjection::project_hypergraph(
     const Hypergraph *hypergraph,
-    HypergraphWeights<BoolWeight> edge_mask) {
+    const HypergraphWeights<BoolWeight> &edge_mask) {
   vector<HNode> *node_map =
       new vector<HNode>(hypergraph->nodes().size(), NULL);
   vector<HEdge> *edge_map =

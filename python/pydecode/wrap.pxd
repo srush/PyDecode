@@ -8,7 +8,7 @@ from libcpp cimport bool
 #         const CHypergraphWeights theta,
 #         vector[double] *chart) except +
 
-cdef extern from "Hypergraph/Algorithms.h":
+# cdef extern from "Hypergraph/Algorithms.h":
     # void outside(
     #     const CHypergraph *graph,
     #     const CHypergraphWeights weights,
@@ -20,11 +20,11 @@ cdef extern from "Hypergraph/Algorithms.h":
     #     const CHypergraphWeights weights,
     #     double ratio) except +
 
-    cdef cppclass CConstrainedResult "ConstrainedResult":
-        const CHyperpath *path
-        double dual
-        double primal
-        vector[const CConstraint *] constraints
+    # cdef cppclass CConstrainedResult "ConstrainedResult":
+    #     const CHyperpath *path
+    #     double dual
+    #     double primal
+    #     vector[const CConstraint *] constraints
 
     # const CHyperpath *best_constrained_path(
     #     const CHypergraph *graph,

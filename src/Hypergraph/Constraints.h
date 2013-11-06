@@ -22,13 +22,6 @@ struct Constraint {
     coefficients.push_back(coefficient);
   }
 
-  bool has_edge(HEdge edge) const {
-    foreach (HEdge cedge, edges) {
-      if (cedge->id() == edge->id()) return true;
-    }
-    return false;
-  }
-
   int get_edge_coefficient(HEdge edge) const {
     for (int i = 0; i < edges.size(); ++i) {
       if (edge->id() == edges[i]->id()) return coefficients[i];
@@ -74,8 +67,7 @@ class HypergraphConstraints {
       SparseVector vec;
       vec.push_back(pair<int, int>(i, cons.bias));
 
-      weights->set_bias(weights->bias() *
-                       SparseVectorWeight(vec));
+      weights->bias() *= SparseVectorWeight(vec);
 
       for (uint j = 0; j < cons.edges.size(); ++j) {
         SparseVector vec;

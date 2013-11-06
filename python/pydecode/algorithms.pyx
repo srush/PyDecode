@@ -105,6 +105,7 @@ from cython.operator cimport dereference as deref
 #                      &chart)
 #     return Path().init(hpath)
 
+
 # def inside_values(Hypergraph graph, Weights weights):
 #     r"""
 #     Find the inside path chart values.
@@ -266,50 +267,3 @@ from cython.operator cimport dereference as deref
 #     new_weights.init(
 #         weights.thisptr.project_weights(deref(projection)))
 #     return new_graph, new_weights
-
-cdef convert_results(vector[CConstrainedResult] c):
-    return [ConstrainedResult().init(cresult) for cresult in c]
-
-
-cdef class ConstrainedResult:
-    r"""
-    A sub-result from the constrained solver.
-
-
-    Attributes
-    -----------
-
-    path : :py:class:`Path`
-      The hyperpath :math:`y \in {\cal X}`
-      associated with this round.
-
-    dual : float
-       The dual value for this round.
-
-    primal : float
-       The primal value for this round.
-
-    constraints : list of :py:class:`Constraint`
-       The constraints violated for this round.
-    """
-
-    cdef CConstrainedResult thisptr
-    cdef ConstrainedResult init(self, CConstrainedResult ptr):
-        self.thisptr = ptr
-        return self
-
-    property path:
-        def __get__(self):
-            return Path().init(self.thisptr.path)
-
-    property dual:
-        def __get__(self):
-            return self.thisptr.dual
-
-    property primal:
-        def __get__(self):
-            return self.thisptr.primal
-
-    property constraints:
-        def __get__(self):
-            return None #convert_constraints(self.thisptr.constraints)

@@ -14,12 +14,26 @@
 
 // General Code.
 
+/**
+ * A dynamic programming chart for SemiringType.
+ * A templated vector over hypergraph nodes.
+ */
 template<typename SemiringType>
 class Chart {
 public:
-  Chart<SemiringType>(const Hypergraph *hypergraph)
+  typedef SemiringType S;
+  Chart<S>(const Hypergraph *hypergraph)
       : hypergraph_(hypergraph),
-      chart_(hypergraph->nodes().size(), SemiringType::zero()) {}
+      chart_(hypergraph->nodes().size(), S::zero()) {}
+
+
+  S& operator[] (HNode node) { return chart_[node->id()]; }
+  const S& operator[] (HNode node) const {
+    return chart_[node->id()];
+  }
+
+  const S& get(HNode node) const { return chart_[node->id()]; }
+
 
   void check(const Hypergraph *hypergraph) const {
     if (!hypergraph->same(*hypergraph_)) {
@@ -27,21 +41,9 @@ public:
     }
   }
 
-  SemiringType& operator[] (HNode node) {
-    return chart_[node->id()];
-  }
-
-  const SemiringType& operator[] (HNode node) const {
-    return chart_[node->id()];
-  }
-
-  const SemiringType& get(HNode node) const {
-    return chart_[node->id()];
-  }
-
 protected:
   const Hypergraph *hypergraph_;
-  vector<SemiringType> chart_;
+  vector<S> chart_;
 };
 
 template<typename SemiringType>
@@ -54,6 +56,11 @@ Chart<SemiringType> *general_outside(
     const Hypergraph *graph,
     const HypergraphWeights<SemiringType> &weights,
     const Chart<SemiringType> &inside_chart);
+
+template<typename SemiringType>
+Hyperpath *general_viterbi(
+    const Hypergraph *graph,
+    const HypergraphWeights<SemiringType> &weights);
 
 template<typename SemiringType>
 class Marginals {
@@ -77,19 +84,29 @@ class Marginals {
     delete out_chart_;
   }
 
+  HypergraphWeights<BoolWeight> *threshold(
+      const SemiringType &threshold) const {
+    HypergraphWeights<BoolWeight> *weights =
+        new HypergraphWeights<BoolWeight>(hypergraph_);
+    foreach (HEdge edge, hypergraph_->edges()) {
+      (*weights)[edge] = BoolWeight(threshold < marginal(edge));
+    }
+    return weights;
+  }
+
   // Compute the max-marginals for the weighted hypergraph.
   static const Marginals *compute(
       const Hypergraph *hypergraph,
       const HypergraphWeights<SemiringType> *weights) {
-
     Chart<SemiringType> *in_chart =
         general_inside<SemiringType>(hypergraph, *weights);
     Chart<SemiringType> *out_chart =
         general_outside<SemiringType>(hypergraph, *weights,
                                       *in_chart);
-    // TODO: fix me!
-    return new Marginals<SemiringType>(hypergraph, weights, in_chart, out_chart);
+    return new Marginals<SemiringType>(hypergraph, weights,
+                                       in_chart, out_chart);
   }
+
 
   // Get max-marginal for edge or node.
   SemiringType marginal(HEdge edge) const {
@@ -98,12 +115,11 @@ class Marginals {
       foreach (HNode node, edge->tail_nodes()) {
         score *= (*in_chart_)[node];
       }
-      return score / (*in_chart_)[hypergraph_->root()];
+      return score; /// (*in_chart_)[hypergraph_->root()];
   }
 
   SemiringType marginal(HNode node) const {
-    return (*in_chart_)[node] * (*out_chart_)[node] /
-        (*in_chart_)[node];
+    return (*in_chart_)[node] * (*out_chart_)[node];
   }
 
   template<typename OtherSemi>
@@ -115,6 +131,10 @@ class Marginals {
     return out_score;
   }
 
+  const Hypergraph *hypergraph() const {
+    return hypergraph_;
+  }
+
  private:
   const Hypergraph *hypergraph_;
   const HypergraphWeights<SemiringType> *weights_;
@@ -124,19 +144,6 @@ class Marginals {
   const Chart<SemiringType> *in_chart_;
   const Chart<SemiringType> *out_chart_;
 };
-
-// TODO(srush): deprecate / specialize
-// Viterbi Specific code
-
-/* Hyperpath *viterbi_path(const Hypergraph *graph, */
-/*                         const HypergraphWeights<double> &theta, */
-/*                         vector<double> *chart); */
-
-
-/* void outside(const Hypergraph *graph, */
-/*              const HypergraphWeights<double> &weights, */
-/*              const vector<double> &inside_chart, */
-/*              vector<double> *chart); */
 
 class ConstrainedResult {
  public:
@@ -157,55 +164,10 @@ class ConstrainedResult {
   vector<const Constraint *> constraints;
 };
 
-/* class MaxMarginals { */
-/*  public: */
-
-/*   MaxMarginals(const Hypergraph *hypergraph, */
-/*                const HypergraphWeights<double> *weights, */
-/*                const vector<double> *in_chart, */
-/*                const vector<double> *out_chart) */
-/*       : weights_(weights), */
-/*         in_chart_(in_chart), */
-/*         out_chart_(out_chart) { */
-/*         assert(in_chart->size() == out_chart->size()); */
-/*         assert(hypergraph->nodes().size() == out_chart->size()); */
-/*       } */
-
-/*   ~MaxMarginals() { */
-/*     delete in_chart_; */
-/*     delete out_chart_; */
-/*   } */
-
-/*   // Compute the max-marginals for the weighted hypergraph. */
-/*   static const MaxMarginals *compute(const Hypergraph *hypergraph, */
-/*                                      const HypergraphWeights<double> *weights); */
-
-/*   // Get max-marginal for edge or node. */
-/*   double max_marginal(HEdge edge) const; */
-/*   double max_marginal(HNode node) const; */
-
-/*  private: */
-/*   const HypergraphWeights<double> *weights_; */
-
-/*   // Pointer to inside and outside charts. */
-/*   // Note these are owned by the object. */
-/*   const vector<double> *in_chart_; */
-/*   const vector<double> *out_chart_; */
-/* }; */
-
-
 const Hyperpath *best_constrained_path(
     const Hypergraph *graph,
-    const HypergraphWeights<double> &theta,
-    const HypergraphWeights<SparseVectorWeight> &constraints,
-    vector<ConstrainedResult> *duals);
-
-/* const HypergraphProjection *prune(const Hypergraph *original, */
-/*                                   const HypergraphWeights<double> &weights, */
-/*                                   double ratio); */
-
-
-
+    const HypergraphWeights<LogViterbiWeight> &theta,
+    const HypergraphWeights<SparseVectorWeight> &constraints);
 
 
 #endif  // HYPERGRAPH_ALGORITHMS_H_

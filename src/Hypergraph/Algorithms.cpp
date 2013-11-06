@@ -12,7 +12,9 @@
 #define SPECIALIZE_FOR_SEMI(X)\
   template class Chart<X>;\
   template class HypergraphWeights<X>;\
-  template class Marginals<X>;
+  template class Marginals<X>;\
+  template Hyperpath *general_viterbi<X>(const Hypergraph *graph,const HypergraphWeights<X> &weights);
+
 
 using namespace std;
 
@@ -80,6 +82,7 @@ Hyperpath *general_viterbi(
     const Hypergraph *graph,
     const HypergraphWeights<SemiringType> &weights) {
 
+  weights.check(*graph);
   Chart<SemiringType> *chart = new Chart<SemiringType>(graph);
   vector<HEdge> back(graph->nodes().size(), NULL);
 
@@ -145,10 +148,10 @@ SemiringType general_gradient(
   return gradient;
 }
 
-
 SPECIALIZE_FOR_SEMI(ViterbiWeight)
 SPECIALIZE_FOR_SEMI(LogViterbiWeight)
 SPECIALIZE_FOR_SEMI(InsideWeight)
+SPECIALIZE_FOR_SEMI(BoolWeight)
 
 // End General code.
 
@@ -175,10 +178,11 @@ class ConstrainedProducer : public SubgradientProducer {
     }
     SparseVector bias_constraints =
         static_cast<SparseVector>(constraints_->bias());
-    weights.set_bias(weights_->bias());
+    weights.bias() = weights_->bias();
     foreach (SparsePair pair, bias_constraints) {
-      weights.set_bias(weights.bias() *
-                       LogViterbiWeight(pair.second * (*cur_state.duals)[pair.first]));
+      weights.bias() *=
+          LogViterbiWeight(pair.second *
+                           (*cur_state.duals)[pair.first]);
     }
 
     HypergraphWeights<LogViterbiWeight> *dual_weights =

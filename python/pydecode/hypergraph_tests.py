@@ -13,7 +13,7 @@ def simple_hypergraph():
         term = [b.add_node() for i in range(3)]
         head_node = b.add_node([([term[0], term[1]], "")])
         head_node2 = b.add_node([([head_node, term[2]], "")])
-    weights = ph.Weights(hypergraph).build(lambda t: random.random())
+    weights = ph.Weights(hypergraph, kind=ph.LogViterbi).build(lambda t: random.random())
     return hypergraph, weights
 
 
@@ -31,27 +31,27 @@ def random_hypergraph():
     nt.assert_greater(len(hypergraph.nodes), 0)
     assert len(hypergraph.edges) > 0
 
-    weights = ph.Weights(hypergraph).build(lambda t: random.random())
+    weights = ph.Weights(hypergraph, kind=ph.LogViterbi).build(lambda t: random.random())
     return hypergraph, weights
 
 def test_semirings():
     hypergraph = simple_hypergraph()[0]
-    weights = ph.Viterbi.Weights(hypergraph).build(lambda l: 10.0)
+    weights = ph.Weights(hypergraph, kind=ph.Viterbi).build(lambda l: 10.0)
     marg = ph.Viterbi.compute_marginals(hypergraph, weights)
     # for edge in hypergraph.edges:
     #     marg[edge]
 
-    log_weights = ph.LogViterbi.Weights(hypergraph).build(lambda l: 10.0)
-    weights = ph.Weights(hypergraph).build(lambda l: 10.0)
+    log_weights = ph.Weights(hypergraph, kind=ph.LogViterbi).build(lambda l: 10.0)
+    weights = ph.Weights(hypergraph, kind=ph.LogViterbi).build(lambda l: 10.0)
     chart = ph.LogViterbi.inside(hypergraph, log_weights)
     chart2 = ph.inside_values(hypergraph, weights)
     for node in hypergraph.nodes:
-        nt.assert_equal(float(chart[node]), chart2[node])
+        nt.assert_equal(chart[node], chart2[node])
 
     marg = ph.LogViterbi.compute_marginals(hypergraph, log_weights)
-    marg2 = ph.compute_max_marginals(hypergraph, weights)
+    marg2 = ph.compute_marginals(hypergraph, weights)
     for edge in hypergraph.edges:
-        nt.assert_almost_equal(float(marg[edge]), marg2[edge])
+        nt.assert_almost_equal(marg[edge], marg2[edge])
 
 
     weights = ph.Inside.Weights(hypergraph).build(lambda l: 0.5)
@@ -148,9 +148,9 @@ def test_outside():
         out_chart = ph.outside_values(h, w, chart)
         for node in h.nodes:
             other = chart[node] + out_chart[node]
-            nt.assert_less_equal(other, best + 1e-4)
+            nt.assert_less_equal(other.value, best + 1e-4)
             if node.is_terminal:
-                nt.assert_almost_equal(other, best)
+                nt.assert_almost_equal(other.value, best)
 
 
 def test_maxmarginals():
@@ -158,16 +158,16 @@ def test_maxmarginals():
         path = ph.best_path(h, w)
         best = w.dot(path)
         nt.assert_not_equal(best, 0.0)
-        max_marginals = ph.compute_max_marginals(h, w)
+        max_marginals = ph.compute_marginals(h, w)
         for node in h.nodes:
             other = max_marginals[node]
-            nt.assert_less_equal(other, best + 1e-4)
+            nt.assert_less_equal(other.value, best + 1e-4)
 
         for edge in h.edges:
             other = max_marginals[edge]
-            nt.assert_less_equal(other, best + 1e-4)
+            nt.assert_less_equal(other.value, best + 1e-4)
             if edge in path:
-                nt.assert_almost_equal(other, best)
+                nt.assert_almost_equal(other.value, best)
 
 
 def random_constraint(hypergraph):
@@ -198,7 +198,7 @@ def test_constraint():
 def test_pruning():
     for h, w in [random_hypergraph() for i in range(10)]:
         original_path = ph.best_path(h, w)
-        new_hyper, new_weights = ph.prune_hypergraph(h, w, 0.99)
+        new_hyper, new_weights = ph.prune_hypergraph(h, w, -0.99)
         prune_path = ph.best_path(new_hyper, new_weights)
         assert len(original_path.edges) > 0
         for edge in original_path.edges:
@@ -213,8 +213,8 @@ def test_pruning():
 
         # Test pruning amount.
         prune = random.random()
-        max_marginals = ph.compute_max_marginals(h, w)
-        new_hyper, new_weights = ph.prune_hypergraph(h, w, prune)
+        max_marginals = ph.compute_marginals(h, w)
+        new_hyper, new_weights = ph.prune_hypergraph(h, w, 0.0)
 
         assert (len(new_hyper.edges) > 0)
         original_edges = {}
@@ -273,7 +273,7 @@ def test_lp():
 
 
 @nt.raises(Exception)
-def test_creation_fail():
+def test_diff_weights_fail():
     h1, w1 = random_hypergraph()
     h2, w2 = random_hypergraph()
     ph.best_path(h1, w2)
