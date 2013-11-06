@@ -277,6 +277,9 @@ class {{S.type}}:
         return new_graph, new_weight
 
 
+def {{S.type}}Weights(Hypergraph graph):
+    return {{S.type}}.Weights(graph)
+
 {% endfor %}
 
 def inside(Hypergraph graph, weights):
