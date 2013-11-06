@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classCountingWeight" kind="class" prot="public">
+    <compoundname>CountingWeight</compoundname>
+    <basecompoundref refid="classSemiringWeight" prot="public" virt="non-virtual">SemiringWeight&lt; CountingWeight, int &gt;</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classCountingWeight_1ad2fc55e83643c19ae6c4f066efac6d17" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CountingWeight::CountingWeight</definition>
+        <argsstring>(int value)</argsstring>
+        <name>CountingWeight</name>
+        <param>
+          <type>int</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="198" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="198" bodyend="198"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingWeight_1ad30db0878e9befcdeb590de05e33e213" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classCountingWeight" kindref="compound">CountingWeight</ref> &amp;</type>
+        <definition>CountingWeight&amp; CountingWeight::operator+=</definition>
+        <argsstring>(const CountingWeight &amp;rhs)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const <ref refid="classCountingWeight" kindref="compound">CountingWeight</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="200" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="200" bodyend="203"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingWeight_1a85ffbeab8a8f18646768f946ad476caf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classCountingWeight" kindref="compound">CountingWeight</ref> &amp;</type>
+        <definition>CountingWeight&amp; CountingWeight::operator*=</definition>
+        <argsstring>(const CountingWeight &amp;rhs)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>const <ref refid="classCountingWeight" kindref="compound">CountingWeight</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="204" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="204" bodyend="207"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingWeight_1af8c936913e4d6561c2bd1dc4196f5547" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int &amp;</type>
+        <definition>int&amp; CountingWeight::normalize</definition>
+        <argsstring>(int &amp;val) const </argsstring>
+        <name>normalize</name>
+        <param>
+          <type>int &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="212" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="212" bodyend="215"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classCountingWeight_1aa8018ce21129e2011e2d8c242a480062" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const int</type>
+        <definition>static const int CountingWeight::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="209" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="209" bodyend="209"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingWeight_1a447b265d6a8b2cb9349d961e70c2d0d2" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const int</type>
+        <definition>static const int CountingWeight::zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="210" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="210" bodyend="210"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="26">
+        <label>CountingWeight</label>
+        <link refid="classCountingWeight"/>
+        <childnode refid="27" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>SemiringWeight&lt; CountingWeight, int &gt;</label>
+        <link refid="classSemiringWeight"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="28">
+        <label>CountingWeight</label>
+        <link refid="classCountingWeight"/>
+        <childnode refid="29" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>SemiringWeight&lt; CountingWeight, int &gt;</label>
+        <link refid="classSemiringWeight"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="196" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="196" bodyend="216"/>
+    <listofallmembers>
+      <member refid="classCountingWeight_1ad2fc55e83643c19ae6c4f066efac6d17" prot="public" virt="non-virtual"><scope>CountingWeight</scope><name>CountingWeight</name></member>
+      <member refid="classCountingWeight_1af8c936913e4d6561c2bd1dc4196f5547" prot="public" virt="non-virtual"><scope>CountingWeight</scope><name>normalize</name></member>
+      <member refid="classSemiringWeight_1a404dbbe5a6658f0ab468296f7a7352d3" prot="public" virt="non-virtual" ambiguityscope="SemiringWeight&lt; CountingWeight, int &gt;::"><scope>CountingWeight</scope><name>normalize</name></member>
+      <member refid="classCountingWeight_1aa8018ce21129e2011e2d8c242a480062" prot="public" virt="non-virtual"><scope>CountingWeight</scope><name>one</name></member>
+      <member refid="classSemiringWeight_1aba9754f6d65544a942330b82514b14d9" prot="public" virt="non-virtual"><scope>CountingWeight</scope><name>operator int</name></member>
+      <member refid="classCountingWeight_1a85ffbeab8a8f18646768f946ad476caf" prot="public" virt="non-virtual"><scope>CountingWeight</scope><name>operator*=</name></member>
+      <member refid="classCountingWeight_1ad30db0878e9befcdeb590de05e33e213" prot="public" virt="non-virtual"><scope>CountingWeight</scope><name>operator+=</name></member>
+      <member refid="classSemiringWeight_1ae41821a405dc587d2046e8317c979f55" prot="public" virt="non-virtual"><scope>CountingWeight</scope><name>operator=</name></member>
+      <member refid="classSemiringWeight_1ab094c5bb8419a8272bb182fc25cd917f" prot="public" virt="non-virtual"><scope>CountingWeight</scope><name>operator=</name></member>
+      <member refid="classSemiringWeight_1ab6c95f0d00a9faa9d4ad9d0a7b064563" prot="protected" virt="non-virtual"><scope>CountingWeight</scope><name>SemiringWeight</name></member>
+      <member refid="classSemiringWeight_1adb7ae54f36c3deb7d128b95913ac140c" prot="protected" virt="non-virtual"><scope>CountingWeight</scope><name>SemiringWeight</name></member>
+      <member refid="classSemiringWeight_1af71e17cc2c0858e1ad9547f35e257b74" prot="protected" virt="non-virtual"><scope>CountingWeight</scope><name>value</name></member>
+      <member refid="classCountingWeight_1a447b265d6a8b2cb9349d961e70c2d0d2" prot="public" virt="non-virtual"><scope>CountingWeight</scope><name>zero</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

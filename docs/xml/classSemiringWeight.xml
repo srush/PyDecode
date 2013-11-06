@@ -1,0 +1,273 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classSemiringWeight" kind="class" prot="public">
+    <compoundname>SemiringWeight</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename</type>
+        <declname>DerivedWeight</declname>
+        <defname>DerivedWeight</defname>
+      </param>
+      <param>
+        <type>typename</type>
+        <declname>ValType</declname>
+        <defname>ValType</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classSemiringWeight_1af71e17cc2c0858e1ad9547f35e257b74" prot="protected" static="no" mutable="no">
+        <type>ValType</type>
+        <definition>ValType SemiringWeight&lt; DerivedWeight, ValType &gt;::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="58" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classSemiringWeight_1aba9754f6d65544a942330b82514b14d9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SemiringWeight&lt; DerivedWeight, ValType &gt;::operator ValType</definition>
+        <argsstring>() const </argsstring>
+        <name>operator ValType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="15" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="15" bodyend="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classSemiringWeight_1ae41821a405dc587d2046e8317c979f55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>DerivedWeight &amp;</type>
+        <definition>DerivedWeight&amp; SemiringWeight&lt; DerivedWeight, ValType &gt;::operator=</definition>
+        <argsstring>(DerivedWeight rhs)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>DerivedWeight</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="17" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="17" bodyend="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classSemiringWeight_1ab094c5bb8419a8272bb182fc25cd917f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>DerivedWeight &amp;</type>
+        <definition>DerivedWeight&amp; SemiringWeight&lt; DerivedWeight, ValType &gt;::operator=</definition>
+        <argsstring>(ValType rhs)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>ValType</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="23" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="23" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="function" id="classSemiringWeight_1a0a20be65b24e0d30209cf65c35492c7e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>DerivedWeight &amp;</type>
+        <definition>DerivedWeight&amp; SemiringWeight&lt; DerivedWeight, ValType &gt;::operator+=</definition>
+        <argsstring>(const DerivedWeight &amp;rhs)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const DerivedWeight &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="38" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="38" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="classSemiringWeight_1a3fa4101628aec96fdc2c56dc0c771af4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>DerivedWeight &amp;</type>
+        <definition>DerivedWeight&amp; SemiringWeight&lt; DerivedWeight, ValType &gt;::operator*=</definition>
+        <argsstring>(const DerivedWeight &amp;rhs)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>const DerivedWeight &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="42" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classSemiringWeight_1a404dbbe5a6658f0ab468296f7a7352d3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType &amp;</type>
+        <definition>ValType&amp; SemiringWeight&lt; DerivedWeight, ValType &gt;::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type>ValType &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="51" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="51" bodyend="51"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classSemiringWeight_1aafd902095f88fafdee8da13fd6388868" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>friend DerivedWeight</type>
+        <definition>DerivedWeight operator+</definition>
+        <argsstring>(DerivedWeight lhs, const DerivedWeight &amp;rhs)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>DerivedWeight</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const DerivedWeight &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="29" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="29" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="friend" id="classSemiringWeight_1a290a5c7563cc707fa5ffb8ad6e66be94" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>friend DerivedWeight</type>
+        <definition>DerivedWeight operator*</definition>
+        <argsstring>(DerivedWeight lhs, const DerivedWeight &amp;rhs)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>DerivedWeight</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const DerivedWeight &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="33" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="33" bodyend="36"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classSemiringWeight_1a8f264fc18c08eff1e16e40ba528d9b42" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const ValType</type>
+        <definition>static const ValType SemiringWeight&lt; DerivedWeight, ValType &gt;::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="47" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="47" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classSemiringWeight_1ad8f59c736c2fbb398485152751bf8e35" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const ValType</type>
+        <definition>static const ValType SemiringWeight&lt; DerivedWeight, ValType &gt;::zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="48" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="48" bodyend="48"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classSemiringWeight_1ab6c95f0d00a9faa9d4ad9d0a7b064563" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SemiringWeight&lt; DerivedWeight, ValType &gt;::SemiringWeight</definition>
+        <argsstring>(const SemiringWeight &amp;other)</argsstring>
+        <name>SemiringWeight</name>
+        <param>
+          <type>const <ref refid="classSemiringWeight" kindref="compound">SemiringWeight</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="55" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="54" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="function" id="classSemiringWeight_1adb7ae54f36c3deb7d128b95913ac140c" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SemiringWeight&lt; DerivedWeight, ValType &gt;::SemiringWeight</definition>
+        <argsstring>(ValType val)</argsstring>
+        <name>SemiringWeight</name>
+        <param>
+          <type>ValType</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="56" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="56" bodyend="56"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="88">
+        <label>ValType</label>
+      </node>
+      <node id="87">
+        <label>SemiringWeight&lt; DerivedWeight, ValType &gt;</label>
+        <link refid="classSemiringWeight"/>
+        <childnode refid="88" relation="usage">
+          <edgelabel>value</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="13" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="13" bodyend="59"/>
+    <listofallmembers>
+      <member refid="classSemiringWeight_1a404dbbe5a6658f0ab468296f7a7352d3" prot="public" virt="non-virtual"><scope>SemiringWeight</scope><name>normalize</name></member>
+      <member refid="classSemiringWeight_1a8f264fc18c08eff1e16e40ba528d9b42" prot="public" virt="non-virtual"><scope>SemiringWeight</scope><name>one</name></member>
+      <member refid="classSemiringWeight_1aba9754f6d65544a942330b82514b14d9" prot="public" virt="non-virtual"><scope>SemiringWeight</scope><name>operator ValType</name></member>
+      <member refid="classSemiringWeight_1a290a5c7563cc707fa5ffb8ad6e66be94" prot="public" virt="non-virtual"><scope>SemiringWeight</scope><name>operator*</name></member>
+      <member refid="classSemiringWeight_1a3fa4101628aec96fdc2c56dc0c771af4" prot="public" virt="non-virtual"><scope>SemiringWeight</scope><name>operator*=</name></member>
+      <member refid="classSemiringWeight_1aafd902095f88fafdee8da13fd6388868" prot="public" virt="non-virtual"><scope>SemiringWeight</scope><name>operator+</name></member>
+      <member refid="classSemiringWeight_1a0a20be65b24e0d30209cf65c35492c7e" prot="public" virt="non-virtual"><scope>SemiringWeight</scope><name>operator+=</name></member>
+      <member refid="classSemiringWeight_1ae41821a405dc587d2046e8317c979f55" prot="public" virt="non-virtual"><scope>SemiringWeight</scope><name>operator=</name></member>
+      <member refid="classSemiringWeight_1ab094c5bb8419a8272bb182fc25cd917f" prot="public" virt="non-virtual"><scope>SemiringWeight</scope><name>operator=</name></member>
+      <member refid="classSemiringWeight_1ab6c95f0d00a9faa9d4ad9d0a7b064563" prot="protected" virt="non-virtual"><scope>SemiringWeight</scope><name>SemiringWeight</name></member>
+      <member refid="classSemiringWeight_1adb7ae54f36c3deb7d128b95913ac140c" prot="protected" virt="non-virtual"><scope>SemiringWeight</scope><name>SemiringWeight</name></member>
+      <member refid="classSemiringWeight_1af71e17cc2c0858e1ad9547f35e257b74" prot="protected" virt="non-virtual"><scope>SemiringWeight</scope><name>value</name></member>
+      <member refid="classSemiringWeight_1ad8f59c736c2fbb398485152751bf8e35" prot="public" virt="non-virtual"><scope>SemiringWeight</scope><name>zero</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
