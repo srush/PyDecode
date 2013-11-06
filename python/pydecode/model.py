@@ -1,3 +1,7 @@
+"""
+Structured Prediction library.
+"""
+
 from pystruct.models import StructuredModel
 from sklearn.feature_extraction import DictVectorizer
 import pydecode.hyper as ph

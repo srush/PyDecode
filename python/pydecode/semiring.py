@@ -1,3 +1,8 @@
+"""
+THIS CLASS IS DEPRECATED. CODE MOVED TO C++.
+"""
+
+
 INF = 1e8
 
 

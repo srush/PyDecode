@@ -1,3 +1,7 @@
+"""
+Linear Programming Library.
+"""
+
 import pulp
 import pydecode.hyper as ph
 from collections import defaultdict
