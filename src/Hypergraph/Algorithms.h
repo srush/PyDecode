@@ -9,7 +9,6 @@
 #include "./common.h"
 
 #include "Hypergraph/Hypergraph.h"
-#include "Hypergraph/Constraints.h"
 #include "Hypergraph/Semirings.h"
 
 // General Code.
@@ -145,29 +144,6 @@ class Marginals {
   const Chart<SemiringType> *out_chart_;
 };
 
-class ConstrainedResult {
- public:
-  ConstrainedResult() {}
-  ConstrainedResult(
-      const Hyperpath *path_,
-      double dual_,
-      double primal_,
-      const vector<const Constraint *> &constraints_)
-      : path(path_),
-        dual(dual_),
-        primal(primal_),
-        constraints(constraints_) {}
-
-  const Hyperpath *path;
-  double dual;
-  double primal;
-  vector<const Constraint *> constraints;
-};
-
-const Hyperpath *best_constrained_path(
-    const Hypergraph *graph,
-    const HypergraphWeights<LogViterbiWeight> &theta,
-    const HypergraphWeights<SparseVectorWeight> &constraints);
 
 
 #endif  // HYPERGRAPH_ALGORITHMS_H_

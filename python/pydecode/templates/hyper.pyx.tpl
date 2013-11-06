@@ -8,6 +8,7 @@ from libcpp cimport bool
 include "wrap.pxd"
 include "hypergraph.pyx"
 
+
 ############# This is the templated semiring part. ##############
 
 {% for S in semirings %}
@@ -399,11 +400,11 @@ cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
         const CHypergraphBoolWeights edge_mask)
 
 
-cdef extern from "Hypergraph/Algorithms.h":
-    const CHyperpath *best_constrained_path(
-        const CHypergraph *graph,
-        const CHypergraphLogViterbiWeights theta,
-        const CHypergraphSparseVectorWeights constraints) except +
+# cdef extern from "Hypergraph/Algorithms.h":
+#     const CHyperpath *best_constrained_path(
+#         const CHypergraph *graph,
+#         const CHypergraphLogViterbiWeights theta,
+#         const CHypergraphSparseVectorWeights constraints) except +
 
 
 def pairwise_dot(_SparseVectorWeights weights, vec):

@@ -45,25 +45,3 @@ cdef extern from "Hypergraph/Hypergraph.h":
         const CHypergraph *new_graph
         const CHyperedge *project(const CHyperedge *edge)
         const CHypernode *project(const CHypernode *node)
-
-cdef extern from "Hypergraph/Constraints.h":
-    cdef cppclass CConstraint "Constraint":
-        Constraint(string label, int id)
-        void set_constant(int _bias)
-        int has_edge(const CHyperedge *edge)
-        int get_edge_coefficient(const CHyperedge *edge)
-        void add_edge_term(const CHyperedge *edge, int coefficient)
-        string label
-        vector[const CHyperedge *] edges
-        vector[int] coefficients
-        int bias
-
-
-    cdef cppclass CHypergraphConstraints "HypergraphConstraints":
-        CHypergraphConstraints(const CHypergraph *hypergraph)
-        CConstraint *add_constraint(string label)
-        const CHypergraph *hypergraph()
-        int check_constraints(const CHyperpath path,
-                              vector[const CConstraint *] *failed,
-                              vector[int] *count)
-        const vector[const CConstraint *] constraints()

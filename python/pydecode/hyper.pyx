@@ -8,6 +8,7 @@ from libcpp cimport bool
 include "wrap.pxd"
 include "hypergraph.pyx"
 
+
 ############# This is the templated semiring part. ##############
 
 
@@ -270,6 +271,9 @@ class Viterbi:
         return new_graph, new_weight
 
 
+def ViterbiWeights(Hypergraph graph):
+    return Viterbi.Weights(graph)
+
 
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -530,6 +534,9 @@ class LogViterbi:
         return new_graph, new_weight
 
 
+def LogViterbiWeights(Hypergraph graph):
+    return LogViterbi.Weights(graph)
+
 
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -777,6 +784,9 @@ class Inside:
         new_weight = weights.project(new_graph, projection)
         return new_graph, new_weight
 
+
+def InsideWeights(Hypergraph graph):
+    return Inside.Weights(graph)
 
 
 
@@ -1038,6 +1048,9 @@ class Bool:
         return new_graph, new_weight
 
 
+def BoolWeights(Hypergraph graph):
+    return Bool.Weights(graph)
+
 
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -1289,6 +1302,9 @@ class SparseVector:
         return new_graph, new_weight
 
 
+def SparseVectorWeights(Hypergraph graph):
+    return SparseVector.Weights(graph)
+
 
 
 def inside(Hypergraph graph, weights):
@@ -1408,11 +1424,11 @@ cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
         const CHypergraphBoolWeights edge_mask)
 
 
-cdef extern from "Hypergraph/Algorithms.h":
-    const CHyperpath *best_constrained_path(
-        const CHypergraph *graph,
-        const CHypergraphLogViterbiWeights theta,
-        const CHypergraphSparseVectorWeights constraints) except +
+# cdef extern from "Hypergraph/Algorithms.h":
+#     const CHyperpath *best_constrained_path(
+#         const CHypergraph *graph,
+#         const CHypergraphLogViterbiWeights theta,
+#         const CHypergraphSparseVectorWeights constraints) except +
 
 
 def pairwise_dot(_SparseVectorWeights weights, vec):

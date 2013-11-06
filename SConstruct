@@ -75,8 +75,8 @@ env.Command(["python/pydecode/hyper.pyx",
 py_lib = env.Command(["python/pydecode/hyper.so"],
             ["build/debug/src/libdecoding.a",
              "python/pydecode/hyper.pyx",
-             "python/pydecode/hypergraph.pyx",
-             "python/pydecode/constraints.pyx",
-             "python/pydecode/algorithms.pyx"],
+             "python/pydecode/hypergraph.pyx"],
+             #"python/pydecode/constraints.pyx",
+             #"python/pydecode/algorithms.pyx"],
             "python setup.py config; python setup.py build_ext --inplace --verbose")
 env.Alias("pylib", [py_lib])
