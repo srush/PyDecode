@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include "Hypergraph/Algorithms.h"
-#include "Hypergraph/Subgradient.h"
+//#include "Hypergraph/Subgradient.h"
 
 #define SPECIALIZE_FOR_SEMI(X)\
   template class Chart<X>;\
@@ -15,6 +15,11 @@
   template class Marginals<X>;\
   template Hyperpath *general_viterbi<X>(const Hypergraph *graph,const HypergraphWeights<X> &weights);
 
+#define SPECIALIZE_FOR_SEMI_MIN(X)\
+  template class Chart<X>;\
+  template class HypergraphWeights<X>;\
+  template Chart<X> *general_inside<X>(const Hypergraph *graph, const HypergraphWeights<X> &weights);\
+  template Chart<X> *general_outside<X>(const Hypergraph *graph, const HypergraphWeights<X> &weights, const Chart<X> &);
 
 using namespace std;
 
@@ -124,114 +129,92 @@ Hyperpath *general_viterbi(
   return new Hyperpath(graph, path);
 }
 
-template<typename SemiringType>
-SemiringType general_subgradient(
-    const Hypergraph &graph,
-    const HypergraphWeights<SemiringType> &weights,
-    const HypergraphWeights<SemiringType> &values)  {
-  Hyperpath *path = general_viterbi(graph, weights);
-  SemiringType subgradient = values.dot(path);
-  delete path;
-  return subgradient;
-}
+// template<typename SemiringType1, typename SemiringType2>
+// pair<SemiringType1, SemiringType2> general_subgradient(
+//     const Hypergraph &graph,
+//     const HypergraphWeights<SemiringType1> &weights,
+//     const HypergraphWeights<SemiringType2> &values)  {
+//   Hyperpath *path = general_viterbi(graph, weights);
+//   pair<SemiringType1, SemiringType2> return;
+//   return.first = weights.dot(path);
+//   return.second = values.dot(path);
+//   delete path;
+//   return return;
+// }
 
-template<typename SemiringType>
-SemiringType general_gradient(
-    const Hypergraph &graph,
-    const HypergraphWeights<SemiringType> &weights,
-    const HypergraphWeights<SemiringType> &values) {
+// template<typename SemiringType>
+// SemiringType general_gradient(
+//     const Hypergraph &graph,
+//     const HypergraphWeights<SemiringType> &weights,
+//     const HypergraphWeights<SemiringType> &values) {
 
-  Marginals<SemiringType> *marginals =
-      Marginals<SemiringType>::compute(graph, weights);
-  SemiringType gradient = marginals->dot(values);
-  delete marginals;
-  return gradient;
-}
+//   Marginals<SemiringType> *marginals =
+//       Marginals<SemiringType>::compute(graph, weights);
+//   SemiringType gradient = marginals->dot(values);
+//   delete marginals;
+//   return gradient;
+// }
 
 SPECIALIZE_FOR_SEMI(ViterbiWeight)
 SPECIALIZE_FOR_SEMI(LogViterbiWeight)
 SPECIALIZE_FOR_SEMI(InsideWeight)
 SPECIALIZE_FOR_SEMI(BoolWeight)
+SPECIALIZE_FOR_SEMI_MIN(SparseVectorWeight)
 
 // End General code.
 
-class ConstrainedProducer : public SubgradientProducer {
- public:
-  ConstrainedProducer(
-      const Hypergraph *graph,
-      const HypergraphWeights<LogViterbiWeight> *weights,
-      const HypergraphWeights<SparseVectorWeight> *constraints)
-      : graph_(graph),
-        weights_(weights),
-        constraints_(constraints) {}
+// class ConstrainedProducer : public SubgradientProducer {
+//  public:
+//   ConstrainedProducer(
+//       const Hypergraph *graph,
+//       const HypergraphWeights<LogViterbiWeight> *weights,
+//       const HypergraphWeights<SparseVectorWeight> *constraints)
+//       : graph_(graph),
+//         weights_(weights),
+//         constraints_(constraints) {}
 
-  void solve(const SubgradState &cur_state, SubgradResult *result) {
-    HypergraphWeights<LogViterbiWeight> weights(graph_);
-    foreach (HEdge edge, graph_->edges()) {
-      SparseVector edge_constraints =
-          static_cast<SparseVector>(constraints_->score(edge));
-      weights[edge] *= weights_->score(edge);
-      foreach (SparsePair pair, edge_constraints) {
-        weights[edge] *=
-            LogViterbiWeight(pair.second * (*cur_state.duals)[pair.first]);
-      }
-    }
-    SparseVector bias_constraints =
-        static_cast<SparseVector>(constraints_->bias());
-    weights.bias() = weights_->bias();
-    foreach (SparsePair pair, bias_constraints) {
-      weights.bias() *=
-          LogViterbiWeight(pair.second *
-                           (*cur_state.duals)[pair.first]);
-    }
+//   void solve(const SubgradState &cur_state, SubgradResult *result) {
+//     const HypergraphWeights<LogViterbiWeight> *mod_weights =
+//         pairwise_dot(*constraints_, *cur_state.duals);
 
-    HypergraphWeights<LogViterbiWeight> *dual_weights =
-        weights_->times(weights);
+//     const HypergraphWeights<LogViterbiWeight> *dual_weights =
+//         weights_->times(*mod_weights);
 
+//     Hyperpath *path =
+//         general_viterbi<LogViterbiWeight>(graph_, *dual_weights);
 
-    Hyperpath *path =
-        general_viterbi<LogViterbiWeight>(graph_,
-                                          *dual_weights);
-    result->dual = (double)dual_weights->dot(*path);
-    SparseVector final_constraints = static_cast<SparseVector>(constraints_->dot(*path));
-    foreach (SparsePair pair, final_constraints) {
-      result->subgrad[pair.first] = pair.second;
-    }
-    vector<const Constraint *> failed_constraints;
-    constrained_results_.push_back(
-        ConstrainedResult(path, result->dual, 0.0,
-                          failed_constraints));
-    delete dual_weights;
-  }
+//     result->dual = (double)dual_weights->dot(*path);
 
-  vector<ConstrainedResult> results() const {
-    return constrained_results_;
-  }
+//     SparseVector final_constraints =
+//         static_cast<SparseVector>(constraints_->dot(*path));
 
- private:
-  const Hypergraph *graph_;
-  const HypergraphWeights<LogViterbiWeight> *weights_;
-  const HypergraphWeights<SparseVectorWeight> *constraints_;
-  vector<ConstrainedResult> constrained_results_;
-};
+//     foreach (SparsePair pair, final_constraints) {
+//       result->subgrad[pair.first] = pair.second;
+//     }
+//     delete dual_weights;
+//   }
 
-const Hyperpath *best_constrained_path(
-    const Hypergraph *graph,
-    const HypergraphWeights<LogViterbiWeight> &theta,
-    const HypergraphWeights<SparseVectorWeight> &constraints,
-    int number_of_constraints,
-    vector<ConstrainedResult> *result) {
-  theta.check(*graph);
-  constraints.check(*graph);
+//  private:
+//   const Hypergraph *graph_;
+//   const HypergraphWeights<LogViterbiWeight> *weights_;
+//   const HypergraphWeights<SparseVectorWeight> *constraints_;
+// };
 
-  DecreasingRate rate;
-  ConstrainedProducer producer(graph, &theta, &constraints);
-  Subgradient subgradient(&producer, &rate, number_of_constraints);
-  subgradient.set_debug();
-  subgradient.solve();
-  *result = producer.results();
-  return (*result)[result->size() - 1].path;
-}
+// const Hyperpath *best_constrained_path(
+//     const Hypergraph *graph,
+//     const HypergraphWeights<LogViterbiWeight> &theta,
+//     const HypergraphWeights<SparseVectorWeight> &constraints) {
+//   theta.check(*graph);
+//   constraints.check(*graph);
+
+//   DecreasingRate rate;
+//   ConstrainedProducer producer(graph, &theta, &constraints);
+//   Subgradient subgradient(&producer, &rate, number_of_constraints);
+//   subgradient.set_debug();
+//   subgradient.solve();
+//   *result = producer.results();
+//   return (*result)[result->size() - 1].path;
+// }
 
 
 

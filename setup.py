@@ -22,7 +22,7 @@ if use_cython:
                               "src/Hypergraph/Hypergraph.cpp",
                               "src/Hypergraph/Algorithms.cpp",
                               "src/Hypergraph/Constraints.cpp",
-                              "src/Hypergraph/Subgradient.cpp",
+                              #"src/Hypergraph/Subgradient.cpp",
                               ],
 
                              language='c++',
@@ -40,7 +40,8 @@ else:
                               "src/Hypergraph/Hypergraph.cpp",
                               "src/Hypergraph/Algorithms.cpp",
                               "src/Hypergraph/Constraints.cpp",
-                              "src/Hypergraph/Subgradient.cpp"],
+                              #"src/Hypergraph/Subgradient.cpp"
+                              ],
                              language='c++',
                              include_dirs=[r'src/', "."],
                              #extra_objects=['build/debug/src/libdecoding.a'],

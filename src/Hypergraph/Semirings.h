@@ -348,16 +348,18 @@ SparseVectorWeight() : BaseSemiringWeight<SparseVector, SparseVectorWeight>(Spar
 	SparseVectorWeight& operator*=(const SparseVectorWeight& rhs) {
       int i = 0, j = 0;
       SparseVector vec;
-      if (value[i].first < rhs.value[j].first) {
-        vec.push_back(pair<int, int>(value[i].first, value[i].second));
-        ++i;
-      } else if (value[i].first > rhs.value[j].first) {
-        vec.push_back(pair<int, int>(rhs.value[j].first, rhs.value[j].second));
-        ++j;
-      } else {
-        vec.push_back(pair<int, int>(i, value[i].second + rhs.value[j].second));
-        ++i;
-        ++j;
+      while (i < value.size() || j < rhs.value.size()) {
+        if (j >= rhs.value.size() || (i < value.size() && value[i].first < rhs.value[j].first)) {
+          vec.push_back(pair<int, int>(value[i].first, value[i].second));
+          ++i;
+        } else if (i >= value.size() || (j < rhs.value.size() && value[i].first > rhs.value[j].first)) {
+          vec.push_back(pair<int, int>(rhs.value[j].first, rhs.value[j].second));
+          ++j;
+        } else {
+          vec.push_back(pair<int, int>(i, value[i].second + rhs.value[j].second));
+          ++i;
+          ++j;
+        }
       }
       value = vec;
       return *this;
@@ -367,9 +369,11 @@ SparseVectorWeight() : BaseSemiringWeight<SparseVector, SparseVectorWeight>(Spar
 	static const SparseVectorWeight zero() { return SparseVectorWeight(SparseVector()); }
 
 	int normalize(int val) const {
-		return val;
+      return val;
 	}
 };
+
+
 
 class TreeWeight : public BaseSemiringWeight<Hypernode *, TreeWeight> {
 public:
@@ -465,6 +469,8 @@ class HypergraphWeights {
       throw HypergraphException("Hypergraph weights do not match weights.");
     }
   }
+
+  const Hypergraph *hypergraph() const { return hypergraph_; }
 
  protected:
   const Hypergraph *hypergraph_;
@@ -616,5 +622,25 @@ inline HypergraphProjection *HypergraphProjection::project_hypergraph(
                                   node_map, edge_map);
 }
 
+inline const HypergraphWeights<LogViterbiWeight> *
+pairwise_dot(const HypergraphWeights<SparseVectorWeight> &sparse_weights,
+             const vector<double> &vec) {
+  HypergraphWeights<LogViterbiWeight> *weights =
+      new HypergraphWeights<LogViterbiWeight>(sparse_weights.hypergraph());
+  foreach (HEdge edge, sparse_weights.hypergraph()->edges()) {
+    SparseVector edge_constraints =
+        static_cast<SparseVector>(sparse_weights.score(edge));
+    foreach (SparsePair pair, edge_constraints) {
+      (*weights)[edge] *=
+          LogViterbiWeight(pair.second * vec[pair.first]);
+    }
+  }
+  SparseVector bias_constraints =
+      static_cast<SparseVector>(sparse_weights.bias());
+  foreach (SparsePair pair, bias_constraints) {
+    weights->bias() *= LogViterbiWeight(pair.second * vec[pair.first]);
+  }
+  return weights;
+};
 
 #endif // HYPERGRAPH_SEMIRING_H_

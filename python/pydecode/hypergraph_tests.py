@@ -4,6 +4,8 @@ import pydecode.display as draw
 import networkx as nx
 import matplotlib.pyplot as plt
 import nose.tools as nt
+import pydecode.constraints as cons
+import pydecode.optimization as opt
 
 
 def simple_hypergraph():
@@ -178,8 +180,7 @@ def random_constraint(hypergraph):
         if label == l:
             return [("have", 1), ("not", 1)]
         return []
-    constraints = ph.Constraints(hypergraph).build(
-        [("have", -1), ("not", 0)],
+    constraints = cons.Constraints(hypergraph, [("have", -1), ("not", 0)]).build(
         build_constraints)
     return constraints, edge
 
@@ -187,12 +188,16 @@ def random_constraint(hypergraph):
 def test_constraint():
     for h, w in [random_hypergraph() for i in range(10)]:
         constraints, edge = random_constraint(h)
+        for edge in h.edges:
+            print edge.id
+            print constraints.weights[edge]
         path = ph.best_path(h, w)
         match = constraints.check(path)
+        print match
         if edge not in path:
-            nt.assert_equal(str(match[0]), "have")
+            assert "have" in match
         else:
-            nt.assert_equal(str(match[0]), "not")
+            assert "not" in match
 
 
 def test_pruning():
@@ -241,8 +246,7 @@ def random_have_constraint(hypergraph):
         if label == l:
             return [("have", 1)]
         return []
-    constraints = ph.Constraints(hypergraph).build(
-        [("have", -1)],
+    constraints = cons.Constraints(hypergraph, [("have", -1)]).build(
         build_constraints)
     return constraints, edge
 
@@ -255,7 +259,8 @@ def test_subgradient():
         if edge not in path:
             nt.assert_equal(match[0], "have")
 
-        cpath, duals = ph.best_constrained(h, w, constraints)
+        cpath = opt.best_constrained_path(h, w,
+                                          constraints.weights)
         assert edge in cpath
 
 
@@ -310,5 +315,4 @@ def test_bad_constraints():
 
 
 if __name__ == "__main__":
-    test_inside()
-    test_pruning()
+    test_subgradient()

@@ -6,13 +6,26 @@
 
 using namespace std;
 
-class SubgradRate {
+/**
+ * Interface for subgradient clients.
+ */
+class SubgradientProducer {
  public:
-  virtual double get_alpha(const vector<double> &past_duals,
-                           const vector<double> &subgrad) const = 0;
+  // Solve the problem with the current dual weights.
+  virtual double solve(const vector<double> &values,
+                       vector<double> *subgrad) = 0;
 };
 
-class ConstantRate : public SubgradRate {
+/**
+ *
+ */
+class Rate {
+ public:
+  virtual double get_alpha(const vector<double> &past_duals,
+                           const vector<double> &subgradient) const = 0;
+};
+
+class ConstantRate : public Rate {
  public:
   double get_alpha(const vector<double> &past_duals,
                    const vector<double> &subgrad) const {
@@ -20,7 +33,7 @@ class ConstantRate : public SubgradRate {
   }
 };
 
-class DecreasingRate : public SubgradRate {
+class DecreasingRate : public Rate {
  public:
   double get_alpha(const vector<double> &past_duals,
                    const vector<double> &subgrad) const {
@@ -32,54 +45,21 @@ class DecreasingRate : public SubgradRate {
   }
 };
 
-// Input to the subgradient client
-struct SubgradState {
-  // The current round of the subgradient algorithm
-  int round;
-
-  // The current dual values.
-  vector<double> *duals;
-};
-
-// Output of the subgradient client
-struct SubgradResult {
-  SubgradResult(int size) : subgrad(size) {
-    for (int i = 0; i < size; ++i) subgrad[i] = 0.0;
-  }
-
-  // The dual value with these weights.
-  double dual;
-
-  // The subgradient at this iteration.
-  vector<double> subgrad;
-};
-
-
 /**
- * Interface for subgradient clients.
+ * Subgradient optimization manager. Takes an object to produce
+ * subgradients given current dual values as well as an object
+ * to determine the current update rate.
  */
-class SubgradientProducer {
- public:
-  // Solve the problem with the current dual weights.
-  virtual void solve(const SubgradState & cur_state,
-                     SubgradResult *result) = 0;
-};
-
- /**
-  * Subgradient optimization manager. Takes an object to produce
-  * subgradients given current dual values as well as an object
-  * to determine the current update rate.
-  */
-class Subgradient {
+class SubgradientDescent {
  public:
   /**
    *
    * @param subgrad_producer Gives the subgradient at the current position
    * @param update_rate A class to decide the alpha to use at the current iteration
    */
-  Subgradient(SubgradientProducer *subgrad_producer,
-              const SubgradRate *update_rate,
-              int num_constraints)
+  SubgradientDescent(SubgradientProducer *subgrad_producer,
+                     const SubgradRate *update_rate,
+                     int num_constraints)
     : producer_(subgrad_producer),
       rate_(update_rate),
       best_dual_(INF),
@@ -90,9 +70,11 @@ class Subgradient {
       debug_(false) {}
 
   void set_debug() { debug_ = true; }
+
   void set_max_rounds(int max_round) {
     max_round_ = max_round;
   }
+
   bool solve();
 
   const vector<double> &duals() const {

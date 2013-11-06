@@ -12,7 +12,19 @@ vars = {"semirings":
    "float" : True, "viterbi" : False},
   {"type": "Bool", "ptype": "BoolW",
    "ctype": "BoolWeight", "vtype": "double",
-   "bool": True, "viterbi" : True}]
+   "bool": True, "viterbi" : True},
+  {"type": "SparseVector", "ptype": "SparseVectorW",
+   "ctype": "SparseVectorWeight", "vtype": "vector[pair[int, int]]",
+   "bool": False, "viterbi" : False, "float": False,
+   "conversion" : """
+            d = {}
+            cdef vector[pair[int,int]] s= <vector[pair[int,int]]> self.wrap
+            for p in s:
+                d[p.first] = p.second
+            return d
+"""
+   }
+  ]
 }
 
 env = Environment(loader=PackageLoader('pydecode', 'templates'))
