@@ -1,7 +1,5 @@
 To contribute to development please email srush at csail mit edu or send a pull request.
 
-
-
 Build Commands
 ===============
 
@@ -18,6 +16,10 @@ Run to build the C++ and python documentation. The index page is in "docs/build/
 Builds and runs the C++ tests. (Requires gtest). ::
 
    > scons test
+
+Builds and runs the python lib. (Requiresd cython, jinja). ::
+
+   > scons pylib
 
 Runs the python tests. (Requires py.test and nosetests). ::
 
