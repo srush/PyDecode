@@ -9,7 +9,7 @@ vars = {"semirings":
    "float" : True, "viterbi" : True},
   {"type": "Inside", "ptype": "InsideW",
    "ctype": "InsideWeight", "vtype": "double",
-   "float" : True, "viterbi" : False},
+   "float" : True, "viterbi" : True},
   {"type": "Bool", "ptype": "BoolW",
    "ctype": "BoolWeight", "vtype": "double",
    "bool": True, "viterbi" : True},

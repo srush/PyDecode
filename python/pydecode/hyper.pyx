@@ -152,6 +152,10 @@ cdef class _ViterbiWeights:
 cdef class _ViterbiW:
     cdef ViterbiWeight wrap
 
+    def __cinit__(self, val=None):
+        if val is not None:
+            self.init(ViterbiWeight(<double>val))
+
     cdef init(self, ViterbiWeight wrap):
         self.wrap = wrap
         return self
@@ -418,6 +422,10 @@ cdef class _LogViterbiWeights:
 
 cdef class _LogViterbiW:
     cdef LogViterbiWeight wrap
+
+    def __cinit__(self, val=None):
+        if val is not None:
+            self.init(LogViterbiWeight(<double>val))
 
     cdef init(self, LogViterbiWeight wrap):
         self.wrap = wrap
@@ -686,6 +694,10 @@ cdef class _InsideWeights:
 cdef class _InsideW:
     cdef InsideWeight wrap
 
+    def __cinit__(self, val=None):
+        if val is not None:
+            self.init(InsideWeight(<double>val))
+
     cdef init(self, InsideWeight wrap):
         self.wrap = wrap
         return self
@@ -752,6 +764,10 @@ cdef class _InsideMarginals:
                 "Only nodes and edges have Inside marginal values." + \
                 "Passed %s."%obj)
     
+    def threshold(self, _InsideW semi):
+        return _BoolWeights(Hypergraph().init(self.thisptr.hypergraph())) \
+            .init(self.thisptr.threshold(semi.wrap))
+    
 
 class Inside:
     Chart = _InsideChart
@@ -776,6 +792,14 @@ class Inside:
                                              deref(inside_chart.chart))
         return out_chart
 
+    
+    @staticmethod
+    def viterbi(Hypergraph graph,
+                _InsideWeights weights):
+        cdef CHyperpath *path = \
+            viterbi_Inside(graph.thisptr,
+                               deref(weights.thisptr))
+        return Path().init(path)
     
 
     @staticmethod
@@ -940,6 +964,10 @@ cdef class _BoolWeights:
 
 cdef class _BoolW:
     cdef BoolWeight wrap
+
+    def __cinit__(self, val=None):
+        if val is not None:
+            self.init(BoolWeight(<double>val))
 
     cdef init(self, BoolWeight wrap):
         self.wrap = wrap
@@ -1207,6 +1235,10 @@ cdef class _SparseVectorWeights:
 
 cdef class _SparseVectorW:
     cdef SparseVectorWeight wrap
+
+    def __cinit__(self, val=None):
+        if val is not None:
+            self.init(SparseVectorWeight(<vector[pair[int, int]]>val))
 
     cdef init(self, SparseVectorWeight wrap):
         self.wrap = wrap

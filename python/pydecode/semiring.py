@@ -32,8 +32,7 @@ class SemiRing(object):
 
 
 class HypergraphSemiRing(SemiRing):
-    def __init__(self, edge_list=[], node_list=[],
-                 name=None, is_zero=False):
+    def __init__(self, name=None, edge_list=[], node_list=[], is_zero=False):
         self.edge_list = edge_list
         self.node_list = node_list
         self.name = name
@@ -48,8 +47,8 @@ class HypergraphSemiRing(SemiRing):
         return self._is_zero
 
     def __add__(self, other):
-        return HypergraphSemiRing(
-            self.edges() + other.edges())
+        return HypergraphSemiRing(name = None,
+            edge_list=(self.edges() + other.edges()))
 
     def edges(self):
         if self.node_list:
@@ -61,9 +60,9 @@ class HypergraphSemiRing(SemiRing):
         zero = other.is_zero() or self.is_zero()
         if zero:
             return HypergraphSemiRing.zero()
-        return HypergraphSemiRing([],
+        return HypergraphSemiRing(other.name, [],
                                   self.node_list + other.node_list,
-                                  other.name)
+                                  )
 
     @classmethod
     def one(cls):
@@ -75,5 +74,4 @@ class HypergraphSemiRing(SemiRing):
 
     @classmethod
     def make(cls, name):
-
         return HypergraphSemiRing(name=name)

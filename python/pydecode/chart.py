@@ -9,7 +9,7 @@ class ChartBuilder:
     """
 
     def __init__(self, score_fn=lambda a: a,
-                 semiring=ProbSemiRing,
+                 semiring=ph._LogViterbiW,
                  build_hypergraph=False,
                  debug=False):
         """
@@ -52,7 +52,7 @@ class ChartBuilder:
             self._build.__exit__(None, None, None)
             return self._hypergraph
         else:
-            return self._chart[self._last].unpack()
+            return self._chart[self._last].value
 
     def sr(self, label):
         """
@@ -65,7 +65,7 @@ class ChartBuilder:
         label : edge label
            Get the semiring value of the label.
         """
-        return self._semiring.make(self._scorer(label))
+        return self._semiring(self._scorer(label))
 
     def init(self, label):
         """
@@ -80,10 +80,10 @@ class ChartBuilder:
 
         if self._builder:
             node = self._build.add_node([], label=label)
-            self._chart[label] = HypergraphSemiRing([], [node], None)
+            self._chart[label] = HypergraphSemiRing(None, [], [node])
         else:
             self._chart[label] = self._semiring.one()
-        if self._debug: 
+        if self._debug:
             print >>sys.stderr, "Initing", label, label in self._chart
         return self._chart[label]
 
@@ -112,7 +112,7 @@ class ChartBuilder:
                 node = self._build.add_node(val.edges(),
                                             label=label)
                 self._chart[label] = \
-                    HypergraphSemiRing([], [node], None)
+                    HypergraphSemiRing(None, [], [node])
             else:
                 self._chart[label] = val.zero()
         else:
@@ -124,10 +124,10 @@ class ChartBuilder:
         return label in self._chart
 
     def __getitem__(self, label):
-        if self._debug: 
+        if self._debug:
             print >>sys.stderr, "Getting",label, label in self._chart
         return self._chart.get(label, self._semiring.zero())
-    
+
     def show(self):
         keys = self._chart.keys()
         keys.sort()

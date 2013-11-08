@@ -152,6 +152,10 @@ cdef class _{{S.type}}Weights:
 cdef class _{{S.ptype}}:
     cdef {{S.ctype}} wrap
 
+    def __cinit__(self, val=None):
+        if val is not None:
+            self.init({{S.ctype}}(<{{S.vtype}}>val))
+
     cdef init(self, {{S.ctype}} wrap):
         self.wrap = wrap
         return self
