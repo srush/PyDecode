@@ -5,16 +5,16 @@
 Extensions
 ==========
 
-.. _constraints:
+.. _display:
 
-Constraints
-=============
+Visualization
+==========
 
-Many algorithms in natural language processing, such as translation decoding, can be represented as constrained dynamic programming problems. These can be described as hypergraphs with additional constraints on hyperedges. The notation used to describe constrained hypergraphs is based on this :ref:`introduction to constraints <intro_constraints>`
+One major benefit of creating a hypergraph representation is that it allows for
+easy visualization. The display package converts a hypergraph to a NetworkX_ graph
+and then uses PyGraphViz_ to render an image. The style of the graph can be easily customized by inheriting from HypergraphFormatter.
 
-Constrained hypergraphs can be solved in PyDecode either using a subgradient-based solver (best_constrained) or by using an :ref:`(integer) linear programming solver<lp>`.
-
-.. automodule:: pydecode.hyper
+.. automodule:: pydecode.display
    :no-members:
    :no-inherited-members:
 
@@ -22,34 +22,10 @@ Constrained hypergraphs can be solved in PyDecode either using a subgradient-bas
    :toctree: generated/
    :template: class.rst
 
-   Constraints
+   HypergraphFormatter
 
-.. autosummary::
-   :toctree: generated/
-
-   best_constrained
-
-
-.. _lp:
-
-Linear Programming
-==================
-
-Standard hypergraph search problems can also be solved by using linear programming,
-and constrained hypergraph search problems can be solved using integer linear programming. The notation used to describe constrained hypergraphs is based on this :ref:` conversion to linear program <intro_lp>`.
-
-PyDecode uses PuLP_ to generate these (integer) linear programs.
-
-.. automodule:: pydecode.lp
-   :no-members:
-   :no-inherited-members:
-
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
-
-   HypergraphLP
-
+   .. :toctree: generated/
+   .. :template: class.rst
 
 .. _structured:
 
@@ -78,18 +54,16 @@ train the parameters of a model by specifying a HypergraphModelBuilder.
 
     DynamicProgrammingModel
 
+.. _constraints:
 
-.. _display:
+Constraints
+=============
 
+Many algorithms in natural language processing, such as translation decoding, can be represented as constrained dynamic programming problems. These can be described as hypergraphs with additional constraints on hyperedges. The notation used to describe constrained hypergraphs is based on this :ref:`introduction to constraints <intro_constraints>`
 
-Visualization
-==========
+Constrained hypergraphs can be solved in PyDecode either using a subgradient-based solver (best_constrained) or by using an :ref:`(integer) linear programming solver<lp>`.
 
-One major benefit of creating a hypergraph representation is that it allows for
-easy visualization. The display package converts a hypergraph to a NetworkX_ graph
-and then uses PyGraphViz_ to render an image. The style of the graph can be easily customized by inheriting from HypergraphFormatter.
-
-.. automodule:: pydecode.display
+.. automodule:: pydecode.constraints
    :no-members:
    :no-inherited-members:
 
@@ -97,10 +71,43 @@ and then uses PyGraphViz_ to render an image. The style of the graph can be easi
    :toctree: generated/
    :template: class.rst
 
-   HypergraphFormatter
+   Constraints
 
-   .. :toctree: generated/
-   .. :template: class.rst
+
+.. _lp:
+
+Linear Programming
+==================
+
+Standard hypergraph search problems can also be solved by using linear programming,
+and constrained hypergraph search problems can be solved using integer linear programming. The notation used to describe constrained hypergraphs is based on this :ref:` conversion to linear program <intro_lp>`.
+
+PyDecode uses PuLP_ to generate these (integer) linear programs.
+
+.. automodule:: pydecode.lp
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   HypergraphLP
+
+
+Lagrangian Relaxation
+==================
+
+.. automodule:: pydecode.optimization
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+
+   subgradient
+   subgradient_descent
+
+
 
 .. _PuLP: http://pythonhosted.org/PuLP/
 .. _NetworkX: http://networkx.github.io/documentation/latest/

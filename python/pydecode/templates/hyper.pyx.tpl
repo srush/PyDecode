@@ -389,6 +389,25 @@ def compute_marginals(Hypergraph graph, potentials):
 class Potentials(LogViterbiPotentials):
     pass
 
+class Chart(_LogViterbiChart):
+    r"""
+    Chart :math:`S^{|{\cal V}|}` associated with a hypergraph (V, E) and semiring S.
+
+    Acts as a vector::
+       >> print chart[node]
+    """
+    pass
+
+class Marginals(_LogViterbiMarginals):
+    r"""
+    Marginal values :math:`S^{|{\cal E} \times {\cal V}|}` associated with a hypergraph ({\cal V}, {\cal E}) and semiring S.
+
+    Acts as a dictionary::
+       >> print marginals[edge]
+       >> print marginals[node]
+    """
+    pass
+
 inside_values = inside
 outside_values = outside
 
