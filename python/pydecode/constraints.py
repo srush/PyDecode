@@ -30,12 +30,12 @@ class Constraints:
             self.by_id[i] = label
             self.bias.append((i, constant))
         self.size = len(constraints)
-        self.weights = ph.Weights(graph, kind=ph.SparseVector)
+        self.potentials = ph.Potentials(graph, kind=ph.SparseVector)
 
     def check(self, path):
         for edge in path.edges:
-            print edge.id, self.weights[edge]
-        constraints = self.weights.dot(path)
+            print edge.id, self.potentials[edge]
+        constraints = self.potentials.dot(path)
         print "Constraints", constraints
         return [self.by_id[i]
                 for i, val in constraints.iteritems()
@@ -73,7 +73,7 @@ class Constraints:
                 self.all_constraints[constraint].append((coeff, edge))
             edge_values[label] = semi
 
-        self.weights.build(lambda a: edge_values[a], bias=self.bias)
+        self.potentials.build(lambda a: edge_values[a], bias=self.bias)
         return self
 
     def __iter__(self):

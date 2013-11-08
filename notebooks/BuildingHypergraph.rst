@@ -48,21 +48,21 @@ We can also display the hypergraph to see our work.
 
 
 After creating the hypergraph we can assign additional property
-information. One useful property is to add weights. We do this by
-defining a function to map labels to weights.
+information. One useful property is to add potentials. We do this by
+defining a function to map labels to potentials.
 
 .. code:: python
 
-    def build_weights(label):
+    def build_potentials(label):
         if "First" in label: return 1
         if "Second" in label: return 5
         if "Third" in label: return 5
         return 0
-    weights = ph.Weights(hyper1).build(build_weights)
+    potentials = ph.Potentials(hyper1).build(build_potentials)
 .. code:: python
 
     for edge in hyper1.edges:
-        print hyper1.label(edge), weights[edge]
+        print hyper1.label(edge), potentials[edge]
 
 .. parsed-literal::
 
@@ -75,10 +75,10 @@ We use the best path.
 
 .. code:: python
 
-    path = ph.best_path(hyper1, weights)
+    path = ph.best_path(hyper1, potentials)
 .. code:: python
 
-    print weights.dot(path)
+    print potentials.dot(path)
 
 .. parsed-literal::
 

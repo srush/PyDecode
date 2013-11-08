@@ -2,19 +2,19 @@ from jinja2 import Environment, PackageLoader
 
 vars = {"semirings":
  [{"type": "Viterbi", "ptype": "ViterbiW",
-   "ctype": "ViterbiWeight", "vtype": "double",
+   "ctype": "ViterbiPotential", "vtype": "double",
    "float" : True, "viterbi" : True},
   {"type": "LogViterbi", "ptype": "LogViterbiW",
-   "ctype": "LogViterbiWeight", "vtype": "double",
+   "ctype": "LogViterbiPotential", "vtype": "double",
    "float" : True, "viterbi" : True},
   {"type": "Inside", "ptype": "InsideW",
-   "ctype": "InsideWeight", "vtype": "double",
+   "ctype": "InsidePotential", "vtype": "double",
    "float" : True, "viterbi" : True},
   {"type": "Bool", "ptype": "BoolW",
-   "ctype": "BoolWeight", "vtype": "double",
+   "ctype": "BoolPotential", "vtype": "double",
    "bool": True, "viterbi" : True},
   {"type": "SparseVector", "ptype": "SparseVectorW",
-   "ctype": "SparseVectorWeight", "vtype": "vector[pair[int, int]]",
+   "ctype": "SparseVectorPotential", "vtype": "vector[pair[int, int]]",
    "bool": False, "viterbi" : False, "float": False,
    "conversion" : """
             d = {}

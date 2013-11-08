@@ -11,15 +11,15 @@
 
 #define SPECIALIZE_FOR_SEMI(X)\
   template class Chart<X>;\
-  template class HypergraphWeights<X>;\
+  template class HypergraphPotentials<X>;\
   template class Marginals<X>;\
-  template Hyperpath *general_viterbi<X>(const Hypergraph *graph,const HypergraphWeights<X> &weights);
+  template Hyperpath *general_viterbi<X>(const Hypergraph *graph,const HypergraphPotentials<X> &potentials);
 
 #define SPECIALIZE_FOR_SEMI_MIN(X)\
   template class Chart<X>;\
-  template class HypergraphWeights<X>;\
-  template Chart<X> *general_inside<X>(const Hypergraph *graph, const HypergraphWeights<X> &weights);\
-  template Chart<X> *general_outside<X>(const Hypergraph *graph, const HypergraphWeights<X> &weights, const Chart<X> &);
+  template class HypergraphPotentials<X>;\
+  template Chart<X> *general_inside<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials);\
+  template Chart<X> *general_outside<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, const Chart<X> &);
 
 using namespace std;
 
@@ -34,8 +34,8 @@ struct IdComparator {
 template<typename SemiringType>
 Chart<SemiringType> *
 general_inside(const Hypergraph *graph,
-               const HypergraphWeights<SemiringType> &weights) {
-  weights.check(*graph);
+               const HypergraphPotentials<SemiringType> &potentials) {
+  potentials.check(*graph);
 
   // Run Viterbi Hypergraph algorithm.
   Chart<SemiringType> *chart = new Chart<SemiringType>(graph);
@@ -46,26 +46,26 @@ general_inside(const Hypergraph *graph,
     }
   }
   foreach (HEdge edge, graph->edges()) {
-    SemiringType score = weights.score(edge);
+    SemiringType score = potentials.score(edge);
     foreach (HNode node, edge->tail_nodes()) {
       score *= (*chart)[node];
     }
     (*chart)[edge->head_node()] += score;
   }
-  (*chart)[graph->root()] *= weights.bias();
+  (*chart)[graph->root()] *= potentials.bias();
   return chart;
 }
 
 template<typename SemiringType>
 Chart<SemiringType> *
 general_outside(const Hypergraph *graph,
-                const HypergraphWeights<SemiringType> &weights,
+                const HypergraphPotentials<SemiringType> &potentials,
                 const Chart<SemiringType> &inside_chart) {
-  weights.check(*graph);
+  potentials.check(*graph);
   inside_chart.check(graph);
   Chart<SemiringType> *chart = new Chart<SemiringType>(graph);
   const vector<HEdge> &edges = graph->edges();
-  (*chart)[graph->root()] = weights.bias();
+  (*chart)[graph->root()] = potentials.bias();
 
   for (int i = edges.size() - 1; i >= 0; --i) {
     HEdge edge = edges[i];
@@ -76,7 +76,7 @@ general_outside(const Hypergraph *graph,
         if (other_node->id() == node->id()) continue;
         other_score *= inside_chart[other_node];
       }
-      (*chart)[node] += head_score * other_score * weights.score(edge);
+      (*chart)[node] += head_score * other_score * potentials.score(edge);
     }
   }
   return chart;
@@ -85,9 +85,9 @@ general_outside(const Hypergraph *graph,
 template<typename SemiringType>
 Hyperpath *general_viterbi(
     const Hypergraph *graph,
-    const HypergraphWeights<SemiringType> &weights) {
+    const HypergraphPotentials<SemiringType> &potentials) {
 
-  weights.check(*graph);
+  potentials.check(*graph);
   Chart<SemiringType> *chart = new Chart<SemiringType>(graph);
   vector<HEdge> back(graph->nodes().size(), NULL);
 
@@ -97,7 +97,7 @@ Hyperpath *general_viterbi(
     }
   }
   foreach (HEdge edge, graph->edges()) {
-    SemiringType score = weights.score(edge);
+    SemiringType score = potentials.score(edge);
     foreach (HNode node, edge->tail_nodes()) {
       score *= (*chart)[node];
     }
@@ -130,10 +130,10 @@ Hyperpath *general_viterbi(
 }
 
 
-SPECIALIZE_FOR_SEMI(ViterbiWeight)
-SPECIALIZE_FOR_SEMI(LogViterbiWeight)
-SPECIALIZE_FOR_SEMI(InsideWeight)
-SPECIALIZE_FOR_SEMI(BoolWeight)
-SPECIALIZE_FOR_SEMI_MIN(SparseVectorWeight)
+SPECIALIZE_FOR_SEMI(ViterbiPotential)
+SPECIALIZE_FOR_SEMI(LogViterbiPotential)
+SPECIALIZE_FOR_SEMI(InsidePotential)
+SPECIALIZE_FOR_SEMI(BoolPotential)
+SPECIALIZE_FOR_SEMI_MIN(SparseVectorPotential)
 
 // End General code.

@@ -155,20 +155,20 @@ def test_construction():
 def rand_gen(arg=None):
     return random.random()
 
-def random_inside_weights(hypergraph):
-    return ph.InsideWeights(hypergraph).build(rand_gen)
+def random_inside_potentials(hypergraph):
+    return ph.InsidePotentials(hypergraph).build(rand_gen)
 
-def random_viterbi_weights(hypergraph):
-    return ph.ViterbiWeights(hypergraph).build(rand_gen)
+def random_viterbi_potentials(hypergraph):
+    return ph.ViterbiPotentials(hypergraph).build(rand_gen)
 
-def random_log_viterbi_weights(hypergraph):
-    return ph.LogViterbiWeights(hypergraph).build(rand_gen)
+def random_log_viterbi_potentials(hypergraph):
+    return ph.LogViterbiPotentials(hypergraph).build(rand_gen)
 
 def rand_bool_gen(arg=None):
     return random.random() > 0.5
 
-def random_bool_weights(hypergraph):
-    return ph.BoolWeights(hypergraph).build(rand_bool_gen)
+def random_bool_potentials(hypergraph):
+    return ph.BoolPotentials(hypergraph).build(rand_bool_gen)
 
 
 def test_best_path():
@@ -176,7 +176,7 @@ def test_best_path():
     Test viterbi path finding.
     """
     for h in hypergraphs():
-        w = random_viterbi_weights(h)
+        w = random_viterbi_potentials(h)
         path = ph.best_path(h, w)
         nt.assert_not_equal(w.dot(path), 0.0)
         valid_path(h, path)
@@ -192,7 +192,7 @@ def test_inside():
     Test inside chart gen.
     """
     for h in hypergraphs():
-        w = random_inside_weights(h)
+        w = random_inside_potentials(h)
         inside = ph.inside(h, w)
 
 
@@ -201,7 +201,7 @@ def test_outside():
     Test outside chart properties.
     """
     for h in hypergraphs():
-        w = random_viterbi_weights(h)
+        w = random_viterbi_potentials(h)
         path = ph.best_path(h, w)
         chart = ph.inside_values(h, w)
         best = w.dot(path)
@@ -219,7 +219,7 @@ def test_outside():
 def test_posteriors():
     "Check the posteriors by enumeration."
     for h in hypergraphs():
-        w = random_inside_weights(h)
+        w = random_inside_potentials(h)
         marg = ph.compute_marginals(h, w)
 
 
@@ -245,7 +245,7 @@ def test_max_marginals():
     Test that max-marginals are correct.
     """
     for h in hypergraphs():
-        w = random_viterbi_weights(h)
+        w = random_viterbi_potentials(h)
         print w.show(h)
 
         path = ph.best_path(h, w)
@@ -270,11 +270,11 @@ def test_max_marginals():
 
 def test_pruning():
     for h in hypergraphs():
-        w = random_viterbi_weights(h)
+        w = random_viterbi_potentials(h)
 
         original_path = ph.best_path(h, w)
-        new_hyper, new_weights = ph.prune_hypergraph(h, w, -0.99)
-        prune_path = ph.best_path(new_hyper, new_weights)
+        new_hyper, new_potentials = ph.prune_hypergraph(h, w, -0.99)
+        prune_path = ph.best_path(new_hyper, new_potentials)
         assert len(original_path.edges) > 0
         for edge in original_path.edges:
             assert edge in prune_path
@@ -282,14 +282,14 @@ def test_pruning():
 
         original_score = w.dot(original_path)
         print original_score
-        print new_weights.dot(prune_path)
+        print new_potentials.dot(prune_path)
         nt.assert_almost_equal(original_score,
-                               new_weights.dot(prune_path))
+                               new_potentials.dot(prune_path))
 
         # Test pruning amount.
         prune = random.random()
         max_marginals = ph.compute_marginals(h, w)
-        new_hyper, new_weights = ph.prune_hypergraph(h, w, 0.0)
+        new_hyper, new_potentials = ph.prune_hypergraph(h, w, 0.0)
 
         assert (len(new_hyper.edges) > 0)
         original_edges = {}
@@ -303,7 +303,7 @@ def test_pruning():
         for name, edge in new_edges.iteritems():
 
             orig = original_edges[name]
-            nt.assert_almost_equal(w[orig], new_weights[edge])
+            nt.assert_almost_equal(w[orig], new_potentials[edge])
             m = max_marginals[orig]
             nt.assert_greater(m, prune * original_score)
 
@@ -345,7 +345,7 @@ def test_constraint():
     Test constraint checking.
     """
     for h in hypergraphs():
-        w = random_viterbi_weights(h)
+        w = random_viterbi_potentials(h)
         constraints, edge = random_constraint(h)
         path = ph.best_path(h, w)
         match = constraints.check(path)
@@ -364,7 +364,7 @@ def test_constraint():
 
 def test_subgradient():
     for h in hypergraphs():
-        w = random_log_viterbi_weights(h)
+        w = random_log_viterbi_potentials(h)
         constraints, edge = random_have_constraint(h)
         path = ph.best_path(h, w)
         match = constraints.check(path)
@@ -380,7 +380,7 @@ def test_subgradient():
 def test_lp():
     import pydecode.lp as lp
     for h in hypergraphs():
-        w = random_log_viterbi_weights(h)
+        w = random_log_viterbi_potentials(h)
         g = lp.HypergraphLP.make_lp(h, w)
         g.solve()
         path = g.path
@@ -399,32 +399,32 @@ def test_lp():
 
 def test_semirings():
     for hypergraph in hypergraphs():
-        weights = ph.ViterbiWeights(hypergraph).build(lambda l: 10.0)
-        marg = ph.Viterbi.compute_marginals(hypergraph, weights)
+        potentials = ph.ViterbiPotentials(hypergraph).build(lambda l: 10.0)
+        marg = ph.Viterbi.compute_marginals(hypergraph, potentials)
 
-        log_weights = ph.LogViterbiWeights(hypergraph).build(lambda l: 10.0)
-        weights = ph.LogViterbiWeights(hypergraph).build(lambda l: 10.0)
-        chart = ph.inside(hypergraph, log_weights)
-        chart2 = ph.inside_values(hypergraph, weights)
+        log_potentials = ph.LogViterbiPotentials(hypergraph).build(lambda l: 10.0)
+        potentials = ph.LogViterbiPotentials(hypergraph).build(lambda l: 10.0)
+        chart = ph.inside(hypergraph, log_potentials)
+        chart2 = ph.inside_values(hypergraph, potentials)
         for node in hypergraph.nodes:
             nt.assert_equal(chart[node], chart2[node])
 
-        marg = ph.LogViterbi.compute_marginals(hypergraph, log_weights)
-        marg2 = ph.compute_marginals(hypergraph, weights)
+        marg = ph.LogViterbi.compute_marginals(hypergraph, log_potentials)
+        marg2 = ph.compute_marginals(hypergraph, potentials)
         for edge in hypergraph.edges:
             nt.assert_almost_equal(marg[edge], marg2[edge])
 
 
-        weights = ph.Inside.Weights(hypergraph).build(lambda l: 0.5)
-        chart = ph.Inside.inside(hypergraph, weights)
+        potentials = ph.Inside.Potentials(hypergraph).build(lambda l: 0.5)
+        chart = ph.Inside.inside(hypergraph, potentials)
 
-        weights = ph.Inside.Weights(hypergraph).build(lambda l: 0.5)
+        potentials = ph.Inside.Potentials(hypergraph).build(lambda l: 0.5)
 
 
 ## CONSTRUCTION CODE
 
 @nt.raises(Exception)
-def test_diff_weights_fail():
+def test_diff_potentials_fail():
     h1, w1 = random_hypergraph()
     h2, w2 = random_hypergraph()
     ph.best_path(h1, w2)

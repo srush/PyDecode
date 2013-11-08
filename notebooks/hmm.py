@@ -1,11 +1,13 @@
 
-# In[16]:
+# In[48]:
 
 import pydecode.hyper as ph
 import pydecode.display as display
 from collections import namedtuple
 
 import pydecode.chart as chart
+import pydecode.optimization as opt
+import pydecode.constraints as cons
 import pydecode.semiring as semi
 import pandas as pd
 
@@ -14,7 +16,7 @@ import pandas as pd
 
 # We begin by constructing the HMM probabilities.
 
-# In[26]:
+# In[49]:
 
 # The emission probabilities.
 emission = {'ROOT' : {'ROOT' : 1.0},
@@ -32,12 +34,12 @@ transition = {'D' :    {'D' : 0.1, 'N' : 0.8, 'V' : 0.1, 'END' : 0},
               'ROOT' : {'D' : 0.4, 'N' : 0.3, 'V' : 0.3}}
 
 
-# In[27]:
+# In[50]:
 
 pd.DataFrame(transition).fillna(0) 
 
 
-# Out[27]:
+# Out[50]:
 
 #            D    N  ROOT    V
 #     D    0.1  0.1   0.4  0.4
@@ -45,12 +47,12 @@ pd.DataFrame(transition).fillna(0)
 #     N    0.8  0.1   0.3  0.3
 #     V    0.1  0.8   0.3  0.3
 
-# In[28]:
+# In[51]:
 
 pd.DataFrame(emission).fillna(0)
 
 
-# Out[28]:
+# Out[51]:
 
 #           END  ROOT  dog  in  park  the  walked
 #     D       0     0  0.1   1   0.0  0.8       0
@@ -61,7 +63,7 @@ pd.DataFrame(emission).fillna(0)
 
 # Next we specify the labels for the transitions.
 
-# In[4]:
+# In[52]:
 
 class Bigram(namedtuple("Bigram", ["word", "tag", "prevtag"])):
     def __str__(self): return "%s -> %s"%(self.prevtag, self.tag)
@@ -73,15 +75,15 @@ class Tagged(namedtuple("Tagged", ["position", "word", "tag"])):
 
 # And the scoring function.
 
-# In[5]:
+# In[53]:
 
-def bigram_weight(bigram):
+def bigram_potential(bigram):
     return transition[bigram.prevtag][bigram.tag] +     emission[bigram.word][bigram.tag] 
 
 
 # Now we write out dynamic program. 
 
-# In[6]:
+# In[54]:
 
 def viterbi(chart):
     words = ["ROOT"] + sentence.strip().split(" ") + ["END"]
@@ -98,82 +100,106 @@ def viterbi(chart):
 
 # Now we are ready to build the structure itself.
 
-# In[7]:
+# In[55]:
 
 # The sentence to be tagged.
 sentence = 'the dog walked in the park'
 
 
-# In[8]:
+# In[56]:
 
 # Create a chart using to compute the probability of the sentence.
-c = chart.ChartBuilder(bigram_weight)
+c = chart.ChartBuilder(bigram_potential)
 viterbi(c).finish()
 
 
-# Out[8]:
+# Out[56]:
 
-#     10.600000000000001
+#     9.600000381469727
 
-# In[9]:
+# In[57]:
 
 # Create a chart to compute the max paths.
-c = chart.ChartBuilder(bigram_weight, 
-                       chart.ViterbiSemiRing)
+c = chart.ChartBuilder(bigram_potential, 
+                       ph._InsideW)
 viterbi(c).finish()
 
 
-# Out[9]:
+# Out[57]:
 
-#     9.600000000000001
+#     9.087200164794922
 
 # But even better we can construct the entrire search space.
 
-# In[10]:
+# In[58]:
 
 c = chart.ChartBuilder(lambda a:a, semi.HypergraphSemiRing, 
                        build_hypergraph = True)
 hypergraph = viterbi(c).finish()
 
 
-# In[12]:
+# In[59]:
 
-weights = ph.Weights(hypergraph).build(bigram_weight)
+potentials = ph.Potentials(hypergraph).build(bigram_potential)
 
 # Find the best path.
-path = ph.best_path(hypergraph, weights)
-print weights.dot(path)
+path = ph.best_path(hypergraph, potentials)
+print potentials.dot(path)
 
 
-# Out[12]:
+# Out[59]:
 
-#     9.6
-# 
+
+    ---------------------------------------------------------------------------
+    AttributeError                            Traceback (most recent call last)
+
+    <ipython-input-59-5d9224c40bbb> in <module>()
+    ----> 1 potentials = ph.Potentials(hypergraph).build(bigram_potential)
+          2 
+          3 # Find the best path.
+          4 path = ph.best_path(hypergraph, potentials)
+          5 print potentials.dot(path)
+
+
+    /home/srush/Projects/decoding/python/pydecode/hyper.so in pydecode.hyper._LogViterbiPotentials.build (python/pydecode/hyper.cpp:10448)()
+
+
+    <ipython-input-53-fc220ccbeda4> in bigram_potential(bigram)
+          1 def bigram_potential(bigram):
+    ----> 2     return transition[bigram.prevtag][bigram.tag] +     emission[bigram.word][bigram.tag]
+    
+
+    AttributeError: 'NoneType' object has no attribute 'prevtag'
+
 
 # We can also output the path itself.
 
-# In[13]:
+# In[ ]:
 
 print [hypergraph.label(edge) for edge in path.edges]
 
 
-# Out[13]:
-
-#     [Bigram(word='the', tag='D', prevtag='ROOT'), Bigram(word='dog', tag='N', prevtag='D'), Bigram(word='walked', tag='V', prevtag='N'), Bigram(word='in', tag='D', prevtag='V'), Bigram(word='the', tag='N', prevtag='D'), Bigram(word='park', tag='V', prevtag='N'), Bigram(word='END', tag='END', prevtag='V')]
-# 
-
-# In[78]:
+# In[60]:
 
 display.HypergraphPathFormatter(hypergraph, [path]).to_ipython()
 
 
-# Out[78]:
+# Out[60]:
 
-#     <IPython.core.display.Image at 0x36cd790>
+
+    ---------------------------------------------------------------------------
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-60-66085a6e7465> in <module>()
+    ----> 1 display.HypergraphPathFormatter(hypergraph, [path]).to_ipython()
+    
+
+    NameError: name 'path' is not defined
+
 
 # We can also use a custom fancier formatter. These attributes are from graphviz (http://www.graphviz.org/content/attrs)
 
-# In[14]:
+# In[ ]:
 
 class HMMFormat(display.HypergraphPathFormatter):
     def hypernode_attrs(self, node):
@@ -192,129 +218,64 @@ class HMMFormat(display.HypergraphPathFormatter):
 HMMFormat(hypergraph, [path]).to_ipython()
 
 
-# Out[14]:
-
-#     <IPython.core.display.Image at 0x4c75050>
-
 # PyDecode also allows you to add extra constraints to the problem. As an example we can add constraints to enfore that the tag of "dog" is the same tag as "park".
 
-# In[80]:
+# In[ ]:
 
-def cons(tag): return "tag_%s"%tag
+def cons_name(tag): return "tag_%s"%tag
 
 def build_constraints(bigram):
     if bigram.word == "dog":
-        return [(cons(bigram.tag), 1)]
+        return [(cons_name(bigram.tag), 1)]
     elif bigram.word == "park":
-        return [(cons(bigram.tag), -1)]
+        return [(cons_name(bigram.tag), -1)]
     return []
 
-constraints =     ph.Constraints(hypergraph).build( 
-                   [(cons(tag), 0) for tag in ["D", "V", "N"]], 
+constraints =     cons.Constraints(hypergraph, [(cons_name(tag), 0) for tag in ["D", "V", "N"]]).build( 
                    build_constraints)
 
 
 # This check fails because the tags do not agree.
 
-# In[81]:
+# In[ ]:
 
 print "check", constraints.check(path)
 
 
-# Out[81]:
-
-#     check [<pydecode.hyper.Constraint object at 0x261dd90>, <pydecode.hyper.Constraint object at 0x36e9190>]
-# 
-
 # Solve instead using subgradient.
 
-# In[82]:
+# In[ ]:
 
-gpath, duals = ph.best_constrained(hypergraph, weights, constraints)
-
-
-# In[83]:
-
-for d in duals:
-    print d.dual, d.constraints
+gpath = opt.best_constrained_path(hypergraph, potentials, constraints)
 
 
-# Out[83]:
-
-#     9.6 [<pydecode.hyper.Constraint object at 0x261dd90>, <pydecode.hyper.Constraint object at 0x36e9190>]
-#     8.8 []
-# 
-
-# In[84]:
-
-display.report(duals)
-
-
-# Out[84]:
-
-# image file:
-
-# In[85]:
+# In[ ]:
 
 import pydecode.lp as lp
-hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, weights)
+hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, potentials)
 hypergraph_lp.solve()
 path = hypergraph_lp.path
 
 
-# In[86]:
+# In[ ]:
 
 # Output the path.
 for edge in gpath.edges:
     print hypergraph.label(edge)
 
 
-# Out[86]:
-
-#     ROOT -> D
-#     D -> N
-#     N -> V
-#     V -> D
-#     D -> D
-#     D -> N
-#     N -> END
-# 
-
-# In[87]:
+# In[ ]:
 
 print "check", constraints.check(gpath)
-print "score", weights.dot(gpath)
+print "score", potentials.dot(gpath)
 
 
-# Out[87]:
-
-#     check []
-#     score 8.8
-# 
-
-# In[88]:
+# In[ ]:
 
 HMMFormat(hypergraph, [path, gpath]).to_ipython()
 
 
-# Out[88]:
-
-#     <IPython.core.display.Image at 0x43e9050>
-
-# In[89]:
-
-for constraint in constraints:
-    print constraint.label
-
-
-# Out[89]:
-
-#     tag_D
-#     tag_V
-#     tag_N
-# 
-
-# In[90]:
+# In[ ]:
 
 class HMMConstraintFormat(display.HypergraphConstraintFormatter):
     def hypernode_attrs(self, node):
@@ -328,31 +289,23 @@ class HMMConstraintFormat(display.HypergraphConstraintFormatter):
     def subgraph_format(self, subgraph):
         return {"label": (["ROOT"] + sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
 
-HMMConstraintFormat(hypergraph, constraints).to_ipython()
+#HMMConstraintFormat(hypergraph, constraints).to_ipython()
 
-
-# Out[90]:
-
-#     <IPython.core.display.Image at 0x4133dd0>
 
 # Pruning
 # 
 
-# In[91]:
+# In[ ]:
 
-pruned_hypergraph, pruned_weights = ph.prune_hypergraph(hypergraph, weights, 0.8)
+pruned_hypergraph, pruned_potentials = ph.prune_hypergraph(hypergraph, potentials, 0.8)
 
 
-# In[92]:
+# In[ ]:
 
 HMMFormat(pruned_hypergraph, []).to_ipython()
 
 
-# Out[92]:
+# In[ ]:
 
-#     <IPython.core.display.Image at 0x391d350>
-
-# In[93]:
-
-very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
+very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, potentials, 0.9)
 

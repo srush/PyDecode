@@ -1,12 +1,12 @@
 
 ## Tutorial 4: Dependency Parsing
 
-# In[10]:
+# In[12]:
 
 sentence = "the man walked to the park"
 
 
-# In[11]:
+# In[13]:
 
 import pydecode.hyper as ph
 import pydecode.display as display
@@ -15,7 +15,7 @@ import random
 random.seed(0)
 
 
-# In[12]:
+# In[14]:
 
 Tri = "tri"
 Trap = "trap"
@@ -29,7 +29,7 @@ class Arc(namedtuple("Arc", ["head_index", "modifier_index"])):
     pass
 
 
-# In[13]:
+# In[15]:
 
 def first_order(sentence, c):
     tokens = ["*"] + sentence.split()
@@ -70,41 +70,17 @@ the_chart = first_order(sentence, c)
 hypergraph = the_chart.finish()
 
 
-# Out[13]:
+# In[16]:
 
-#     make Arc(head_index=0, modifier_index=0)
-#     make Arc(head_index=0, modifier_index=0)
-#     make Arc(head_index=1, modifier_index=1)
-#     make Arc(head_index=1, modifier_index=1)
-#     make Arc(head_index=2, modifier_index=2)
-#     make Arc(head_index=2, modifier_index=2)
-#     make Arc(head_index=0, modifier_index=0)
-#     make Arc(head_index=1, modifier_index=0)
-#     make Arc(head_index=0, modifier_index=0)
-#     make Arc(head_index=0, modifier_index=1)
-#     make Arc(head_index=1, modifier_index=1)
-#     make Arc(head_index=2, modifier_index=1)
-#     make Arc(head_index=1, modifier_index=1)
-#     make Arc(head_index=1, modifier_index=2)
-#     make Arc(head_index=0, modifier_index=0)
-#     make Arc(head_index=1, modifier_index=0)
-#     make Arc(head_index=2, modifier_index=0)
-#     make Arc(head_index=0, modifier_index=0)
-#     make Arc(head_index=0, modifier_index=1)
-#     make Arc(head_index=0, modifier_index=2)
-# 
-
-# In[14]:
-
-def build_weights(arc):
+def build_potentials(arc):
     print arc
     return random.random()
-weights = ph.Weights(hypergraph).build(build_weights)
+potentials = ph.Potentials(hypergraph).build(build_potentials)
 
-# phyper, pweights = ph.prune_hypergraph(hypergraph, weights, 0.5)
+# phyper, ppotentials = ph.prune_hypergraph(hypergraph, potentials, 0.5)
 
 
-# Out[14]:
+# Out[16]:
 
 #     Arc(head_index=0, modifier_index=0)
 #     None
@@ -136,37 +112,125 @@ weights = ph.Weights(hypergraph).build(build_weights)
 #     None
 # 
 
-# In[15]:
+# In[17]:
 
-path = ph.best_path(hypergraph, weights)
-best = weights.dot(path)
-maxmarginals = ph.compute_max_marginals(hypergraph, weights)
+path = ph.best_path(hypergraph, potentials)
+best = potentials.dot(path)
+maxmarginals = ph.compute_marginals(hypergraph, potentials)
 avg = 0.0
 for edge in hypergraph.edges:
-    avg += maxmarginals[edge]
+    avg += float(maxmarginals[edge])
 avg = avg / float(len(hypergraph.edges))
 thres = ((0.9) * best + (0.1) * avg)
 
 kept = set()
 for edge in hypergraph.edges:
-    score = maxmarginals[edge]
+    score = float(maxmarginals[edge])
     if score >= thres:
         kept.add(edge.id)
 
 
-# In[16]:
+# In[18]:
 
-phyper, pweights = ph.prune_hypergraph(hypergraph, weights, 0.9)
+potentials = ph.InsidePotentials(hypergraph).build(build_potentials)
+marginals = ph.compute_marginals(hypergraph, potentials)
+base = marginals[hypergraph.root]
+for edge in hypergraph.edges:
+    print marginals[edge].value / base.value
 
 
-# In[17]:
+# Out[18]:
+
+#     Arc(head_index=0, modifier_index=0)
+#     None
+#     Arc(head_index=1, modifier_index=1)
+#     Arc(head_index=1, modifier_index=1)
+#     None
+#     None
+#     Arc(head_index=2, modifier_index=2)
+#     Arc(head_index=2, modifier_index=2)
+#     None
+#     None
+#     Arc(head_index=0, modifier_index=0)
+#     Arc(head_index=0, modifier_index=1)
+#     None
+#     None
+#     Arc(head_index=1, modifier_index=1)
+#     Arc(head_index=2, modifier_index=1)
+#     Arc(head_index=1, modifier_index=1)
+#     Arc(head_index=1, modifier_index=2)
+#     None
+#     None
+#     None
+#     None
+#     Arc(head_index=0, modifier_index=0)
+#     Arc(head_index=0, modifier_index=1)
+#     Arc(head_index=0, modifier_index=2)
+#     None
+#     None
+#     None
+#     0.779948580638
+#     0.349678242399
+#     0.0683792196704
+#     0.405492480145
+#     0.0683792196704
+#     0.404793998187
+#     0.537440203938
+#     0.00476857367489
+#     0.477511406896
+#     0.00476857367489
+#     0.00845045343262
+#     0.048616893289
+#     0.000112753943291
+#     0.0529972607802
+#     0.101391194316
+#     0.0502810477309
+#     0.0750588711706
+#     0.354400196062
+#     0.151672238196
+#     0.0599287662378
+#     0.000698488876544
+#     0.42945905183
+#     0.211601004434
+#     0.301061341409
+#     0.0531100151747
+#     0.430157564592
+#     0.00407008449753
+#     0.565772357168
+# 
+
+# In[19]:
+
+phyper, ppotentials = ph.prune_hypergraph(hypergraph, potentials, 0.1)
+
+
+# Out[19]:
+
+
+    ---------------------------------------------------------------------------
+    AttributeError                            Traceback (most recent call last)
+
+    <ipython-input-19-31b33f2f027c> in <module>()
+    ----> 1 phyper, ppotentials = ph.prune_hypergraph(hypergraph, potentials, 0.1)
+    
+
+    /home/srush/Projects/decoding/python/pydecode/hyper.so in pydecode.hyper.prune_hypergraph (python/pydecode/hyper.cpp:21823)()
+
+
+    /home/srush/Projects/decoding/python/pydecode/hyper.so in pydecode.hyper.Inside.prune_hypergraph (python/pydecode/hyper.cpp:15301)()
+
+
+    AttributeError: 'pydecode.hyper._InsideMarginals' object has no attribute 'threshold'
+
+
+# In[ ]:
 
 import pydecode.lp as lp
-hyperlp = lp.HypergraphLP.make_lp(phyper, pweights)
+hyperlp = lp.HypergraphLP.make_lp(phyper, ppotentials)
 hyperlp.lp.writeLP("parse.lp")
 
 
-# In[23]:
+# In[ ]:
 
 class ParseFormat(display.HypergraphPathFormatter):
     def __init__(self, hypergraph, sentence, path):
@@ -205,11 +269,7 @@ class ParseFormat(display.HypergraphPathFormatter):
 ParseFormat(hypergraph, sentence, path).to_ipython()
 
 
-# Out[23]:
-
-#     <IPython.core.display.Image at 0x3994190>
-
-# In[27]:
+# In[ ]:
 
 import networkx as nx
 from networkx.readwrite import json_graph

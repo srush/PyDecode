@@ -7,63 +7,63 @@
 #include "./common.h"
 
 /**
- * A base class of a weight with traits of a semiring
+ * A base class of a potential with traits of a semiring
  * including + and * operators, and annihlator/identity elements.
  */
-template<typename ValType, typename SemiringWeight>
-class BaseSemiringWeight {
+template<typename ValType, typename SemiringPotential>
+class BaseSemiringPotential {
 public:
-	BaseSemiringWeight(const SemiringWeight& other)
+	BaseSemiringPotential(const SemiringPotential& other)
 		: value(normalize(other.value)) {}
-	BaseSemiringWeight(ValType val) : value(normalize(val)) {}
-    BaseSemiringWeight() : value(zero()) {}
+	BaseSemiringPotential(ValType val) : value(normalize(val)) {}
+    BaseSemiringPotential() : value(zero()) {}
 
 	operator ValType() const { return value; }
 
-	SemiringWeight& operator=(SemiringWeight rhs) {
+	SemiringPotential& operator=(SemiringPotential rhs) {
 		normalize(rhs.value);
 		std::swap(value, rhs.value);
 		return *this;
 	}
 
-	SemiringWeight& operator=(ValType rhs) {
+	SemiringPotential& operator=(ValType rhs) {
 		normalize(rhs);
 		std::swap(value, rhs);
 		return *this;
 	}
 
-    static SemiringWeight add(SemiringWeight lhs, const SemiringWeight &rhs) {
+    static SemiringPotential add(SemiringPotential lhs, const SemiringPotential &rhs) {
       return lhs + rhs;
     }
 
-    static SemiringWeight times(SemiringWeight lhs, const SemiringWeight &rhs) {
+    static SemiringPotential times(SemiringPotential lhs, const SemiringPotential &rhs) {
       return lhs * rhs;
     }
 
-	friend bool operator==(const SemiringWeight& lhs,const SemiringWeight& rhs) {
+	friend bool operator==(const SemiringPotential& lhs,const SemiringPotential& rhs) {
 		return lhs.value == rhs.value;
 	}
 
-	friend SemiringWeight operator+(SemiringWeight lhs, const SemiringWeight &rhs) {
+	friend SemiringPotential operator+(SemiringPotential lhs, const SemiringPotential &rhs) {
 		lhs += rhs;
 		return lhs;
 	}
-	friend SemiringWeight operator*(SemiringWeight lhs, const SemiringWeight &rhs) {
+	friend SemiringPotential operator*(SemiringPotential lhs, const SemiringPotential &rhs) {
 		lhs *= rhs;
 		return lhs;
 	}
 
-	SemiringWeight& operator+=(const SemiringWeight& rhs) {
+	SemiringPotential& operator+=(const SemiringPotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	SemiringWeight& operator*=(const SemiringWeight& rhs) {
+	SemiringPotential& operator*=(const SemiringPotential& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
 
-	static const SemiringWeight one() { return SemiringWeight(1.0); }
-	static const SemiringWeight zero() { return SemiringWeight(0.0); }
+	static const SemiringPotential one() { return SemiringPotential(1.0); }
+	static const SemiringPotential zero() { return SemiringPotential(0.0); }
 
 	// Determines range of acceptable values
 	ValType normalize(ValType val) { return val; };
@@ -79,15 +79,15 @@ protected:
  * 0: 0
  * 1: 1
  */
-class ViterbiWeight : public BaseSemiringWeight<double, ViterbiWeight> {
+class ViterbiPotential : public BaseSemiringPotential<double, ViterbiPotential> {
 public:
-ViterbiWeight(double value) : BaseSemiringWeight<double, ViterbiWeight>(normalize(value)) { }
-  ViterbiWeight() : BaseSemiringWeight<double, ViterbiWeight>() { }
-	ViterbiWeight& operator+=(const ViterbiWeight& rhs) {
+ViterbiPotential(double value) : BaseSemiringPotential<double, ViterbiPotential>(normalize(value)) { }
+  ViterbiPotential() : BaseSemiringPotential<double, ViterbiPotential>() { }
+	ViterbiPotential& operator+=(const ViterbiPotential& rhs) {
 		value = std::max(value, rhs.value);
 		return *this;
 	}
-	ViterbiWeight& operator*=(const ViterbiWeight& rhs) {
+	ViterbiPotential& operator*=(const ViterbiPotential& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
@@ -98,8 +98,8 @@ ViterbiWeight(double value) : BaseSemiringWeight<double, ViterbiWeight>(normaliz
 		return val;
 	}
 
-	static const ViterbiWeight one() { return ViterbiWeight(1.0); }
-	static const ViterbiWeight zero() { return ViterbiWeight(0.0); }
+	static const ViterbiPotential one() { return ViterbiPotential(1.0); }
+	static const ViterbiPotential zero() { return ViterbiPotential(0.0); }
 };
 
 /**
@@ -109,18 +109,18 @@ ViterbiWeight(double value) : BaseSemiringWeight<double, ViterbiWeight>(normaliz
  * 0: -INF
  * 1: 0
  */
-class LogViterbiWeight : public BaseSemiringWeight<double, LogViterbiWeight> {
+class LogViterbiPotential : public BaseSemiringPotential<double, LogViterbiPotential> {
 public:
-     LogViterbiWeight(double value) :
-       BaseSemiringWeight<double, LogViterbiWeight>(normalize(value)) { }
-     LogViterbiWeight() :
-       BaseSemiringWeight<double, LogViterbiWeight>(LogViterbiWeight::zero()) {}
+     LogViterbiPotential(double value) :
+       BaseSemiringPotential<double, LogViterbiPotential>(normalize(value)) { }
+     LogViterbiPotential() :
+       BaseSemiringPotential<double, LogViterbiPotential>(LogViterbiPotential::zero()) {}
 
-     LogViterbiWeight& operator+=(const LogViterbiWeight& rhs) {
+     LogViterbiPotential& operator+=(const LogViterbiPotential& rhs) {
        value = std::max(value, rhs.value);
        return *this;
      }
-     LogViterbiWeight& operator*=(const LogViterbiWeight& rhs) {
+     LogViterbiPotential& operator*=(const LogViterbiPotential& rhs) {
        value = value + rhs.value;
        return *this;
      }
@@ -130,8 +130,8 @@ public:
        return val;
      }
 
-     static const LogViterbiWeight one() { return LogViterbiWeight(0.0); }
-     static const LogViterbiWeight zero() { return LogViterbiWeight(-INF); }
+     static const LogViterbiPotential one() { return LogViterbiPotential(0.0); }
+     static const LogViterbiPotential zero() { return LogViterbiPotential(-INF); }
 };
 
 
@@ -142,22 +142,22 @@ public:
  * 0: false
  * 1: true
  */
-class BoolWeight : public BaseSemiringWeight<bool, BoolWeight> {
+class BoolPotential : public BaseSemiringPotential<bool, BoolPotential> {
 public:
-BoolWeight(bool value) : BaseSemiringWeight<bool, BoolWeight>(normalize(value)) { }
-  BoolWeight() : BaseSemiringWeight<bool, BoolWeight>() { }
+BoolPotential(bool value) : BaseSemiringPotential<bool, BoolPotential>(normalize(value)) { }
+  BoolPotential() : BaseSemiringPotential<bool, BoolPotential>() { }
 
-	BoolWeight& operator+=(const BoolWeight& rhs) {
+	BoolPotential& operator+=(const BoolPotential& rhs) {
 		value = value || rhs.value;
 		return *this;
 	}
-	BoolWeight& operator*=(const BoolWeight& rhs) {
+	BoolPotential& operator*=(const BoolPotential& rhs) {
 		value = value && rhs.value;
 		return *this;
 	}
 
-	static const BoolWeight one() { return BoolWeight(true); }
-	static const BoolWeight zero() { return BoolWeight(false); }
+	static const BoolPotential one() { return BoolPotential(true); }
+	static const BoolPotential zero() { return BoolPotential(false); }
 
 	bool normalize(bool val) const { return val; }
 };
@@ -169,29 +169,29 @@ BoolWeight(bool value) : BaseSemiringWeight<bool, BoolWeight>(normalize(value)) 
  * 0: 0
  * 1: 1
  */
-class InsideWeight : public BaseSemiringWeight<double, InsideWeight> {
+class InsidePotential : public BaseSemiringPotential<double, InsidePotential> {
 public:
-  InsideWeight(double value) : BaseSemiringWeight<double, InsideWeight>(normalize(value)) { }
+  InsidePotential(double value) : BaseSemiringPotential<double, InsidePotential>(normalize(value)) { }
 
-  InsideWeight() :
-  BaseSemiringWeight<double, InsideWeight>(InsideWeight::zero()) {}
+  InsidePotential() :
+  BaseSemiringPotential<double, InsidePotential>(InsidePotential::zero()) {}
 
-	InsideWeight& operator+=(const InsideWeight& rhs) {
+	InsidePotential& operator+=(const InsidePotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	InsideWeight& operator*=(const InsideWeight& rhs) {
+	InsidePotential& operator*=(const InsidePotential& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
 
-    friend InsideWeight operator/(InsideWeight lhs, const InsideWeight &rhs) {
+    friend InsidePotential operator/(InsidePotential lhs, const InsidePotential &rhs) {
       lhs.value /= rhs.value;
       return lhs;
 	}
 
-	static const InsideWeight one() { return InsideWeight(1.0); }
-	static const InsideWeight zero() { return InsideWeight(0.0); }
+	static const InsidePotential one() { return InsidePotential(1.0); }
+	static const InsidePotential zero() { return InsidePotential(0.0); }
 
 	double normalize(double val) const {
 		if (val < 0.0) val = 0.0;
@@ -207,21 +207,21 @@ public:
  * 0: INF
  * 1: 0
  */
-class RealWeight : public BaseSemiringWeight<double, RealWeight> {
+class RealPotential : public BaseSemiringPotential<double, RealPotential> {
 public:
-RealWeight(double value) : BaseSemiringWeight<double, RealWeight>(normalize(value)) { }
+RealPotential(double value) : BaseSemiringPotential<double, RealPotential>(normalize(value)) { }
 
-	RealWeight& operator+=(const RealWeight& rhs) {
+	RealPotential& operator+=(const RealPotential& rhs) {
 		value = std::min(value, rhs.value);
 		return *this;
 	}
-	RealWeight& operator*=(const RealWeight& rhs) {
+	RealPotential& operator*=(const RealPotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
 
-	static const RealWeight one() { return RealWeight(0.0); }
-	static const RealWeight zero() { return RealWeight(INF); }
+	static const RealPotential one() { return RealPotential(0.0); }
+	static const RealPotential zero() { return RealPotential(INF); }
 
 	double normalize(double val) const { return val; }
 };
@@ -233,21 +233,21 @@ RealWeight(double value) : BaseSemiringWeight<double, RealWeight>(normalize(valu
  * 0: INF
  * 1: 0
  */
-class TropicalWeight : public BaseSemiringWeight<double, TropicalWeight> {
+class TropicalPotential : public BaseSemiringPotential<double, TropicalPotential> {
 public:
-TropicalWeight(double value) : BaseSemiringWeight<double, TropicalWeight>(normalize(value)) { }
+TropicalPotential(double value) : BaseSemiringPotential<double, TropicalPotential>(normalize(value)) { }
 
-	TropicalWeight& operator+=(const TropicalWeight& rhs) {
+	TropicalPotential& operator+=(const TropicalPotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	TropicalWeight& operator*=(const TropicalWeight& rhs) {
+	TropicalPotential& operator*=(const TropicalPotential& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
 
-	static const TropicalWeight one() { return TropicalWeight(0.0); }
-	static const TropicalWeight zero() { return TropicalWeight(INF); }
+	static const TropicalPotential one() { return TropicalPotential(0.0); }
+	static const TropicalPotential zero() { return TropicalPotential(INF); }
 
 	double normalize(double val) const {
 		if (val < 0.0) val = 0.0;
@@ -265,21 +265,21 @@ TropicalWeight(double value) : BaseSemiringWeight<double, TropicalWeight>(normal
  * 0: 0
  * 1: 1
  */
-class CountingWeight : public BaseSemiringWeight<int, CountingWeight> {
+class CountingPotential : public BaseSemiringPotential<int, CountingPotential> {
 public:
-CountingWeight(int value) : BaseSemiringWeight<int, CountingWeight>(normalize(value)) { }
+CountingPotential(int value) : BaseSemiringPotential<int, CountingPotential>(normalize(value)) { }
 
-	CountingWeight& operator+=(const CountingWeight& rhs) {
+	CountingPotential& operator+=(const CountingPotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	CountingWeight& operator*=(const CountingWeight& rhs) {
+	CountingPotential& operator*=(const CountingPotential& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
 
-	static const CountingWeight one() { return CountingWeight(1); }
-	static const CountingWeight zero() { return CountingWeight(0); }
+	static const CountingPotential one() { return CountingPotential(1); }
+	static const CountingPotential zero() { return CountingPotential(0); }
 
 	int normalize(int val) const {
 		if(val < 0) val = 0;
@@ -296,13 +296,13 @@ CountingWeight(int value) : BaseSemiringWeight<int, CountingWeight>(normalize(va
  * 1: (1, 1)
  */
 template<typename SemiringComp, typename SemiringOther>
-class CompWeight : public BaseSemiringWeight<std::pair<SemiringComp, SemiringOther>, CompWeight<SemiringComp, SemiringOther> > {
+class CompPotential : public BaseSemiringPotential<std::pair<SemiringComp, SemiringOther>, CompPotential<SemiringComp, SemiringOther> > {
 public:
   typedef std::pair<SemiringComp, SemiringOther> MyVal;
-  typedef CompWeight<SemiringComp, SemiringOther> MyClass;
-  using BaseSemiringWeight<MyVal, MyClass>::value;
+  typedef CompPotential<SemiringComp, SemiringOther> MyClass;
+  using BaseSemiringPotential<MyVal, MyClass>::value;
 
-  CompWeight(MyVal value) : BaseSemiringWeight<MyVal, MyClass>(normalize(value)) { }
+  CompPotential(MyVal value) : BaseSemiringPotential<MyVal, MyClass>(normalize(value)) { }
 
   MyClass& operator+=(const MyClass& rhs) {
     if (value.first < rhs.value.first) value = rhs.value;
@@ -336,16 +336,16 @@ typedef vector<SparsePair> SparseVector;
  * 0: Empty Vector
  * 1: Empty Vector
  */
-class SparseVectorWeight : public BaseSemiringWeight<SparseVector, SparseVectorWeight> {
+class SparseVectorPotential : public BaseSemiringPotential<SparseVector, SparseVectorPotential> {
 public:
-SparseVectorWeight(const SparseVector vec) : BaseSemiringWeight<SparseVector, SparseVectorWeight>(vec) { }
-SparseVectorWeight() : BaseSemiringWeight<SparseVector, SparseVectorWeight>(SparseVectorWeight::zero()) { }
+SparseVectorPotential(const SparseVector vec) : BaseSemiringPotential<SparseVector, SparseVectorPotential>(vec) { }
+SparseVectorPotential() : BaseSemiringPotential<SparseVector, SparseVectorPotential>(SparseVectorPotential::zero()) { }
 
-  	SparseVectorWeight& operator+=(const SparseVectorWeight& rhs) {
+  	SparseVectorPotential& operator+=(const SparseVectorPotential& rhs) {
 		return *this;
 	}
 
-	SparseVectorWeight& operator*=(const SparseVectorWeight& rhs) {
+	SparseVectorPotential& operator*=(const SparseVectorPotential& rhs) {
       int i = 0, j = 0;
       SparseVector vec;
       while (i < value.size() || j < rhs.value.size()) {
@@ -365,8 +365,8 @@ SparseVectorWeight() : BaseSemiringWeight<SparseVector, SparseVectorWeight>(Spar
       return *this;
 	}
 
-	static const SparseVectorWeight one() { return SparseVectorWeight(SparseVector()); }
-	static const SparseVectorWeight zero() { return SparseVectorWeight(SparseVector()); }
+	static const SparseVectorPotential one() { return SparseVectorPotential(SparseVector()); }
+	static const SparseVectorPotential zero() { return SparseVectorPotential(SparseVector()); }
 
 	int normalize(int val) const {
       return val;
@@ -375,15 +375,15 @@ SparseVectorWeight() : BaseSemiringWeight<SparseVector, SparseVectorWeight>(Spar
 
 
 
-class TreeWeight : public BaseSemiringWeight<Hypernode *, TreeWeight> {
+class TreePotential : public BaseSemiringPotential<Hypernode *, TreePotential> {
 public:
-TreeWeight(Hypernode *value) : BaseSemiringWeight<Hypernode *, TreeWeight>(normalize(value)) { }
+TreePotential(Hypernode *value) : BaseSemiringPotential<Hypernode *, TreePotential>(normalize(value)) { }
 
-	TreeWeight& operator+=(const TreeWeight& rhs) {
+	TreePotential& operator+=(const TreePotential& rhs) {
 		return *this;
 	}
 
-	TreeWeight& operator*=(const TreeWeight& rhs) {
+	TreePotential& operator*=(const TreePotential& rhs) {
       if (rhs.value == NULL or value == NULL) {
         value = NULL;
       } else {
@@ -398,10 +398,10 @@ TreeWeight(Hypernode *value) : BaseSemiringWeight<Hypernode *, TreeWeight>(norma
       return *this;
 	}
 
-	static const TreeWeight one() {
-      return TreeWeight(new Hypernode(""));
+	static const TreePotential one() {
+      return TreePotential(new Hypernode(""));
     }
-	static const TreeWeight zero() { return TreeWeight(NULL); }
+	static const TreePotential zero() { return TreePotential(NULL); }
 
 	Hypernode *normalize(Hypernode *val) const {
 		return val;
@@ -411,62 +411,62 @@ TreeWeight(Hypernode *value) : BaseSemiringWeight<Hypernode *, TreeWeight>(norma
 class HypergraphProjection;
 
 template<typename SemiringType>
-class HypergraphWeights {
+class HypergraphPotentials {
  public:
-  HypergraphWeights(const Hypergraph *hypergraph,
-                    const vector<SemiringType> &weights,
+  HypergraphPotentials(const Hypergraph *hypergraph,
+                    const vector<SemiringType> &potentials,
                     SemiringType bias)
   : hypergraph_(hypergraph),
-    weights_(weights),
+    potentials_(potentials),
     bias_(bias) {
-      assert(weights.size() == hypergraph->edges().size());
+      assert(potentials.size() == hypergraph->edges().size());
   }
 
-  HypergraphWeights(const Hypergraph *hypergraph)
+  HypergraphPotentials(const Hypergraph *hypergraph)
     : hypergraph_(hypergraph),
-      weights_(hypergraph->edges().size(), SemiringType::one()),
+      potentials_(hypergraph->edges().size(), SemiringType::one()),
       bias_(SemiringType::one()) {}
 
  SemiringType dot(const Hyperpath &path) const {
    path.check(*hypergraph_);
    SemiringType score = SemiringType::one();
    foreach (HEdge edge, path.edges()) {
-     score *= weights_[edge->id()];
+     score *= potentials_[edge->id()];
    }
    return score * bias_;
  }
 
-  SemiringType score(HEdge edge) const { return weights_[edge->id()]; }
+  SemiringType score(HEdge edge) const { return potentials_[edge->id()]; }
   const SemiringType& operator[] (HEdge edge) const {
-    return weights_[edge->id()];
+    return potentials_[edge->id()];
   }
   SemiringType& operator[] (HEdge edge) {
-    return weights_[edge->id()];
+    return potentials_[edge->id()];
   }
 
   const SemiringType &bias() const { return bias_; }
   SemiringType &bias() { return bias_; }
 
-  HypergraphWeights<SemiringType> *project_weights(
+  HypergraphPotentials<SemiringType> *project_potentials(
     const HypergraphProjection &projection) const;
 
   /**
-   * Pairwise "times" with another set of weights.
+   * Pairwise "times" with another set of potentials.
    *
-   * @return New hypergraphweights.
+   * @return New hypergraphpotentials.
    */
-  HypergraphWeights <SemiringType> *times(
-      const HypergraphWeights<SemiringType> &weights) const;
+  HypergraphPotentials <SemiringType> *times(
+      const HypergraphPotentials<SemiringType> &potentials) const;
 
   void check(const Hypergraph &graph) const {
     if (!graph.same(*hypergraph_)) {
-      throw HypergraphException("Hypergraph does not match weights.");
+      throw HypergraphException("Hypergraph does not match potentials.");
     }
   }
 
-  void check(const HypergraphWeights<SemiringType> &weights) const {
-    if (!weights.hypergraph_->same(*hypergraph_)) {
-      throw HypergraphException("Hypergraph weights do not match weights.");
+  void check(const HypergraphPotentials<SemiringType> &potentials) const {
+    if (!potentials.hypergraph_->same(*hypergraph_)) {
+      throw HypergraphException("Hypergraph potentials do not match potentials.");
     }
   }
 
@@ -474,7 +474,7 @@ class HypergraphWeights {
 
  protected:
   const Hypergraph *hypergraph_;
-  vector<SemiringType> weights_;
+  vector<SemiringType> potentials_;
   SemiringType bias_;
 };
 
@@ -511,7 +511,7 @@ class HypergraphProjection {
 
   static HypergraphProjection *project_hypergraph(
       const Hypergraph *hypergraph,
-      const HypergraphWeights<BoolWeight> &edge_mask);
+      const HypergraphPotentials<BoolPotential> &edge_mask);
 
   HEdge project(HEdge original) const {
     return (*edge_map_)[original->id()];
@@ -533,46 +533,46 @@ class HypergraphProjection {
 
 
 template <>
-inline double HypergraphWeights<double>::dot(const Hyperpath &path) const {
+inline double HypergraphPotentials<double>::dot(const Hyperpath &path) const {
   path.check(*hypergraph_);
   double score = 0.0;
   foreach (HEdge edge, path.edges()) {
-    score += weights_[edge->id()];
+    score += potentials_[edge->id()];
   }
   return score + bias_;
 }
 
 template<typename SemiringType>
-HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::times(const HypergraphWeights<SemiringType> &other) const {
+HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::times(const HypergraphPotentials<SemiringType> &other) const {
   check(other);
-  vector<SemiringType> new_weights(weights_);
-  for (uint i = 0; i < other.weights_.size(); ++i) {
-    new_weights[i] *= other.weights_[i];
+  vector<SemiringType> new_potentials(potentials_);
+  for (uint i = 0; i < other.potentials_.size(); ++i) {
+    new_potentials[i] *= other.potentials_[i];
   }
-  return new HypergraphWeights<SemiringType>(hypergraph_,
-                               new_weights,
+  return new HypergraphPotentials<SemiringType>(hypergraph_,
+                               new_potentials,
                                bias_ * other.bias_);
 }
 
 template<typename SemiringType>
-HypergraphWeights<SemiringType> *HypergraphWeights<SemiringType>::project_weights(
+HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::project_potentials(
     const HypergraphProjection &projection) const {
-  vector<SemiringType> weights(projection.new_graph->edges().size());
+  vector<SemiringType> potentials(projection.new_graph->edges().size());
   foreach (HEdge edge, projection.original_graph->edges()) {
     HEdge new_edge = projection.project(edge);
     if (new_edge != NULL && new_edge->id() >= 0) {
       assert(new_edge->id() < projection.new_graph->edges().size());
-      weights[new_edge->id()] = score(edge);
+      potentials[new_edge->id()] = score(edge);
     }
   }
-  return new HypergraphWeights<SemiringType>(projection.new_graph, weights, bias_);
+  return new HypergraphPotentials<SemiringType>(projection.new_graph, potentials, bias_);
 }
 
 
 
 inline HypergraphProjection *HypergraphProjection::project_hypergraph(
     const Hypergraph *hypergraph,
-    const HypergraphWeights<BoolWeight> &edge_mask) {
+    const HypergraphPotentials<BoolPotential> &edge_mask) {
   vector<HNode> *node_map =
       new vector<HNode>(hypergraph->nodes().size(), NULL);
   vector<HEdge> *edge_map =
@@ -622,25 +622,25 @@ inline HypergraphProjection *HypergraphProjection::project_hypergraph(
                                   node_map, edge_map);
 }
 
-inline const HypergraphWeights<LogViterbiWeight> *
-pairwise_dot(const HypergraphWeights<SparseVectorWeight> &sparse_weights,
+inline const HypergraphPotentials<LogViterbiPotential> *
+pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
              const vector<double> &vec) {
-  HypergraphWeights<LogViterbiWeight> *weights =
-      new HypergraphWeights<LogViterbiWeight>(sparse_weights.hypergraph());
-  foreach (HEdge edge, sparse_weights.hypergraph()->edges()) {
+  HypergraphPotentials<LogViterbiPotential> *potentials =
+      new HypergraphPotentials<LogViterbiPotential>(sparse_potentials.hypergraph());
+  foreach (HEdge edge, sparse_potentials.hypergraph()->edges()) {
     SparseVector edge_constraints =
-        static_cast<SparseVector>(sparse_weights.score(edge));
+        static_cast<SparseVector>(sparse_potentials.score(edge));
     foreach (SparsePair pair, edge_constraints) {
-      (*weights)[edge] *=
-          LogViterbiWeight(pair.second * vec[pair.first]);
+      (*potentials)[edge] *=
+          LogViterbiPotential(pair.second * vec[pair.first]);
     }
   }
   SparseVector bias_constraints =
-      static_cast<SparseVector>(sparse_weights.bias());
+      static_cast<SparseVector>(sparse_potentials.bias());
   foreach (SparsePair pair, bias_constraints) {
-    weights->bias() *= LogViterbiWeight(pair.second * vec[pair.first]);
+    potentials->bias() *= LogViterbiPotential(pair.second * vec[pair.first]);
   }
-  return weights;
+  return potentials;
 };
 
 #endif // HYPERGRAPH_SEMIRING_H_

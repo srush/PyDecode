@@ -7,7 +7,7 @@ import pydecode.hyper as ph
 import pydecode.display as display
 
 
-# In[7]:
+# In[2]:
 
 hyp = ph.Hypergraph()
 with hyp.builder() as b:
@@ -18,28 +18,28 @@ with hyp.builder() as b:
      n5 = b.add_node((([n1, n2], "edge1"),), label = "e")
      b.add_node([([n5], "edge3"), ([n3, n4], "edge2")], label = "root")
 
-def build_weights(label):
+def build_potentials(label):
      return {"edge1" : 3, "edge2" : 1, "edge3" : 1}[label]
-weights = ph.Weights(hyp).build(build_weights)
+potentials = ph.Potentials(hyp).build(build_potentials)
 
 
 # Draw the graph
 
-# In[8]:
+# In[3]:
 
-display.HypergraphWeightFormatter(hyp, weights).to_ipython()
+display.HypergraphPotentialFormatter(hyp, potentials).to_ipython()
 
 
-# Out[8]:
+# Out[3]:
 
-#     <IPython.core.display.Image at 0x4578550>
+#     <IPython.core.display.Image at 0x2fb1410>
 
-# In[30]:
+# In[4]:
 
-path = ph.best_path(hyp, weights)
+path = ph.best_path(hyp, potentials)
 display.HypergraphPathFormatter(hyp, [path]).to_ipython()
 
 
-# Out[30]:
+# Out[4]:
 
-#     <IPython.core.display.Image at 0x3503e10>
+#     <IPython.core.display.Image at 0x33e2910>

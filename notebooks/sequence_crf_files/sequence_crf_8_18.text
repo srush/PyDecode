@@ -1,39 +1,4 @@
-
-END -> END ['in', 'the', 'park', 'END']
-N -> I ['in', 'the', 'park', 'END']
-I -> D ['in', 'the', 'park', 'END']
-D -> N ['in', 'the', 'park', 'END']
-ROOT -> D ['in', 'the', 'park', 'END']
-D -> D ['in', 'the', 'park', 'END']
-N -> END ['in', 'the', 'park', 'END']
-D -> N ['in', 'the', 'park', 'END']
-END -> END ['in', 'the', 'park', 'END']
-make ROOT -> D
-make D -> V
-make D -> D
-make D -> N
-make V -> V
-make D -> V
-make N -> V
-make V -> D
-make D -> D
-make N -> D
-make V -> N
-make D -> N
-make N -> N
-make V -> END
-make D -> END
-make N -> END
-make END -> END
-ROOT -> D ['in', 'the', 'dog', 'END']
-D -> V ['in', 'the', 'dog', 'END']
-D -> D ['in', 'the', 'dog', 'END']
-D -> N ['in', 'the', 'dog', 'END']
-V -> V ['in', 'the', 'dog', 'END']
-D -> V ['in', 'the', 'dog', 'END']
-N -> V ['in', 'the', 'dog', 'END']
-V -> D ['in', 'the', 'dog', 'END']
-D -> D ['in', 'the', 'dog', 'END']
+ ['in', 'the', 'dog', 'END']
 N -> D ['in', 'the', 'dog', 'END']
 V -> N ['in', 'the', 'dog', 'END']
 D -> N ['in', 'the', 'dog', 'END']
@@ -50,23 +15,6 @@ D -> D ['in', 'the', 'dog', 'END']
 D -> D ['in', 'the', 'dog', 'END']
 END -> END ['in', 'the', 'dog', 'END']
 D -> END ['in', 'the', 'dog', 'END']
-make ROOT -> V
-make ROOT -> D
-make ROOT -> N
-make V -> V
-make D -> V
-make N -> V
-make V -> D
-make D -> D
-make N -> D
-make V -> N
-make D -> N
-make N -> N
-make V -> V
-make D -> V
-make N -> V
-make V -> END
-make END -> END
 ROOT -> V ['the', 'dog', 'walked', 'END']
 ROOT -> D ['the', 'dog', 'walked', 'END']
 ROOT -> N ['the', 'dog', 'walked', 'END']
@@ -92,19 +40,6 @@ ROOT -> N ['the', 'dog', 'walked', 'END']
 V -> END ['the', 'dog', 'walked', 'END']
 END -> END ['the', 'dog', 'walked', 'END']
 N -> V ['the', 'dog', 'walked', 'END']
-make ROOT -> D
-make D -> V
-make D -> D
-make D -> N
-make V -> V
-make D -> V
-make N -> V
-make V -> N
-make D -> N
-make N -> N
-make V -> END
-make N -> END
-make END -> END
 ROOT -> D ['in', 'the', 'park', 'END']
 D -> V ['in', 'the', 'park', 'END']
 D -> D ['in', 'the', 'park', 'END']
@@ -118,4 +53,37 @@ N -> N ['in', 'the', 'park', 'END']
 V -> END ['in', 'the', 'park', 'END']
 N -> END ['in', 'the', 'park', 'END']
 END -> END ['in', 'the', 'park', 'END']
-N -> I
+N -> I ['in', 'the', 'park', 'END']
+I -> D ['in', 'the', 'park', 'END']
+D -> N ['in', 'the', 'park', 'END']
+ROOT -> D ['in', 'the', 'park', 'END']
+D -> D ['in', 'the', 'park', 'END']
+N -> END ['in', 'the', 'park', 'END']
+D -> N ['in', 'the', 'park', 'END']
+END -> END ['in', 'the', 'park', 'END']
+ROOT -> D ['in', 'the', 'dog', 'END']
+D -> V ['in', 'the', 'dog', 'END']
+D -> D ['in', 'the', 'dog', 'END']
+D -> N ['in', 'the', 'dog', 'END']
+V -> V ['in', 'the', 'dog', 'END']
+D -> V ['in', 'the', 'dog', 'END']
+N -> V ['in', 'the', 'dog', 'END']
+V -> D ['in', 'the', 'dog', 'END']
+D -> D ['in', 'the', 'dog', 'END']
+N -> D ['in', 'the', 'dog', 'END']
+V -> N ['in', 'the', 'dog', 'END']
+D -> N ['in', 'the', 'dog', 'END']
+N -> N ['in', 'the', 'dog', 'END']
+V -> END ['in', 'the', 'dog', 'END']
+D -> END ['in', 'the', 'dog', 'END']
+N -> END ['in', 'the', 'dog', 'END']
+END -> END ['in', 'the', 'dog', 'END']
+N -> I ['in', 'the', 'dog', 'END']
+I -> D ['in', 'the', 'dog', 'END']
+D -> N ['in', 'the', 'dog', 'END']
+ROOT -> D ['in', 'the', 'dog', 'END']
+D -> D ['in', 'the', 'dog', 'END']
+D -> D ['in', 'the', 'dog', 'END']
+END -> END ['in', 'the', 'dog', 'END']
+D -> END ['in', 'the', 'dog', 'END']
+ROOT -> V

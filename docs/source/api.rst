@@ -26,7 +26,6 @@ See these example algorithms.
    :template: class.rst
 
    ChartBuilder
-   SemiRing
 
 
 Behind the scenes the toolkit will convert the code to a

@@ -31,16 +31,11 @@ This is a note on running decipherment.
             self.plaintext = plaintext
     simple_problem = Problem("ababacabac ")
     simple_problem.make_cipher("abac")
-
-.. parsed-literal::
-
-    
-
-
 .. code:: python
 
     import pydecode.hyper as hyper
     import pydecode.display as display
+    import pydecode.constraints as cons
     from collections import namedtuple        
 .. code:: python
 
@@ -114,8 +109,11 @@ l^2 constraints
     def build_constraints(hypergraph, problem):
         ciphertext = problem.ciphertext
         letters = problem.letters
-        constraints = hyper.Constraints(hypergraph)
         def transform(from_l, to_l): return "letter_%s_from_letter_%s"%(to_l, from_l)
+        constraints = cons.Constraints(hypergraph, [(transform(l, l2), 0)
+                           for l  in letters 
+                           for l2 in letters])
+    
         first_position = {}
         count = {}
         for i, l in enumerate(ciphertext):
@@ -131,76 +129,75 @@ l^2 constraints
                 return [(transform(conv.cipherletter, conv.letter), count[l] - 1)]
             else:
                 return [(transform(conv.cipherletter, conv.letter), -1)]
-        constraints.build([(transform(l, l2), 0)
-                           for l  in letters 
-                           for l2 in letters], 
+        constraints.build( 
                           build)
         return constraints
     constraints = build_constraints(hyper1, simple_problem)
 
 .. code:: python
 
-    def build_weights(edge):
+    def build_potentials(edge):
         return random.random()
-    weights = hyper.Weights(hyper1).build(build_weights)
+    potentials = hyper.Potentials(hyper1).build(build_potentials)
 .. code:: python
 
     for edge in hyper1.edges:
-        print weights[edge]
+        print potentials[edge]
 
 .. parsed-literal::
 
-    0.439529396568
-    0.118871071994
-    0.789021590346
-    0.773859760987
-    0.331166719804
-    0.210266437624
-    0.644248381653
-    0.947822640217
-    0.623687349699
-    0.0619245821011
-    0.428125980304
-    0.947963838136
-    0.413298343627
-    0.090241883533
-    0.471665801439
-    0.260141322231
-    0.111991990646
-    0.947188115723
-    0.846164715608
-    0.0241127275885
-    0.794472055826
-    0.50027139538
-    0.276092326835
-    0.0810922544945
-    0.40705712343
-    0.910619716508
-    0.92719176098
-    0.708645820912
-    0.625943298616
-    0.672398339909
-    0.149564913089
-    0.683693618913
-    0.199998133306
+    0.614117264748
+    0.759764134884
+    0.733525454998
+    0.0815630927682
+    0.916156351566
+    0.0582501739264
+    0.389200419188
+    0.708899497986
+    0.117828272283
+    0.703362822533
+    0.955223083496
+    0.951672554016
+    0.889782249928
+    0.850794136524
+    0.206611990929
+    0.666242241859
+    0.836310505867
+    0.631427586079
+    0.420347988605
+    0.717808246613
+    0.0318541526794
+    0.10944814235
+    0.398276388645
+    0.686978042126
+    0.0620245561004
+    0.156915932894
+    0.227964177728
+    0.761591732502
+    0.0153166977689
+    0.402361214161
+    0.468028366566
+    0.351031720638
+    0.130741521716
 
 
 .. code:: python
 
-    path = hyper.best_path(hyper1, weights)
-    weights.dot(path)
+    path = hyper.best_path(hyper1, potentials)
+    potentials.dot(path)
 
 
 
 .. parsed-literal::
 
-    4.278486879627907
+    3.458035945892334
 
 
 
 .. code:: python
 
-    cpath, duals = hyper.best_constrained(hyper1, weights, constraints)
+    import pydecode.optimization as opt
+    cpath = opt.best_constrained_path(hyper1, potentials, constraints)
 .. code:: python
 
     CipherFormat(hyper1, [cpath]).to_ipython()
@@ -213,32 +210,13 @@ l^2 constraints
 
 .. code:: python
 
-    for d in duals:
-        print d.dual
-
-.. parsed-literal::
-
-    4.27848687963
-    4.75235448802
-    4.1423428642
-
-
-.. code:: python
-
-    display.report(duals)
-
-
-.. image:: decipher_files/decipher_17_0.png
-
-
-.. code:: python
-
-    print weights.dot(cpath)
+    print potentials.dot(cpath)
     constraints.check(cpath)
 
 .. parsed-literal::
 
-    4.1423428642
+    0.468028366566
+    Constraints {}
 
 
 
@@ -260,9 +238,9 @@ Real Problem
     hyper2 = build_cipher_graph(complicated_problem)
 .. code:: python
 
-    def build_ngram_weights(edge):
+    def build_ngram_potentials(edge):
         return math.log(complicated_problem.lm.prob(edge.letter, edge.prevletter))
-    weights2 = hyper.Weights(hyper2).build(build_ngram_weights)
+    potentials2 = hyper.Potentials(hyper2).build(build_ngram_potentials)
 
 .. code:: python
 
@@ -275,155 +253,104 @@ Real Problem
 
 .. code:: python
 
-    path2 = hyper.best_path(hyper2, weights2)
+    path2 = hyper.best_path(hyper2, potentials2)
     
     for edge in path2.edges:
         print edge.id
-        print weights2[edge]
-    weights2.dot(path2)
+        print potentials2[edge]
+    potentials2.dot(path2)
 
 .. parsed-literal::
 
     11
-    -2.07941654387
+    -2.07941651344
     221
     0.0
     298
     0.0
     648
-    -1.09861228867
+    -1.0986123085
     702
-    -0.405481773803
+    -0.405481785536
     709
-    -1.45088787965
+    -1.45088791847
     814
-    -0.510852289188
+    -0.510852277279
     951
-    -0.69314718056
+    -0.693147182465
     971
-    -2.07941654387
+    -2.07941651344
     1181
     0.0
     1258
     0.0
     1428
-    -1.09861228867
+    -1.0986123085
     1451
-    -2.07941654387
+    -2.07941651344
     1661
     0.0
     1738
     0.0
     1908
-    -0.693234675638
+    -0.693234682083
     2190
-    -0.693172179622
+    -0.693172156811
     2449
-    -0.510852289188
+    -0.510852277279
     2586
-    -0.69314718056
+    -0.693147182465
     2865
-    -0.693172179622
+    -0.693172156811
     3124
-    -0.510852289188
+    -0.510852277279
     3261
-    -0.69314718056
+    -0.693147182465
     3281
-    -2.07941654387
+    -2.07941651344
     3491
     0.0
     3568
     0.0
     3888
-    -1.09861228867
+    -1.0986123085
     3970
-    -0.693234675638
+    -0.693234682083
     4245
-    -0.693172179622
+    -0.693172156811
     4504
-    -0.510852289188
+    -0.510852277279
     4641
-    -0.69314718056
+    -0.693147182465
 
 
 
 
 .. parsed-literal::
 
-    -21.751856464057795
+    0.0
 
 
 
 .. code:: python
 
-    new_hyper, new_weights = hyper.prune_hypergraph(hyper2, weights2, 0.2)
-    constraints2 = build_constraints(new_hyper, complicated_problem)
+    # new_hyper, new_potentials = hyper.prune_hypergraph(hyper2, potentials2, 0.2)
+    # constraints2 = build_constraints(new_hyper, complicated_problem)
 .. code:: python
 
-    print hyper2.edges_size
-    new_hyper.edges_size
+    # print hyper2.edges_size
+    # new_hyper.edges_size
+.. code:: python
 
-.. parsed-literal::
+    # display.report(duals)
+.. code:: python
 
-    4650
-
-
-
-
-.. parsed-literal::
-
-    1430
-
-
+    # path2, duals = hyper.best_constrained(new_hyper, new_potentials, constraints2)
+Potentials are the bigram language model scores.
 
 .. code:: python
 
-    #display.to_ipython(new_hyper, CipherFormat(new_hyper, []))
-.. code:: python
-
-    display.report(duals)
-
-
-.. image:: decipher_files/decipher_28_0.png
-
-
-.. code:: python
-
-    for d in duals[:10]:
-        for const in d.constraints:
-            print const.label,
-        print 
-
-.. parsed-literal::
-
-    letter_c_from_letter_c letter_b_from_letter_c
-    letter_c_from_letter_c letter_b_from_letter_c
-    
-
-
-.. code:: python
-
-    path2, duals = hyper.best_constrained(new_hyper, new_weights, constraints2)
-.. code:: python
-
-    print len(duals)
-
-.. parsed-literal::
-
-    200
-
-
-Weights are the bigram language model scores.
-
-.. code:: python
-
-    path2 = hyper.best_path(hyper2, weights2)
-    print weights2.dot(path2)
-    for edge in path2.edges:
-        print hyper2.label(edge).letter, 
-
-.. parsed-literal::
-
-     -21.7518564641
-    p r e s   d f   p r e   p r e a d f a d f   p r e n a d f  
-
+    # path2 = hyper.best_path(hyper2, potentials2)
+    # print potentials2.dot(path2)
+    # for edge in path2.edges:
+    #     print hyper2.label(edge).letter, 

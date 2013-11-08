@@ -20,29 +20,29 @@ TEST(Decode, TestHypergraph) {
   ASSERT_EQ(test.edges().size(), 1);
 }
 
-TEST(Decode, ViterbiWeight) {
+TEST(Decode, ViterbiPotential) {
   // Test for correct normalization
-  ViterbiWeight high = ViterbiWeight(1.1);
+  ViterbiPotential high = ViterbiPotential(1.1);
   std::cerr << high;
-  ASSERT_EQ(high, ViterbiWeight(1.0));
-  ViterbiWeight low = ViterbiWeight(-0.1);
-  ASSERT_EQ(low, ViterbiWeight(0.0));
+  ASSERT_EQ(high, ViterbiPotential(1.0));
+  ViterbiPotential low = ViterbiPotential(-0.1);
+  ASSERT_EQ(low, ViterbiPotential(0.0));
 
   // Test assignment
   high = 0.5;
-  ASSERT_EQ(high, ViterbiWeight(0.5));
+  ASSERT_EQ(high, ViterbiPotential(0.5));
 
   // Test Operators
   high += low;
-  ASSERT_EQ(high, ViterbiWeight(0.5));
+  ASSERT_EQ(high, ViterbiPotential(0.5));
   low += high;
-  ASSERT_EQ(low, ViterbiWeight(0.5));
+  ASSERT_EQ(low, ViterbiPotential(0.5));
   high *= low;
-  ASSERT_EQ(high, ViterbiWeight(0.25));
-  high *= ViterbiWeight::one();
-  ASSERT_EQ(high, ViterbiWeight(0.25));
-  high *= ViterbiWeight::zero();
-  ASSERT_EQ(high, ViterbiWeight::zero());
+  ASSERT_EQ(high, ViterbiPotential(0.25));
+  high *= ViterbiPotential::one();
+  ASSERT_EQ(high, ViterbiPotential(0.25));
+  high *= ViterbiPotential::zero();
+  ASSERT_EQ(high, ViterbiPotential::zero());
 
   // Test casting
   double d = 0.5;

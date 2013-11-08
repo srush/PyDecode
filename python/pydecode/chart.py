@@ -4,8 +4,7 @@ import sys
 
 class ChartBuilder:
     """
-    A dynamic programming chart parameterized by semiring.
-
+    A imperative interface for specifying dynamic programs.
     """
 
     def __init__(self, score_fn=lambda a: a,
@@ -54,7 +53,7 @@ class ChartBuilder:
         else:
             return self._chart[self._last].value
 
-    def sr(self, label):
+    def value(self, label):
         """
         Get the semiring value of the label.
 
@@ -65,6 +64,9 @@ class ChartBuilder:
         label : edge label
            Get the semiring value of the label.
         """
+        return self.sr(label)
+
+    def sr(self, label):
         return self._semiring(self._scorer(label))
 
     def init(self, label):

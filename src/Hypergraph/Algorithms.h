@@ -48,32 +48,32 @@ protected:
 template<typename SemiringType>
 Chart<SemiringType> *general_inside(
     const Hypergraph *graph,
-    const HypergraphWeights<SemiringType> &weights);
+    const HypergraphPotentials<SemiringType> &potentials);
 
 template<typename SemiringType>
 Chart<SemiringType> *general_outside(
     const Hypergraph *graph,
-    const HypergraphWeights<SemiringType> &weights,
+    const HypergraphPotentials<SemiringType> &potentials,
     const Chart<SemiringType> &inside_chart);
 
 template<typename SemiringType>
 Hyperpath *general_viterbi(
     const Hypergraph *graph,
-    const HypergraphWeights<SemiringType> &weights);
+    const HypergraphPotentials<SemiringType> &potentials);
 
 template<typename SemiringType>
 class Marginals {
  public:
 
   Marginals(const Hypergraph *hypergraph,
-            const HypergraphWeights<SemiringType> *weights,
+            const HypergraphPotentials<SemiringType> *potentials,
             const Chart<SemiringType> *in_chart,
             const Chart<SemiringType> *out_chart)
       : hypergraph_(hypergraph),
-      weights_(weights),
+      potentials_(potentials),
       in_chart_(in_chart),
       out_chart_(out_chart) {
-        weights->check(*hypergraph);
+        potentials->check(*hypergraph);
         in_chart->check(hypergraph);
         out_chart->check(hypergraph);
       }
@@ -83,26 +83,26 @@ class Marginals {
     delete out_chart_;
   }
 
-  HypergraphWeights<BoolWeight> *threshold(
+  HypergraphPotentials<BoolPotential> *threshold(
       const SemiringType &threshold) const {
-    HypergraphWeights<BoolWeight> *weights =
-        new HypergraphWeights<BoolWeight>(hypergraph_);
+    HypergraphPotentials<BoolPotential> *potentials =
+        new HypergraphPotentials<BoolPotential>(hypergraph_);
     foreach (HEdge edge, hypergraph_->edges()) {
-      (*weights)[edge] = BoolWeight(threshold < marginal(edge));
+      (*potentials)[edge] = BoolPotential(threshold < marginal(edge));
     }
-    return weights;
+    return potentials;
   }
 
-  // Compute the max-marginals for the weighted hypergraph.
+  // Compute the max-marginals for the potentialed hypergraph.
   static const Marginals *compute(
       const Hypergraph *hypergraph,
-      const HypergraphWeights<SemiringType> *weights) {
+      const HypergraphPotentials<SemiringType> *potentials) {
     Chart<SemiringType> *in_chart =
-        general_inside<SemiringType>(hypergraph, *weights);
+        general_inside<SemiringType>(hypergraph, *potentials);
     Chart<SemiringType> *out_chart =
-        general_outside<SemiringType>(hypergraph, *weights,
+        general_outside<SemiringType>(hypergraph, *potentials,
                                       *in_chart);
-    return new Marginals<SemiringType>(hypergraph, weights,
+    return new Marginals<SemiringType>(hypergraph, potentials,
                                        in_chart, out_chart);
   }
 
@@ -110,7 +110,7 @@ class Marginals {
   // Get max-marginal for edge or node.
   SemiringType marginal(HEdge edge) const {
       SemiringType score = (*out_chart_)[edge->head_node()];
-      score *= weights_->score(edge);
+      score *= potentials_->score(edge);
       foreach (HNode node, edge->tail_nodes()) {
         score *= (*in_chart_)[node];
       }
@@ -122,7 +122,7 @@ class Marginals {
   }
 
   template<typename OtherSemi>
-  OtherSemi dot(HypergraphWeights<OtherSemi> other) const {
+  OtherSemi dot(HypergraphPotentials<OtherSemi> other) const {
     OtherSemi out_score = OtherSemi::one();
     foreach (HEdge edge, hypergraph_->edges()) {
       out_score += marginal(edge) * other.score(edge);
@@ -136,7 +136,7 @@ class Marginals {
 
  private:
   const Hypergraph *hypergraph_;
-  const HypergraphWeights<SemiringType> *weights_;
+  const HypergraphPotentials<SemiringType> *potentials_;
 
   // Pointer to inside and outside charts.
   // Note these are owned by the object.

@@ -109,7 +109,7 @@ class HypergraphLP:
                      for (coeff, edge) in constraint])
 
     @staticmethod
-    def make_lp(hypergraph, weights, name="", integral=False):
+    def make_lp(hypergraph, potentials, name="", integral=False):
         r"""
         Construct a linear program from a hypergraph.
 
@@ -123,7 +123,7 @@ class HypergraphLP:
         ----------
 
         hypergraph : :py:class:`pydecode.hyper.Hypergraph`
-        weights : :py:class:`pydecode.hyper.Weights`
+        potentials : :py:class:`pydecode.hyper.Potentials`
 
         Returns
         --------
@@ -160,7 +160,7 @@ class HypergraphLP:
                 in_edges[node.id].append(edge)
 
         # max \theta x
-        prob += sum([weights[edge] * edge_vars[edge.id]
+        prob += sum([potentials[edge] * edge_vars[edge.id]
                      for edge in hypergraph.edges])
 
         # x(r) = 1

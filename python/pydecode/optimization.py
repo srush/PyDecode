@@ -5,12 +5,12 @@ import pydecode.hyper as ph
 import numpy as np
 from numpy.linalg import norm
 
-def subgradient(graph, weights, constraints):
+def subgradient(graph, potentials, constraints):
     def fn(x):
-        mod_weights = ph.pairwise_dot(constraints, x);
-        dual_weights = weights.times(mod_weights)
-        path = ph.best_path(graph, dual_weights)
-        score = dual_weights.dot(path)
+        mod_potentials = ph.pairwise_dot(constraints, x);
+        dual_potentials = potentials.times(mod_potentials)
+        path = ph.best_path(graph, dual_potentials)
+        score = dual_potentials.dot(path)
         vec = constraints.dot(path)
         subgrad = np.zeros(len(x))
         for i in vec:
@@ -18,8 +18,8 @@ def subgradient(graph, weights, constraints):
         return score, subgrad, path
     return fn
 
-def best_constrained_path(graph, weights, constraints):
-    _, _, _, extras = subgradient_descent(subgradient(graph, weights, constraints.weights), [0] * constraints.size, polyak)
+def best_constrained_path(graph, potentials, constraints):
+    _, _, _, extras = subgradient_descent(subgradient(graph, potentials, constraints.potentials), [0] * constraints.size, polyak)
     return extras[-1]
 
 def subgradient_descent(fn, x0, rate, max_iterations=100):

@@ -15,89 +15,89 @@ include "hypergraph.pyx"
 
 
 cdef extern from "Hypergraph/Algorithms.h":
-    CViterbiChart *inside_Viterbi "general_inside<ViterbiWeight>" (
+    CViterbiChart *inside_Viterbi "general_inside<ViterbiPotential>" (
         const CHypergraph *graph,
-        const CHypergraphViterbiWeights theta) except +
+        const CHypergraphViterbiPotentials theta) except +
 
-    CViterbiChart *outside_Viterbi "general_outside<ViterbiWeight>" (
+    CViterbiChart *outside_Viterbi "general_outside<ViterbiPotential>" (
         const CHypergraph *graph,
-        const CHypergraphViterbiWeights theta,
+        const CHypergraphViterbiPotentials theta,
         CViterbiChart inside_chart) except +
 
-    CHyperpath *viterbi_Viterbi"general_viterbi<ViterbiWeight>"(
+    CHyperpath *viterbi_Viterbi"general_viterbi<ViterbiPotential>"(
         const CHypergraph *graph,
-        const CHypergraphViterbiWeights theta) except +
+        const CHypergraphViterbiPotentials theta) except +
 
-    cdef cppclass CViterbiMarginals "Marginals<ViterbiWeight>":
-        ViterbiWeight marginal(const CHyperedge *edge)
-        ViterbiWeight marginal(const CHypernode *node)
-        CHypergraphBoolWeights *threshold(
-            const ViterbiWeight &threshold)
+    cdef cppclass CViterbiMarginals "Marginals<ViterbiPotential>":
+        ViterbiPotential marginal(const CHyperedge *edge)
+        ViterbiPotential marginal(const CHypernode *node)
+        CHypergraphBoolPotentials *threshold(
+            const ViterbiPotential &threshold)
         const CHypergraph *hypergraph()
 
-    cdef cppclass CViterbiChart "Chart<ViterbiWeight>":
-        ViterbiWeight get(const CHypernode *node)
+    cdef cppclass CViterbiChart "Chart<ViterbiPotential>":
+        ViterbiPotential get(const CHypernode *node)
 
-cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<ViterbiWeight>":
-    CViterbiMarginals *Viterbi_compute "Marginals<ViterbiWeight>::compute" (
+cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<ViterbiPotential>":
+    CViterbiMarginals *Viterbi_compute "Marginals<ViterbiPotential>::compute" (
                            const CHypergraph *hypergraph,
-                           const CHypergraphViterbiWeights *weights)
+                           const CHypergraphViterbiPotentials *potentials)
 
 cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass ViterbiWeight:
-        ViterbiWeight()
-        ViterbiWeight(double)
+    cdef cppclass ViterbiPotential:
+        ViterbiPotential()
+        ViterbiPotential(double)
         double normalize(double)
 
-cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiWeight":
-    ViterbiWeight Viterbi_one "ViterbiWeight::one" ()
-    ViterbiWeight Viterbi_zero "ViterbiWeight::zero" ()
-    ViterbiWeight Viterbi_add "ViterbiWeight::add" (ViterbiWeight, const ViterbiWeight)
-    ViterbiWeight Viterbi_times "ViterbiWeight::times" (ViterbiWeight, const ViterbiWeight)
+cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiPotential":
+    ViterbiPotential Viterbi_one "ViterbiPotential::one" ()
+    ViterbiPotential Viterbi_zero "ViterbiPotential::zero" ()
+    ViterbiPotential Viterbi_add "ViterbiPotential::add" (ViterbiPotential, const ViterbiPotential)
+    ViterbiPotential Viterbi_times "ViterbiPotential::times" (ViterbiPotential, const ViterbiPotential)
 
 
-cdef extern from "Hypergraph/Algorithms.h" namespace "ViterbiWeight":
-    cdef cppclass CHypergraphViterbiWeights "HypergraphWeights<ViterbiWeight>":
-        ViterbiWeight dot(const CHyperpath &path) except +
-        ViterbiWeight score(const CHyperedge *edge)
-        CHypergraphViterbiWeights *times(
-            const CHypergraphViterbiWeights &weights)
-        CHypergraphViterbiWeights *project_weights(
+cdef extern from "Hypergraph/Algorithms.h" namespace "ViterbiPotential":
+    cdef cppclass CHypergraphViterbiPotentials "HypergraphPotentials<ViterbiPotential>":
+        ViterbiPotential dot(const CHyperpath &path) except +
+        ViterbiPotential score(const CHyperedge *edge)
+        CHypergraphViterbiPotentials *times(
+            const CHypergraphViterbiPotentials &potentials)
+        CHypergraphViterbiPotentials *project_potentials(
             const CHypergraphProjection)
-        CHypergraphViterbiWeights(
+        CHypergraphViterbiPotentials(
             const CHypergraph *hypergraph,
-            const vector[ViterbiWeight] weights,
-            ViterbiWeight bias) except +
+            const vector[ViterbiPotential] potentials,
+            ViterbiPotential bias) except +
 
-cdef class _ViterbiWeights:
+cdef class _ViterbiPotentials:
     r"""
-    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
+    Potential vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
 
     Acts as a dictionary::
-       >> print weights[edge]
+       >> print potentials[edge]
     """
     cdef Hypergraph hypergraph
-    cdef const CHypergraphViterbiWeights *thisptr
+    cdef const CHypergraphViterbiPotentials *thisptr
     cdef kind
     def __cinit__(self, Hypergraph graph):
         """
-        Build the weight vector for a hypergraph.
+        Build the potential vector for a hypergraph.
 
         :param hypergraph: The underlying hypergraph.
         """
         self.hypergraph = graph
         self.kind = Viterbi
 
-    def times(self, _ViterbiWeights other):
-        cdef const CHypergraphViterbiWeights *new_weights = \
+    def times(self, _ViterbiPotentials other):
+        cdef const CHypergraphViterbiPotentials *new_potentials = \
             self.thisptr.times(deref(other.thisptr))
-        return _ViterbiWeights(self.hypergraph).init(new_weights)
+        return _ViterbiPotentials(self.hypergraph).init(new_potentials)
 
     def project(self, Hypergraph graph, Projection projection):
-        cdef _ViterbiWeights new_weights = _ViterbiWeights(graph)
-        cdef const CHypergraphViterbiWeights *ptr = \
-            self.thisptr.project_weights(deref(projection.thisptr))
-        return new_weights.init(ptr)
+        cdef _ViterbiPotentials new_potentials = _ViterbiPotentials(graph)
+        cdef const CHypergraphViterbiPotentials *ptr = \
+            self.thisptr.project_potentials(deref(projection.thisptr))
+        return new_potentials.init(ptr)
 
     def show(self, Hypergraph graph):
         return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
@@ -111,30 +111,30 @@ cdef class _ViterbiWeights:
         """
         build(fn)
 
-        Build the weight vector for a hypergraph.
+        Build the potential vector for a hypergraph.
 
-        :param fn: A function from edge labels to weights.
+        :param fn: A function from edge labels to potentials.
         """
-        cdef ViterbiWeight my_bias
+        cdef ViterbiPotential my_bias
         if bias is None:
             my_bias = Viterbi_one()
         else:
-            my_bias = ViterbiWeight(<double> bias)
+            my_bias = ViterbiPotential(<double> bias)
 
-        cdef vector[ViterbiWeight] weights = \
-             vector[ViterbiWeight](self.hypergraph.thisptr.edges().size(),
+        cdef vector[ViterbiPotential] potentials = \
+             vector[ViterbiPotential](self.hypergraph.thisptr.edges().size(),
              Viterbi_zero())
         # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
-            if result is None: weights[i] = Viterbi_zero()
-            weights[i] = ViterbiWeight(<double> result)
+            if result is None: potentials[i] = Viterbi_zero()
+            potentials[i] = ViterbiPotential(<double> result)
         self.thisptr =  \
-          new CHypergraphViterbiWeights(self.hypergraph.thisptr,
-                                           weights, my_bias)
+          new CHypergraphViterbiPotentials(self.hypergraph.thisptr,
+                                           potentials, my_bias)
         return self
 
-    cdef init(self, const CHypergraphViterbiWeights *ptr):
+    cdef init(self, const CHypergraphViterbiPotentials *ptr):
         self.thisptr = ptr
         return self
 
@@ -150,13 +150,13 @@ cdef class _ViterbiWeights:
         return _ViterbiW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _ViterbiW:
-    cdef ViterbiWeight wrap
+    cdef ViterbiPotential wrap
 
     def __cinit__(self, val=None):
         if val is not None:
-            self.init(ViterbiWeight(<double>val))
+            self.init(ViterbiPotential(<double>val))
 
-    cdef init(self, ViterbiWeight wrap):
+    cdef init(self, ViterbiPotential wrap):
         self.wrap = wrap
         return self
 
@@ -223,7 +223,7 @@ cdef class _ViterbiMarginals:
                 "Passed %s."%obj)
     
     def threshold(self, _ViterbiW semi):
-        return _BoolWeights(Hypergraph().init(self.thisptr.hypergraph())) \
+        return _BoolPotentials(Hypergraph().init(self.thisptr.hypergraph())) \
             .init(self.thisptr.threshold(semi.wrap))
     
 
@@ -231,144 +231,144 @@ class Viterbi:
     Chart = _ViterbiChart
     Marginals = _ViterbiMarginals
     Semi = _ViterbiW
-    Weights = _ViterbiWeights
+    Potentials = _ViterbiPotentials
 
     @staticmethod
     def inside(Hypergraph graph,
-               _ViterbiWeights weights):
+               _ViterbiPotentials potentials):
         cdef _ViterbiChart chart = _ViterbiChart()
-        chart.chart = inside_Viterbi(graph.thisptr, deref(weights.thisptr))
+        chart.chart = inside_Viterbi(graph.thisptr, deref(potentials.thisptr))
         return chart
 
     @staticmethod
     def outside(Hypergraph graph,
-                _ViterbiWeights weights,
+                _ViterbiPotentials potentials,
                 _ViterbiChart inside_chart):
         cdef _ViterbiChart out_chart = _ViterbiChart()
         out_chart.chart = outside_Viterbi(graph.thisptr,
-                                             deref(weights.thisptr),
+                                             deref(potentials.thisptr),
                                              deref(inside_chart.chart))
         return out_chart
 
     
     @staticmethod
     def viterbi(Hypergraph graph,
-                _ViterbiWeights weights):
+                _ViterbiPotentials potentials):
         cdef CHyperpath *path = \
             viterbi_Viterbi(graph.thisptr,
-                               deref(weights.thisptr))
+                               deref(potentials.thisptr))
         return Path().init(path)
     
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
-                          _ViterbiWeights weights):
+                          _ViterbiPotentials potentials):
         cdef const CViterbiMarginals *marginals = \
-            Viterbi_compute(graph.thisptr, weights.thisptr)
+            Viterbi_compute(graph.thisptr, potentials.thisptr)
         return _ViterbiMarginals().init(marginals)
 
 
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
-                         _ViterbiWeights weights,
+                         _ViterbiPotentials potentials,
                          threshold):
-        marginals = compute_marginals(graph, weights)
-        bool_weights = marginals.threshold(_ViterbiW().init(ViterbiWeight(<double>threshold)))
-        projection = Projection(graph, bool_weights)
+        marginals = compute_marginals(graph, potentials)
+        bool_potentials = marginals.threshold(_ViterbiW().init(ViterbiPotential(<double>threshold)))
+        projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
-        new_weight = weights.project(new_graph, projection)
-        return new_graph, new_weight
+        new_potential = potentials.project(new_graph, projection)
+        return new_graph, new_potential
 
 
-def ViterbiWeights(Hypergraph graph):
-    return Viterbi.Weights(graph)
+def ViterbiPotentials(Hypergraph graph):
+    return Viterbi.Potentials(graph)
 
 
 
 cdef extern from "Hypergraph/Algorithms.h":
-    CLogViterbiChart *inside_LogViterbi "general_inside<LogViterbiWeight>" (
+    CLogViterbiChart *inside_LogViterbi "general_inside<LogViterbiPotential>" (
         const CHypergraph *graph,
-        const CHypergraphLogViterbiWeights theta) except +
+        const CHypergraphLogViterbiPotentials theta) except +
 
-    CLogViterbiChart *outside_LogViterbi "general_outside<LogViterbiWeight>" (
+    CLogViterbiChart *outside_LogViterbi "general_outside<LogViterbiPotential>" (
         const CHypergraph *graph,
-        const CHypergraphLogViterbiWeights theta,
+        const CHypergraphLogViterbiPotentials theta,
         CLogViterbiChart inside_chart) except +
 
-    CHyperpath *viterbi_LogViterbi"general_viterbi<LogViterbiWeight>"(
+    CHyperpath *viterbi_LogViterbi"general_viterbi<LogViterbiPotential>"(
         const CHypergraph *graph,
-        const CHypergraphLogViterbiWeights theta) except +
+        const CHypergraphLogViterbiPotentials theta) except +
 
-    cdef cppclass CLogViterbiMarginals "Marginals<LogViterbiWeight>":
-        LogViterbiWeight marginal(const CHyperedge *edge)
-        LogViterbiWeight marginal(const CHypernode *node)
-        CHypergraphBoolWeights *threshold(
-            const LogViterbiWeight &threshold)
+    cdef cppclass CLogViterbiMarginals "Marginals<LogViterbiPotential>":
+        LogViterbiPotential marginal(const CHyperedge *edge)
+        LogViterbiPotential marginal(const CHypernode *node)
+        CHypergraphBoolPotentials *threshold(
+            const LogViterbiPotential &threshold)
         const CHypergraph *hypergraph()
 
-    cdef cppclass CLogViterbiChart "Chart<LogViterbiWeight>":
-        LogViterbiWeight get(const CHypernode *node)
+    cdef cppclass CLogViterbiChart "Chart<LogViterbiPotential>":
+        LogViterbiPotential get(const CHypernode *node)
 
-cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<LogViterbiWeight>":
-    CLogViterbiMarginals *LogViterbi_compute "Marginals<LogViterbiWeight>::compute" (
+cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<LogViterbiPotential>":
+    CLogViterbiMarginals *LogViterbi_compute "Marginals<LogViterbiPotential>::compute" (
                            const CHypergraph *hypergraph,
-                           const CHypergraphLogViterbiWeights *weights)
+                           const CHypergraphLogViterbiPotentials *potentials)
 
 cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass LogViterbiWeight:
-        LogViterbiWeight()
-        LogViterbiWeight(double)
+    cdef cppclass LogViterbiPotential:
+        LogViterbiPotential()
+        LogViterbiPotential(double)
         double normalize(double)
 
-cdef extern from "Hypergraph/Semirings.h" namespace "LogViterbiWeight":
-    LogViterbiWeight LogViterbi_one "LogViterbiWeight::one" ()
-    LogViterbiWeight LogViterbi_zero "LogViterbiWeight::zero" ()
-    LogViterbiWeight LogViterbi_add "LogViterbiWeight::add" (LogViterbiWeight, const LogViterbiWeight)
-    LogViterbiWeight LogViterbi_times "LogViterbiWeight::times" (LogViterbiWeight, const LogViterbiWeight)
+cdef extern from "Hypergraph/Semirings.h" namespace "LogViterbiPotential":
+    LogViterbiPotential LogViterbi_one "LogViterbiPotential::one" ()
+    LogViterbiPotential LogViterbi_zero "LogViterbiPotential::zero" ()
+    LogViterbiPotential LogViterbi_add "LogViterbiPotential::add" (LogViterbiPotential, const LogViterbiPotential)
+    LogViterbiPotential LogViterbi_times "LogViterbiPotential::times" (LogViterbiPotential, const LogViterbiPotential)
 
 
-cdef extern from "Hypergraph/Algorithms.h" namespace "LogViterbiWeight":
-    cdef cppclass CHypergraphLogViterbiWeights "HypergraphWeights<LogViterbiWeight>":
-        LogViterbiWeight dot(const CHyperpath &path) except +
-        LogViterbiWeight score(const CHyperedge *edge)
-        CHypergraphLogViterbiWeights *times(
-            const CHypergraphLogViterbiWeights &weights)
-        CHypergraphLogViterbiWeights *project_weights(
+cdef extern from "Hypergraph/Algorithms.h" namespace "LogViterbiPotential":
+    cdef cppclass CHypergraphLogViterbiPotentials "HypergraphPotentials<LogViterbiPotential>":
+        LogViterbiPotential dot(const CHyperpath &path) except +
+        LogViterbiPotential score(const CHyperedge *edge)
+        CHypergraphLogViterbiPotentials *times(
+            const CHypergraphLogViterbiPotentials &potentials)
+        CHypergraphLogViterbiPotentials *project_potentials(
             const CHypergraphProjection)
-        CHypergraphLogViterbiWeights(
+        CHypergraphLogViterbiPotentials(
             const CHypergraph *hypergraph,
-            const vector[LogViterbiWeight] weights,
-            LogViterbiWeight bias) except +
+            const vector[LogViterbiPotential] potentials,
+            LogViterbiPotential bias) except +
 
-cdef class _LogViterbiWeights:
+cdef class _LogViterbiPotentials:
     r"""
-    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
+    Potential vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
 
     Acts as a dictionary::
-       >> print weights[edge]
+       >> print potentials[edge]
     """
     cdef Hypergraph hypergraph
-    cdef const CHypergraphLogViterbiWeights *thisptr
+    cdef const CHypergraphLogViterbiPotentials *thisptr
     cdef kind
     def __cinit__(self, Hypergraph graph):
         """
-        Build the weight vector for a hypergraph.
+        Build the potential vector for a hypergraph.
 
         :param hypergraph: The underlying hypergraph.
         """
         self.hypergraph = graph
         self.kind = LogViterbi
 
-    def times(self, _LogViterbiWeights other):
-        cdef const CHypergraphLogViterbiWeights *new_weights = \
+    def times(self, _LogViterbiPotentials other):
+        cdef const CHypergraphLogViterbiPotentials *new_potentials = \
             self.thisptr.times(deref(other.thisptr))
-        return _LogViterbiWeights(self.hypergraph).init(new_weights)
+        return _LogViterbiPotentials(self.hypergraph).init(new_potentials)
 
     def project(self, Hypergraph graph, Projection projection):
-        cdef _LogViterbiWeights new_weights = _LogViterbiWeights(graph)
-        cdef const CHypergraphLogViterbiWeights *ptr = \
-            self.thisptr.project_weights(deref(projection.thisptr))
-        return new_weights.init(ptr)
+        cdef _LogViterbiPotentials new_potentials = _LogViterbiPotentials(graph)
+        cdef const CHypergraphLogViterbiPotentials *ptr = \
+            self.thisptr.project_potentials(deref(projection.thisptr))
+        return new_potentials.init(ptr)
 
     def show(self, Hypergraph graph):
         return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
@@ -382,30 +382,30 @@ cdef class _LogViterbiWeights:
         """
         build(fn)
 
-        Build the weight vector for a hypergraph.
+        Build the potential vector for a hypergraph.
 
-        :param fn: A function from edge labels to weights.
+        :param fn: A function from edge labels to potentials.
         """
-        cdef LogViterbiWeight my_bias
+        cdef LogViterbiPotential my_bias
         if bias is None:
             my_bias = LogViterbi_one()
         else:
-            my_bias = LogViterbiWeight(<double> bias)
+            my_bias = LogViterbiPotential(<double> bias)
 
-        cdef vector[LogViterbiWeight] weights = \
-             vector[LogViterbiWeight](self.hypergraph.thisptr.edges().size(),
+        cdef vector[LogViterbiPotential] potentials = \
+             vector[LogViterbiPotential](self.hypergraph.thisptr.edges().size(),
              LogViterbi_zero())
         # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
-            if result is None: weights[i] = LogViterbi_zero()
-            weights[i] = LogViterbiWeight(<double> result)
+            if result is None: potentials[i] = LogViterbi_zero()
+            potentials[i] = LogViterbiPotential(<double> result)
         self.thisptr =  \
-          new CHypergraphLogViterbiWeights(self.hypergraph.thisptr,
-                                           weights, my_bias)
+          new CHypergraphLogViterbiPotentials(self.hypergraph.thisptr,
+                                           potentials, my_bias)
         return self
 
-    cdef init(self, const CHypergraphLogViterbiWeights *ptr):
+    cdef init(self, const CHypergraphLogViterbiPotentials *ptr):
         self.thisptr = ptr
         return self
 
@@ -421,13 +421,13 @@ cdef class _LogViterbiWeights:
         return _LogViterbiW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _LogViterbiW:
-    cdef LogViterbiWeight wrap
+    cdef LogViterbiPotential wrap
 
     def __cinit__(self, val=None):
         if val is not None:
-            self.init(LogViterbiWeight(<double>val))
+            self.init(LogViterbiPotential(<double>val))
 
-    cdef init(self, LogViterbiWeight wrap):
+    cdef init(self, LogViterbiPotential wrap):
         self.wrap = wrap
         return self
 
@@ -494,7 +494,7 @@ cdef class _LogViterbiMarginals:
                 "Passed %s."%obj)
     
     def threshold(self, _LogViterbiW semi):
-        return _BoolWeights(Hypergraph().init(self.thisptr.hypergraph())) \
+        return _BoolPotentials(Hypergraph().init(self.thisptr.hypergraph())) \
             .init(self.thisptr.threshold(semi.wrap))
     
 
@@ -502,144 +502,144 @@ class LogViterbi:
     Chart = _LogViterbiChart
     Marginals = _LogViterbiMarginals
     Semi = _LogViterbiW
-    Weights = _LogViterbiWeights
+    Potentials = _LogViterbiPotentials
 
     @staticmethod
     def inside(Hypergraph graph,
-               _LogViterbiWeights weights):
+               _LogViterbiPotentials potentials):
         cdef _LogViterbiChart chart = _LogViterbiChart()
-        chart.chart = inside_LogViterbi(graph.thisptr, deref(weights.thisptr))
+        chart.chart = inside_LogViterbi(graph.thisptr, deref(potentials.thisptr))
         return chart
 
     @staticmethod
     def outside(Hypergraph graph,
-                _LogViterbiWeights weights,
+                _LogViterbiPotentials potentials,
                 _LogViterbiChart inside_chart):
         cdef _LogViterbiChart out_chart = _LogViterbiChart()
         out_chart.chart = outside_LogViterbi(graph.thisptr,
-                                             deref(weights.thisptr),
+                                             deref(potentials.thisptr),
                                              deref(inside_chart.chart))
         return out_chart
 
     
     @staticmethod
     def viterbi(Hypergraph graph,
-                _LogViterbiWeights weights):
+                _LogViterbiPotentials potentials):
         cdef CHyperpath *path = \
             viterbi_LogViterbi(graph.thisptr,
-                               deref(weights.thisptr))
+                               deref(potentials.thisptr))
         return Path().init(path)
     
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
-                          _LogViterbiWeights weights):
+                          _LogViterbiPotentials potentials):
         cdef const CLogViterbiMarginals *marginals = \
-            LogViterbi_compute(graph.thisptr, weights.thisptr)
+            LogViterbi_compute(graph.thisptr, potentials.thisptr)
         return _LogViterbiMarginals().init(marginals)
 
 
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
-                         _LogViterbiWeights weights,
+                         _LogViterbiPotentials potentials,
                          threshold):
-        marginals = compute_marginals(graph, weights)
-        bool_weights = marginals.threshold(_LogViterbiW().init(LogViterbiWeight(<double>threshold)))
-        projection = Projection(graph, bool_weights)
+        marginals = compute_marginals(graph, potentials)
+        bool_potentials = marginals.threshold(_LogViterbiW().init(LogViterbiPotential(<double>threshold)))
+        projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
-        new_weight = weights.project(new_graph, projection)
-        return new_graph, new_weight
+        new_potential = potentials.project(new_graph, projection)
+        return new_graph, new_potential
 
 
-def LogViterbiWeights(Hypergraph graph):
-    return LogViterbi.Weights(graph)
+def LogViterbiPotentials(Hypergraph graph):
+    return LogViterbi.Potentials(graph)
 
 
 
 cdef extern from "Hypergraph/Algorithms.h":
-    CInsideChart *inside_Inside "general_inside<InsideWeight>" (
+    CInsideChart *inside_Inside "general_inside<InsidePotential>" (
         const CHypergraph *graph,
-        const CHypergraphInsideWeights theta) except +
+        const CHypergraphInsidePotentials theta) except +
 
-    CInsideChart *outside_Inside "general_outside<InsideWeight>" (
+    CInsideChart *outside_Inside "general_outside<InsidePotential>" (
         const CHypergraph *graph,
-        const CHypergraphInsideWeights theta,
+        const CHypergraphInsidePotentials theta,
         CInsideChart inside_chart) except +
 
-    CHyperpath *viterbi_Inside"general_viterbi<InsideWeight>"(
+    CHyperpath *viterbi_Inside"general_viterbi<InsidePotential>"(
         const CHypergraph *graph,
-        const CHypergraphInsideWeights theta) except +
+        const CHypergraphInsidePotentials theta) except +
 
-    cdef cppclass CInsideMarginals "Marginals<InsideWeight>":
-        InsideWeight marginal(const CHyperedge *edge)
-        InsideWeight marginal(const CHypernode *node)
-        CHypergraphBoolWeights *threshold(
-            const InsideWeight &threshold)
+    cdef cppclass CInsideMarginals "Marginals<InsidePotential>":
+        InsidePotential marginal(const CHyperedge *edge)
+        InsidePotential marginal(const CHypernode *node)
+        CHypergraphBoolPotentials *threshold(
+            const InsidePotential &threshold)
         const CHypergraph *hypergraph()
 
-    cdef cppclass CInsideChart "Chart<InsideWeight>":
-        InsideWeight get(const CHypernode *node)
+    cdef cppclass CInsideChart "Chart<InsidePotential>":
+        InsidePotential get(const CHypernode *node)
 
-cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<InsideWeight>":
-    CInsideMarginals *Inside_compute "Marginals<InsideWeight>::compute" (
+cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<InsidePotential>":
+    CInsideMarginals *Inside_compute "Marginals<InsidePotential>::compute" (
                            const CHypergraph *hypergraph,
-                           const CHypergraphInsideWeights *weights)
+                           const CHypergraphInsidePotentials *potentials)
 
 cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass InsideWeight:
-        InsideWeight()
-        InsideWeight(double)
+    cdef cppclass InsidePotential:
+        InsidePotential()
+        InsidePotential(double)
         double normalize(double)
 
-cdef extern from "Hypergraph/Semirings.h" namespace "InsideWeight":
-    InsideWeight Inside_one "InsideWeight::one" ()
-    InsideWeight Inside_zero "InsideWeight::zero" ()
-    InsideWeight Inside_add "InsideWeight::add" (InsideWeight, const InsideWeight)
-    InsideWeight Inside_times "InsideWeight::times" (InsideWeight, const InsideWeight)
+cdef extern from "Hypergraph/Semirings.h" namespace "InsidePotential":
+    InsidePotential Inside_one "InsidePotential::one" ()
+    InsidePotential Inside_zero "InsidePotential::zero" ()
+    InsidePotential Inside_add "InsidePotential::add" (InsidePotential, const InsidePotential)
+    InsidePotential Inside_times "InsidePotential::times" (InsidePotential, const InsidePotential)
 
 
-cdef extern from "Hypergraph/Algorithms.h" namespace "InsideWeight":
-    cdef cppclass CHypergraphInsideWeights "HypergraphWeights<InsideWeight>":
-        InsideWeight dot(const CHyperpath &path) except +
-        InsideWeight score(const CHyperedge *edge)
-        CHypergraphInsideWeights *times(
-            const CHypergraphInsideWeights &weights)
-        CHypergraphInsideWeights *project_weights(
+cdef extern from "Hypergraph/Algorithms.h" namespace "InsidePotential":
+    cdef cppclass CHypergraphInsidePotentials "HypergraphPotentials<InsidePotential>":
+        InsidePotential dot(const CHyperpath &path) except +
+        InsidePotential score(const CHyperedge *edge)
+        CHypergraphInsidePotentials *times(
+            const CHypergraphInsidePotentials &potentials)
+        CHypergraphInsidePotentials *project_potentials(
             const CHypergraphProjection)
-        CHypergraphInsideWeights(
+        CHypergraphInsidePotentials(
             const CHypergraph *hypergraph,
-            const vector[InsideWeight] weights,
-            InsideWeight bias) except +
+            const vector[InsidePotential] potentials,
+            InsidePotential bias) except +
 
-cdef class _InsideWeights:
+cdef class _InsidePotentials:
     r"""
-    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
+    Potential vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
 
     Acts as a dictionary::
-       >> print weights[edge]
+       >> print potentials[edge]
     """
     cdef Hypergraph hypergraph
-    cdef const CHypergraphInsideWeights *thisptr
+    cdef const CHypergraphInsidePotentials *thisptr
     cdef kind
     def __cinit__(self, Hypergraph graph):
         """
-        Build the weight vector for a hypergraph.
+        Build the potential vector for a hypergraph.
 
         :param hypergraph: The underlying hypergraph.
         """
         self.hypergraph = graph
         self.kind = Inside
 
-    def times(self, _InsideWeights other):
-        cdef const CHypergraphInsideWeights *new_weights = \
+    def times(self, _InsidePotentials other):
+        cdef const CHypergraphInsidePotentials *new_potentials = \
             self.thisptr.times(deref(other.thisptr))
-        return _InsideWeights(self.hypergraph).init(new_weights)
+        return _InsidePotentials(self.hypergraph).init(new_potentials)
 
     def project(self, Hypergraph graph, Projection projection):
-        cdef _InsideWeights new_weights = _InsideWeights(graph)
-        cdef const CHypergraphInsideWeights *ptr = \
-            self.thisptr.project_weights(deref(projection.thisptr))
-        return new_weights.init(ptr)
+        cdef _InsidePotentials new_potentials = _InsidePotentials(graph)
+        cdef const CHypergraphInsidePotentials *ptr = \
+            self.thisptr.project_potentials(deref(projection.thisptr))
+        return new_potentials.init(ptr)
 
     def show(self, Hypergraph graph):
         return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
@@ -653,30 +653,30 @@ cdef class _InsideWeights:
         """
         build(fn)
 
-        Build the weight vector for a hypergraph.
+        Build the potential vector for a hypergraph.
 
-        :param fn: A function from edge labels to weights.
+        :param fn: A function from edge labels to potentials.
         """
-        cdef InsideWeight my_bias
+        cdef InsidePotential my_bias
         if bias is None:
             my_bias = Inside_one()
         else:
-            my_bias = InsideWeight(<double> bias)
+            my_bias = InsidePotential(<double> bias)
 
-        cdef vector[InsideWeight] weights = \
-             vector[InsideWeight](self.hypergraph.thisptr.edges().size(),
+        cdef vector[InsidePotential] potentials = \
+             vector[InsidePotential](self.hypergraph.thisptr.edges().size(),
              Inside_zero())
         # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
-            if result is None: weights[i] = Inside_zero()
-            weights[i] = InsideWeight(<double> result)
+            if result is None: potentials[i] = Inside_zero()
+            potentials[i] = InsidePotential(<double> result)
         self.thisptr =  \
-          new CHypergraphInsideWeights(self.hypergraph.thisptr,
-                                           weights, my_bias)
+          new CHypergraphInsidePotentials(self.hypergraph.thisptr,
+                                           potentials, my_bias)
         return self
 
-    cdef init(self, const CHypergraphInsideWeights *ptr):
+    cdef init(self, const CHypergraphInsidePotentials *ptr):
         self.thisptr = ptr
         return self
 
@@ -692,13 +692,13 @@ cdef class _InsideWeights:
         return _InsideW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _InsideW:
-    cdef InsideWeight wrap
+    cdef InsidePotential wrap
 
     def __cinit__(self, val=None):
         if val is not None:
-            self.init(InsideWeight(<double>val))
+            self.init(InsidePotential(<double>val))
 
-    cdef init(self, InsideWeight wrap):
+    cdef init(self, InsidePotential wrap):
         self.wrap = wrap
         return self
 
@@ -765,7 +765,7 @@ cdef class _InsideMarginals:
                 "Passed %s."%obj)
     
     def threshold(self, _InsideW semi):
-        return _BoolWeights(Hypergraph().init(self.thisptr.hypergraph())) \
+        return _BoolPotentials(Hypergraph().init(self.thisptr.hypergraph())) \
             .init(self.thisptr.threshold(semi.wrap))
     
 
@@ -773,144 +773,144 @@ class Inside:
     Chart = _InsideChart
     Marginals = _InsideMarginals
     Semi = _InsideW
-    Weights = _InsideWeights
+    Potentials = _InsidePotentials
 
     @staticmethod
     def inside(Hypergraph graph,
-               _InsideWeights weights):
+               _InsidePotentials potentials):
         cdef _InsideChart chart = _InsideChart()
-        chart.chart = inside_Inside(graph.thisptr, deref(weights.thisptr))
+        chart.chart = inside_Inside(graph.thisptr, deref(potentials.thisptr))
         return chart
 
     @staticmethod
     def outside(Hypergraph graph,
-                _InsideWeights weights,
+                _InsidePotentials potentials,
                 _InsideChart inside_chart):
         cdef _InsideChart out_chart = _InsideChart()
         out_chart.chart = outside_Inside(graph.thisptr,
-                                             deref(weights.thisptr),
+                                             deref(potentials.thisptr),
                                              deref(inside_chart.chart))
         return out_chart
 
     
     @staticmethod
     def viterbi(Hypergraph graph,
-                _InsideWeights weights):
+                _InsidePotentials potentials):
         cdef CHyperpath *path = \
             viterbi_Inside(graph.thisptr,
-                               deref(weights.thisptr))
+                               deref(potentials.thisptr))
         return Path().init(path)
     
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
-                          _InsideWeights weights):
+                          _InsidePotentials potentials):
         cdef const CInsideMarginals *marginals = \
-            Inside_compute(graph.thisptr, weights.thisptr)
+            Inside_compute(graph.thisptr, potentials.thisptr)
         return _InsideMarginals().init(marginals)
 
 
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
-                         _InsideWeights weights,
+                         _InsidePotentials potentials,
                          threshold):
-        marginals = compute_marginals(graph, weights)
-        bool_weights = marginals.threshold(_InsideW().init(InsideWeight(<double>threshold)))
-        projection = Projection(graph, bool_weights)
+        marginals = compute_marginals(graph, potentials)
+        bool_potentials = marginals.threshold(_InsideW().init(InsidePotential(<double>threshold)))
+        projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
-        new_weight = weights.project(new_graph, projection)
-        return new_graph, new_weight
+        new_potential = potentials.project(new_graph, projection)
+        return new_graph, new_potential
 
 
-def InsideWeights(Hypergraph graph):
-    return Inside.Weights(graph)
+def InsidePotentials(Hypergraph graph):
+    return Inside.Potentials(graph)
 
 
 
 cdef extern from "Hypergraph/Algorithms.h":
-    CBoolChart *inside_Bool "general_inside<BoolWeight>" (
+    CBoolChart *inside_Bool "general_inside<BoolPotential>" (
         const CHypergraph *graph,
-        const CHypergraphBoolWeights theta) except +
+        const CHypergraphBoolPotentials theta) except +
 
-    CBoolChart *outside_Bool "general_outside<BoolWeight>" (
+    CBoolChart *outside_Bool "general_outside<BoolPotential>" (
         const CHypergraph *graph,
-        const CHypergraphBoolWeights theta,
+        const CHypergraphBoolPotentials theta,
         CBoolChart inside_chart) except +
 
-    CHyperpath *viterbi_Bool"general_viterbi<BoolWeight>"(
+    CHyperpath *viterbi_Bool"general_viterbi<BoolPotential>"(
         const CHypergraph *graph,
-        const CHypergraphBoolWeights theta) except +
+        const CHypergraphBoolPotentials theta) except +
 
-    cdef cppclass CBoolMarginals "Marginals<BoolWeight>":
-        BoolWeight marginal(const CHyperedge *edge)
-        BoolWeight marginal(const CHypernode *node)
-        CHypergraphBoolWeights *threshold(
-            const BoolWeight &threshold)
+    cdef cppclass CBoolMarginals "Marginals<BoolPotential>":
+        BoolPotential marginal(const CHyperedge *edge)
+        BoolPotential marginal(const CHypernode *node)
+        CHypergraphBoolPotentials *threshold(
+            const BoolPotential &threshold)
         const CHypergraph *hypergraph()
 
-    cdef cppclass CBoolChart "Chart<BoolWeight>":
-        BoolWeight get(const CHypernode *node)
+    cdef cppclass CBoolChart "Chart<BoolPotential>":
+        BoolPotential get(const CHypernode *node)
 
-cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<BoolWeight>":
-    CBoolMarginals *Bool_compute "Marginals<BoolWeight>::compute" (
+cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<BoolPotential>":
+    CBoolMarginals *Bool_compute "Marginals<BoolPotential>::compute" (
                            const CHypergraph *hypergraph,
-                           const CHypergraphBoolWeights *weights)
+                           const CHypergraphBoolPotentials *potentials)
 
 cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass BoolWeight:
-        BoolWeight()
-        BoolWeight(double)
+    cdef cppclass BoolPotential:
+        BoolPotential()
+        BoolPotential(double)
         double normalize(double)
 
-cdef extern from "Hypergraph/Semirings.h" namespace "BoolWeight":
-    BoolWeight Bool_one "BoolWeight::one" ()
-    BoolWeight Bool_zero "BoolWeight::zero" ()
-    BoolWeight Bool_add "BoolWeight::add" (BoolWeight, const BoolWeight)
-    BoolWeight Bool_times "BoolWeight::times" (BoolWeight, const BoolWeight)
+cdef extern from "Hypergraph/Semirings.h" namespace "BoolPotential":
+    BoolPotential Bool_one "BoolPotential::one" ()
+    BoolPotential Bool_zero "BoolPotential::zero" ()
+    BoolPotential Bool_add "BoolPotential::add" (BoolPotential, const BoolPotential)
+    BoolPotential Bool_times "BoolPotential::times" (BoolPotential, const BoolPotential)
 
 
-cdef extern from "Hypergraph/Algorithms.h" namespace "BoolWeight":
-    cdef cppclass CHypergraphBoolWeights "HypergraphWeights<BoolWeight>":
-        BoolWeight dot(const CHyperpath &path) except +
-        BoolWeight score(const CHyperedge *edge)
-        CHypergraphBoolWeights *times(
-            const CHypergraphBoolWeights &weights)
-        CHypergraphBoolWeights *project_weights(
+cdef extern from "Hypergraph/Algorithms.h" namespace "BoolPotential":
+    cdef cppclass CHypergraphBoolPotentials "HypergraphPotentials<BoolPotential>":
+        BoolPotential dot(const CHyperpath &path) except +
+        BoolPotential score(const CHyperedge *edge)
+        CHypergraphBoolPotentials *times(
+            const CHypergraphBoolPotentials &potentials)
+        CHypergraphBoolPotentials *project_potentials(
             const CHypergraphProjection)
-        CHypergraphBoolWeights(
+        CHypergraphBoolPotentials(
             const CHypergraph *hypergraph,
-            const vector[BoolWeight] weights,
-            BoolWeight bias) except +
+            const vector[BoolPotential] potentials,
+            BoolPotential bias) except +
 
-cdef class _BoolWeights:
+cdef class _BoolPotentials:
     r"""
-    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
+    Potential vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
 
     Acts as a dictionary::
-       >> print weights[edge]
+       >> print potentials[edge]
     """
     cdef Hypergraph hypergraph
-    cdef const CHypergraphBoolWeights *thisptr
+    cdef const CHypergraphBoolPotentials *thisptr
     cdef kind
     def __cinit__(self, Hypergraph graph):
         """
-        Build the weight vector for a hypergraph.
+        Build the potential vector for a hypergraph.
 
         :param hypergraph: The underlying hypergraph.
         """
         self.hypergraph = graph
         self.kind = Bool
 
-    def times(self, _BoolWeights other):
-        cdef const CHypergraphBoolWeights *new_weights = \
+    def times(self, _BoolPotentials other):
+        cdef const CHypergraphBoolPotentials *new_potentials = \
             self.thisptr.times(deref(other.thisptr))
-        return _BoolWeights(self.hypergraph).init(new_weights)
+        return _BoolPotentials(self.hypergraph).init(new_potentials)
 
     def project(self, Hypergraph graph, Projection projection):
-        cdef _BoolWeights new_weights = _BoolWeights(graph)
-        cdef const CHypergraphBoolWeights *ptr = \
-            self.thisptr.project_weights(deref(projection.thisptr))
-        return new_weights.init(ptr)
+        cdef _BoolPotentials new_potentials = _BoolPotentials(graph)
+        cdef const CHypergraphBoolPotentials *ptr = \
+            self.thisptr.project_potentials(deref(projection.thisptr))
+        return new_potentials.init(ptr)
 
     def show(self, Hypergraph graph):
         return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
@@ -924,30 +924,30 @@ cdef class _BoolWeights:
         """
         build(fn)
 
-        Build the weight vector for a hypergraph.
+        Build the potential vector for a hypergraph.
 
-        :param fn: A function from edge labels to weights.
+        :param fn: A function from edge labels to potentials.
         """
-        cdef BoolWeight my_bias
+        cdef BoolPotential my_bias
         if bias is None:
             my_bias = Bool_one()
         else:
-            my_bias = BoolWeight(<double> bias)
+            my_bias = BoolPotential(<double> bias)
 
-        cdef vector[BoolWeight] weights = \
-             vector[BoolWeight](self.hypergraph.thisptr.edges().size(),
+        cdef vector[BoolPotential] potentials = \
+             vector[BoolPotential](self.hypergraph.thisptr.edges().size(),
              Bool_zero())
         # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
-            if result is None: weights[i] = Bool_zero()
-            weights[i] = BoolWeight(<double> result)
+            if result is None: potentials[i] = Bool_zero()
+            potentials[i] = BoolPotential(<double> result)
         self.thisptr =  \
-          new CHypergraphBoolWeights(self.hypergraph.thisptr,
-                                           weights, my_bias)
+          new CHypergraphBoolPotentials(self.hypergraph.thisptr,
+                                           potentials, my_bias)
         return self
 
-    cdef init(self, const CHypergraphBoolWeights *ptr):
+    cdef init(self, const CHypergraphBoolPotentials *ptr):
         self.thisptr = ptr
         return self
 
@@ -963,13 +963,13 @@ cdef class _BoolWeights:
         return _BoolW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _BoolW:
-    cdef BoolWeight wrap
+    cdef BoolPotential wrap
 
     def __cinit__(self, val=None):
         if val is not None:
-            self.init(BoolWeight(<double>val))
+            self.init(BoolPotential(<double>val))
 
-    cdef init(self, BoolWeight wrap):
+    cdef init(self, BoolPotential wrap):
         self.wrap = wrap
         return self
 
@@ -1036,7 +1036,7 @@ cdef class _BoolMarginals:
                 "Passed %s."%obj)
     
     def threshold(self, _BoolW semi):
-        return _BoolWeights(Hypergraph().init(self.thisptr.hypergraph())) \
+        return _BoolPotentials(Hypergraph().init(self.thisptr.hypergraph())) \
             .init(self.thisptr.threshold(semi.wrap))
     
 
@@ -1044,144 +1044,144 @@ class Bool:
     Chart = _BoolChart
     Marginals = _BoolMarginals
     Semi = _BoolW
-    Weights = _BoolWeights
+    Potentials = _BoolPotentials
 
     @staticmethod
     def inside(Hypergraph graph,
-               _BoolWeights weights):
+               _BoolPotentials potentials):
         cdef _BoolChart chart = _BoolChart()
-        chart.chart = inside_Bool(graph.thisptr, deref(weights.thisptr))
+        chart.chart = inside_Bool(graph.thisptr, deref(potentials.thisptr))
         return chart
 
     @staticmethod
     def outside(Hypergraph graph,
-                _BoolWeights weights,
+                _BoolPotentials potentials,
                 _BoolChart inside_chart):
         cdef _BoolChart out_chart = _BoolChart()
         out_chart.chart = outside_Bool(graph.thisptr,
-                                             deref(weights.thisptr),
+                                             deref(potentials.thisptr),
                                              deref(inside_chart.chart))
         return out_chart
 
     
     @staticmethod
     def viterbi(Hypergraph graph,
-                _BoolWeights weights):
+                _BoolPotentials potentials):
         cdef CHyperpath *path = \
             viterbi_Bool(graph.thisptr,
-                               deref(weights.thisptr))
+                               deref(potentials.thisptr))
         return Path().init(path)
     
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
-                          _BoolWeights weights):
+                          _BoolPotentials potentials):
         cdef const CBoolMarginals *marginals = \
-            Bool_compute(graph.thisptr, weights.thisptr)
+            Bool_compute(graph.thisptr, potentials.thisptr)
         return _BoolMarginals().init(marginals)
 
 
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
-                         _BoolWeights weights,
+                         _BoolPotentials potentials,
                          threshold):
-        marginals = compute_marginals(graph, weights)
-        bool_weights = marginals.threshold(_BoolW().init(BoolWeight(<double>threshold)))
-        projection = Projection(graph, bool_weights)
+        marginals = compute_marginals(graph, potentials)
+        bool_potentials = marginals.threshold(_BoolW().init(BoolPotential(<double>threshold)))
+        projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
-        new_weight = weights.project(new_graph, projection)
-        return new_graph, new_weight
+        new_potential = potentials.project(new_graph, projection)
+        return new_graph, new_potential
 
 
-def BoolWeights(Hypergraph graph):
-    return Bool.Weights(graph)
+def BoolPotentials(Hypergraph graph):
+    return Bool.Potentials(graph)
 
 
 
 cdef extern from "Hypergraph/Algorithms.h":
-    CSparseVectorChart *inside_SparseVector "general_inside<SparseVectorWeight>" (
+    CSparseVectorChart *inside_SparseVector "general_inside<SparseVectorPotential>" (
         const CHypergraph *graph,
-        const CHypergraphSparseVectorWeights theta) except +
+        const CHypergraphSparseVectorPotentials theta) except +
 
-    CSparseVectorChart *outside_SparseVector "general_outside<SparseVectorWeight>" (
+    CSparseVectorChart *outside_SparseVector "general_outside<SparseVectorPotential>" (
         const CHypergraph *graph,
-        const CHypergraphSparseVectorWeights theta,
+        const CHypergraphSparseVectorPotentials theta,
         CSparseVectorChart inside_chart) except +
 
-    CHyperpath *viterbi_SparseVector"general_viterbi<SparseVectorWeight>"(
+    CHyperpath *viterbi_SparseVector"general_viterbi<SparseVectorPotential>"(
         const CHypergraph *graph,
-        const CHypergraphSparseVectorWeights theta) except +
+        const CHypergraphSparseVectorPotentials theta) except +
 
-    cdef cppclass CSparseVectorMarginals "Marginals<SparseVectorWeight>":
-        SparseVectorWeight marginal(const CHyperedge *edge)
-        SparseVectorWeight marginal(const CHypernode *node)
-        CHypergraphBoolWeights *threshold(
-            const SparseVectorWeight &threshold)
+    cdef cppclass CSparseVectorMarginals "Marginals<SparseVectorPotential>":
+        SparseVectorPotential marginal(const CHyperedge *edge)
+        SparseVectorPotential marginal(const CHypernode *node)
+        CHypergraphBoolPotentials *threshold(
+            const SparseVectorPotential &threshold)
         const CHypergraph *hypergraph()
 
-    cdef cppclass CSparseVectorChart "Chart<SparseVectorWeight>":
-        SparseVectorWeight get(const CHypernode *node)
+    cdef cppclass CSparseVectorChart "Chart<SparseVectorPotential>":
+        SparseVectorPotential get(const CHypernode *node)
 
-cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<SparseVectorWeight>":
-    CSparseVectorMarginals *SparseVector_compute "Marginals<SparseVectorWeight>::compute" (
+cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<SparseVectorPotential>":
+    CSparseVectorMarginals *SparseVector_compute "Marginals<SparseVectorPotential>::compute" (
                            const CHypergraph *hypergraph,
-                           const CHypergraphSparseVectorWeights *weights)
+                           const CHypergraphSparseVectorPotentials *potentials)
 
 cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass SparseVectorWeight:
-        SparseVectorWeight()
-        SparseVectorWeight(vector[pair[int, int]])
+    cdef cppclass SparseVectorPotential:
+        SparseVectorPotential()
+        SparseVectorPotential(vector[pair[int, int]])
         double normalize(double)
 
-cdef extern from "Hypergraph/Semirings.h" namespace "SparseVectorWeight":
-    SparseVectorWeight SparseVector_one "SparseVectorWeight::one" ()
-    SparseVectorWeight SparseVector_zero "SparseVectorWeight::zero" ()
-    SparseVectorWeight SparseVector_add "SparseVectorWeight::add" (SparseVectorWeight, const SparseVectorWeight)
-    SparseVectorWeight SparseVector_times "SparseVectorWeight::times" (SparseVectorWeight, const SparseVectorWeight)
+cdef extern from "Hypergraph/Semirings.h" namespace "SparseVectorPotential":
+    SparseVectorPotential SparseVector_one "SparseVectorPotential::one" ()
+    SparseVectorPotential SparseVector_zero "SparseVectorPotential::zero" ()
+    SparseVectorPotential SparseVector_add "SparseVectorPotential::add" (SparseVectorPotential, const SparseVectorPotential)
+    SparseVectorPotential SparseVector_times "SparseVectorPotential::times" (SparseVectorPotential, const SparseVectorPotential)
 
 
-cdef extern from "Hypergraph/Algorithms.h" namespace "SparseVectorWeight":
-    cdef cppclass CHypergraphSparseVectorWeights "HypergraphWeights<SparseVectorWeight>":
-        SparseVectorWeight dot(const CHyperpath &path) except +
-        SparseVectorWeight score(const CHyperedge *edge)
-        CHypergraphSparseVectorWeights *times(
-            const CHypergraphSparseVectorWeights &weights)
-        CHypergraphSparseVectorWeights *project_weights(
+cdef extern from "Hypergraph/Algorithms.h" namespace "SparseVectorPotential":
+    cdef cppclass CHypergraphSparseVectorPotentials "HypergraphPotentials<SparseVectorPotential>":
+        SparseVectorPotential dot(const CHyperpath &path) except +
+        SparseVectorPotential score(const CHyperedge *edge)
+        CHypergraphSparseVectorPotentials *times(
+            const CHypergraphSparseVectorPotentials &potentials)
+        CHypergraphSparseVectorPotentials *project_potentials(
             const CHypergraphProjection)
-        CHypergraphSparseVectorWeights(
+        CHypergraphSparseVectorPotentials(
             const CHypergraph *hypergraph,
-            const vector[SparseVectorWeight] weights,
-            SparseVectorWeight bias) except +
+            const vector[SparseVectorPotential] potentials,
+            SparseVectorPotential bias) except +
 
-cdef class _SparseVectorWeights:
+cdef class _SparseVectorPotentials:
     r"""
-    Weight vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
+    Potential vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
 
     Acts as a dictionary::
-       >> print weights[edge]
+       >> print potentials[edge]
     """
     cdef Hypergraph hypergraph
-    cdef const CHypergraphSparseVectorWeights *thisptr
+    cdef const CHypergraphSparseVectorPotentials *thisptr
     cdef kind
     def __cinit__(self, Hypergraph graph):
         """
-        Build the weight vector for a hypergraph.
+        Build the potential vector for a hypergraph.
 
         :param hypergraph: The underlying hypergraph.
         """
         self.hypergraph = graph
         self.kind = SparseVector
 
-    def times(self, _SparseVectorWeights other):
-        cdef const CHypergraphSparseVectorWeights *new_weights = \
+    def times(self, _SparseVectorPotentials other):
+        cdef const CHypergraphSparseVectorPotentials *new_potentials = \
             self.thisptr.times(deref(other.thisptr))
-        return _SparseVectorWeights(self.hypergraph).init(new_weights)
+        return _SparseVectorPotentials(self.hypergraph).init(new_potentials)
 
     def project(self, Hypergraph graph, Projection projection):
-        cdef _SparseVectorWeights new_weights = _SparseVectorWeights(graph)
-        cdef const CHypergraphSparseVectorWeights *ptr = \
-            self.thisptr.project_weights(deref(projection.thisptr))
-        return new_weights.init(ptr)
+        cdef _SparseVectorPotentials new_potentials = _SparseVectorPotentials(graph)
+        cdef const CHypergraphSparseVectorPotentials *ptr = \
+            self.thisptr.project_potentials(deref(projection.thisptr))
+        return new_potentials.init(ptr)
 
     def show(self, Hypergraph graph):
         return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
@@ -1195,30 +1195,30 @@ cdef class _SparseVectorWeights:
         """
         build(fn)
 
-        Build the weight vector for a hypergraph.
+        Build the potential vector for a hypergraph.
 
-        :param fn: A function from edge labels to weights.
+        :param fn: A function from edge labels to potentials.
         """
-        cdef SparseVectorWeight my_bias
+        cdef SparseVectorPotential my_bias
         if bias is None:
             my_bias = SparseVector_one()
         else:
-            my_bias = SparseVectorWeight(<vector[pair[int, int]]> bias)
+            my_bias = SparseVectorPotential(<vector[pair[int, int]]> bias)
 
-        cdef vector[SparseVectorWeight] weights = \
-             vector[SparseVectorWeight](self.hypergraph.thisptr.edges().size(),
+        cdef vector[SparseVectorPotential] potentials = \
+             vector[SparseVectorPotential](self.hypergraph.thisptr.edges().size(),
              SparseVector_zero())
         # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
-            if result is None: weights[i] = SparseVector_zero()
-            weights[i] = SparseVectorWeight(<vector[pair[int, int]]> result)
+            if result is None: potentials[i] = SparseVector_zero()
+            potentials[i] = SparseVectorPotential(<vector[pair[int, int]]> result)
         self.thisptr =  \
-          new CHypergraphSparseVectorWeights(self.hypergraph.thisptr,
-                                           weights, my_bias)
+          new CHypergraphSparseVectorPotentials(self.hypergraph.thisptr,
+                                           potentials, my_bias)
         return self
 
-    cdef init(self, const CHypergraphSparseVectorWeights *ptr):
+    cdef init(self, const CHypergraphSparseVectorPotentials *ptr):
         self.thisptr = ptr
         return self
 
@@ -1234,13 +1234,13 @@ cdef class _SparseVectorWeights:
         return _SparseVectorW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _SparseVectorW:
-    cdef SparseVectorWeight wrap
+    cdef SparseVectorPotential wrap
 
     def __cinit__(self, val=None):
         if val is not None:
-            self.init(SparseVectorWeight(<vector[pair[int, int]]>val))
+            self.init(SparseVectorPotential(<vector[pair[int, int]]>val))
 
-    cdef init(self, SparseVectorWeight wrap):
+    cdef init(self, SparseVectorPotential wrap):
         self.wrap = wrap
         return self
 
@@ -1314,22 +1314,22 @@ class SparseVector:
     Chart = _SparseVectorChart
     Marginals = _SparseVectorMarginals
     Semi = _SparseVectorW
-    Weights = _SparseVectorWeights
+    Potentials = _SparseVectorPotentials
 
     @staticmethod
     def inside(Hypergraph graph,
-               _SparseVectorWeights weights):
+               _SparseVectorPotentials potentials):
         cdef _SparseVectorChart chart = _SparseVectorChart()
-        chart.chart = inside_SparseVector(graph.thisptr, deref(weights.thisptr))
+        chart.chart = inside_SparseVector(graph.thisptr, deref(potentials.thisptr))
         return chart
 
     @staticmethod
     def outside(Hypergraph graph,
-                _SparseVectorWeights weights,
+                _SparseVectorPotentials potentials,
                 _SparseVectorChart inside_chart):
         cdef _SparseVectorChart out_chart = _SparseVectorChart()
         out_chart.chart = outside_SparseVector(graph.thisptr,
-                                             deref(weights.thisptr),
+                                             deref(potentials.thisptr),
                                              deref(inside_chart.chart))
         return out_chart
 
@@ -1337,30 +1337,30 @@ class SparseVector:
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
-                          _SparseVectorWeights weights):
+                          _SparseVectorPotentials potentials):
         cdef const CSparseVectorMarginals *marginals = \
-            SparseVector_compute(graph.thisptr, weights.thisptr)
+            SparseVector_compute(graph.thisptr, potentials.thisptr)
         return _SparseVectorMarginals().init(marginals)
 
 
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
-                         _SparseVectorWeights weights,
+                         _SparseVectorPotentials potentials,
                          threshold):
-        marginals = compute_marginals(graph, weights)
-        bool_weights = marginals.threshold(_SparseVectorW().init(SparseVectorWeight(<vector[pair[int, int]]>threshold)))
-        projection = Projection(graph, bool_weights)
+        marginals = compute_marginals(graph, potentials)
+        bool_potentials = marginals.threshold(_SparseVectorW().init(SparseVectorPotential(<vector[pair[int, int]]>threshold)))
+        projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
-        new_weight = weights.project(new_graph, projection)
-        return new_graph, new_weight
+        new_potential = potentials.project(new_graph, projection)
+        return new_graph, new_potential
 
 
-def SparseVectorWeights(Hypergraph graph):
-    return SparseVector.Weights(graph)
+def SparseVectorPotentials(Hypergraph graph):
+    return SparseVector.Potentials(graph)
 
 
 
-def inside(Hypergraph graph, weights):
+def inside(Hypergraph graph, potentials):
     r"""
     Find the inside path chart values.
 
@@ -1370,8 +1370,8 @@ def inside(Hypergraph graph, weights):
     graph : :py:class:`Hypergraph`
       The hypergraph :math:`({\cal V}, {\cal E})` to search.
 
-    weights : :py:class:`Weights`
-      The weights :math:`\theta` of the hypergraph.
+    potentials : :py:class:`Potentials`
+      The potentials :math:`\theta` of the hypergraph.
 
     Returns
     -------
@@ -1379,10 +1379,10 @@ def inside(Hypergraph graph, weights):
     : :py:class:`Chart`
        The inside chart.
     """
-    return weights.kind.inside(graph, weights)
+    return potentials.kind.inside(graph, potentials)
 
 def outside(Hypergraph graph,
-            weights,
+            potentials,
             inside_chart):
     """
     Find the outside scores for the hypergraph.
@@ -1393,8 +1393,8 @@ def outside(Hypergraph graph,
     graph : :py:class:`Hypergraph`
        The hypergraph to search.
 
-    weights : :py:class:`Weights`
-       The weights of the hypergraph.
+    potentials : :py:class:`Potentials`
+       The potentials of the hypergraph.
 
     inside_chart : :py:class:`Chart`
        The inside chart.
@@ -1406,9 +1406,9 @@ def outside(Hypergraph graph,
        The outside chart.
 
     """
-    return weights.kind.outside(graph, weights, inside_chart)
+    return potentials.kind.outside(graph, potentials, inside_chart)
 
-def best_path(Hypergraph graph, weights):
+def best_path(Hypergraph graph, potentials):
     r"""
     Find the highest-scoring path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`
     in the hypergraph.
@@ -1419,17 +1419,17 @@ def best_path(Hypergraph graph, weights):
     graph : :py:class:`Hypergraph`
       The hypergraph :math:`({\cal V}, {\cal E})` to search.
 
-    weights : :py:class:`Weights`
-      The weights :math:`\theta` of the hypergraph.
+    potentials : :py:class:`Potentials`
+      The potentials :math:`\theta` of the hypergraph.
 
     Returns
     -------
     path : :py:class:`Path`
       The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
     """
-    return weights.kind.viterbi(graph, weights)
+    return potentials.kind.viterbi(graph, potentials)
 
-def prune_hypergraph(Hypergraph graph, weights, thres):
+def prune_hypergraph(Hypergraph graph, potentials, thres):
     """
     Prune hyperedges with low max-marginal score from the hypergraph.
 
@@ -1439,63 +1439,63 @@ def prune_hypergraph(Hypergraph graph, weights, thres):
     graph : :py:class:`Hypergraph`
     The hypergraph to search.
 
-    weights : :py:class:`Weights`
-    The weights of the hypergraph.
+    potentials : :py:class:`Potentials`
+    The potentials of the hypergraph.
 
     Returns
     --------
 
-    The new hypergraphs and weights.
+    The new hypergraphs and potentials.
     """
-    return weights.kind.prune_hypergraph(graph, weights, thres)
+    return potentials.kind.prune_hypergraph(graph, potentials, thres)
 
 
-def compute_marginals(Hypergraph graph, weights):
-    return weights.kind.compute_marginals(graph, weights)
+def compute_marginals(Hypergraph graph, potentials):
+    return potentials.kind.compute_marginals(graph, potentials)
 
-def Weights(Hypergraph graph, kind=LogViterbi):
-    return kind.Weights(graph)
+def Potentials(Hypergraph graph, kind=LogViterbi):
+    return kind.Potentials(graph)
 
 inside_values = inside
 outside_values = outside
 
 
-####### These are methods that use specific weight ########
+####### These are methods that use specific potential ########
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHypergraph *new_graph
         const CHyperedge *project(const CHyperedge *edge)
         const CHypernode *project(const CHypernode *node)
 
-    const CHypergraphLogViterbiWeights * cpairwise_dot "pairwise_dot"(
-        const CHypergraphSparseVectorWeights sparse_weights,
+    const CHypergraphLogViterbiPotentials * cpairwise_dot "pairwise_dot"(
+        const CHypergraphSparseVectorPotentials sparse_potentials,
         const vector[double] vec)
 
 cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
     CHypergraphProjection *cproject_hypergraph "HypergraphProjection::project_hypergraph"(
         const CHypergraph *hypergraph,
-        const CHypergraphBoolWeights edge_mask)
+        const CHypergraphBoolPotentials edge_mask)
 
 
 # cdef extern from "Hypergraph/Algorithms.h":
 #     const CHyperpath *best_constrained_path(
 #         const CHypergraph *graph,
-#         const CHypergraphLogViterbiWeights theta,
-#         const CHypergraphSparseVectorWeights constraints) except +
+#         const CHypergraphLogViterbiPotentials theta,
+#         const CHypergraphSparseVectorPotentials constraints) except +
 
 
-def pairwise_dot(_SparseVectorWeights weights, vec):
+def pairwise_dot(_SparseVectorPotentials potentials, vec):
     cdef vector[double] rvec
     for i in vec:
         rvec.push_back(<double>i)
-    cdef const CHypergraphLogViterbiWeights *rweights = \
-        cpairwise_dot(deref(weights.thisptr), rvec)
-    return _LogViterbiWeights(weights.hypergraph).init(rweights)
+    cdef const CHypergraphLogViterbiPotentials *rpotentials = \
+        cpairwise_dot(deref(potentials.thisptr), rvec)
+    return _LogViterbiPotentials(potentials.hypergraph).init(rpotentials)
 
 cdef class Projection:
     cdef const CHypergraphProjection *thisptr
 
-    def __init__(self, Hypergraph graph, _BoolWeights filt):
+    def __init__(self, Hypergraph graph, _BoolPotentials filt):
         """
         Prune hyperedges with low max-marginal score from the hypergraph.
 
@@ -1505,12 +1505,12 @@ cdef class Projection:
         graph : :py:class:`Hypergraph`
            The hypergraph to search.
 
-        weights : :py:class:`Weights`
-           The weights of the hypergraph.
+        potentials : :py:class:`Potentials`
+           The potentials of the hypergraph.
 
         Returns
         --------
-        The new hypergraphs and weights.
+        The new hypergraphs and potentials.
         """
         cdef const CHypergraphProjection *projection = \
             cproject_hypergraph(graph.thisptr,

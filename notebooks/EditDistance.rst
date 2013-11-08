@@ -117,11 +117,11 @@ http://en.wikipedia.org/wiki/Levenshtein\_distance.
 
 .. code:: python
 
-    def weight_function(op):
+    def potential_function(op):
         if op == Op.Mat: return 1
         else: return 0
-    weights = ph.Weights(hypergraph).build(weight_function)
-    path = ph.best_path(hypergraph, weights)
+    potentials = ph.Potentials(hypergraph).build(potential_function)
+    path = ph.best_path(hypergraph, potentials)
 .. code:: python
 
     display.HypergraphPathFormatter(hypergraph, [path]).to_ipython()
@@ -151,8 +151,8 @@ http://en.wikipedia.org/wiki/Levenshtein\_distance.
     c2 = chart.ChartBuilder(semiring=chart.HypergraphSemiRing, 
                            build_hypergraph=True)
     hypergraph2 = edit_distance(c2, p2).finish()
-    weights2 = ph.Weights(hypergraph2).build(weight_function)
-    path2 = ph.best_path(hypergraph2, weights2)
+    potentials2 = ph.Potentials(hypergraph2).build(potential_function)
+    path2 = ph.best_path(hypergraph2, potentials2)
     p2.show([hypergraph2.label(edge) for edge in path2][1:])
 
 .. parsed-literal::
@@ -204,17 +204,17 @@ http://en.wikipedia.org/wiki/Levenshtein\_distance.
 
 .. code:: python
 
-    pruned_hypergraph, pruned_weights = ph.prune_hypergraph(hypergraph2, weights2, 0.6)
+    pruned_hypergraph, pruned_potentials = ph.prune_hypergraph(hypergraph2, potentials2, 0.6)
     len(pruned_hypergraph.nodes), len(pruned_hypergraph.edges)
 
 
 
 .. parsed-literal::
 
-    (217, 413)
+    (929, 1879)
 
 
 
 .. code:: python
 
-    display.HypergraphFormatter(pruned_hypergraph).to_ipython()
+    #display.HypergraphFormatter(pruned_hypergraph).to_ipython()

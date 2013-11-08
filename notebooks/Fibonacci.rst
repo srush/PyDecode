@@ -18,7 +18,7 @@ Tutorial 1: Fibonacci
         return c
 .. code:: python
 
-    c = chart.ChartBuilder(semiring=chart.ViterbiSemiRing)
+    c = chart.ChartBuilder(semiring=ph._LogViterbiW)
     fibo_dp(c, 10).finish()
 
 

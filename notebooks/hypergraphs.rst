@@ -18,14 +18,14 @@ Simple Hypergraph Example
          n5 = b.add_node((([n1, n2], "edge1"),), label = "e")
          b.add_node([([n5], "edge3"), ([n3, n4], "edge2")], label = "root")
     
-    def build_weights(label):
+    def build_potentials(label):
          return {"edge1" : 3, "edge2" : 1, "edge3" : 1}[label]
-    weights = ph.Weights(hyp).build(build_weights)
+    potentials = ph.Potentials(hyp).build(build_potentials)
 Draw the graph
 
 .. code:: python
 
-    display.HypergraphWeightFormatter(hyp, weights).to_ipython()
+    display.HypergraphPotentialFormatter(hyp, potentials).to_ipython()
 
 
 
@@ -35,7 +35,7 @@ Draw the graph
 
 .. code:: python
 
-    path = ph.best_path(hyp, weights)
+    path = ph.best_path(hyp, potentials)
     display.HypergraphPathFormatter(hyp, [path]).to_ipython()
 
 

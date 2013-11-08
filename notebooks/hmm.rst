@@ -6,8 +6,11 @@
     from collections import namedtuple
     
     import pydecode.chart as chart
+    import pydecode.optimization as opt
+    import pydecode.constraints as cons
     import pydecode.semiring as semi
     import pandas as pd
+
 Tutorial 3: HMM Tagger (with constraints)
 =========================================
 
@@ -178,7 +181,7 @@ And the scoring function.
 
 .. code:: python
 
-    def bigram_weight(bigram):
+    def bigram_potential(bigram):
         return transition[bigram.prevtag][bigram.tag] + \
         emission[bigram.word][bigram.tag] 
 Now we write out dynamic program.
@@ -206,29 +209,29 @@ Now we are ready to build the structure itself.
 .. code:: python
 
     # Create a chart using to compute the probability of the sentence.
-    c = chart.ChartBuilder(bigram_weight)
+    c = chart.ChartBuilder(bigram_potential)
     viterbi(c).finish()
 
 
 
 .. parsed-literal::
 
-    10.600000000000001
+    9.600000381469727
 
 
 
 .. code:: python
 
     # Create a chart to compute the max paths.
-    c = chart.ChartBuilder(bigram_weight, 
-                           chart.ViterbiSemiRing)
+    c = chart.ChartBuilder(bigram_potential, 
+                           ph._InsideW)
     viterbi(c).finish()
 
 
 
 .. parsed-literal::
 
-    9.600000000000001
+    9.087200164794922
 
 
 
@@ -241,15 +244,35 @@ But even better we can construct the entrire search space.
     hypergraph = viterbi(c).finish()
 .. code:: python
 
-    weights = ph.Weights(hypergraph).build(bigram_weight)
+    potentials = ph.Potentials(hypergraph).build(bigram_potential)
     
     # Find the best path.
-    path = ph.best_path(hypergraph, weights)
-    print weights.dot(path)
+    path = ph.best_path(hypergraph, potentials)
+    print potentials.dot(path)
 
-.. parsed-literal::
+::
 
-    9.6
+
+    ---------------------------------------------------------------------------
+    AttributeError                            Traceback (most recent call last)
+
+    <ipython-input-59-5d9224c40bbb> in <module>()
+    ----> 1 potentials = ph.Potentials(hypergraph).build(bigram_potential)
+          2 
+          3 # Find the best path.
+          4 path = ph.best_path(hypergraph, potentials)
+          5 print potentials.dot(path)
+
+
+    /home/srush/Projects/decoding/python/pydecode/hyper.so in pydecode.hyper._LogViterbiPotentials.build (python/pydecode/hyper.cpp:10448)()
+
+
+    <ipython-input-53-fc220ccbeda4> in bigram_potential(bigram)
+          1 def bigram_potential(bigram):
+    ----> 2     return transition[bigram.prevtag][bigram.tag] +     emission[bigram.word][bigram.tag]
+    
+
+    AttributeError: 'NoneType' object has no attribute 'prevtag'
 
 
 We can also output the path itself.
@@ -257,20 +280,21 @@ We can also output the path itself.
 .. code:: python
 
     print [hypergraph.label(edge) for edge in path.edges]
-
-.. parsed-literal::
-
-    [Bigram(word='the', tag='D', prevtag='ROOT'), Bigram(word='dog', tag='N', prevtag='D'), Bigram(word='walked', tag='V', prevtag='N'), Bigram(word='in', tag='D', prevtag='V'), Bigram(word='the', tag='N', prevtag='D'), Bigram(word='park', tag='V', prevtag='N'), Bigram(word='END', tag='END', prevtag='V')]
-
-
 .. code:: python
 
     display.HypergraphPathFormatter(hypergraph, [path]).to_ipython()
 
+::
 
 
-.. image:: hmm_files/hmm_21_0.png
+    ---------------------------------------------------------------------------
+    NameError                                 Traceback (most recent call last)
 
+    <ipython-input-60-66085a6e7465> in <module>()
+    ----> 1 display.HypergraphPathFormatter(hypergraph, [path]).to_ipython()
+    
+
+    NameError: name 'path' is not defined
 
 
 We can also use a custom fancier formatter. These attributes are from
@@ -293,71 +317,38 @@ graphviz (http://www.graphviz.org/content/attrs)
         def graph_attrs(self): return {"rankdir":"RL"}
     
     HMMFormat(hypergraph, [path]).to_ipython()
-
-
-
-.. image:: hmm_files/hmm_23_0.png
-
-
-
 PyDecode also allows you to add extra constraints to the problem. As an
 example we can add constraints to enfore that the tag of "dog" is the
 same tag as "park".
 
 .. code:: python
 
-    def cons(tag): return "tag_%s"%tag
+    def cons_name(tag): return "tag_%s"%tag
     
     def build_constraints(bigram):
         if bigram.word == "dog":
-            return [(cons(bigram.tag), 1)]
+            return [(cons_name(bigram.tag), 1)]
         elif bigram.word == "park":
-            return [(cons(bigram.tag), -1)]
+            return [(cons_name(bigram.tag), -1)]
         return []
     
     constraints = \
-        ph.Constraints(hypergraph).build( 
-                       [(cons(tag), 0) for tag in ["D", "V", "N"]], 
+        cons.Constraints(hypergraph, [(cons_name(tag), 0) for tag in ["D", "V", "N"]]).build( 
                        build_constraints)
 This check fails because the tags do not agree.
 
 .. code:: python
 
     print "check", constraints.check(path)
-
-.. parsed-literal::
-
-    check [<pydecode.hyper.Constraint object at 0x261dd90>, <pydecode.hyper.Constraint object at 0x36e9190>]
-
-
 Solve instead using subgradient.
 
 .. code:: python
 
-    gpath, duals = ph.best_constrained(hypergraph, weights, constraints)
-.. code:: python
-
-    for d in duals:
-        print d.dual, d.constraints
-
-.. parsed-literal::
-
-    9.6 [<pydecode.hyper.Constraint object at 0x261dd90>, <pydecode.hyper.Constraint object at 0x36e9190>]
-    8.8 []
-
-
-.. code:: python
-
-    display.report(duals)
-
-
-.. image:: hmm_files/hmm_31_0.png
-
-
+    gpath = opt.best_constrained_path(hypergraph, potentials, constraints)
 .. code:: python
 
     import pydecode.lp as lp
-    hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, weights)
+    hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, potentials)
     hypergraph_lp.solve()
     path = hypergraph_lp.path
 .. code:: python
@@ -365,51 +356,13 @@ Solve instead using subgradient.
     # Output the path.
     for edge in gpath.edges:
         print hypergraph.label(edge)
-
-.. parsed-literal::
-
-    ROOT -> D
-    D -> N
-    N -> V
-    V -> D
-    D -> D
-    D -> N
-    N -> END
-
-
 .. code:: python
 
     print "check", constraints.check(gpath)
-    print "score", weights.dot(gpath)
-
-.. parsed-literal::
-
-    check []
-    score 8.8
-
-
+    print "score", potentials.dot(gpath)
 .. code:: python
 
     HMMFormat(hypergraph, [path, gpath]).to_ipython()
-
-
-
-
-.. image:: hmm_files/hmm_35_0.png
-
-
-
-.. code:: python
-
-    for constraint in constraints:
-        print constraint.label
-
-.. parsed-literal::
-
-    tag_D
-    tag_V
-    tag_N
-
 
 .. code:: python
 
@@ -425,29 +378,15 @@ Solve instead using subgradient.
         def subgraph_format(self, subgraph):
             return {"label": (["ROOT"] + sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
     
-    HMMConstraintFormat(hypergraph, constraints).to_ipython()
-
-
-
-.. image:: hmm_files/hmm_37_0.png
-
-
-
+    #HMMConstraintFormat(hypergraph, constraints).to_ipython()
 Pruning
 
 .. code:: python
 
-    pruned_hypergraph, pruned_weights = ph.prune_hypergraph(hypergraph, weights, 0.8)
+    pruned_hypergraph, pruned_potentials = ph.prune_hypergraph(hypergraph, potentials, 0.8)
 .. code:: python
 
     HMMFormat(pruned_hypergraph, []).to_ipython()
-
-
-
-.. image:: hmm_files/hmm_40_0.png
-
-
-
 .. code:: python
 
-    very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, weights, 0.9)
+    very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, potentials, 0.9)
