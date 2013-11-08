@@ -228,8 +228,13 @@ class Hyperpath {
   Hyperpath(const Hypergraph *graph,
             const vector<HEdge> &edges)
       : graph_(graph), edges_(edges) {
+    HEdge last_edge = NULL;
     foreach (HEdge edge, edges) {
       edges_set_.insert(edge->id());
+      if (last_edge != NULL && last_edge->id() >= edge->id()) {
+        throw HypergraphException("Hyperpath is not in order.");
+      }
+      last_edge = edge;
     }
   }
 
@@ -255,6 +260,17 @@ class Hyperpath {
     if (!graph.same(*graph_)) {
       throw HypergraphException("Hypergraph does not match path.");
     }
+  }
+
+  bool equal(const Hyperpath &path) const {
+    check(*path.graph_);
+    if (edges_.size() != path.edges_.size()) return false;
+    for (int i = 0; i < edges_.size(); ++i) {
+      if (edges_[i]->id() != path.edges_[i]->id()) {
+        return false;
+      }
+    }
+    return true;
   }
 
  private:

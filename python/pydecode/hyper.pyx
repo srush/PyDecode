@@ -9,6 +9,7 @@ include "wrap.pxd"
 include "hypergraph.pyx"
 
 
+
 ############# This is the templated semiring part. ##############
 
 
@@ -97,6 +98,10 @@ cdef class _ViterbiWeights:
         cdef const CHypergraphViterbiWeights *ptr = \
             self.thisptr.project_weights(deref(projection.thisptr))
         return new_weights.init(ptr)
+
+    def show(self, Hypergraph graph):
+        return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
+           for edge in graph.edges])
 
     property kind:
         def __get__(self):
@@ -361,6 +366,10 @@ cdef class _LogViterbiWeights:
             self.thisptr.project_weights(deref(projection.thisptr))
         return new_weights.init(ptr)
 
+    def show(self, Hypergraph graph):
+        return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
+           for edge in graph.edges])
+
     property kind:
         def __get__(self):
             return self.kind
@@ -624,6 +633,10 @@ cdef class _InsideWeights:
             self.thisptr.project_weights(deref(projection.thisptr))
         return new_weights.init(ptr)
 
+    def show(self, Hypergraph graph):
+        return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
+           for edge in graph.edges])
+
     property kind:
         def __get__(self):
             return self.kind
@@ -874,6 +887,10 @@ cdef class _BoolWeights:
         cdef const CHypergraphBoolWeights *ptr = \
             self.thisptr.project_weights(deref(projection.thisptr))
         return new_weights.init(ptr)
+
+    def show(self, Hypergraph graph):
+        return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
+           for edge in graph.edges])
 
     property kind:
         def __get__(self):
@@ -1137,6 +1154,10 @@ cdef class _SparseVectorWeights:
         cdef const CHypergraphSparseVectorWeights *ptr = \
             self.thisptr.project_weights(deref(projection.thisptr))
         return new_weights.init(ptr)
+
+    def show(self, Hypergraph graph):
+        return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
+           for edge in graph.edges])
 
     property kind:
         def __get__(self):
@@ -1457,7 +1478,6 @@ cdef class Projection:
 
         Returns
         --------
-
         The new hypergraphs and weights.
         """
         cdef const CHypergraphProjection *projection = \
@@ -1468,6 +1488,7 @@ cdef class Projection:
 
     cdef Projection init(self, const CHypergraphProjection *thisptr):
         self.thisptr = thisptr
+
 
     def project(self, Hypergraph graph):
         cdef Hypergraph new_graph = Hypergraph()

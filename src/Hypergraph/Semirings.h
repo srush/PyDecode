@@ -433,7 +433,7 @@ class HypergraphWeights {
    foreach (HEdge edge, path.edges()) {
      score *= weights_[edge->id()];
    }
-   return score + bias_;
+   return score * bias_;
  }
 
   SemiringType score(HEdge edge) const { return weights_[edge->id()]; }

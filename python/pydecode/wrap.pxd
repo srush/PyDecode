@@ -28,9 +28,10 @@ cdef extern from "Hypergraph/Hypergraph.h":
 
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,
-                   const vector[const CHyperedge *] edges)
+                   const vector[const CHyperedge *] edges) except +
         vector[const CHyperedge *] edges()
         int has_edge(const CHyperedge *)
+        bool equal(const CHyperpath path)
 
     cdef cppclass CHypergraphWeights "HypergraphWeights<double>":
         double dot(const CHyperpath &path) except +

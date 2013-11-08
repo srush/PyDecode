@@ -102,9 +102,9 @@ class HypergraphLP:
 
         constraints : :py:class:`Constraints`
         """
-        for constraint in constraints:
+        for i, constraint in enumerate(constraints):
             self.lp += 0 == \
-                constraint.constant + \
+                constraints.bias[i][1] + \
                 sum([coeff * self.edge_vars[edge.id]
                      for (coeff, edge) in constraint])
 

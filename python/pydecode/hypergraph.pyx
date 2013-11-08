@@ -89,6 +89,16 @@ cdef class Hypergraph:
         """
         return self.node_labels[node.id]
 
+    def __str__(self):
+        s = "Hypergraph: Edges: %s Nodes: %s"%(len(self.edges), len(self.nodes))  + "\n"
+        s += "Root %s"%(self.root.id)  + "\n"
+        for edge in self.edges:
+            s += str(edge.id) + " " + str(self.label(edge)) + "\n"
+            s += "\t%d -> "%(edge.head.id)
+            for node in edge.tail:
+                s += " %d "%(node.id)
+            s += "\n"
+        return s
 
 cdef class GraphBuilder:
     r"""
@@ -237,6 +247,9 @@ cdef class Node:
     def __hash__(self):
         return self.id
 
+    def __repr__(self):
+        return "NODE:%d"%(self.nodeptr.id())
+
     property id:
         def __get__(self):
             assert self.nodeptr.id() != -1, "Bad node id."
@@ -295,6 +308,9 @@ cdef class Edge:
     def __str__(self):
         return self.edgeptr.label()
 
+    def __repr__(self):
+        return "EDGE:%d"%(self.edgeptr.id())
+
     property tail:
         def __get__(self):
             return convert_nodes(self.edgeptr.tail_nodes())
@@ -339,6 +355,7 @@ cdef class Path:
         """
 
         cdef vector[const CHyperedge *] cedges
+        edges.sort(key=lambda e:e.id)
         if graph and edges:
             for edge in edges:
                 cedges.push_back((<Edge>edge).edgeptr)
@@ -348,9 +365,9 @@ cdef class Path:
         self.thisptr = path
         return self
 
-    property edges:
-        def __get__(self):
-            return convert_edges(self.thisptr.edges())
+    def __str__(self):
+        return ":".join([str(edge) for edge in self.edges])
+
 
     def __contains__(self, Edge edge):
         """
@@ -360,6 +377,20 @@ cdef class Path:
 
     def __iter__(self):
         return iter(convert_edges(self.thisptr.edges()))
+
+    cdef public equal(Path self, Path other):
+        return self.thisptr.equal(deref(other.thisptr))
+
+    def __richcmp__(Path self, Path other, op):
+        if op == 2:
+            return self.equal(other)
+        if op == 3:
+            return not self.equal(other)
+        raise Exception("No inequality on paths.")
+
+    property edges:
+        def __get__(self):
+            return convert_edges(self.thisptr.edges())
 
 class HypergraphAccessException(Exception):
     def __init__(self, value):

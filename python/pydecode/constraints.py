@@ -1,4 +1,6 @@
 import pydecode.hyper as ph
+from collections import defaultdict
+
 
 class Constraints:
     r"""
@@ -23,14 +25,16 @@ class Constraints:
         self.bias = []
         self.by_label = {}
         self.by_id = {}
-        for i, (label, constraint) in enumerate(constraints):
+        for i, (label, constant) in enumerate(constraints):
             self.by_label[label] = i
             self.by_id[i] = label
-            self.bias.append((i, constraint))
+            self.bias.append((i, constant))
         self.size = len(constraints)
         self.weights = ph.Weights(graph, kind=ph.SparseVector)
 
     def check(self, path):
+        for edge in path.edges:
+            print edge.id, self.weights[edge]
         constraints = self.weights.dot(path)
         print "Constraints", constraints
         return [self.by_id[i]
@@ -58,12 +62,22 @@ class Constraints:
         :py:class:`Constraints`
             The constraints.
         """
+        self.all_constraints = defaultdict(lambda: [])
+        edge_values = {}
+        for edge in self.hypergraph.edges:
+            semi = []
+            label = self.hypergraph.label(edge)
+            for name, coeff in builder(label):
+                constraint = self.by_label[name]
+                semi.append((constraint, coeff))
+                self.all_constraints[constraint].append((coeff, edge))
+            edge_values[label] = semi
 
-        def wrap_builder(label):
-            return [(self.by_label[name], coeff)
-                    for name, coeff in builder(label)]
-        self.weights.build(wrap_builder, bias=self.bias)
+        self.weights.build(lambda a: edge_values[a], bias=self.bias)
         return self
+
+    def __iter__(self):
+        return self.all_constraints.itervalues()
 
         # cdef CConstraint *cons
         # cdef Constraint hcons
