@@ -80,8 +80,8 @@ class DynamicProgrammingModel(StructuredModel):
 
     def inference(self, x, w):
         hypergraph = self._build_hypergraph(x)
-        weights = self._build_weights(hypergraph, x, w)
-        path = ph.best_path(hypergraph, weights)
+        potentials = self._build_potentials(hypergraph, x, w)
+        path = ph.best_path(hypergraph, potentials)
         y = set()
         for edge in path:
             y.add(hypergraph.label(edge))
@@ -103,10 +103,10 @@ class DynamicProgrammingModel(StructuredModel):
         self.dynamic_program(x, c)
         return c.finish()
 
-    def _build_weights(self, hypergraph, x, w):
-        def weight_builder(index):
+    def _build_potentials(self, hypergraph, x, w):
+        def potential_builder(index):
             return self._features(x, index).dot(w.T)
-        return ph.Weights(hypergraph).build(weight_builder)
+        return ph.Potentials(hypergraph).build(potential_builder)
 
     def _features(self, x, index):
         d = self.factored_psi(x, index)

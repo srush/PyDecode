@@ -73,42 +73,42 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="55">
+      <node id="46">
         <label>HypergraphConstructionException</label>
         <link refid="classHypergraphConstructionException"/>
-        <childnode refid="52" relation="public-inheritance">
+        <childnode refid="43" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="53">
+      <node id="44">
         <label>exception</label>
       </node>
-      <node id="56">
+      <node id="47">
         <label>HypergraphMatchException</label>
         <link refid="classHypergraphMatchException"/>
-        <childnode refid="52" relation="public-inheritance">
+        <childnode refid="43" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="52">
+      <node id="43">
         <label>HypergraphException</label>
         <link refid="structHypergraphException"/>
-        <childnode refid="53" relation="public-inheritance">
+        <childnode refid="44" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="54">
+      <node id="45">
         <label>HypergraphAccessException</label>
         <link refid="classHypergraphAccessException"/>
-        <childnode refid="52" relation="public-inheritance">
+        <childnode refid="43" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="58">
+      <node id="49">
         <label>exception</label>
       </node>
-      <node id="57">
+      <node id="48">
         <label>HypergraphException</label>
         <link refid="structHypergraphException"/>
-        <childnode refid="58" relation="public-inheritance">
+        <childnode refid="49" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

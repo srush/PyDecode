@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="229" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="229" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="277" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="277" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHyperpath_1a7840698f6eb93e77620bfc4232ec6b4f" prot="private" static="no" mutable="no">
         <type>set&lt; int &gt;</type>
@@ -27,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="230" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="230" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="278" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="278" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHyperpath_1a132ed9f455026eccea0d5018ae9625ce" prot="private" static="no" mutable="no">
         <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt;</type>
@@ -40,7 +40,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="231" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="231" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="279" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="279" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -63,7 +63,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="207" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="205" bodyend="211"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="230" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="228" bodyend="239"/>
       </memberdef>
       <memberdef kind="function" id="classHyperpath_1aee6cb1fb9c52606806e0817c010ae079" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt; &amp;</type>
@@ -73,10 +73,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>Get the edges in the path. In topological order. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="213" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="213" bodyend="215"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="244" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="244" bodyend="246"/>
       </memberdef>
       <memberdef kind="function" id="classHyperpath_1a4b3afb4f45a178b45d2e5ebea64a010b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -90,10 +90,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>Is edge in the hyperpath. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="217" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="217" bodyend="220"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="251" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="251" bodyend="253"/>
       </memberdef>
       <memberdef kind="function" id="classHyperpath_1a79c1333bc9f94a042a8a11b42608cafb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -107,22 +107,40 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
+<para>Is this hyperpath associated with the hypergraph. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="259" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="259" bodyend="263"/>
+      </memberdef>
+      <memberdef kind="function" id="classHyperpath_1a87517dfdb6e256155cd44910a4dcd2fc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Hyperpath::equal</definition>
+        <argsstring>(const Hyperpath &amp;path) const </argsstring>
+        <name>equal</name>
+        <param>
+          <type>const <ref refid="classHyperpath" kindref="compound">Hyperpath</ref> &amp;</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="222" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="222" bodyend="226"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="265" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="265" bodyend="274"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="203" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="203" bodyend="233"/>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="226" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="226" bodyend="280"/>
     <listofallmembers>
       <member refid="classHyperpath_1a79c1333bc9f94a042a8a11b42608cafb" prot="public" virt="non-virtual"><scope>Hyperpath</scope><name>check</name></member>
       <member refid="classHyperpath_1aee6cb1fb9c52606806e0817c010ae079" prot="public" virt="non-virtual"><scope>Hyperpath</scope><name>edges</name></member>
       <member refid="classHyperpath_1a132ed9f455026eccea0d5018ae9625ce" prot="private" virt="non-virtual"><scope>Hyperpath</scope><name>edges_</name></member>
       <member refid="classHyperpath_1a7840698f6eb93e77620bfc4232ec6b4f" prot="private" virt="non-virtual"><scope>Hyperpath</scope><name>edges_set_</name></member>
+      <member refid="classHyperpath_1a87517dfdb6e256155cd44910a4dcd2fc" prot="public" virt="non-virtual"><scope>Hyperpath</scope><name>equal</name></member>
       <member refid="classHyperpath_1afa275d941c7058a3c66af1c545735131" prot="private" virt="non-virtual"><scope>Hyperpath</scope><name>graph_</name></member>
       <member refid="classHyperpath_1a4b3afb4f45a178b45d2e5ebea64a010b" prot="public" virt="non-virtual"><scope>Hyperpath</scope><name>has_edge</name></member>
       <member refid="classHyperpath_1a828bd15e6478ea2ec81518e593a3a2ee" prot="public" virt="non-virtual"><scope>Hyperpath</scope><name>Hyperpath</name></member>

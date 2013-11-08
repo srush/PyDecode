@@ -69,7 +69,8 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "{{S.ctype}}":
             const vector[{{S.ctype}}] potentials,
             {{S.ctype}} bias) except +
 
-cdef class _{{S.type}}Potentials:
+
+cdef class {{S.type}}Potentials:
     r"""
     Potential vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
 
@@ -88,13 +89,13 @@ cdef class _{{S.type}}Potentials:
         self.hypergraph = graph
         self.kind = {{S.type}}
 
-    def times(self, _{{S.type}}Potentials other):
+    def times(self, {{S.type}}Potentials other):
         cdef const CHypergraph{{S.type}}Potentials *new_potentials = \
             self.thisptr.times(deref(other.thisptr))
-        return _{{S.type}}Potentials(self.hypergraph).init(new_potentials)
+        return {{S.type}}Potentials(self.hypergraph).init(new_potentials)
 
     def project(self, Hypergraph graph, Projection projection):
-        cdef _{{S.type}}Potentials new_potentials = _{{S.type}}Potentials(graph)
+        cdef {{S.type}}Potentials new_potentials = {{S.type}}Potentials(graph)
         cdef const CHypergraph{{S.type}}Potentials *ptr = \
             self.thisptr.project_potentials(deref(projection.thisptr))
         return new_potentials.init(ptr)
@@ -230,7 +231,7 @@ cdef class _{{S.type}}Marginals:
                 "Passed %s."%obj)
     {% if S.viterbi %}
     def threshold(self, _{{S.ptype}} semi):
-        return _BoolPotentials(Hypergraph().init(self.thisptr.hypergraph())) \
+        return BoolPotentials(Hypergraph().init(self.thisptr.hypergraph())) \
             .init(self.thisptr.threshold(semi.wrap))
     {% endif %}
 
@@ -238,18 +239,18 @@ class {{S.type}}:
     Chart = _{{S.type}}Chart
     Marginals = _{{S.type}}Marginals
     Semi = _{{S.ptype}}
-    Potentials = _{{S.type}}Potentials
+    Potentials = {{S.type}}Potentials
 
     @staticmethod
     def inside(Hypergraph graph,
-               _{{S.type}}Potentials potentials):
+               {{S.type}}Potentials potentials):
         cdef _{{S.type}}Chart chart = _{{S.type}}Chart()
         chart.chart = inside_{{S.type}}(graph.thisptr, deref(potentials.thisptr))
         return chart
 
     @staticmethod
     def outside(Hypergraph graph,
-                _{{S.type}}Potentials potentials,
+                {{S.type}}Potentials potentials,
                 _{{S.type}}Chart inside_chart):
         cdef _{{S.type}}Chart out_chart = _{{S.type}}Chart()
         out_chart.chart = outside_{{S.type}}(graph.thisptr,
@@ -260,7 +261,7 @@ class {{S.type}}:
     {% if S.viterbi %}
     @staticmethod
     def viterbi(Hypergraph graph,
-                _{{S.type}}Potentials potentials):
+                {{S.type}}Potentials potentials):
         cdef CHyperpath *path = \
             viterbi_{{S.type}}(graph.thisptr,
                                deref(potentials.thisptr))
@@ -269,7 +270,7 @@ class {{S.type}}:
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
-                          _{{S.type}}Potentials potentials):
+                          {{S.type}}Potentials potentials):
         cdef const C{{S.type}}Marginals *marginals = \
             {{S.type}}_compute(graph.thisptr, potentials.thisptr)
         return _{{S.type}}Marginals().init(marginals)
@@ -277,7 +278,7 @@ class {{S.type}}:
 
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
-                         _{{S.type}}Potentials potentials,
+                         {{S.type}}Potentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
         bool_potentials = marginals.threshold(_{{S.ptype}}().init({{S.ctype}}(<{{S.vtype}}>threshold)))
@@ -287,8 +288,8 @@ class {{S.type}}:
         return new_graph, new_potential
 
 
-def {{S.type}}Potentials(Hypergraph graph):
-    return {{S.type}}.Potentials(graph)
+
+
 
 {% endfor %}
 
@@ -385,14 +386,13 @@ def prune_hypergraph(Hypergraph graph, potentials, thres):
 def compute_marginals(Hypergraph graph, potentials):
     return potentials.kind.compute_marginals(graph, potentials)
 
-def Potentials(Hypergraph graph, kind=LogViterbi):
-    return kind.Potentials(graph)
+class Potentials(LogViterbiPotentials):
+    pass
 
 inside_values = inside
 outside_values = outside
 
-
-####### These are methods that use specific potential ########
+####### Methods that use specific potential ########
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHypergraph *new_graph
@@ -408,26 +408,18 @@ cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
         const CHypergraph *hypergraph,
         const CHypergraphBoolPotentials edge_mask)
 
-
-# cdef extern from "Hypergraph/Algorithms.h":
-#     const CHyperpath *best_constrained_path(
-#         const CHypergraph *graph,
-#         const CHypergraphLogViterbiPotentials theta,
-#         const CHypergraphSparseVectorPotentials constraints) except +
-
-
-def pairwise_dot(_SparseVectorPotentials potentials, vec):
+def pairwise_dot(SparseVectorPotentials potentials, vec):
     cdef vector[double] rvec
     for i in vec:
         rvec.push_back(<double>i)
     cdef const CHypergraphLogViterbiPotentials *rpotentials = \
         cpairwise_dot(deref(potentials.thisptr), rvec)
-    return _LogViterbiPotentials(potentials.hypergraph).init(rpotentials)
+    return LogViterbiPotentials(potentials.hypergraph).init(rpotentials)
 
 cdef class Projection:
     cdef const CHypergraphProjection *thisptr
 
-    def __init__(self, Hypergraph graph, _BoolPotentials filt):
+    def __init__(self, Hypergraph graph, BoolPotentials filt):
         """
         Prune hyperedges with low max-marginal score from the hypergraph.
 

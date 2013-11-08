@@ -226,14 +226,14 @@ class HypergraphPathFormatter(HypergraphFormatter):
         return {}
 
 
-class HypergraphWeightFormatter(HypergraphFormatter):
-    def __init__(self, hypergraph, weights):
+class HypergraphPotentialFormatter(HypergraphFormatter):
+    def __init__(self, hypergraph, potentials):
         self.hypergraph = hypergraph
-        self.weights = weights
+        self.potentials = potentials
         self._show_hyperedges = False
 
     def hyperedge_node_attrs(self, edge):
-        return {"label": self.weights[edge]}
+        return {"label": self.potentials[edge]}
 
 
 class HypergraphConstraintFormatter(HypergraphFormatter):

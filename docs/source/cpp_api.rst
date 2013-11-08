@@ -17,39 +17,7 @@ Hypergraph
    :project: pydecode
    :members:
 
-.. doxygenclass:: HypergraphWeights
-   :project: pydecode
-   :members:
-
 .. doxygenclass:: Hyperpath
-   :project: pydecode
-   :members:
-
-Constraints
----------------
-
-.. doxygenclass:: Constraint
-   :project: pydecode
-   :members:
-
-.. doxygenclass:: HypergraphConstraints
-   :project: pydecode
-   :members:
-
-
-Subgradient
----------------
-
-
-.. doxygenclass:: SubgradientProducer
-   :project: pydecode
-   :members:
-
-.. doxygenclass:: Subgradient
-   :project: pydecode
-   :members:
-
-.. doxygenclass:: SubgradRate
    :project: pydecode
    :members:
 
@@ -57,14 +25,34 @@ Algorithms
 ---------------
 
 
-.. doxygenfunction:: viterbi_path
+.. doxygenfunction:: general_viterbi
    :project: pydecode
 
 .. doxygenfunction:: outside
    :project: pydecode
 
-.. doxygenfunction:: best_constrained_path
+.. doxygenfunction:: general_inside
    :project: pydecode
 
-.. doxygenfunction:: prune
+.. doxygenfunction:: general_outside
    :project: pydecode
+
+
+Semirings
+---------------
+
+.. doxygenclass:: ViterbiPotential
+   :project: pydecode
+   :members:
+
+.. doxygenclass:: LogViterbiPotential
+   :project: pydecode
+   :members:
+
+.. doxygenclass:: BoolPotential
+   :project: pydecode
+   :members:
+
+.. doxygenclass:: SparseVectorPotential
+   :project: pydecode
+   :members:

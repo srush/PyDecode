@@ -7,59 +7,64 @@
   <compound refid="structboost_1_1foreach__detail_1_1auto__any__base" kind="struct"><name>boost::foreach_detail::auto_any_base</name>
     <member refid="structboost_1_1foreach__detail_1_1auto__any__base_1a59b9aec27f7aad61c3bedea4b5a479b4" kind="function"><name>operator bool</name></member>
   </compound>
-  <compound refid="classBoolWeight" kind="class"><name>BoolWeight</name>
-    <member refid="classBoolWeight_1a3415389214d645295076436037544354" kind="function"><name>BoolWeight</name></member>
-    <member refid="classBoolWeight_1aff242da203ce760bcfd1e95398bbaf4a" kind="function"><name>operator+=</name></member>
-    <member refid="classBoolWeight_1a4c96ac5c296bea0f2ebbe1bd524f170b" kind="function"><name>operator*=</name></member>
-    <member refid="classBoolWeight_1a921b40503fb157acec6f44928496c664" kind="function"><name>normalize</name></member>
-    <member refid="classBoolWeight_1a3a3f3e466438307a9b4fd0d4695346f5" kind="function"><name>one</name></member>
-    <member refid="classBoolWeight_1ae01b919892982555969edb49bbdb14d2" kind="function"><name>zero</name></member>
+  <compound refid="classBaseSemiringPotential" kind="class"><name>BaseSemiringPotential</name>
+    <member refid="classBaseSemiringPotential_1a8ab78c41be222b13d87894877608567e" kind="variable"><name>value</name></member>
+    <member refid="classBaseSemiringPotential_1a54bb42020981d47a9ee5edbefdd0f4b3" kind="function"><name>BaseSemiringPotential</name></member>
+    <member refid="classBaseSemiringPotential_1ae70438bcff496bff89daf4c4eac38ce4" kind="function"><name>BaseSemiringPotential</name></member>
+    <member refid="classBaseSemiringPotential_1ac4f432c81a12368ae2b1d5230cc762c2" kind="function"><name>BaseSemiringPotential</name></member>
+    <member refid="classBaseSemiringPotential_1a57bbc01de90082ca201dc151d821f0e9" kind="function"><name>operator ValType</name></member>
+    <member refid="classBaseSemiringPotential_1af3f7108cca054ed98908a2d536cfcec8" kind="function"><name>operator=</name></member>
+    <member refid="classBaseSemiringPotential_1a688918a5566844351e4fb4ddc95e9784" kind="function"><name>operator=</name></member>
+    <member refid="classBaseSemiringPotential_1a40b321a1e31d648e0f04361cab95dd7b" kind="function"><name>operator+=</name></member>
+    <member refid="classBaseSemiringPotential_1a9e11db3e8bf812f043ff0f58d7ee0b36" kind="function"><name>operator*=</name></member>
+    <member refid="classBaseSemiringPotential_1a87949cd4f8b8aceedaaac1a446c82190" kind="function"><name>normalize</name></member>
+    <member refid="classBaseSemiringPotential_1a3ccf8b43dd32e794f7a546caa2e8ffd9" kind="function"><name>add</name></member>
+    <member refid="classBaseSemiringPotential_1a90188fa749f13b11996f2e328dfb4045" kind="function"><name>times</name></member>
+    <member refid="classBaseSemiringPotential_1a88504ea174fff5518219e34c685d2b17" kind="function"><name>one</name></member>
+    <member refid="classBaseSemiringPotential_1ae36dd186cd093df7e58ddf584ec4de9e" kind="function"><name>zero</name></member>
+    <member refid="classBaseSemiringPotential_1a69be010f517f4d44bc54c1b810cc298f" kind="friend"><name>operator==</name></member>
+    <member refid="classBaseSemiringPotential_1a279d3072c2d90f5433769fe8ca940b23" kind="friend"><name>operator+</name></member>
+    <member refid="classBaseSemiringPotential_1aac2905138eddb60b37383ed2a3295bb9" kind="friend"><name>operator*</name></member>
+  </compound>
+  <compound refid="classBoolPotential" kind="class"><name>BoolPotential</name>
+    <member refid="classBoolPotential_1a5b918e82dd6cc9820597c2b2f0fcfec9" kind="function"><name>BoolPotential</name></member>
+    <member refid="classBoolPotential_1a7a95641a6610954a2ae873698f9d4447" kind="function"><name>BoolPotential</name></member>
+    <member refid="classBoolPotential_1abe2f565f2c3d9385bc77d301be4b17b9" kind="function"><name>operator+=</name></member>
+    <member refid="classBoolPotential_1addc776827e516dec7875f17c01a965bc" kind="function"><name>operator*=</name></member>
+    <member refid="classBoolPotential_1a6b9da2ab65b0c64f3b8c406c71c37c1d" kind="function"><name>normalize</name></member>
+    <member refid="classBoolPotential_1a91ca7a89915225ad6cb1ac3c65689b30" kind="function"><name>one</name></member>
+    <member refid="classBoolPotential_1a49c4b613f0c402fcb680cee3ea3f08fd" kind="function"><name>zero</name></member>
+  </compound>
+  <compound refid="classChart" kind="class"><name>Chart</name>
+    <member refid="classChart_1a4bc9da86434c28fd3c5cee0143f90175" kind="typedef"><name>S</name></member>
+    <member refid="classChart_1ae636f1f7a8270a95bb29db6c736af91d" kind="variable"><name>hypergraph_</name></member>
+    <member refid="classChart_1ab712a9e3bf18133609ae20bc2b76f918" kind="variable"><name>chart_</name></member>
+    <member refid="classChart_1a142aefca7dbef99ea8c6b984152a4b3a" kind="function"><name>Chart</name></member>
+    <member refid="classChart_1a44620de59602c7e373d02b461beb6269" kind="function"><name>operator[]</name></member>
+    <member refid="classChart_1a059ed0de6a6c5c654a24e4104eb68724" kind="function"><name>operator[]</name></member>
+    <member refid="classChart_1a852315dac20aa563ac452027e25bd2ce" kind="function"><name>get</name></member>
+    <member refid="classChart_1ac4e257f137cf8f2be63aaaae91ba0c69" kind="function"><name>check</name></member>
   </compound>
   <compound refid="classClock" kind="class"><name>Clock</name>
     <member refid="classClock_1af45b8db844300755b8c4244a65f60833" kind="function"><name>diffclock</name></member>
   </compound>
-  <compound refid="classConstantRate" kind="class"><name>ConstantRate</name>
-    <member refid="classConstantRate_1a8cf83bbce37c09f077f3d54fb0fa42c2" kind="function"><name>get_alpha</name></member>
+  <compound refid="classCompPotential" kind="class"><name>CompPotential</name>
+    <member refid="classCompPotential_1a42dd452a0f0b7ac20c57a1bbfb4c6e3c" kind="typedef"><name>MyVal</name></member>
+    <member refid="classCompPotential_1aef85bc527abe317fe3ea19c8602646c7" kind="typedef"><name>MyClass</name></member>
+    <member refid="classCompPotential_1a547a880119fb9db322229cfa3fbc6a03" kind="function"><name>CompPotential</name></member>
+    <member refid="classCompPotential_1aed1c278ea8d48e3058904c61dffba2f0" kind="function"><name>operator+=</name></member>
+    <member refid="classCompPotential_1ad948bbd62039bd38b342f8fe87a7bfa7" kind="function"><name>operator*=</name></member>
+    <member refid="classCompPotential_1ac9ccdc30b242c7c1b0cc33c6543fdf12" kind="function"><name>normalize</name></member>
+    <member refid="classCompPotential_1a6b211beb16af97eb0188a2baa376b537" kind="function"><name>one</name></member>
+    <member refid="classCompPotential_1ab1558df2fab390472f1e507f8737d18f" kind="function"><name>zero</name></member>
   </compound>
-  <compound refid="classConstrainedProducer" kind="class"><name>ConstrainedProducer</name>
-    <member refid="classConstrainedProducer_1afe0e3173056f0622b931976c44c85e54" kind="variable"><name>graph_</name></member>
-    <member refid="classConstrainedProducer_1a426dccdeb354f07f0465d530ca789823" kind="variable"><name>weights_</name></member>
-    <member refid="classConstrainedProducer_1a999d1e3f1c1d55d58541a76612d7b22a" kind="variable"><name>constraints_</name></member>
-    <member refid="classConstrainedProducer_1a11d3904ff3037f8397ffeb80e3c45982" kind="variable"><name>constrained_results_</name></member>
-    <member refid="classConstrainedProducer_1ae9b8428b75893decf1c02a8e678489d0" kind="function"><name>ConstrainedProducer</name></member>
-    <member refid="classConstrainedProducer_1a56e64f0b3635eb037371ef960252bbb8" kind="function"><name>solve</name></member>
-    <member refid="classConstrainedProducer_1a8e22421164496bdaa6e1742baac4252a" kind="function"><name>results</name></member>
-  </compound>
-  <compound refid="classConstrainedResult" kind="class"><name>ConstrainedResult</name>
-    <member refid="classConstrainedResult_1a54957af6e33dd7dd38ef10d05236d755" kind="variable"><name>path</name></member>
-    <member refid="classConstrainedResult_1ad1ff7fb635e135a98060f2f38aefab40" kind="variable"><name>dual</name></member>
-    <member refid="classConstrainedResult_1a159e007636d3ae73820f8de175933e3a" kind="variable"><name>primal</name></member>
-    <member refid="classConstrainedResult_1ae3d7dc011ee02cc7e39e9bc512c2c0bb" kind="variable"><name>constraints</name></member>
-    <member refid="classConstrainedResult_1a28c0ddf054e36f248b787dc8d20dd21e" kind="function"><name>ConstrainedResult</name></member>
-    <member refid="classConstrainedResult_1a7672654c37dee58801bfcc9b1d506d4e" kind="function"><name>ConstrainedResult</name></member>
-  </compound>
-  <compound refid="structConstraint" kind="struct"><name>Constraint</name>
-    <member refid="structConstraint_1a7b6f0c9c18ad71dfd2be9e2bbd78dee7" kind="variable"><name>label</name></member>
-    <member refid="structConstraint_1ace1de3a711c9368b7befe67fbb560281" kind="variable"><name>edges</name></member>
-    <member refid="structConstraint_1a3df27bde1ef5e4e82b8bb3707a34c43f" kind="variable"><name>coefficients</name></member>
-    <member refid="structConstraint_1af68b4579ce9717d1cf2d3fc56a6dff54" kind="variable"><name>bias</name></member>
-    <member refid="structConstraint_1ac324feb5affaf80d2156d4ed5f133552" kind="variable"><name>id</name></member>
-    <member refid="structConstraint_1afc44db8872dc09fc913e7f0d074a2c8a" kind="function"><name>Constraint</name></member>
-    <member refid="structConstraint_1a6b0a45ac3f51ac555e18751b3f37129b" kind="function"><name>set_constant</name></member>
-    <member refid="structConstraint_1a0912c7fd874f47b26cb4b10dda826ee1" kind="function"><name>add_edge_term</name></member>
-    <member refid="structConstraint_1a1440591270a4fc2dbc188f13e8655393" kind="function"><name>has_edge</name></member>
-    <member refid="structConstraint_1a438d533651de679772496ac49e66a6c3" kind="function"><name>get_edge_coefficient</name></member>
-  </compound>
-  <compound refid="classCountingWeight" kind="class"><name>CountingWeight</name>
-    <member refid="classCountingWeight_1ad2fc55e83643c19ae6c4f066efac6d17" kind="function"><name>CountingWeight</name></member>
-    <member refid="classCountingWeight_1ad30db0878e9befcdeb590de05e33e213" kind="function"><name>operator+=</name></member>
-    <member refid="classCountingWeight_1a85ffbeab8a8f18646768f946ad476caf" kind="function"><name>operator*=</name></member>
-    <member refid="classCountingWeight_1af8c936913e4d6561c2bd1dc4196f5547" kind="function"><name>normalize</name></member>
-    <member refid="classCountingWeight_1aa8018ce21129e2011e2d8c242a480062" kind="function"><name>one</name></member>
-    <member refid="classCountingWeight_1a447b265d6a8b2cb9349d961e70c2d0d2" kind="function"><name>zero</name></member>
-  </compound>
-  <compound refid="classDecreasingRate" kind="class"><name>DecreasingRate</name>
-    <member refid="classDecreasingRate_1a9202652c8330af32a49e933175b0a451" kind="function"><name>get_alpha</name></member>
+  <compound refid="classCountingPotential" kind="class"><name>CountingPotential</name>
+    <member refid="classCountingPotential_1af0d409d3b886978e1ebab96dc79623f4" kind="function"><name>CountingPotential</name></member>
+    <member refid="classCountingPotential_1ad51d1f5596b415e2d6518ab3b2ab5327" kind="function"><name>operator+=</name></member>
+    <member refid="classCountingPotential_1a092824efd6b49323b60e4c6515e5165e" kind="function"><name>operator*=</name></member>
+    <member refid="classCountingPotential_1a6f3b6ffe2d42cafa816927e18275eaa7" kind="function"><name>normalize</name></member>
+    <member refid="classCountingPotential_1adbb2f14167cad98dd0c0e9353b111594" kind="function"><name>one</name></member>
+    <member refid="classCountingPotential_1aa771c84510179c4aa5ad61d44375af0b" kind="function"><name>zero</name></member>
   </compound>
   <compound refid="classHyperedge" kind="class"><name>Hyperedge</name>
     <member refid="classHyperedge_1a10643a9e4654c552a3f53a8792a8017b" kind="variable"><name>id_</name></member>
@@ -99,18 +104,6 @@
   </compound>
   <compound refid="classHypergraphAccessException" kind="class"><name>HypergraphAccessException</name>
   </compound>
-  <compound refid="classHypergraphConstraints" kind="class"><name>HypergraphConstraints</name>
-    <member refid="classHypergraphConstraints_1a3c7c143f45e7215b6bb487737f25edee" kind="variable"><name>hypergraph_</name></member>
-    <member refid="classHypergraphConstraints_1a674e802a7c3a18bf6cb0cb7589fe2f23" kind="variable"><name>constraints_</name></member>
-    <member refid="classHypergraphConstraints_1a35100220fce4f69a8bf8280547830ee8" kind="function"><name>HypergraphConstraints</name></member>
-    <member refid="classHypergraphConstraints_1a2089249ab104185c2e88d10f6bcc9ad5" kind="function"><name>add_constraint</name></member>
-    <member refid="classHypergraphConstraints_1ab5ce46c60937221e68a1a2cb47a0c4a3" kind="function"><name>check_constraints</name></member>
-    <member refid="classHypergraphConstraints_1a7d6ccaab03d429f1b73db301ad2b62bc" kind="function"><name>convert</name></member>
-    <member refid="classHypergraphConstraints_1a9ff5826221b1aa6bf1df6c39ddb3f70b" kind="function"><name>subgradient</name></member>
-    <member refid="classHypergraphConstraints_1ada31ae649cd91c3ed61387464b725fa8" kind="function"><name>hypergraph</name></member>
-    <member refid="classHypergraphConstraints_1ad3e4a31d029369a3cf7e35ee87d049eb" kind="function"><name>constraints</name></member>
-    <member refid="classHypergraphConstraints_1ae553ee8012f9a37cd8d2166f859f92fa" kind="function"><name>check</name></member>
-  </compound>
   <compound refid="classHypergraphConstructionException" kind="class"><name>HypergraphConstructionException</name>
   </compound>
   <compound refid="structHypergraphException" kind="struct"><name>HypergraphException</name>
@@ -121,6 +114,25 @@
   </compound>
   <compound refid="classHypergraphMatchException" kind="class"><name>HypergraphMatchException</name>
   </compound>
+  <compound refid="classHypergraphPotentials" kind="class"><name>HypergraphPotentials</name>
+    <member refid="classHypergraphPotentials_1ab7987052d58afe4dd8c0dc5a2b28646d" kind="variable"><name>hypergraph_</name></member>
+    <member refid="classHypergraphPotentials_1a71c786c8cae1fb1e211ccf73c4e2428e" kind="variable"><name>potentials_</name></member>
+    <member refid="classHypergraphPotentials_1a4445262745ceeb16a1ca7863bb09b789" kind="variable"><name>bias_</name></member>
+    <member refid="classHypergraphPotentials_1a2f6b065fadfb37e841fbda5eefda3b4b" kind="function"><name>HypergraphPotentials</name></member>
+    <member refid="classHypergraphPotentials_1a6df95733ad2c2e221adb8c208d2f7b94" kind="function"><name>HypergraphPotentials</name></member>
+    <member refid="classHypergraphPotentials_1a4966eb1e98c1d525b916d2ebda6d5d47" kind="function"><name>dot</name></member>
+    <member refid="classHypergraphPotentials_1a2e948ac601e1f904f33584e62e788b17" kind="function"><name>score</name></member>
+    <member refid="classHypergraphPotentials_1a4ca52d79d42b7ba766d76d70f0b63c73" kind="function"><name>operator[]</name></member>
+    <member refid="classHypergraphPotentials_1a6b6e49969919c8603b098d43fbb05aab" kind="function"><name>operator[]</name></member>
+    <member refid="classHypergraphPotentials_1a72dd0916356a59d4f0e01bedf62a907c" kind="function"><name>bias</name></member>
+    <member refid="classHypergraphPotentials_1a5b4006ad36e8a363d1aa2d4bf3ff8367" kind="function"><name>bias</name></member>
+    <member refid="classHypergraphPotentials_1ae6272eeb59322141169b124fd0ae7ca9" kind="function"><name>project_potentials</name></member>
+    <member refid="classHypergraphPotentials_1ae6904de03fd995939ff2bb209bec4272" kind="function"><name>times</name></member>
+    <member refid="classHypergraphPotentials_1acdb10b61fb74257174a67d29442d3575" kind="function"><name>check</name></member>
+    <member refid="classHypergraphPotentials_1ac684bea65265b3ac01e36505d026ef9f" kind="function"><name>check</name></member>
+    <member refid="classHypergraphPotentials_1a47fe92018d4b1b52ab2938d927536b0c" kind="function"><name>hypergraph</name></member>
+    <member refid="classHypergraphPotentials_1a76b2414648d8a741c1f86dcdce8844e6" kind="function"><name>dot</name></member>
+  </compound>
   <compound refid="classHypergraphProjection" kind="class"><name>HypergraphProjection</name>
     <member refid="classHypergraphProjection_1a1e4b25b6b993b48a3486610fc2fb2f2b" kind="variable"><name>original_graph</name></member>
     <member refid="classHypergraphProjection_1ac4b7e4c0d7da068ebc8c50f029984876" kind="variable"><name>new_graph</name></member>
@@ -130,22 +142,7 @@
     <member refid="classHypergraphProjection_1a00593a4957786c81decf47496d98b7e9" kind="function"><name>~HypergraphProjection</name></member>
     <member refid="classHypergraphProjection_1a7415d20ef626a5491a89155fac95214d" kind="function"><name>project</name></member>
     <member refid="classHypergraphProjection_1a0acb98ee5f83cf812539c38f72fe4f53" kind="function"><name>project</name></member>
-    <member refid="classHypergraphProjection_1a327bfef2c1fd6cb7a5227208d8d65ff5" kind="function"><name>project_hypergraph</name></member>
-  </compound>
-  <compound refid="classHypergraphWeights" kind="class"><name>HypergraphWeights</name>
-    <member refid="classHypergraphWeights_1a54db4a2dc7e7136497e6bc191a1929a3" kind="variable"><name>hypergraph_</name></member>
-    <member refid="classHypergraphWeights_1aaf2f21612a6bdf00e426e3fd0597128e" kind="variable"><name>weights_</name></member>
-    <member refid="classHypergraphWeights_1a6b5bf08652d1c3c467eaf5b64b0913bd" kind="variable"><name>bias_</name></member>
-    <member refid="classHypergraphWeights_1a9005e399b96df6f663854baed0639f1a" kind="function"><name>HypergraphWeights</name></member>
-    <member refid="classHypergraphWeights_1aea552e2bfb8d10d6e20743c7018c311d" kind="function"><name>dot</name></member>
-    <member refid="classHypergraphWeights_1acc66ce21579d196b8385e083e0b817a1" kind="function"><name>score</name></member>
-    <member refid="classHypergraphWeights_1a9a2acbccf1f57531ac24c28913f40224" kind="function"><name>bias</name></member>
-    <member refid="classHypergraphWeights_1a955338da7320dd613ddc2a4c03498a2f" kind="function"><name>modify</name></member>
-    <member refid="classHypergraphWeights_1a811eb5541601e33f546e3de6a8d68b10" kind="function"><name>project_weights</name></member>
-    <member refid="classHypergraphWeights_1aa58a224e5779d4d20becd9e181942d52" kind="function"><name>check</name></member>
-    <member refid="classHypergraphWeights_1a4a3bfb258ba0c6800ca33aff4ebe3446" kind="function"><name>dot</name></member>
-    <member refid="classHypergraphWeights_1a666db50084068261da375b937ca13344" kind="function"><name>modify</name></member>
-    <member refid="classHypergraphWeights_1a72bd524df0b53016def6dd641e218dc6" kind="function"><name>project_weights</name></member>
+    <member refid="classHypergraphProjection_1a2291ad78bd6edc98c498f06083d9de5f" kind="function"><name>project_hypergraph</name></member>
   </compound>
   <compound refid="classHypernode" kind="class"><name>Hypernode</name>
     <member refid="classHypernode_1a083cadfcef38537917657dd04f2876b6" kind="variable"><name>id_</name></member>
@@ -167,100 +164,85 @@
     <member refid="classHyperpath_1aee6cb1fb9c52606806e0817c010ae079" kind="function"><name>edges</name></member>
     <member refid="classHyperpath_1a4b3afb4f45a178b45d2e5ebea64a010b" kind="function"><name>has_edge</name></member>
     <member refid="classHyperpath_1a79c1333bc9f94a042a8a11b42608cafb" kind="function"><name>check</name></member>
+    <member refid="classHyperpath_1a87517dfdb6e256155cd44910a4dcd2fc" kind="function"><name>equal</name></member>
   </compound>
   <compound refid="structIdComparator" kind="struct"><name>IdComparator</name>
     <member refid="structIdComparator_1ab3ebd1b33e33c29ddccb5c1e6dd6d4c2" kind="function"><name>operator()</name></member>
   </compound>
-  <compound refid="classInsideWeight" kind="class"><name>InsideWeight</name>
-    <member refid="classInsideWeight_1a931cade0c73c90b6485ddf569400206a" kind="function"><name>InsideWeight</name></member>
-    <member refid="classInsideWeight_1a6a41ade477082020ce64040d346182de" kind="function"><name>operator+=</name></member>
-    <member refid="classInsideWeight_1aff3a7fa09fe588acf4978cb16eeadf2e" kind="function"><name>operator*=</name></member>
-    <member refid="classInsideWeight_1a65aeddfd72b207f26e69ede73b917468" kind="function"><name>normalize</name></member>
-    <member refid="classInsideWeight_1aaa0aaec9f950f0eb860e0f1e8d6ae9da" kind="function"><name>one</name></member>
-    <member refid="classInsideWeight_1ade0b3b7a93b640628a99957cc43a232d" kind="function"><name>zero</name></member>
+  <compound refid="classInsidePotential" kind="class"><name>InsidePotential</name>
+    <member refid="classInsidePotential_1ad6c35decc9bf06576f9b5aa36f63e4d8" kind="function"><name>InsidePotential</name></member>
+    <member refid="classInsidePotential_1a4e64f2040caf22e1888297cdf8f84117" kind="function"><name>InsidePotential</name></member>
+    <member refid="classInsidePotential_1a7d3a2d9d96d43a8fb3ca21ef28427aef" kind="function"><name>operator+=</name></member>
+    <member refid="classInsidePotential_1a734f80cc60476e168dca96bd998a71cc" kind="function"><name>operator*=</name></member>
+    <member refid="classInsidePotential_1aec5c7acf19d257b5136189f47d82901d" kind="function"><name>normalize</name></member>
+    <member refid="classInsidePotential_1ac8d288033cc728099f348623edb45e36" kind="friend"><name>operator/</name></member>
+    <member refid="classInsidePotential_1ad1f44d0ba4f73b443647647274636b8f" kind="function"><name>one</name></member>
+    <member refid="classInsidePotential_1ae67f11d46ac6b110c73e989d42a3e0ab" kind="function"><name>zero</name></member>
   </compound>
-  <compound refid="classMaxMarginals" kind="class"><name>MaxMarginals</name>
-    <member refid="classMaxMarginals_1a57693e01a89a7e7caea9909b9fbecdfa" kind="variable"><name>hypergraph_</name></member>
-    <member refid="classMaxMarginals_1abc05c3ee5ad10e2a321db05864f3cd02" kind="variable"><name>weights_</name></member>
-    <member refid="classMaxMarginals_1a566fff06089cb17da34f1cd3cec87e6b" kind="variable"><name>in_chart_</name></member>
-    <member refid="classMaxMarginals_1ad38252a9ec83f1cc23d85133df272bcb" kind="variable"><name>out_chart_</name></member>
-    <member refid="classMaxMarginals_1a0bf978f5edb0059eee44d41817145dae" kind="function"><name>MaxMarginals</name></member>
-    <member refid="classMaxMarginals_1aa63be4711b0f3af40b1baea5ee2d08a4" kind="function"><name>~MaxMarginals</name></member>
-    <member refid="classMaxMarginals_1aaddb1933560d836dea3a39754dded2d2" kind="function"><name>max_marginal</name></member>
-    <member refid="classMaxMarginals_1af87a18b056eacf90fd990b562355c757" kind="function"><name>max_marginal</name></member>
-    <member refid="classMaxMarginals_1a97f70d91e57e9a31eafb14145c5d2294" kind="function"><name>compute</name></member>
+  <compound refid="classLogViterbiPotential" kind="class"><name>LogViterbiPotential</name>
+    <member refid="classLogViterbiPotential_1ac70236c1624c64f25757da6737160c44" kind="function"><name>LogViterbiPotential</name></member>
+    <member refid="classLogViterbiPotential_1a34ddb497b57989303ea568df4c0c2cca" kind="function"><name>LogViterbiPotential</name></member>
+    <member refid="classLogViterbiPotential_1a40c7549dfd572392604ed924f6069e40" kind="function"><name>operator+=</name></member>
+    <member refid="classLogViterbiPotential_1a662f862db5fcea3058feda22b0f61047" kind="function"><name>operator*=</name></member>
+    <member refid="classLogViterbiPotential_1a780781ec5706265b2d35a0d59e51449e" kind="function"><name>normalize</name></member>
+    <member refid="classLogViterbiPotential_1a4f3b6169c8dc1ca850954e4ccd4a4b90" kind="function"><name>one</name></member>
+    <member refid="classLogViterbiPotential_1afe56b116069ea3e5b66717ea598931e8" kind="function"><name>zero</name></member>
   </compound>
-  <compound refid="classRealWeight" kind="class"><name>RealWeight</name>
-    <member refid="classRealWeight_1a5be418f24d27a7c904687cb76bcbf212" kind="function"><name>RealWeight</name></member>
-    <member refid="classRealWeight_1afec10014b81547a5562df243752f5306" kind="function"><name>operator+=</name></member>
-    <member refid="classRealWeight_1a8855b6235c3561fd80fe63f191ec7cf2" kind="function"><name>operator*=</name></member>
-    <member refid="classRealWeight_1a666f5d185d7a3e1fd789f1e6a726d572" kind="function"><name>normalize</name></member>
-    <member refid="classRealWeight_1a3376e610b32e111e92117baf36c1325b" kind="function"><name>one</name></member>
-    <member refid="classRealWeight_1a93cc926949f32a0e3acf4c9649da7b58" kind="function"><name>zero</name></member>
+  <compound refid="classMarginals" kind="class"><name>Marginals</name>
+    <member refid="classMarginals_1a26ff4f0c3dda19eb315e14c4a2f04acf" kind="variable"><name>hypergraph_</name></member>
+    <member refid="classMarginals_1af1a9c69de9cb4b28f379471cbd54a039" kind="variable"><name>potentials_</name></member>
+    <member refid="classMarginals_1ac36aed25df027191a363eb68d42c883f" kind="variable"><name>in_chart_</name></member>
+    <member refid="classMarginals_1a21d6e7684da39374f696372bcb1569cd" kind="variable"><name>out_chart_</name></member>
+    <member refid="classMarginals_1addd626b093b75fb94f39e609df1c5562" kind="function"><name>Marginals</name></member>
+    <member refid="classMarginals_1af2c1161ff1ed10bbeaf13e891413c73d" kind="function"><name>~Marginals</name></member>
+    <member refid="classMarginals_1a4694cbbf0a521648532aa4e993baf6ff" kind="function"><name>threshold</name></member>
+    <member refid="classMarginals_1a3f2fc5e47cdf1b9d9ab7a3009f8c47ec" kind="function"><name>marginal</name></member>
+    <member refid="classMarginals_1abdad467f0e621913921030bf81983f6e" kind="function"><name>marginal</name></member>
+    <member refid="classMarginals_1ac9ae705da7c123f0161b890e71033ebc" kind="function"><name>dot</name></member>
+    <member refid="classMarginals_1a93c6d5ae3f456aea32615d183535c352" kind="function"><name>hypergraph</name></member>
+    <member refid="classMarginals_1a8f2ede76670cfbfede43af4120f0cb5d" kind="function"><name>compute</name></member>
   </compound>
-  <compound refid="classSemiringWeight" kind="class"><name>SemiringWeight</name>
-    <member refid="classSemiringWeight_1af71e17cc2c0858e1ad9547f35e257b74" kind="variable"><name>value</name></member>
-    <member refid="classSemiringWeight_1aba9754f6d65544a942330b82514b14d9" kind="function"><name>operator ValType</name></member>
-    <member refid="classSemiringWeight_1ae41821a405dc587d2046e8317c979f55" kind="function"><name>operator=</name></member>
-    <member refid="classSemiringWeight_1ab094c5bb8419a8272bb182fc25cd917f" kind="function"><name>operator=</name></member>
-    <member refid="classSemiringWeight_1a0a20be65b24e0d30209cf65c35492c7e" kind="function"><name>operator+=</name></member>
-    <member refid="classSemiringWeight_1a3fa4101628aec96fdc2c56dc0c771af4" kind="function"><name>operator*=</name></member>
-    <member refid="classSemiringWeight_1a404dbbe5a6658f0ab468296f7a7352d3" kind="function"><name>normalize</name></member>
-    <member refid="classSemiringWeight_1aafd902095f88fafdee8da13fd6388868" kind="friend"><name>operator+</name></member>
-    <member refid="classSemiringWeight_1a290a5c7563cc707fa5ffb8ad6e66be94" kind="friend"><name>operator*</name></member>
-    <member refid="classSemiringWeight_1a8f264fc18c08eff1e16e40ba528d9b42" kind="function"><name>one</name></member>
-    <member refid="classSemiringWeight_1ad8f59c736c2fbb398485152751bf8e35" kind="function"><name>zero</name></member>
-    <member refid="classSemiringWeight_1ab6c95f0d00a9faa9d4ad9d0a7b064563" kind="function"><name>SemiringWeight</name></member>
-    <member refid="classSemiringWeight_1adb7ae54f36c3deb7d128b95913ac140c" kind="function"><name>SemiringWeight</name></member>
+  <compound refid="classRealPotential" kind="class"><name>RealPotential</name>
+    <member refid="classRealPotential_1ab0e0eb40a511f0ff6bf7265b215afb18" kind="function"><name>RealPotential</name></member>
+    <member refid="classRealPotential_1a19f69028b929da534645aa35ca254d06" kind="function"><name>operator+=</name></member>
+    <member refid="classRealPotential_1ab43bd3b064308c4644168a1d9b6ca8db" kind="function"><name>operator*=</name></member>
+    <member refid="classRealPotential_1aac75f5337add6f1a0a330ae23bda28a6" kind="function"><name>normalize</name></member>
+    <member refid="classRealPotential_1a9837fd64c52d3886fa977968c8c79a3e" kind="function"><name>one</name></member>
+    <member refid="classRealPotential_1a561ab2d6df9bebe94c9f3011412cd00d" kind="function"><name>zero</name></member>
   </compound>
-  <compound refid="classSubgradient" kind="class"><name>Subgradient</name>
-    <member refid="classSubgradient_1a25f888b7d7184e2f5a425a1fb3a14757" kind="variable"><name>producer_</name></member>
-    <member refid="classSubgradient_1aec17a7cce7c9129172f7e3d83381f406" kind="variable"><name>rate_</name></member>
-    <member refid="classSubgradient_1a95cc8d2caffc755caeab961f59866561" kind="variable"><name>best_dual_</name></member>
-    <member refid="classSubgradient_1a2f052f4996c28353e1d294027374d84b" kind="variable"><name>round_</name></member>
-    <member refid="classSubgradient_1a5a5d3b009ceaf299317b952b6203543d" kind="variable"><name>duals_</name></member>
-    <member refid="classSubgradient_1a174e72e8c6b8665cb07e88b3bf065946" kind="variable"><name>past_duals_</name></member>
-    <member refid="classSubgradient_1a15dbe5a6a5c4406402048cec3e47c4c9" kind="variable"><name>num_constraints_</name></member>
-    <member refid="classSubgradient_1a62f175f5dbb09b18064178db8d7ee3c3" kind="variable"><name>max_round_</name></member>
-    <member refid="classSubgradient_1a16bc538fd149947d2e75905fb7e69d7d" kind="variable"><name>debug_</name></member>
-    <member refid="classSubgradient_1ae75b133eaa8443180e615d8fcd385922" kind="function"><name>Subgradient</name></member>
-    <member refid="classSubgradient_1a1a31b5ef39a6fb8e959a944bb13dd08e" kind="function"><name>set_debug</name></member>
-    <member refid="classSubgradient_1a1f8a2d6453ae2df64694b5dc1f3e534f" kind="function"><name>set_max_rounds</name></member>
-    <member refid="classSubgradient_1a7f45ac0993744296ee7fa61a5d6ca9a2" kind="function"><name>solve</name></member>
-    <member refid="classSubgradient_1a93270147d717f3eb5d770f2385a154f5" kind="function"><name>duals</name></member>
-    <member refid="classSubgradient_1a4611139b18ed18b84b9ee4209d2590b6" kind="function"><name>run_one_round</name></member>
-    <member refid="classSubgradient_1a2460de39abca597cd0e6162f39871976" kind="function"><name>update_weights</name></member>
+  <compound refid="classSparseVectorPotential" kind="class"><name>SparseVectorPotential</name>
+    <member refid="classSparseVectorPotential_1a1b2071d9c08f4b1be67eedae322ac348" kind="function"><name>SparseVectorPotential</name></member>
+    <member refid="classSparseVectorPotential_1a4e74e747a7db3953101f6d277063fb11" kind="function"><name>SparseVectorPotential</name></member>
+    <member refid="classSparseVectorPotential_1af2d07a561b782575952b21809a545553" kind="function"><name>operator+=</name></member>
+    <member refid="classSparseVectorPotential_1a53ed7d7c472bc7be617ccf1b3e2587da" kind="function"><name>operator*=</name></member>
+    <member refid="classSparseVectorPotential_1a3322ae008e6edc0cecdaba5a6bc29faf" kind="function"><name>normalize</name></member>
+    <member refid="classSparseVectorPotential_1a0ac56d63cfc4edaabb63728431004819" kind="function"><name>one</name></member>
+    <member refid="classSparseVectorPotential_1a096243c3b6645e54538d9611f29541f2" kind="function"><name>zero</name></member>
   </compound>
-  <compound refid="classSubgradientProducer" kind="class"><name>SubgradientProducer</name>
-    <member refid="classSubgradientProducer_1a8f53afb1cde30a5888a4701e06787886" kind="function"><name>solve</name></member>
+  <compound refid="classTreePotential" kind="class"><name>TreePotential</name>
+    <member refid="classTreePotential_1a26366c31fcf24b779040006994ba325f" kind="function"><name>TreePotential</name></member>
+    <member refid="classTreePotential_1a090aa67497ffd39813ed2625262bc972" kind="function"><name>operator+=</name></member>
+    <member refid="classTreePotential_1a32f2334c73b7adb081b44792b4d28ae2" kind="function"><name>operator*=</name></member>
+    <member refid="classTreePotential_1a96d258a9162e944fe4cd48a3da41865b" kind="function"><name>normalize</name></member>
+    <member refid="classTreePotential_1acf69c69a8a4bbcaf3d798277bea63613" kind="function"><name>one</name></member>
+    <member refid="classTreePotential_1af1aec6695671e9b11673276682e5b2d4" kind="function"><name>zero</name></member>
   </compound>
-  <compound refid="classSubgradRate" kind="class"><name>SubgradRate</name>
-    <member refid="classSubgradRate_1aeef768c1e82a25490d5a9f146936c0c2" kind="function"><name>get_alpha</name></member>
+  <compound refid="classTropicalPotential" kind="class"><name>TropicalPotential</name>
+    <member refid="classTropicalPotential_1af57cfaa9ec8f2f4fec3f1f288e30996b" kind="function"><name>TropicalPotential</name></member>
+    <member refid="classTropicalPotential_1ab53a97e7daf0a06978c8b2a74f05aa25" kind="function"><name>operator+=</name></member>
+    <member refid="classTropicalPotential_1afc72359ab481f609bd6131af88a3d078" kind="function"><name>operator*=</name></member>
+    <member refid="classTropicalPotential_1a4cf23c16f130d402fcbd67b49058035b" kind="function"><name>normalize</name></member>
+    <member refid="classTropicalPotential_1aa9e3a6f8cb1b5c06f764056a667e24a6" kind="function"><name>one</name></member>
+    <member refid="classTropicalPotential_1a95ea340ddb17b9ccf05ead48dfa2f4a0" kind="function"><name>zero</name></member>
   </compound>
-  <compound refid="structSubgradResult" kind="struct"><name>SubgradResult</name>
-    <member refid="structSubgradResult_1ab90f25d94df1353c7d68e6ff73317ed4" kind="variable"><name>dual</name></member>
-    <member refid="structSubgradResult_1a621c082bf6bd98b6ffffb4ab024cc61a" kind="variable"><name>subgrad</name></member>
-    <member refid="structSubgradResult_1afb3b6d98b61f401ca41d157633e02e64" kind="function"><name>SubgradResult</name></member>
-  </compound>
-  <compound refid="structSubgradState" kind="struct"><name>SubgradState</name>
-    <member refid="structSubgradState_1a23f21027a742a341810325cb2e644407" kind="variable"><name>round</name></member>
-    <member refid="structSubgradState_1a1b6a777b7e37656881025b3e5f504289" kind="variable"><name>duals</name></member>
-  </compound>
-  <compound refid="classTropicalWeight" kind="class"><name>TropicalWeight</name>
-    <member refid="classTropicalWeight_1ac4cdaf014a97198e3d566d13d2fcb670" kind="function"><name>TropicalWeight</name></member>
-    <member refid="classTropicalWeight_1a575fcb5d7385522a74a4348d24f1d8e6" kind="function"><name>operator+=</name></member>
-    <member refid="classTropicalWeight_1a526b22a3dfa7d1f349682d481658412a" kind="function"><name>operator*=</name></member>
-    <member refid="classTropicalWeight_1aec161dce34c9a0de420161bb0ce54f5b" kind="function"><name>normalize</name></member>
-    <member refid="classTropicalWeight_1a306969863625985bb26c1e4de9300ed2" kind="function"><name>one</name></member>
-    <member refid="classTropicalWeight_1a0b0de44731ad0e7789802d11c244d8da" kind="function"><name>zero</name></member>
-  </compound>
-  <compound refid="classViterbiWeight" kind="class"><name>ViterbiWeight</name>
-    <member refid="classViterbiWeight_1a38b84493494795e7d970753d62a136f6" kind="function"><name>ViterbiWeight</name></member>
-    <member refid="classViterbiWeight_1a77756ac2f8f85191c6fc8a5884518753" kind="function"><name>operator+=</name></member>
-    <member refid="classViterbiWeight_1a6776078401789c1fd39d09610c5fe460" kind="function"><name>operator*=</name></member>
-    <member refid="classViterbiWeight_1aee441aadedf576e2a4a2810225795377" kind="function"><name>normalize</name></member>
-    <member refid="classViterbiWeight_1aea0584e507a01f95334501bc47e7c7e9" kind="function"><name>one</name></member>
-    <member refid="classViterbiWeight_1a2e13163feec09421672e83c7ccaeec54" kind="function"><name>zero</name></member>
+  <compound refid="classViterbiPotential" kind="class"><name>ViterbiPotential</name>
+    <member refid="classViterbiPotential_1a9257d3a1411bcab3df77f6fd071ac4ed" kind="function"><name>ViterbiPotential</name></member>
+    <member refid="classViterbiPotential_1aa426c8151bc2bf8facf2fd52faf8b2fe" kind="function"><name>ViterbiPotential</name></member>
+    <member refid="classViterbiPotential_1af513084ff06b4c9133b62b4bc863e70d" kind="function"><name>operator+=</name></member>
+    <member refid="classViterbiPotential_1a677aee37794b2ba451181ed8d7650789" kind="function"><name>operator*=</name></member>
+    <member refid="classViterbiPotential_1a5dd5ac0e03950c30dd0ea2aaffd01821" kind="function"><name>normalize</name></member>
+    <member refid="classViterbiPotential_1a030247b5800e8f9f42c07455644c47c3" kind="function"><name>one</name></member>
+    <member refid="classViterbiPotential_1afcdbaf2ab444332db1e6da65e02c1ec2" kind="function"><name>zero</name></member>
   </compound>
   <compound refid="namespaceboost" kind="namespace"><name>boost</name>
   </compound>
@@ -283,22 +265,16 @@
     <member refid="foreach_8h_1aef3119ff8b1f6351e946044c4988571b" kind="define"><name>BOOST_FOREACH</name></member>
   </compound>
   <compound refid="Algorithms_8cpp" kind="file"><name>Algorithms.cpp</name>
-    <member refid="Algorithms_8cpp_1a415fdb6aae24848c36adbbcfbe4f554d" kind="function"><name>viterbi_path</name></member>
-    <member refid="Algorithms_8cpp_1a3e01bbbc6def189370869e211517e3ea" kind="function"><name>viterbi_path</name></member>
-    <member refid="Algorithms_8cpp_1aa21d44f5fcc6ecc22d8fb703b52038ed" kind="function"><name>outside</name></member>
-    <member refid="Algorithms_8cpp_1a3a495b115052162ffacca98dd058ed82" kind="function"><name>prune</name></member>
-    <member refid="Algorithms_8cpp_1ac5a205b0aa61979e555d49fd50a469b9" kind="function"><name>best_constrained_path</name></member>
+    <member refid="Algorithms_8cpp_1ae7a5fa74fe94883f12ab3da381ca4916" kind="define"><name>SPECIALIZE_FOR_SEMI</name></member>
+    <member refid="Algorithms_8cpp_1a077309fff461c3d927fa4daf24d1f903" kind="define"><name>SPECIALIZE_FOR_SEMI_MIN</name></member>
+    <member refid="Algorithms_8cpp_1acf44e5815af1bce9dd681507d2948f4e" kind="function"><name>general_inside</name></member>
+    <member refid="Algorithms_8cpp_1a5f7cc67c9c79df40b872cf855238c68c" kind="function"><name>general_outside</name></member>
+    <member refid="Algorithms_8cpp_1a3a767a730f00c71b726b9c55f4a4d441" kind="function"><name>general_viterbi</name></member>
   </compound>
   <compound refid="Algorithms_8h" kind="file"><name>Algorithms.h</name>
-    <member refid="Algorithms_8h_1a3e01bbbc6def189370869e211517e3ea" kind="function"><name>viterbi_path</name></member>
-    <member refid="Algorithms_8h_1ac9eceb89310075da6f13d0b2afb80ba7" kind="function"><name>viterbi_semiring</name></member>
-    <member refid="Algorithms_8h_1aa21d44f5fcc6ecc22d8fb703b52038ed" kind="function"><name>outside</name></member>
-    <member refid="Algorithms_8h_1ab785139e6579cf10394f97ff78bd8075" kind="function"><name>best_constrained_path</name></member>
-    <member refid="Algorithms_8h_1a3a495b115052162ffacca98dd058ed82" kind="function"><name>prune</name></member>
-  </compound>
-  <compound refid="Constraints_8cpp" kind="file"><name>Constraints.cpp</name>
-  </compound>
-  <compound refid="Constraints_8h" kind="file"><name>Constraints.h</name>
+    <member refid="Algorithms_8h_1acf44e5815af1bce9dd681507d2948f4e" kind="function"><name>general_inside</name></member>
+    <member refid="Algorithms_8h_1a5f7cc67c9c79df40b872cf855238c68c" kind="function"><name>general_outside</name></member>
+    <member refid="Algorithms_8h_1a3a767a730f00c71b726b9c55f4a4d441" kind="function"><name>general_viterbi</name></member>
   </compound>
   <compound refid="Hypergraph_8cpp" kind="file"><name>Hypergraph.cpp</name>
   </compound>
@@ -307,20 +283,15 @@
     <member refid="Hypergraph_8h_1aa355546c1601d21ad3118e438c3f77c4" kind="typedef"><name>HNodes</name></member>
     <member refid="Hypergraph_8h_1a13221f598fef4702e973bc04de36147d" kind="typedef"><name>HEdge</name></member>
     <member refid="Hypergraph_8h_1abee4bec57d36208496c915f5e04acd4c" kind="typedef"><name>HEdges</name></member>
-    <member refid="Hypergraph_8h_1a424f9f23747a3a71c102cbde6edf1618" kind="function"><name>build_pruned_hypergraph</name></member>
   </compound>
   <compound refid="Semirings_8h" kind="file"><name>Semirings.h</name>
-  </compound>
-  <compound refid="Subgradient_8cpp" kind="file"><name>Subgradient.cpp</name>
-    <member refid="Subgradient_8cpp_1a51b7a9c320bb9b58fc5632da0a44ab84" kind="define"><name>TIMING</name></member>
-  </compound>
-  <compound refid="Subgradient_8h" kind="file"><name>Subgradient.h</name>
-  </compound>
-  <compound refid="run_8cpp" kind="file"><name>run.cpp</name>
-    <member refid="run_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627" kind="function"><name>main</name></member>
+    <member refid="Semirings_8h_1a13b3bb3130a805182605ccb6a19498d8" kind="typedef"><name>SparsePair</name></member>
+    <member refid="Semirings_8h_1a96ee768899447b6489cd94d1174782b8" kind="typedef"><name>SparseVector</name></member>
+    <member refid="Semirings_8h_1a7d1bc79f53f243a2844c6ad5b44d38f7" kind="function"><name>pairwise_dot</name></member>
   </compound>
   <compound refid="Tests_8cpp" kind="file"><name>Tests.cpp</name>
     <member refid="Tests_8cpp_1a3e1543cfb1418106c463639f26be6c88" kind="function"><name>TEST</name></member>
+    <member refid="Tests_8cpp_1afe0abb7608d540011ba4319a768b7456" kind="function"><name>TEST</name></member>
     <member refid="Tests_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627" kind="function"><name>main</name></member>
   </compound>
   <compound refid="dir_9b2ae68cbf8bd6acfc003760eea03839" kind="dir"><name>src/Hypergraph</name>
