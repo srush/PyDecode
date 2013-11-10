@@ -128,7 +128,7 @@ class ChartBuilder:
         return label in self._chart
 
     def __getitem__(self, label):
-        if self._strict:
+        if self._strict and label not in self._chart:
             raise Exception("Label not in chart")
         if self._debug:
             print >>sys.stderr, "Getting",label, label in self._chart
