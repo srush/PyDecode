@@ -1,6 +1,17 @@
 // Copyright [2013] Alexander Rush
 
-#include "Semirings.h"
+#include "Hypergraph/Semirings.h"
+
+
+REGISTER_TYPE_DEFINITION(ViterbiPotential);
+REGISTER_TYPE_DEFINITION(LogViterbiPotential);
+REGISTER_TYPE_DEFINITION(BoolPotential);
+REGISTER_TYPE_DEFINITION(InsidePotential);
+REGISTER_TYPE_DEFINITION(RealPotential);
+REGISTER_TYPE_DEFINITION(TropicalPotential);
+REGISTER_TYPE_DEFINITION(CountingPotential);
+// REGISTER_TYPE_DEFINITION(CompPotential);
+REGISTER_TYPE_DEFINITION(SparseVectorPotential);
 
 
 SparseVectorPotential& SparseVectorPotential::operator*=(const SparseVectorPotential& rhs) {
@@ -21,6 +32,15 @@ SparseVectorPotential& SparseVectorPotential::operator*=(const SparseVectorPoten
   }
   value = vec;
   return *this;
+}
+
+SparseVector SparseVectorPotential::randValue() { 
+	SparseVector randVec;
+	int n = rand();
+	for(int i = 0; i < n; i++) {
+		randVec.push_back(SparsePair(rand(),rand()));
+	}
+	return randVec;
 }
 
 template <>

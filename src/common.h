@@ -17,4 +17,9 @@ class Clock {
   }
 };
 
+inline double dRand(double dMin, double dMax) {
+    double d = (double)rand() / RAND_MAX;
+    return dMin + d * (dMax - dMin);
+}
+
 #endif

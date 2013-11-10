@@ -9,6 +9,33 @@
 #include "./common.h"
 
 class BaseSemiring {
+public:
+	BaseSemiring() : value(zero().value) {}
+	BaseSemiring(double val) : value(val) {}
+	virtual ~BaseSemiring() { };
+	static BaseSemiring one() { return BaseSemiring(1.0); }
+	static BaseSemiring zero() { return BaseSemiring(0.0); }
+	BaseSemiring annihlator() { return zero(); }
+	BaseSemiring identity() { return one(); }
+	BaseSemiring& operator+=(const BaseSemiring& rhs) {
+		value = value + rhs.value;
+		return *this;
+	}
+	BaseSemiring& operator*=(const BaseSemiring& rhs) {
+		value = value * rhs.value;
+		return *this;
+	}
+	friend bool operator==(const BaseSemiring& lhs, const BaseSemiring& rhs) {
+		return lhs.value == rhs.value;
+	}
+	friend BaseSemiring operator+(BaseSemiring lhs, const BaseSemiring &rhs) {
+		lhs += rhs;
+		return lhs;
+	}
+	friend BaseSemiring operator*(BaseSemiring lhs, const BaseSemiring &rhs) {
+		lhs *= rhs;
+		return lhs;
+	}
 protected:
 	double value;
 };
@@ -69,8 +96,9 @@ public:
 		return *this;
 	}
 
-	static const SemiringPotential one() { return SemiringPotential(1.0); }
-	static const SemiringPotential zero() { return SemiringPotential(0.0); }
+	static SemiringPotential one() { return SemiringPotential(1.0); }
+	static SemiringPotential zero() { return SemiringPotential(0.0); }
+	static ValType randValue() { return dRand(zero(), one()); }
 
 	// Determines range of acceptable values
 	ValType& normalize(ValType& val) { return val; }
@@ -90,7 +118,7 @@ class ViterbiPotential : public BaseSemiringPotential<double, ViterbiPotential> 
 public:
 	ViterbiPotential(double value) : BaseSemiringPotential<double, ViterbiPotential>(normalize(value)) { }
 	ViterbiPotential() : BaseSemiringPotential<double, ViterbiPotential>() { }
-	
+
 	ViterbiPotential& operator+=(const ViterbiPotential& rhs) {
 		value = std::max(value, rhs.value);
 		return *this;
@@ -106,12 +134,11 @@ public:
 		return val;
 	}
 
-	static const ViterbiPotential one() { return ViterbiPotential(1.0); }
-	static const ViterbiPotential zero() { return ViterbiPotential(0.0); }
+	static ViterbiPotential one() { return ViterbiPotential(1.0); }
+	static ViterbiPotential zero() { return ViterbiPotential(0.0); }
 protected:
 	REGISTER_TYPE_DECLARATION(ViterbiPotential);
 };
-REGISTER_TYPE_DEFINITION(ViterbiPotential);
 
 /**
  * Implements the log-space Viterbi type of semiring.
@@ -140,13 +167,12 @@ public:
 		return val = val < -INF ? -INF : val;
 	}
 
-	static const LogViterbiPotential one() { return LogViterbiPotential(0.0); }
-	static const LogViterbiPotential zero() { return LogViterbiPotential(-INF); }
+	static LogViterbiPotential one() { return LogViterbiPotential(0.0); }
+	static LogViterbiPotential zero() { return LogViterbiPotential(-INF); }
 
 protected:
 	REGISTER_TYPE_DECLARATION(LogViterbiPotential);
 };
-REGISTER_TYPE_DEFINITION(LogViterbiPotential);
 
 
 /**
@@ -170,12 +196,13 @@ public:
 		return *this;
 	}
 
-	static const BoolPotential one() { return BoolPotential(true); }
-	static const BoolPotential zero() { return BoolPotential(false); }
+	static BoolPotential one() { return BoolPotential(true); }
+	static BoolPotential zero() { return BoolPotential(false); }
+	static bool randValue() { return rand()/RAND_MAX > .5 ? true : false; }
+
 protected:
 	REGISTER_TYPE_DECLARATION(BoolPotential);
 };
-REGISTER_TYPE_DEFINITION(BoolPotential);
 
 /**
  * Implements the Inside type of semiring as described in Huang 2006
@@ -203,18 +230,17 @@ public:
 			return lhs;
 	}
 
-	static const InsidePotential one() { return InsidePotential(1.0); }
-	static const InsidePotential zero() { return InsidePotential(0.0); }
+	static InsidePotential one() { return InsidePotential(1.0); }
+	static InsidePotential zero() { return InsidePotential(0.0); }
 
 	double& normalize(double& val) {
 		if (val < 0.0) val = 0.0;
-				if (val >= 1.0) val = 1.0;
+		if (val >= 1.0) val = 1.0;
 		return val;
 	}
 protected:
 	REGISTER_TYPE_DECLARATION(InsidePotential);
 };
-REGISTER_TYPE_DEFINITION(InsidePotential);
 
 /**
  * Implements the Real type of semiring as described in Huang 2006
@@ -237,12 +263,13 @@ public:
 		return *this;
 	}
 
-	static const RealPotential one() { return RealPotential(0.0); }
-	static const RealPotential zero() { return RealPotential(INF); }
+	static RealPotential one() { return RealPotential(0.0); }
+	static RealPotential zero() { return RealPotential(INF); }
+	static double randValue() { return dRand(one(), zero()); }
+
 protected:
 	REGISTER_TYPE_DECLARATION(RealPotential);
 };
-REGISTER_TYPE_DEFINITION(RealPotential);
 
 /**
  * Implements the Inside type of semiring as described in Huang 2006
@@ -265,8 +292,9 @@ public:
 		return *this;
 	}
 
-	static const TropicalPotential one() { return TropicalPotential(0.0); }
-	static const TropicalPotential zero() { return TropicalPotential(INF); }
+	static TropicalPotential one() { return TropicalPotential(0.0); }
+	static TropicalPotential zero() { return TropicalPotential(INF); }
+	static double randValue() { return dRand(one(), zero()); }
 
 	double& normalize(double& val) {
 		if (val < 0.0) val = 0.0;
@@ -275,7 +303,6 @@ public:
 protected:
 	REGISTER_TYPE_DECLARATION(TropicalPotential);
 };
-REGISTER_TYPE_DEFINITION(TropicalPotential);
 
 
 
@@ -301,8 +328,9 @@ public:
 		return *this;
 	}
 
-	static const CountingPotential one() { return CountingPotential(1); }
-	static const CountingPotential zero() { return CountingPotential(0); }
+	static CountingPotential one() { return CountingPotential(1); }
+	static CountingPotential zero() { return CountingPotential(0); }
+	static int randValue() { return rand(); }
 
 	int& normalize(int& val) {
 		if(val < 0) val = 0;
@@ -311,7 +339,6 @@ public:
 protected:
 	REGISTER_TYPE_DECLARATION(CountingPotential);
 };
-REGISTER_TYPE_DEFINITION(CountingPotential);
 
 /**
  * Comparison pair. *Experimental*
@@ -353,7 +380,6 @@ REGISTER_TYPE_DEFINITION(CountingPotential);
 // 	protected:
 // 	REGISTER_TYPE_DECLARATION(CompPotential);
 // };
-//REGISTER_TYPE_DEFINITION(CompPotential);
 
 
 typedef pair<int, int> SparsePair;
@@ -378,12 +404,12 @@ public:
 
 	SparseVectorPotential& operator*=(const SparseVectorPotential& rhs);
 
-	static const SparseVectorPotential one() { return SparseVectorPotential(SparseVector()); }
-	static const SparseVectorPotential zero() { return SparseVectorPotential(SparseVector()); }
+	static SparseVectorPotential one() { return SparseVectorPotential(SparseVector()); }
+	static SparseVectorPotential zero() { return SparseVectorPotential(SparseVector()); }
+	static SparseVector randValue();
 protected:
 	REGISTER_TYPE_DECLARATION(SparseVectorPotential);
 };
-REGISTER_TYPE_DEFINITION(SparseVectorPotential);
 
 /**
  * Tree. *Experimental*
@@ -417,14 +443,14 @@ TreePotential() : BaseSemiringPotential<Hypernode *, TreePotential>(zero()) { }
 		return *this;
 	}
 
-	static const TreePotential one() {
+	static TreePotential one() {
 		return TreePotential(new Hypernode(""));
 	}
 	static const TreePotential zero() { return TreePotential(NULL); }
 protected:
-	REGISTER_TYPE_DECLARATION(TreePotential);
+	// REGISTER_TYPE_DECLARATION(TreePotential);
 };
-REGISTER_TYPE_DEFINITION(TreePotential);
+// REGISTER_TYPE_DEFINITION(TreePotential);
 
 
 // Classes used to associate projections with Hypergraphs

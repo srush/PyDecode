@@ -15,9 +15,9 @@
     DerivedRegister<NAME> NAME::reg(#NAME)
 
 class BaseSemiring;
-typedef BaseSemiring* (*create_type_fnptr)();
-typedef std::map<std::string, create_type_fnptr> RegistryMap;
-typedef std::pair<std::string, create_type_fnptr> RegistryPair;
+typedef BaseSemiring* (*create_random_fnptr)();
+typedef std::map<std::string, create_random_fnptr> RegistryMap;
+typedef std::pair<std::string, create_random_fnptr> RegistryPair;
 
 class BaseSemiringFactory {
 protected:
@@ -35,28 +35,27 @@ public:
 		return it == registry->end() ? NULL : it->second();
 	}
 
-	static void register_class(std::string name, create_type_fnptr f) {
+	static void register_class(std::string name, create_random_fnptr f) {
 		(*registry)[name] = f;
 	}
 
-	static const vector<create_type_fnptr> retrieve_classes() {
-		vector<create_type_fnptr> creators;
+	static const vector<create_random_fnptr> retrieve_classes() {
+		vector<create_random_fnptr> creators;
 		foreach(RegistryPair pr, *registry) {
 			creators.push_back(pr.second);
 		}
 		return creators;
 	}
 };
-RegistryMap* BaseSemiringFactory::registry(new RegistryMap);
 
 
-template<typename T> BaseSemiring* createT() { return new T; }
+template<typename T> BaseSemiring* createRandomT() { return new T(T::randValue()); }
 
 
 template<typename T>
 struct DerivedRegister : BaseSemiringFactory { 
     DerivedRegister(std::string const& s) { 
-        getMap()->insert(std::make_pair(s, &createT<T>));
+        getMap()->insert(std::make_pair(s, &createRandomT<T>));
     }
 };
 
