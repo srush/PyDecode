@@ -55,7 +55,7 @@ setup(
   package_dir={'pydecode': 'python/pydecode'},
   ext_modules = ext_modules,
   requires=["networkx", "pandas"],
-  version = '0.1.14',
+  version = '0.1.15',
   description = 'A dynamic programming toolkit',
   author = 'Alexander Rush',
   author_email = 'srush@csail.mit.edu',
