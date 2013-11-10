@@ -23,7 +23,6 @@ TEST(Decode, TestHypergraph) {
 TEST(Decode, ViterbiPotential) {
   // Test for correct normalization
   ViterbiPotential high = ViterbiPotential(1.1);
-  std::cerr << high;
   ASSERT_EQ(high, ViterbiPotential(1.0));
   ViterbiPotential low = ViterbiPotential(-0.1);
   ASSERT_EQ(low, ViterbiPotential(0.0));
