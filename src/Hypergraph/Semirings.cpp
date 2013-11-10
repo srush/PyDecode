@@ -2,7 +2,8 @@
 
 #include "Semirings.h"
 
-SparseVectorPotential& operator*=(const SparseVectorPotential& rhs) {
+
+SparseVectorPotential& SparseVectorPotential::operator*=(const SparseVectorPotential& rhs) {
   int i = 0, j = 0;
   SparseVector vec;
   while (i < value.size() || j < rhs.value.size()) {

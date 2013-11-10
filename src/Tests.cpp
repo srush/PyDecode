@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include "Hypergraph/Hypergraph.h"
 #include "Hypergraph/Semirings.h"
+#include "./common.h"
 
 TEST(Decode, TestHypergraph) {
   Hypergraph test;
@@ -48,6 +49,14 @@ TEST(Decode, ViterbiPotential) {
   high = 0.25;
   d = (double)high + d;
   ASSERT_EQ(d, 0.75);
+}
+
+TEST(Semirings, PropertyTests) {
+  vector<create_type_fnptr> creators = BaseSemiringFactory::retrieve_classes();
+  foreach (create_type_fnptr fnptr, creators) {
+    // BaseSemiring* = (*fnptr)();
+    // // ASSERT_EQ()
+  }
 }
 
 int main(int argc, char** argv) {
