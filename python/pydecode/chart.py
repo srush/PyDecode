@@ -129,7 +129,7 @@ class ChartBuilder:
 
     def __getitem__(self, label):
         if self._strict:
-            raise Exception("Label not in chart")
+            raise Exception("Label not in chart: %s"%label)
         if self._debug:
             print >>sys.stderr, "Getting", label, label in self._chart
         return self._chart.get(label, self._semiring.zero())
