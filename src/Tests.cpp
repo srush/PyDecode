@@ -53,17 +53,17 @@ TEST(Decode, ViterbiPotential) {
 
 TEST(Decode, SemiringPropertyTests) {
   srand(time(NULL));
-  // vector<create_random_fnptr> creators = BaseSemiringFactory::retrieve_classes();
-  // foreach (create_random_fnptr fnptr, creators) {
-  //   BaseSemiring* a = (*fnptr)();
-  //   BaseSemiring* b = (*fnptr)();
-  //   BaseSemiring* c = (*fnptr)();
-  //   *c = *a + *b;
-  //   ASSERT_EQ(*c, *a + *b);
-  //   ASSERT_EQ(*a * a->annihlator(), a->annihlator());
-  //   ASSERT_EQ(*a * a->identity(), *a);
-  //   ASSERT_EQ(*a + a->annihlator(), *a);
-  // }
+  vector<create_random_fnptr> creators = BaseSemiringFactory::retrieve_classes();
+  foreach (create_random_fnptr fnptr, creators) {
+    BaseSemiring* a = (*fnptr)();
+    BaseSemiring* b = (*fnptr)();
+    BaseSemiring* c = (*fnptr)();
+    *c = *a + *b;
+    ASSERT_EQ(*c, *a + *b);
+    ASSERT_EQ(*a * a->annihlator(), a->annihlator());
+    ASSERT_EQ(*a * a->identity(), *a);
+    ASSERT_EQ(*a + a->annihlator(), *a);
+  }
 }
 
 int main(int argc, char** argv) {
