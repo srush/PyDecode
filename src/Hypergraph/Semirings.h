@@ -4,15 +4,36 @@
 #define HYPERGRAPH_SEMIRING_H_
 
 #include <algorithm>
+#include <map>
+#include <string>
 #include "Hypergraph/Hypergraph.h"
 #include "./common.h"
+
+class BaseSemiring {
+  typedef BaseSemiring * (*create_type_fnptr)(const std::string &);
+  typedef std::map<std::string, create_type_fnptr> CreatorMap;
+  static CreatorMap creators;	
+
+public:
+  virtual ~BaseSemiring() { }
+  BaseSemiring * clone() const { return new BaseSemiring(*this); }
+
+  static BaseSemiring * create_from_string(std::string name) {
+    CreatorMap::const_iterator it = creators.find(name);
+    return it == creators.end() ? NULL : it->second(it->first);
+  }
+
+  static void register_class(std::string name, create_type_fnptr f) {
+    creators[name] = f;
+  }
+};
 
 /**
  * A base class of a potential with traits of a semiring
  * including + and * operators, and annihlator/identity elements.
  */
 template<typename ValType, typename SemiringPotential>
-class BaseSemiringPotential {
+class BaseSemiringPotential : BaseSemiring {
 public:
 	BaseSemiringPotential(const SemiringPotential& other)
 		: value(other.value) {}
@@ -67,10 +88,14 @@ public:
 	static const SemiringPotential zero() { return SemiringPotential(0.0); }
 
 	// Determines range of acceptable values
-	ValType& normalize(ValType& val) { return val; };
+	ValType& normalize(ValType& val) { return val; }
 
 protected:
 	ValType value;
+};
+
+struct DoublePotential {
+	double value;
 };
 
 /**
@@ -101,7 +126,10 @@ ViterbiPotential(double value) : BaseSemiringPotential<double, ViterbiPotential>
 
 	static const ViterbiPotential one() { return ViterbiPotential(1.0); }
 	static const ViterbiPotential zero() { return ViterbiPotential(0.0); }
+	ViterbiPotential * clone() const { return new ViterbiPotential(*this); }
+  static ViterbiPotential * create() { return new ViterbiPotential; }
 };
+BaseSemiring::register_class("ViterbiPotential", &ViterbiPotential::create);
 
 /**
  * Implements the log-space Viterbi type of semiring.
@@ -132,7 +160,10 @@ public:
 
 	static const LogViterbiPotential one() { return LogViterbiPotential(0.0); }
 	static const LogViterbiPotential zero() { return LogViterbiPotential(-INF); }
+	LogViterbiPotential * clone() const { return new LogViterbiPotential(*this); }
+  static LogViterbiPotential * create() { return new LogViterbiPotential; }
 };
+BaseSemiring::register_class("LogViterbiPotential", &LogViterbiPotential::create);
 
 
 /**
@@ -144,7 +175,7 @@ public:
  */
 class BoolPotential : public BaseSemiringPotential<bool, BoolPotential> {
 public:
-BoolPotential(bool value) : BaseSemiringPotential<bool, BoolPotential>(normalize(value)) { }
+	BoolPotential(bool value) : BaseSemiringPotential<bool, BoolPotential>(normalize(value)) { }
 	BoolPotential() : BaseSemiringPotential<bool, BoolPotential>() { }
 
 	BoolPotential& operator+=(const BoolPotential& rhs) {
@@ -158,7 +189,10 @@ BoolPotential(bool value) : BaseSemiringPotential<bool, BoolPotential>(normalize
 
 	static const BoolPotential one() { return BoolPotential(true); }
 	static const BoolPotential zero() { return BoolPotential(false); }
+	BoolPotential * clone() const { return new BoolPotential(*this); }
+  static BoolPotential * create() { return new BoolPotential; }
 };
+BaseSemiring::register_class("BoolPotential", &BoolPotential::create);
 
 /**
  * Implements the Inside type of semiring as described in Huang 2006
@@ -170,9 +204,7 @@ BoolPotential(bool value) : BaseSemiringPotential<bool, BoolPotential>(normalize
 class InsidePotential : public BaseSemiringPotential<double, InsidePotential> {
 public:
 	InsidePotential(double value) : BaseSemiringPotential<double, InsidePotential>(normalize(value)) { }
-
-	InsidePotential() :
-	BaseSemiringPotential<double, InsidePotential>(InsidePotential::zero()) {}
+	InsidePotential() : BaseSemiringPotential<double, InsidePotential>(zero()) { }
 
 	InsidePotential& operator+=(const InsidePotential& rhs) {
 		value = value + rhs.value;
@@ -196,7 +228,10 @@ public:
 				if (val >= 1.0) val = 1.0;
 		return val;
 	}
+	InsidePotential * clone() const { return new InsidePotential(*this); }
+  static InsidePotential * create() { return new InsidePotential; }
 };
+BaseSemiring::register_class("InsidePotential", &InsidePotential::create);
 
 /**
  * Implements the Real type of semiring as described in Huang 2006
@@ -207,7 +242,8 @@ public:
  */
 class RealPotential : public BaseSemiringPotential<double, RealPotential> {
 public:
-RealPotential(double value) : BaseSemiringPotential<double, RealPotential>(normalize(value)) { }
+	RealPotential(double value) : BaseSemiringPotential<double, RealPotential>(normalize(value)) { }
+	RealPotential() : BaseSemiringPotential<double, RealPotential>(zero()) { }
 
 	RealPotential& operator+=(const RealPotential& rhs) {
 		value = std::min(value, rhs.value);
@@ -220,7 +256,10 @@ RealPotential(double value) : BaseSemiringPotential<double, RealPotential>(norma
 
 	static const RealPotential one() { return RealPotential(0.0); }
 	static const RealPotential zero() { return RealPotential(INF); }
+	RealPotential * clone() const { return new RealPotential(*this); }
+  static RealPotential * create() { return new RealPotential; }
 };
+BaseSemiring::register_class("RealPotential", &RealPotential::create);
 
 /**
  * Implements the Inside type of semiring as described in Huang 2006
@@ -231,7 +270,8 @@ RealPotential(double value) : BaseSemiringPotential<double, RealPotential>(norma
  */
 class TropicalPotential : public BaseSemiringPotential<double, TropicalPotential> {
 public:
-TropicalPotential(double value) : BaseSemiringPotential<double, TropicalPotential>(normalize(value)) { }
+	TropicalPotential(double value) : BaseSemiringPotential<double, TropicalPotential>(normalize(value)) { }
+	TropicalPotential() : BaseSemiringPotential<double, TropicalPotential>(zero()) { }
 
 	TropicalPotential& operator+=(const TropicalPotential& rhs) {
 		value = value + rhs.value;
@@ -249,7 +289,10 @@ TropicalPotential(double value) : BaseSemiringPotential<double, TropicalPotentia
 		if (val < 0.0) val = 0.0;
 		return val;
 	}
+	TropicalPotential * clone() const { return new TropicalPotential(*this); }
+  static TropicalPotential * create() { return new TropicalPotential; }
 };
+BaseSemiring::register_class("TropicalPotential", &TropicalPotential::create);
 
 
 
@@ -263,7 +306,8 @@ TropicalPotential(double value) : BaseSemiringPotential<double, TropicalPotentia
  */
 class CountingPotential : public BaseSemiringPotential<int, CountingPotential> {
 public:
-CountingPotential(int value) : BaseSemiringPotential<int, CountingPotential>(normalize(value)) { }
+	CountingPotential(int value) : BaseSemiringPotential<int, CountingPotential>(normalize(value)) { }
+	CountingPotential() : BaseSemiringPotential<int, CountingPotential>(zero()) { }
 
 	CountingPotential& operator+=(const CountingPotential& rhs) {
 		value = value + rhs.value;
@@ -281,7 +325,10 @@ CountingPotential(int value) : BaseSemiringPotential<int, CountingPotential>(nor
 		if(val < 0) val = 0;
 		return val;
 	}
+	CountingPotential * clone() const { return new CountingPotential(*this); }
+  static CountingPotential * create() { return new CountingPotential; }
 };
+BaseSemiring::register_class("CountingPotential", &CountingPotential::create);
 
 /**
  * Comparison pair. *Experimental*
@@ -299,6 +346,7 @@ public:
 	using BaseSemiringPotential<MyVal, MyClass>::value;
 
 	CompPotential(MyVal value) : BaseSemiringPotential<MyVal, MyClass>(normalize(value)) { }
+	CompPotential() : BaseSemiringPotential<MyVal, MyClass>(zero()) { }
 
 	MyClass& operator+=(const MyClass& rhs) {
 		if (value.first < rhs.value.first) value = rhs.value;
@@ -319,7 +367,10 @@ public:
 		val.second = val.second.normalize(val.second);
 		return val;
 	}
+	CompPotential * clone() const { return new CompPotential(*this); }
+  static CompPotential * create() { return new CompPotential; }
 };
+BaseSemiring::register_class("CompPotential", &CompPotential::create);
 
 typedef pair<int, int> SparsePair;
 typedef vector<SparsePair> SparseVector;
@@ -345,7 +396,10 @@ public:
 
 	static const SparseVectorPotential one() { return SparseVectorPotential(SparseVector()); }
 	static const SparseVectorPotential zero() { return SparseVectorPotential(SparseVector()); }
+	SparseVectorPotential * clone() const { return new SparseVectorPotential(*this); }
+  static SparseVectorPotential * create() { return new SparseVectorPotential; }
 };
+BaseSemiring::register_class("SparseVectorPotential", &SparseVectorPotential::create);
 
 /**
  * Tree. *Experimental*
@@ -358,6 +412,7 @@ public:
 class TreePotential : public BaseSemiringPotential<Hypernode *, TreePotential> {
 public:
 TreePotential(Hypernode *value) : BaseSemiringPotential<Hypernode *, TreePotential>(normalize(value)) { }
+TreePotential() : BaseSemiringPotential<Hypernode *, TreePotential>(zero()) { }
 
 	TreePotential& operator+=(const TreePotential& rhs) {
 		return *this;
@@ -382,7 +437,10 @@ TreePotential(Hypernode *value) : BaseSemiringPotential<Hypernode *, TreePotenti
 		return TreePotential(new Hypernode(""));
 	}
 	static const TreePotential zero() { return TreePotential(NULL); }
+	TreePotential * clone() const { return new TreePotential(*this); }
+  static TreePotential * create() { return new TreePotential; }
 };
+BaseSemiring::register_class("TreePotential", &TreePotential::create);
 
 
 // Classes used to associate projections with Hypergraphs
