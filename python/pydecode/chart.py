@@ -1,5 +1,4 @@
 import pydecode.hyper as ph
-from pydecode.semiring import *
 import sys
 
 class ChartBuilder:
@@ -175,7 +174,7 @@ class SemiRing(object):
 
 
 class HypergraphSemiRing(SemiRing):
-    def __init__(self, name=None, 
+    def __init__(self, name=None,
                  edge_list=[], node_list=[], is_zero=False):
         self.edge_list = edge_list
         self.node_list = node_list

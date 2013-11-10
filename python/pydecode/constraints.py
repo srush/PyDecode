@@ -30,7 +30,7 @@ class Constraints:
             self.by_id[i] = label
             self.bias.append((i, constant))
         self.size = len(constraints)
-        self.potentials = ph.Potentials(graph, kind=ph.SparseVector)
+        self.potentials = ph.SparseVectorPotentials(graph)
 
     def check(self, path):
         for edge in path.edges:
