@@ -10,7 +10,8 @@ class ChartBuilder:
     def __init__(self, score_fn=lambda a: a,
                  semiring=ph._LogViterbiW,
                  build_hypergraph=False,
-                 debug=False):
+                 debug=False,
+                 strict=True):
         """
         Initialize the dynamic programming chart.
 
@@ -34,6 +35,7 @@ class ChartBuilder:
         self._done = False
         self._last = None
         self._debug = debug
+        self._strict = True
         if self._builder:
             self._hypergraph = ph.Hypergraph()
             self._build = self._hypergraph.builder()
@@ -126,6 +128,8 @@ class ChartBuilder:
         return label in self._chart
 
     def __getitem__(self, label):
+        if self._strict:
+            raise Exception("Label not in chart")
         if self._debug:
             print >>sys.stderr, "Getting",label, label in self._chart
         return self._chart.get(label, self._semiring.zero())
