@@ -128,10 +128,10 @@ class ChartBuilder:
         return label in self._chart
 
     def __getitem__(self, label):
-        if self._strict and label not in self._chart:
+        if self._strict:
             raise Exception("Label not in chart")
         if self._debug:
-            print >>sys.stderr, "Getting",label, label in self._chart
+            print >>sys.stderr, "Getting", label, label in self._chart
         return self._chart.get(label, self._semiring.zero())
 
     def show(self):
@@ -139,6 +139,14 @@ class ChartBuilder:
         keys.sort()
         for key in keys:
             print key, self._chart[key]
+
+
+"""
+THIS CLASS IS DEPRECATED. CODE MOVED TO C++.
+"""
+
+
+INF = 1e8
 
 class SemiRing(object):
     """
@@ -167,8 +175,8 @@ class SemiRing(object):
 
 
 class HypergraphSemiRing(SemiRing):
-    def __init__(self, edge_list=[], node_list=[],
-                 name=None, is_zero=False):
+    def __init__(self, name=None, 
+                 edge_list=[], node_list=[], is_zero=False):
         self.edge_list = edge_list
         self.node_list = node_list
         self.name = name
@@ -183,8 +191,8 @@ class HypergraphSemiRing(SemiRing):
         return self._is_zero
 
     def __add__(self, other):
-        return HypergraphSemiRing(
-            self.edges() + other.edges())
+        return HypergraphSemiRing(name = None,
+            edge_list=(self.edges() + other.edges()))
 
     def edges(self):
         if self.node_list:
@@ -196,9 +204,8 @@ class HypergraphSemiRing(SemiRing):
         zero = other.is_zero() or self.is_zero()
         if zero:
             return HypergraphSemiRing.zero()
-        return HypergraphSemiRing([],
-                                  self.node_list + other.node_list,
-                                  other.name)
+        return HypergraphSemiRing(name=other.name, edge_list=[],
+                                  node_list=self.node_list + other.node_list)
 
     @classmethod
     def one(cls):
@@ -210,5 +217,4 @@ class HypergraphSemiRing(SemiRing):
 
     @classmethod
     def make(cls, name):
-
         return HypergraphSemiRing(name=name)
