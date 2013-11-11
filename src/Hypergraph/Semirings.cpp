@@ -2,7 +2,25 @@
 
 #include "Hypergraph/Semirings.h"
 
+// These are defined here while for the type registration below
+// to work, there must be something in this file that is guaranteed
+// to compile.
+bool operator==(const BaseSemiring& lhs, const BaseSemiring& rhs) {
+	return lhs.value == rhs.value;
+}
+
+BaseSemiring operator+(BaseSemiring lhs, const BaseSemiring &rhs) {
+	lhs += rhs;
+	return lhs;
+}
+
+BaseSemiring operator*(BaseSemiring lhs, const BaseSemiring &rhs) {
+	lhs *= rhs;
+	return lhs;
+}
+
 // These are not guaranteed to trigger, unless something is used in this file...
+// Which is why I moved the operators above to here.
 REGISTER_TYPE_DEFINITION(ViterbiPotential);
 REGISTER_TYPE_DEFINITION(LogViterbiPotential);
 REGISTER_TYPE_DEFINITION(BoolPotential);

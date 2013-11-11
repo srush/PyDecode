@@ -8,6 +8,10 @@
 #include "Hypergraph/Hypergraph.h"
 #include "./common.h"
 
+
+/**
+ * An untemplated base class for use in registering types
+ */
 class BaseSemiring {
 public:
 	BaseSemiring() : value(zero().value) {}
@@ -15,8 +19,8 @@ public:
 	virtual ~BaseSemiring() { };
 	static BaseSemiring one() { return BaseSemiring(1.0); }
 	static BaseSemiring zero() { return BaseSemiring(0.0); }
-	BaseSemiring annihlator() { return zero(); }
 	BaseSemiring identity() { return one(); }
+	BaseSemiring annihlator() { return zero(); }
 	BaseSemiring& operator+=(const BaseSemiring& rhs) {
 		value = value + rhs.value;
 		return *this;
@@ -25,23 +29,16 @@ public:
 		value = value * rhs.value;
 		return *this;
 	}
-	friend bool operator==(const BaseSemiring& lhs, const BaseSemiring& rhs) {
-		return lhs.value == rhs.value;
-	}
-	friend BaseSemiring operator+(BaseSemiring lhs, const BaseSemiring &rhs) {
-		lhs += rhs;
-		return lhs;
-	}
-	friend BaseSemiring operator*(BaseSemiring lhs, const BaseSemiring &rhs) {
-		lhs *= rhs;
-		return lhs;
-	}
+	friend bool operator==(const BaseSemiring& lhs, const BaseSemiring& rhs);
+	friend BaseSemiring operator+(BaseSemiring lhs, const BaseSemiring &rhs);
+	friend BaseSemiring operator*(BaseSemiring lhs, const BaseSemiring &rhs);
 protected:
 	double value;
 };
 
+
 /**
- * A base class of a potential with traits of a semiring
+ * A templated base class of a potential with traits of a semiring
  * including + and * operators, and annihlator/identity elements.
  */
 template<typename ValType, typename SemiringPotential>

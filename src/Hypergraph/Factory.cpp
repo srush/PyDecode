@@ -2,4 +2,4 @@
 
 #include "Hypergraph/Factory.h"
 
-RegistryMap* BaseSemiringFactory::registry(new RegistryMap);
+RegistryMap* BaseSemiringFactory::registry;
