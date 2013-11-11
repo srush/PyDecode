@@ -2,7 +2,7 @@
 
 #include "Hypergraph/Semirings.h"
 
-
+// These are not guaranteed to trigger, unless something is used in this file...
 REGISTER_TYPE_DEFINITION(ViterbiPotential);
 REGISTER_TYPE_DEFINITION(LogViterbiPotential);
 REGISTER_TYPE_DEFINITION(BoolPotential);
@@ -11,7 +11,8 @@ REGISTER_TYPE_DEFINITION(RealPotential);
 REGISTER_TYPE_DEFINITION(TropicalPotential);
 REGISTER_TYPE_DEFINITION(CountingPotential);
 // REGISTER_TYPE_DEFINITION(CompPotential);
-REGISTER_TYPE_DEFINITION(SparseVectorPotential);
+// REGISTER_TYPE_DEFINITION(SparseVectorPotential);
+// REGISTER_TYPE_DEFINITION(TreePotential);
 
 
 SparseVectorPotential& SparseVectorPotential::operator*=(const SparseVectorPotential& rhs) {

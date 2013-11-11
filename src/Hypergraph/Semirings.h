@@ -136,9 +136,11 @@ public:
 
 	static ViterbiPotential one() { return ViterbiPotential(1.0); }
 	static ViterbiPotential zero() { return ViterbiPotential(0.0); }
-protected:
+
+// protected:
 	REGISTER_TYPE_DECLARATION(ViterbiPotential);
 };
+
 
 /**
  * Implements the log-space Viterbi type of semiring.
@@ -170,7 +172,8 @@ public:
 	static LogViterbiPotential one() { return LogViterbiPotential(0.0); }
 	static LogViterbiPotential zero() { return LogViterbiPotential(-INF); }
 
-protected:
+
+// protected:
 	REGISTER_TYPE_DECLARATION(LogViterbiPotential);
 };
 
@@ -200,7 +203,8 @@ public:
 	static BoolPotential zero() { return BoolPotential(false); }
 	static bool randValue() { return rand()/RAND_MAX > .5 ? true : false; }
 
-protected:
+
+// protected:
 	REGISTER_TYPE_DECLARATION(BoolPotential);
 };
 
@@ -238,7 +242,8 @@ public:
 		if (val >= 1.0) val = 1.0;
 		return val;
 	}
-protected:
+
+// protected:
 	REGISTER_TYPE_DECLARATION(InsidePotential);
 };
 
@@ -267,7 +272,8 @@ public:
 	static RealPotential zero() { return RealPotential(INF); }
 	static double randValue() { return dRand(one(), zero()); }
 
-protected:
+
+// protected:
 	REGISTER_TYPE_DECLARATION(RealPotential);
 };
 
@@ -300,7 +306,8 @@ public:
 		if (val < 0.0) val = 0.0;
 		return val;
 	}
-protected:
+
+// protected:
 	REGISTER_TYPE_DECLARATION(TropicalPotential);
 };
 
@@ -336,7 +343,8 @@ public:
 		if(val < 0) val = 0;
 		return val;
 	}
-protected:
+
+// protected:
 	REGISTER_TYPE_DECLARATION(CountingPotential);
 };
 
@@ -377,7 +385,8 @@ protected:
 // 		val.second = normalize(val.second);
 // 		return val;
 // 	}
-// 	protected:
+
+// protected:
 // 	REGISTER_TYPE_DECLARATION(CompPotential);
 // };
 
@@ -407,7 +416,8 @@ public:
 	static SparseVectorPotential one() { return SparseVectorPotential(SparseVector()); }
 	static SparseVectorPotential zero() { return SparseVectorPotential(SparseVector()); }
 	static SparseVector randValue();
-protected:
+
+// protected:
 	REGISTER_TYPE_DECLARATION(SparseVectorPotential);
 };
 
@@ -447,10 +457,10 @@ TreePotential() : BaseSemiringPotential<Hypernode *, TreePotential>(zero()) { }
 		return TreePotential(new Hypernode(""));
 	}
 	static const TreePotential zero() { return TreePotential(NULL); }
-protected:
+
+// protected:
 	// REGISTER_TYPE_DECLARATION(TreePotential);
 };
-// REGISTER_TYPE_DEFINITION(TreePotential);
 
 
 // Classes used to associate projections with Hypergraphs
