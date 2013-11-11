@@ -353,39 +353,39 @@ public:
  * 0: (0, 0)
  * 1: (1, 1)
  */
-// template<typename SemiringComp, typename SemiringOther>
-// class CompPotential : public BaseSemiringPotential<std::pair<SemiringComp, SemiringOther>, CompPotential<SemiringComp, SemiringOther> > {
-// public:
-// 	typedef std::pair<SemiringComp, SemiringOther> MyVal;
-// 	typedef CompPotential<SemiringComp, SemiringOther> MyClass;
-// 	using BaseSemiringPotential<MyVal, MyClass>::value;
+template<typename SemiringComp, typename SemiringOther>
+class CompPotential : public BaseSemiringPotential<std::pair<SemiringComp, SemiringOther>, CompPotential<SemiringComp, SemiringOther> > {
+public:
+	typedef std::pair<SemiringComp, SemiringOther> MyVal;
+	typedef CompPotential<SemiringComp, SemiringOther> MyClass;
+	using BaseSemiringPotential<MyVal, MyClass>::value;
 
-// 	CompPotential(MyVal value) : BaseSemiringPotential<MyVal, MyClass>(normalize(value)) { }
-// 	CompPotential() : BaseSemiringPotential<MyVal, MyClass>(zero()) { }
+	CompPotential(MyVal value) : BaseSemiringPotential<MyVal, MyClass>(normalize(value)) { }
+	CompPotential() : BaseSemiringPotential<MyVal, MyClass>(zero()) { }
 
-// 	MyClass& operator+=(const MyClass& rhs) {
-// 		if (value.first < rhs.value.first) value = rhs.value;
-// 		return *this;
-// 	}
+	MyClass& operator+=(const MyClass& rhs) {
+		if (value.first < rhs.value.first) value = rhs.value;
+		return *this;
+	}
 
-// 	MyClass& operator*=(const MyClass& rhs) {
-// 		value.first = value.first * rhs.value.first;
-// 		value.second = value.second * rhs.value.second;
-// 		return *this;
-// 	}
+	MyClass& operator*=(const MyClass& rhs) {
+		value.first = value.first * rhs.value.first;
+		value.second = value.second * rhs.value.second;
+		return *this;
+	}
 
-// 	static const MyClass one() { return MyClass(MyVal(SemiringComp::one(), SemiringOther::one())); }
-// 	static const MyClass zero() { return MyClass(MyVal(SemiringComp::zero(), SemiringOther::zero())); }
+	static const MyClass one() { return MyClass(MyVal(SemiringComp::one(), SemiringOther::one())); }
+	static const MyClass zero() { return MyClass(MyVal(SemiringComp::zero(), SemiringOther::zero())); }
 
-// 	MyVal& normalize(MyVal& val) {
-// 		val.first = normalize(val.first);
-// 		val.second = normalize(val.second);
-// 		return val;
-// 	}
+	MyVal& normalize(MyVal& val) {
+		val.first = normalize(val.first);
+		val.second = normalize(val.second);
+		return val;
+	}
 
 // protected:
 // 	REGISTER_TYPE_DECLARATION(CompPotential);
-// };
+};
 
 
 typedef pair<int, int> SparsePair;

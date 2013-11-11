@@ -28,7 +28,8 @@ REGISTER_TYPE_DEFINITION(InsidePotential);
 REGISTER_TYPE_DEFINITION(RealPotential);
 REGISTER_TYPE_DEFINITION(TropicalPotential);
 REGISTER_TYPE_DEFINITION(CountingPotential);
-// REGISTER_TYPE_DEFINITION(CompPotential);
+// typedef CompPotential<ViterbiPotential, LogViterbiPotential> CompVitLogPotential;
+// REGISTER_TYPE_DEFINITION(CompPotential<ViterbiPotential, LogViterbiPotential>);
 // REGISTER_TYPE_DEFINITION(SparseVectorPotential);
 // REGISTER_TYPE_DEFINITION(TreePotential);
 
