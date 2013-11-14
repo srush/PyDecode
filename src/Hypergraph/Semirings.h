@@ -356,7 +356,7 @@ SparseVectorPotential() : BaseSemiringPotential<SparseVector, SparseVectorPotent
           vec.push_back(pair<int, int>(rhs.value[j].first, rhs.value[j].second));
           ++j;
         } else {
-          vec.push_back(pair<int, int>(i, value[i].second + rhs.value[j].second));
+          vec.push_back(pair<int, int>(value[i].first, value[i].second + rhs.value[j].second));
           ++i;
           ++j;
         }

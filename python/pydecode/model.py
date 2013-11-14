@@ -1,5 +1,6 @@
 """
-Structured Prediction library.
+A structured prediction and training library.
+Requires pystruct.
 """
 
 from pystruct.models import StructuredModel

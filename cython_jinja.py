@@ -3,16 +3,33 @@ from jinja2 import Environment, PackageLoader
 vars = {"semirings":
  [{"type": "Viterbi", "ptype": "ViterbiW",
    "ctype": "ViterbiPotential", "vtype": "double",
-   "float" : True, "viterbi" : True},
+   "float" : True, "viterbi" : True,
+   "description": r"""
+Weight potentials :math:`R^{{\cal E}}` with :math:`(+, *) = (\max, *)`.
+
+"""
+   },
   {"type": "LogViterbi", "ptype": "LogViterbiW",
    "ctype": "LogViterbiPotential", "vtype": "double",
-   "float" : True, "viterbi" : True},
+   "float" : True, "viterbi" : True,
+      "description": r"""
+Weight potentials :math:`R^{{\cal E}}` with :math:`(+, *) = (\max, +)`.
+"""
+},
   {"type": "Inside", "ptype": "InsideW",
    "ctype": "InsidePotential", "vtype": "double",
-   "float" : True, "viterbi" : True},
+   "float" : True, "viterbi" : True,
+   "description": r"""
+Weight potentials :math:`R^{{\cal E}}` with :math:`(+, *) = (+, *)`.
+"""
+},
   {"type": "Bool", "ptype": "BoolW",
    "ctype": "BoolPotential", "vtype": "double",
-   "bool": True, "viterbi" : True},
+   "bool": True, "viterbi" : True,
+      "description": r"""
+Weight potentials :math:`\{0,1\}^{{\cal E}}` with :math:`(+, *) = (\cap, \cup)`.
+"""
+},
   {"type": "SparseVector", "ptype": "SparseVectorW",
    "ctype": "SparseVectorPotential", "vtype": "vector[pair[int, int]]",
    "bool": False, "viterbi" : False, "float": False,

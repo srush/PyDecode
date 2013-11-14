@@ -1,16 +1,15 @@
 """
-Linear Programming Library.
+Linear programming (LP) library for combinatorial search.
+Requires the PuLP library.
 """
 
 import pulp
 import pydecode.hyper as ph
 from collections import defaultdict
 
-
 class HypergraphLP:
     """
-    Representation of a hypergraph LP.
-    Requires the pulp library.
+    Manages the linear program for a hypergraph search problem.
 
     Attributes
     -----------
@@ -19,7 +18,7 @@ class HypergraphLP:
        Get the objective of the solved LP.
 
     path : The hyperpath (if ILP)
-       Get the path of the solved LP.
+       Get the hyperpath of the solved ILP.
 
     edge_variables : Dict of edge values.
        Get the (fractional) path of the solved LP.
@@ -28,23 +27,28 @@ class HypergraphLP:
     def __init__(self, lp, hypergraph, node_vars, edge_vars,
                  integral=False):
         r"""
-        Initialize the hypergraph LP
+        Initialize the Hypergraph LP. 
+
+        Call with HypergraphLP.make_lp().
 
         Parameters
         ------------
 
         lp : PuLP linear program
+           The linear program for the hypergraph
 
         hypergraph : :py:class:`Hypergraph`
            The hypergraph.
 
-        node_vars :
+        node_vars : map of Node to LP variable. 
            The node variables :math:`y(v)`
            for all :math:`v \in {\cal V}`.
 
-        edge_vars :
+        edge_vars : map of Edge to LP variable. 
            The hyperedge variables :math:`y(e)`
            for all :math:`e \in {\cal E}`.
+
+        integral : bool
         """
 
         self.lp = lp
@@ -64,15 +68,13 @@ class HypergraphLP:
         ----------
 
         solver : LP solver
-           A PuLP LP solver (glpsol, Gurobi, etc.)
-
-        Returns
-        ---------
-
-        path
-           The best path.
+           A PuLP LP solver (glpsol, Gurobi, etc.).
         """
-        self._status = self.lp.solve()
+        if solver == None:
+            _solver = pulp.solvers.GLPK()
+        else:
+            _solver = solver
+        self._status = self.lp.solve(_solver)
 
     @property
     def path(self):
@@ -123,13 +125,23 @@ class HypergraphLP:
         ----------
 
         hypergraph : :py:class:`pydecode.hyper.Hypergraph`
-        potentials : :py:class:`pydecode.hyper.Potentials`
+          The hypergraph search.
+
+
+        potentials : :py:class:`pydecode.hyper.LogViterbiPotentials`
+          The potentials.
+
+        name : string
+          A debugging name for linear program.
+
+        integral : bool
+          Construct as an integer linear program.
 
         Returns
         --------
 
         lp : :py:class:`HypergraphLP`
-
+          Returns the hypergraph LP (or ILP)
         """
 
         if integral:

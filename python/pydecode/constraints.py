@@ -1,7 +1,6 @@
 import pydecode.hyper as ph
 from collections import defaultdict
 
-
 class Constraints:
     r"""
     Stores linear hyperedge constraints of the form :math:`A y = b`,
@@ -33,10 +32,10 @@ class Constraints:
         self.potentials = ph.SparseVectorPotentials(graph)
 
     def check(self, path):
-        for edge in path.edges:
-            print edge.id, self.potentials[edge]
+        # for edge in path.edges:
+        #     print edge.id, self.potentials[edge]
         constraints = self.potentials.dot(path)
-        print "Constraints", constraints
+        #print "Constraints", constraints
         return [self.by_id[i]
                 for i, val in constraints.iteritems()
                 if val != 0]

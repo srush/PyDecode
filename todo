@@ -1,5 +1,16 @@
 srush
 -----
+
+- edges __str__ function
+- better docs on lp,
+- error message about label hashing
+- docs on currying functions (or classes)
+
+- get perceptron working.
+
+- get random path
+
+
 - Write tutorials
 - make crf work
 - Binarization.

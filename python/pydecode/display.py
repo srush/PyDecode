@@ -1,3 +1,8 @@
+"""
+Display library for hypergraphs.
+Requires the NetworkX graph library.
+"""
+
 import networkx as nx
 from tempfile import NamedTemporaryFile
 
