@@ -94,18 +94,18 @@ TEST(Decode, StaticSemiringTests) {
       StaticBaseSemiringPotential* sb = (*fnptr)();
       // std::cout << *sb->randValue() << std::endl;
       // std::cout << "Type: " << typeid(*sb).name() << std::endl;
-      std::cout << "ValType: " << typeid((*sb).randValue()).name() << std::endl;
-      StaticBaseSemiringPotential::ValType *a = (*sb).randValue();
-      StaticBaseSemiringPotential::ValType *b = (*sb).randValue();
-      StaticBaseSemiringPotential::ValType *c = (*sb).randValue();
+      std::cout << "ValType: " << typeid(*(*sb).randValue()).name() << std::endl;
+      ValType *a = (*sb).randValue();
+      ValType *b = (*sb).randValue();
+      ValType *c = (*sb).randValue();
 
-      *c = (*sb).add(*a,*b);
-      ASSERT_EQ(*c, (*sb).add(*a,*b));
+      *c = *(*sb).add(*a,*b);
+      ASSERT_EQ(*c, *(*sb).add(*a,*b));
 
-      ASSERT_EQ((*sb).times(*a,(*sb).zero()), (*sb).zero());
-      ASSERT_EQ((*sb).times(*a,(*sb).one()), *a);
+      ASSERT_EQ(*(*sb).times(*a,*(*sb).zero()), *(*sb).zero());
+      ASSERT_EQ(*(*sb).times(*a,*(*sb).one()), *a);
 
-      ASSERT_EQ((*sb).add(*a,(*sb).zero()), *a);
+      ASSERT_EQ(*(*sb).add(*a,*(*sb).zero()), *a);
     }
   }
 
