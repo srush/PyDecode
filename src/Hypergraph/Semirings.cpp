@@ -2,36 +2,36 @@
 
 #include "Hypergraph/Semirings.h"
 
-// These are defined here while for the type registration below
+// These are not guaranteed to trigger, unless something is used in this file...
+// Which is why I moved the operators below to here.
+REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, ViterbiPotential);
+REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, LogViterbiPotential);
+REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, BoolPotential);
+REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, InsidePotential);
+REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, RealPotential);
+REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, TropicalPotential);
+REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, CountingPotential);
+// REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, CompPotential<ViterbiPotential, LogViterbiPotential>);
+// REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, SparseVectorPotential);
+// REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, TreePotential);
+
+
+// These are defined here while for the type registration above
 // to work, there must be something in this file that is guaranteed
 // to compile.
 bool operator==(const BaseSemiring& lhs, const BaseSemiring& rhs) {
-	return lhs.value == rhs.value;
+    return lhs.value == rhs.value;
 }
 
 BaseSemiring operator+(BaseSemiring lhs, const BaseSemiring &rhs) {
-	lhs += rhs;
-	return lhs;
+    lhs += rhs;
+    return lhs;
 }
 
 BaseSemiring operator*(BaseSemiring lhs, const BaseSemiring &rhs) {
-	lhs *= rhs;
-	return lhs;
+    lhs *= rhs;
+    return lhs;
 }
-
-// These are not guaranteed to trigger, unless something is used in this file...
-// Which is why I moved the operators above to here.
-REGISTER_TYPE_DEFINITION(ViterbiPotential);
-REGISTER_TYPE_DEFINITION(LogViterbiPotential);
-REGISTER_TYPE_DEFINITION(BoolPotential);
-REGISTER_TYPE_DEFINITION(InsidePotential);
-REGISTER_TYPE_DEFINITION(RealPotential);
-REGISTER_TYPE_DEFINITION(TropicalPotential);
-REGISTER_TYPE_DEFINITION(CountingPotential);
-// typedef CompPotential<ViterbiPotential, LogViterbiPotential> CompVitLogPotential;
-// REGISTER_TYPE_DEFINITION(CompPotential<ViterbiPotential, LogViterbiPotential>);
-// REGISTER_TYPE_DEFINITION(SparseVectorPotential);
-// REGISTER_TYPE_DEFINITION(TreePotential);
 
 
 SparseVectorPotential& SparseVectorPotential::operator*=(const SparseVectorPotential& rhs) {
@@ -55,12 +55,12 @@ SparseVectorPotential& SparseVectorPotential::operator*=(const SparseVectorPoten
 }
 
 SparseVector SparseVectorPotential::randValue() { 
-	SparseVector randVec;
-	int n = rand();
-	for(int i = 0; i < n; i++) {
-		randVec.push_back(SparsePair(rand(),rand()));
-	}
-	return randVec;
+    SparseVector randVec;
+    int n = 20;
+    for(int i = 0; i < n; i++) {
+        randVec.push_back(SparsePair(rand(),rand()));
+    }
+    return randVec;
 }
 
 template <>

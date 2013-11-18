@@ -135,7 +135,22 @@ public:
 	static ViterbiPotential zero() { return ViterbiPotential(0.0); }
 
 // protected:
-	REGISTER_TYPE_DECLARATION(ViterbiPotential);
+	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, ViterbiPotential);
+};
+
+template <typename T>
+class StaticBase {
+public:
+	typedef	T ValType;
+};
+
+class StaticPotential : public StaticBase<double> {
+public:
+	static ValType& normalize(ValType& val) {
+		if (val < 0.0) val = 0.0;
+		else if (val > 1.0) val = 1.0;
+		return val;
+	}
 };
 
 
@@ -171,7 +186,7 @@ public:
 
 
 // protected:
-	REGISTER_TYPE_DECLARATION(LogViterbiPotential);
+	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, LogViterbiPotential);
 };
 
 
@@ -202,7 +217,7 @@ public:
 
 
 // protected:
-	REGISTER_TYPE_DECLARATION(BoolPotential);
+	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, BoolPotential);
 };
 
 /**
@@ -241,7 +256,7 @@ public:
 	}
 
 // protected:
-	REGISTER_TYPE_DECLARATION(InsidePotential);
+	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, InsidePotential);
 };
 
 /**
@@ -271,7 +286,7 @@ public:
 
 
 // protected:
-	REGISTER_TYPE_DECLARATION(RealPotential);
+	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, RealPotential);
 };
 
 /**
@@ -305,7 +320,7 @@ public:
 	}
 
 // protected:
-	REGISTER_TYPE_DECLARATION(TropicalPotential);
+	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, TropicalPotential);
 };
 
 
@@ -342,7 +357,7 @@ public:
 	}
 
 // protected:
-	REGISTER_TYPE_DECLARATION(CountingPotential);
+	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, CountingPotential);
 };
 
 /**
@@ -384,7 +399,7 @@ public:
 	}
 
 // protected:
-// 	REGISTER_TYPE_DECLARATION(CompPotential);
+// 	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, CompPotential);
 };
 
 
@@ -415,7 +430,7 @@ public:
 	static SparseVector randValue();
 
 // protected:
-	REGISTER_TYPE_DECLARATION(SparseVectorPotential);
+	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, SparseVectorPotential);
 };
 
 /**
@@ -456,7 +471,7 @@ TreePotential() : BaseSemiringPotential<Hypernode *, TreePotential>(zero()) { }
 	static const TreePotential zero() { return TreePotential(NULL); }
 
 // protected:
-	// REGISTER_TYPE_DECLARATION(TreePotential);
+	// REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, TreePotential);
 };
 
 

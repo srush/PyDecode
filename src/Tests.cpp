@@ -58,10 +58,11 @@ TEST(Decode, ViterbiPotential) {
 TEST(Decode, SemiringPropertyTests) {
   srand(time(NULL));
   
-  vector<create_random_fnptr> creators = BaseSemiringFactory::retrieve_classes();
+  vector<BaseRegistry<BaseSemiring>::creator_fnptr> creators = 
+      BaseRegistry<BaseSemiring>::retrieve_classes();
   ASSERT_GT(creators.size(), 0);
 
-  foreach (create_random_fnptr fnptr, creators) {
+  foreach (BaseRegistry<BaseSemiring>::creator_fnptr fnptr, creators) {
     // std::cout << "Beginning " << typeid(*(*fnptr)()).name() << std::endl;
     for(int i = 0; i < NUM_LOOPS; i++) {
       BaseSemiring* a = (*fnptr)();
@@ -78,6 +79,10 @@ TEST(Decode, SemiringPropertyTests) {
       ASSERT_EQ(*a * *b, *c *= *b);
     }
   }
+}
+
+TEST(Decode, StaticSemiringTests) {
+
 }
 
 int main(int argc, char** argv) {
