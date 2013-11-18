@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classRealPotential" kind="class" prot="public">
+    <compoundname>RealPotential</compoundname>
+    <basecompoundref refid="classBaseSemiringPotential" prot="public" virt="non-virtual">BaseSemiringPotential&lt; double, RealPotential &gt;</basecompoundref>
+    <includes refid="Semirings_8h" local="no">Semirings.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classRealPotential_1ab0e0eb40a511f0ff6bf7265b215afb18" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RealPotential::RealPotential</definition>
+        <argsstring>(double value)</argsstring>
+        <name>RealPotential</name>
+        <param>
+          <type>double</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="212" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="212" bodyend="212"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1a19f69028b929da534645aa35ca254d06" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classRealPotential" kindref="compound">RealPotential</ref> &amp;</type>
+        <definition>RealPotential&amp; RealPotential::operator+=</definition>
+        <argsstring>(const RealPotential &amp;rhs)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const <ref refid="classRealPotential" kindref="compound">RealPotential</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="214" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="214" bodyend="217"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1ab43bd3b064308c4644168a1d9b6ca8db" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classRealPotential" kindref="compound">RealPotential</ref> &amp;</type>
+        <definition>RealPotential&amp; RealPotential::operator*=</definition>
+        <argsstring>(const RealPotential &amp;rhs)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>const <ref refid="classRealPotential" kindref="compound">RealPotential</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="218" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="218" bodyend="221"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1aac75f5337add6f1a0a330ae23bda28a6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double RealPotential::normalize</definition>
+        <argsstring>(double val) const </argsstring>
+        <name>normalize</name>
+        <param>
+          <type>double</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="226" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="226" bodyend="226"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classRealPotential_1a9837fd64c52d3886fa977968c8c79a3e" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="classRealPotential" kindref="compound">RealPotential</ref></type>
+        <definition>static const RealPotential RealPotential::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="223" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="223" bodyend="223"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1a561ab2d6df9bebe94c9f3011412cd00d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="classRealPotential" kindref="compound">RealPotential</ref></type>
+        <definition>static const RealPotential RealPotential::zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="224" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="224" bodyend="224"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Implements the Real type of semiring as described in Huang 2006 +: min *: + 0: INF 1: 0 </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="78">
+        <label>RealPotential</label>
+        <link refid="classRealPotential"/>
+        <childnode refid="79" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="79">
+        <label>BaseSemiringPotential&lt; double, RealPotential &gt;</label>
+        <link refid="classBaseSemiringPotential"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="80">
+        <label>RealPotential</label>
+        <link refid="classRealPotential"/>
+        <childnode refid="81" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="81">
+        <label>BaseSemiringPotential&lt; double, RealPotential &gt;</label>
+        <link refid="classBaseSemiringPotential"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="210" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="210" bodyend="227"/>
+    <listofallmembers>
+      <member refid="classBaseSemiringPotential_1a3ccf8b43dd32e794f7a546caa2e8ffd9" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>add</name></member>
+      <member refid="classBaseSemiringPotential_1a54bb42020981d47a9ee5edbefdd0f4b3" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>BaseSemiringPotential</name></member>
+      <member refid="classBaseSemiringPotential_1ae70438bcff496bff89daf4c4eac38ce4" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>BaseSemiringPotential</name></member>
+      <member refid="classBaseSemiringPotential_1ac4f432c81a12368ae2b1d5230cc762c2" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>BaseSemiringPotential</name></member>
+      <member refid="classRealPotential_1aac75f5337add6f1a0a330ae23bda28a6" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>normalize</name></member>
+      <member refid="classBaseSemiringPotential_1a87949cd4f8b8aceedaaac1a446c82190" prot="public" virt="non-virtual" ambiguityscope="BaseSemiringPotential&lt; double, RealPotential &gt;::"><scope>RealPotential</scope><name>normalize</name></member>
+      <member refid="classRealPotential_1a9837fd64c52d3886fa977968c8c79a3e" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>one</name></member>
+      <member refid="classBaseSemiringPotential_1a57bbc01de90082ca201dc151d821f0e9" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>operator double</name></member>
+      <member refid="classRealPotential_1ab43bd3b064308c4644168a1d9b6ca8db" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>operator*=</name></member>
+      <member refid="classRealPotential_1a19f69028b929da534645aa35ca254d06" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>operator+=</name></member>
+      <member refid="classBaseSemiringPotential_1af3f7108cca054ed98908a2d536cfcec8" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>operator=</name></member>
+      <member refid="classBaseSemiringPotential_1a688918a5566844351e4fb4ddc95e9784" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>operator=</name></member>
+      <member refid="classRealPotential_1ab0e0eb40a511f0ff6bf7265b215afb18" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>RealPotential</name></member>
+      <member refid="classBaseSemiringPotential_1a90188fa749f13b11996f2e328dfb4045" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>times</name></member>
+      <member refid="classBaseSemiringPotential_1a8ab78c41be222b13d87894877608567e" prot="protected" virt="non-virtual"><scope>RealPotential</scope><name>value</name></member>
+      <member refid="classRealPotential_1a561ab2d6df9bebe94c9f3011412cd00d" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>zero</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

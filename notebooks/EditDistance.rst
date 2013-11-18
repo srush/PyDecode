@@ -7,7 +7,7 @@ Tutorial 2: Edit Distance
 
     import pydecode.hyper as ph
     import pydecode.chart as chart
-    import pydecode.semiring as semi
+
 In this tutorial, we will consider solving an edit distance problem
 using PyDecode. This will provide an overview of
 
@@ -102,7 +102,7 @@ http://en.wikipedia.org/wiki/Levenshtein\_distance.
 .. code:: python
 
     c = chart.ChartBuilder(semiring=chart.HypergraphSemiRing, 
-                           build_hypergraph=True)
+                           build_hypergraph=True, strict=False)
     hypergraph = edit_distance(c, problem).finish()
 .. code:: python
 
@@ -117,11 +117,11 @@ http://en.wikipedia.org/wiki/Levenshtein\_distance.
 
 .. code:: python
 
-    def potential_function(op):
+    def weight_function(op):
         if op == Op.Mat: return 1
         else: return 0
-    potentials = ph.Potentials(hypergraph).build(potential_function)
-    path = ph.best_path(hypergraph, potentials)
+    weights = ph.Potentials(hypergraph).build(weight_function)
+    path = ph.best_path(hypergraph, weights)
 .. code:: python
 
     display.HypergraphPathFormatter(hypergraph, [path]).to_ipython()
@@ -149,72 +149,36 @@ http://en.wikipedia.org/wiki/Levenshtein\_distance.
 
     p2 = Problem("hello this is a longer sequence", "hello ths is a longr seqence")
     c2 = chart.ChartBuilder(semiring=chart.HypergraphSemiRing, 
-                           build_hypergraph=True)
+                           build_hypergraph=True, strict=False)
     hypergraph2 = edit_distance(c2, p2).finish()
-    potentials2 = ph.Potentials(hypergraph2).build(potential_function)
-    path2 = ph.best_path(hypergraph2, potentials2)
+    weights2 = ph.Potentials(hypergraph2).build(weight_function)
+    path2 = ph.best_path(hypergraph2, weights2)
     p2.show([hypergraph2.label(edge) for edge in path2][1:])
 
-.. parsed-literal::
+::
 
-    h = h
-    e = e
-    l = l
-    l = l
-    o = o
-      =  
-    t = t
-    h = h
-    i <  
-    s = s
-      =  
-    i = i
-    s = s
-      =  
-    a = a
-      =  
-    l = l
-    o = o
-    n = n
-    g = g
-    e <  
-    r = r
-      =  
-    s = s
-    e = e
-    q = q
-    u <  
-    e = e
-    n = n
-    c = c
-    e = e
+
+    ---------------------------------------------------------------------------
+    AttributeError                            Traceback (most recent call last)
+
+    <ipython-input-32-91ef1f912deb> in <module>()
+          3                        build_hypergraph=True, strict=False)
+          4 hypergraph2 = edit_distance(c2, p2).finish()
+    ----> 5 weights2 = ph.Weights(hypergraph2).build(weight_function)
+          6 path2 = ph.best_path(hypergraph2, weights2)
+          7 p2.show([hypergraph2.label(edge) for edge in path2][1:])
+
+
+    AttributeError: 'module' object has no attribute 'Weights'
 
 
 .. code:: python
 
     len(hypergraph2.nodes), len(hypergraph2.edges)
-
-
-
-.. parsed-literal::
-
-    (929, 1879)
-
-
-
 .. code:: python
 
-    pruned_hypergraph, pruned_potentials = ph.prune_hypergraph(hypergraph2, potentials2, 0.6)
+    pruned_hypergraph, pruned_weights = ph.prune_hypergraph(hypergraph2, weights2, 0.6)
     len(pruned_hypergraph.nodes), len(pruned_hypergraph.edges)
-
-
-
-.. parsed-literal::
-
-    (929, 1879)
-
-
-
 .. code:: python
 
     #display.HypergraphFormatter(pruned_hypergraph).to_ipython()

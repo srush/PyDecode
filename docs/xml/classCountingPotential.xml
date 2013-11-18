@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classCountingPotential" kind="class" prot="public">
+    <compoundname>CountingPotential</compoundname>
+    <basecompoundref refid="classBaseSemiringPotential" prot="public" virt="non-virtual">BaseSemiringPotential&lt; int, CountingPotential &gt;</basecompoundref>
+    <includes refid="Semirings_8h" local="no">Semirings.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classCountingPotential_1af0d409d3b886978e1ebab96dc79623f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CountingPotential::CountingPotential</definition>
+        <argsstring>(int value)</argsstring>
+        <name>CountingPotential</name>
+        <param>
+          <type>int</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="270" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="270" bodyend="270"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1ad51d1f5596b415e2d6518ab3b2ab5327" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classCountingPotential" kindref="compound">CountingPotential</ref> &amp;</type>
+        <definition>CountingPotential&amp; CountingPotential::operator+=</definition>
+        <argsstring>(const CountingPotential &amp;rhs)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const <ref refid="classCountingPotential" kindref="compound">CountingPotential</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="272" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="272" bodyend="275"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1a092824efd6b49323b60e4c6515e5165e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classCountingPotential" kindref="compound">CountingPotential</ref> &amp;</type>
+        <definition>CountingPotential&amp; CountingPotential::operator*=</definition>
+        <argsstring>(const CountingPotential &amp;rhs)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>const <ref refid="classCountingPotential" kindref="compound">CountingPotential</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="276" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="276" bodyend="279"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1a6f3b6ffe2d42cafa816927e18275eaa7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int CountingPotential::normalize</definition>
+        <argsstring>(int val) const </argsstring>
+        <name>normalize</name>
+        <param>
+          <type>int</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="284" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="284" bodyend="287"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classCountingPotential_1adbb2f14167cad98dd0c0e9353b111594" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="classCountingPotential" kindref="compound">CountingPotential</ref></type>
+        <definition>static const CountingPotential CountingPotential::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="281" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="281" bodyend="281"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1aa771c84510179c4aa5ad61d44375af0b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="classCountingPotential" kindref="compound">CountingPotential</ref></type>
+        <definition>static const CountingPotential CountingPotential::zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="282" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="282" bodyend="282"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Implements the Counting type of semiring as described in Huang 2006 +: + *: * 0: 0 1: 1 </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="24">
+        <label>BaseSemiringPotential&lt; int, CountingPotential &gt;</label>
+        <link refid="classBaseSemiringPotential"/>
+      </node>
+      <node id="23">
+        <label>CountingPotential</label>
+        <link refid="classCountingPotential"/>
+        <childnode refid="24" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="26">
+        <label>BaseSemiringPotential&lt; int, CountingPotential &gt;</label>
+        <link refid="classBaseSemiringPotential"/>
+      </node>
+      <node id="25">
+        <label>CountingPotential</label>
+        <link refid="classCountingPotential"/>
+        <childnode refid="26" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="268" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="268" bodyend="288"/>
+    <listofallmembers>
+      <member refid="classBaseSemiringPotential_1a3ccf8b43dd32e794f7a546caa2e8ffd9" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>add</name></member>
+      <member refid="classBaseSemiringPotential_1a54bb42020981d47a9ee5edbefdd0f4b3" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>BaseSemiringPotential</name></member>
+      <member refid="classBaseSemiringPotential_1ae70438bcff496bff89daf4c4eac38ce4" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>BaseSemiringPotential</name></member>
+      <member refid="classBaseSemiringPotential_1ac4f432c81a12368ae2b1d5230cc762c2" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>BaseSemiringPotential</name></member>
+      <member refid="classCountingPotential_1af0d409d3b886978e1ebab96dc79623f4" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>CountingPotential</name></member>
+      <member refid="classCountingPotential_1a6f3b6ffe2d42cafa816927e18275eaa7" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>normalize</name></member>
+      <member refid="classBaseSemiringPotential_1a87949cd4f8b8aceedaaac1a446c82190" prot="public" virt="non-virtual" ambiguityscope="BaseSemiringPotential&lt; int, CountingPotential &gt;::"><scope>CountingPotential</scope><name>normalize</name></member>
+      <member refid="classCountingPotential_1adbb2f14167cad98dd0c0e9353b111594" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>one</name></member>
+      <member refid="classBaseSemiringPotential_1a57bbc01de90082ca201dc151d821f0e9" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>operator int</name></member>
+      <member refid="classCountingPotential_1a092824efd6b49323b60e4c6515e5165e" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>operator*=</name></member>
+      <member refid="classCountingPotential_1ad51d1f5596b415e2d6518ab3b2ab5327" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>operator+=</name></member>
+      <member refid="classBaseSemiringPotential_1af3f7108cca054ed98908a2d536cfcec8" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>operator=</name></member>
+      <member refid="classBaseSemiringPotential_1a688918a5566844351e4fb4ddc95e9784" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>operator=</name></member>
+      <member refid="classBaseSemiringPotential_1a90188fa749f13b11996f2e328dfb4045" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>times</name></member>
+      <member refid="classBaseSemiringPotential_1a8ab78c41be222b13d87894877608567e" prot="protected" virt="non-virtual"><scope>CountingPotential</scope><name>value</name></member>
+      <member refid="classCountingPotential_1aa771c84510179c4aa5ad61d44375af0b" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>zero</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classLogViterbiPotential" kind="class" prot="public">
+    <compoundname>LogViterbiPotential</compoundname>
+    <basecompoundref refid="classBaseSemiringPotential" prot="public" virt="non-virtual">BaseSemiringPotential&lt; double, LogViterbiPotential &gt;</basecompoundref>
+    <includes refid="Semirings_8h" local="no">Semirings.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classLogViterbiPotential_1ac70236c1624c64f25757da6737160c44" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>LogViterbiPotential::LogViterbiPotential</definition>
+        <argsstring>(double value)</argsstring>
+        <name>LogViterbiPotential</name>
+        <param>
+          <type>double</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="115" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="114" bodyend="115"/>
+      </memberdef>
+      <memberdef kind="function" id="classLogViterbiPotential_1a34ddb497b57989303ea568df4c0c2cca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>LogViterbiPotential::LogViterbiPotential</definition>
+        <argsstring>()</argsstring>
+        <name>LogViterbiPotential</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="117" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="116" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="classLogViterbiPotential_1a40c7549dfd572392604ed924f6069e40" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref> &amp;</type>
+        <definition>LogViterbiPotential&amp; LogViterbiPotential::operator+=</definition>
+        <argsstring>(const LogViterbiPotential &amp;rhs)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const <ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="119" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="119" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="classLogViterbiPotential_1a662f862db5fcea3058feda22b0f61047" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref> &amp;</type>
+        <definition>LogViterbiPotential&amp; LogViterbiPotential::operator*=</definition>
+        <argsstring>(const LogViterbiPotential &amp;rhs)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>const <ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="123" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="123" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="classLogViterbiPotential_1a780781ec5706265b2d35a0d59e51449e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double LogViterbiPotential::normalize</definition>
+        <argsstring>(double val) const </argsstring>
+        <name>normalize</name>
+        <param>
+          <type>double</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="128" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="128" bodyend="131"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classLogViterbiPotential_1a4f3b6169c8dc1ca850954e4ccd4a4b90" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref></type>
+        <definition>static const LogViterbiPotential LogViterbiPotential::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="133" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="133" bodyend="133"/>
+      </memberdef>
+      <memberdef kind="function" id="classLogViterbiPotential_1afe56b116069ea3e5b66717ea598931e8" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref></type>
+        <definition>static const LogViterbiPotential LogViterbiPotential::zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="134" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="134" bodyend="134"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Implements the log-space Viterbi type of semiring. +: max *: + 0: -INF 1: 0 </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="72">
+        <label>LogViterbiPotential</label>
+        <link refid="classLogViterbiPotential"/>
+        <childnode refid="73" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="73">
+        <label>BaseSemiringPotential&lt; double, LogViterbiPotential &gt;</label>
+        <link refid="classBaseSemiringPotential"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="74">
+        <label>LogViterbiPotential</label>
+        <link refid="classLogViterbiPotential"/>
+        <childnode refid="75" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="75">
+        <label>BaseSemiringPotential&lt; double, LogViterbiPotential &gt;</label>
+        <link refid="classBaseSemiringPotential"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="112" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="112" bodyend="135"/>
+    <listofallmembers>
+      <member refid="classBaseSemiringPotential_1a3ccf8b43dd32e794f7a546caa2e8ffd9" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>add</name></member>
+      <member refid="classBaseSemiringPotential_1a54bb42020981d47a9ee5edbefdd0f4b3" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>BaseSemiringPotential</name></member>
+      <member refid="classBaseSemiringPotential_1ae70438bcff496bff89daf4c4eac38ce4" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>BaseSemiringPotential</name></member>
+      <member refid="classBaseSemiringPotential_1ac4f432c81a12368ae2b1d5230cc762c2" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>BaseSemiringPotential</name></member>
+      <member refid="classLogViterbiPotential_1ac70236c1624c64f25757da6737160c44" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>LogViterbiPotential</name></member>
+      <member refid="classLogViterbiPotential_1a34ddb497b57989303ea568df4c0c2cca" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>LogViterbiPotential</name></member>
+      <member refid="classLogViterbiPotential_1a780781ec5706265b2d35a0d59e51449e" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>normalize</name></member>
+      <member refid="classBaseSemiringPotential_1a87949cd4f8b8aceedaaac1a446c82190" prot="public" virt="non-virtual" ambiguityscope="BaseSemiringPotential&lt; double, LogViterbiPotential &gt;::"><scope>LogViterbiPotential</scope><name>normalize</name></member>
+      <member refid="classLogViterbiPotential_1a4f3b6169c8dc1ca850954e4ccd4a4b90" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>one</name></member>
+      <member refid="classBaseSemiringPotential_1a57bbc01de90082ca201dc151d821f0e9" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>operator double</name></member>
+      <member refid="classLogViterbiPotential_1a662f862db5fcea3058feda22b0f61047" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>operator*=</name></member>
+      <member refid="classLogViterbiPotential_1a40c7549dfd572392604ed924f6069e40" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>operator+=</name></member>
+      <member refid="classBaseSemiringPotential_1af3f7108cca054ed98908a2d536cfcec8" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>operator=</name></member>
+      <member refid="classBaseSemiringPotential_1a688918a5566844351e4fb4ddc95e9784" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>operator=</name></member>
+      <member refid="classBaseSemiringPotential_1a90188fa749f13b11996f2e328dfb4045" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>times</name></member>
+      <member refid="classBaseSemiringPotential_1a8ab78c41be222b13d87894877608567e" prot="protected" virt="non-virtual"><scope>LogViterbiPotential</scope><name>value</name></member>
+      <member refid="classLogViterbiPotential_1afe56b116069ea3e5b66717ea598931e8" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>zero</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

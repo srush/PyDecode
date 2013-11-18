@@ -1,12 +1,12 @@
 
 ## Tutorial 4: Dependency Parsing
 
-# In[12]:
+# In[1]:
 
 sentence = "the man walked to the park"
 
 
-# In[13]:
+# In[2]:
 
 import pydecode.hyper as ph
 import pydecode.display as display
@@ -15,7 +15,7 @@ import random
 random.seed(0)
 
 
-# In[14]:
+# In[3]:
 
 Tri = "tri"
 Trap = "trap"
@@ -29,7 +29,7 @@ class Arc(namedtuple("Arc", ["head_index", "modifier_index"])):
     pass
 
 
-# In[15]:
+# In[4]:
 
 def first_order(sentence, c):
     tokens = ["*"] + sentence.split()
@@ -65,12 +65,44 @@ import pydecode.chart as chart
 sentence = "fans went wild"
 c = chart.ChartBuilder(lambda a: a, 
                        chart.HypergraphSemiRing, 
-                       build_hypergraph = True)
+                       build_hypergraph = True, strict=False)
 the_chart = first_order(sentence, c)
 hypergraph = the_chart.finish()
 
 
-# In[16]:
+# Out[4]:
+
+
+    ---------------------------------------------------------------------------
+    TypeError                                 Traceback (most recent call last)
+
+    <ipython-input-4-78d652f2fde9> in <module>()
+         34                        chart.HypergraphSemiRing,
+         35                        build_hypergraph = True)
+    ---> 36 the_chart = first_order(sentence, c)
+         37 hypergraph = the_chart.finish()
+
+
+    <ipython-input-4-78d652f2fde9> in first_order(sentence, c)
+         17             # First create incomplete items.
+         18             c[NodeType(Trap, Left, span)] =                 c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))] * c.sr(Arc(r, s))
+    ---> 19                        for r in range(s, t)])
+         20 
+         21             c[NodeType(Trap, Right, span)] =                 c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))] * c.sr(Arc(head_index=s, modifier_index=r))
+
+
+    /home/srush/Projects/decoding/python/pydecode/chart.pyc in __getitem__(self, label)
+        130     def __getitem__(self, label):
+        131         if self._strict:
+    --> 132             raise Exception("Label not in chart: %s"%label)
+        133         if self._debug:
+        134             print >>sys.stderr, "Getting", label, label in self._chart
+
+
+    TypeError: not all arguments converted during string formatting
+
+
+# In[ ]:
 
 def build_potentials(arc):
     print arc
@@ -80,39 +112,7 @@ potentials = ph.Potentials(hypergraph).build(build_potentials)
 # phyper, ppotentials = ph.prune_hypergraph(hypergraph, potentials, 0.5)
 
 
-# Out[16]:
-
-#     Arc(head_index=0, modifier_index=0)
-#     None
-#     Arc(head_index=1, modifier_index=1)
-#     Arc(head_index=1, modifier_index=1)
-#     None
-#     None
-#     Arc(head_index=2, modifier_index=2)
-#     Arc(head_index=2, modifier_index=2)
-#     None
-#     None
-#     Arc(head_index=0, modifier_index=0)
-#     Arc(head_index=0, modifier_index=1)
-#     None
-#     None
-#     Arc(head_index=1, modifier_index=1)
-#     Arc(head_index=2, modifier_index=1)
-#     Arc(head_index=1, modifier_index=1)
-#     Arc(head_index=1, modifier_index=2)
-#     None
-#     None
-#     None
-#     None
-#     Arc(head_index=0, modifier_index=0)
-#     Arc(head_index=0, modifier_index=1)
-#     Arc(head_index=0, modifier_index=2)
-#     None
-#     None
-#     None
-# 
-
-# In[17]:
+# In[ ]:
 
 path = ph.best_path(hypergraph, potentials)
 best = potentials.dot(path)
@@ -130,7 +130,7 @@ for edge in hypergraph.edges:
         kept.add(edge.id)
 
 
-# In[18]:
+# In[ ]:
 
 potentials = ph.InsidePotentials(hypergraph).build(build_potentials)
 marginals = ph.compute_marginals(hypergraph, potentials)
@@ -139,88 +139,9 @@ for edge in hypergraph.edges:
     print marginals[edge].value / base.value
 
 
-# Out[18]:
-
-#     Arc(head_index=0, modifier_index=0)
-#     None
-#     Arc(head_index=1, modifier_index=1)
-#     Arc(head_index=1, modifier_index=1)
-#     None
-#     None
-#     Arc(head_index=2, modifier_index=2)
-#     Arc(head_index=2, modifier_index=2)
-#     None
-#     None
-#     Arc(head_index=0, modifier_index=0)
-#     Arc(head_index=0, modifier_index=1)
-#     None
-#     None
-#     Arc(head_index=1, modifier_index=1)
-#     Arc(head_index=2, modifier_index=1)
-#     Arc(head_index=1, modifier_index=1)
-#     Arc(head_index=1, modifier_index=2)
-#     None
-#     None
-#     None
-#     None
-#     Arc(head_index=0, modifier_index=0)
-#     Arc(head_index=0, modifier_index=1)
-#     Arc(head_index=0, modifier_index=2)
-#     None
-#     None
-#     None
-#     0.779948580638
-#     0.349678242399
-#     0.0683792196704
-#     0.405492480145
-#     0.0683792196704
-#     0.404793998187
-#     0.537440203938
-#     0.00476857367489
-#     0.477511406896
-#     0.00476857367489
-#     0.00845045343262
-#     0.048616893289
-#     0.000112753943291
-#     0.0529972607802
-#     0.101391194316
-#     0.0502810477309
-#     0.0750588711706
-#     0.354400196062
-#     0.151672238196
-#     0.0599287662378
-#     0.000698488876544
-#     0.42945905183
-#     0.211601004434
-#     0.301061341409
-#     0.0531100151747
-#     0.430157564592
-#     0.00407008449753
-#     0.565772357168
-# 
-
-# In[19]:
+# In[ ]:
 
 phyper, ppotentials = ph.prune_hypergraph(hypergraph, potentials, 0.1)
-
-
-# Out[19]:
-
-
-    ---------------------------------------------------------------------------
-    AttributeError                            Traceback (most recent call last)
-
-    <ipython-input-19-31b33f2f027c> in <module>()
-    ----> 1 phyper, ppotentials = ph.prune_hypergraph(hypergraph, potentials, 0.1)
-    
-
-    /home/srush/Projects/decoding/python/pydecode/hyper.so in pydecode.hyper.prune_hypergraph (python/pydecode/hyper.cpp:21823)()
-
-
-    /home/srush/Projects/decoding/python/pydecode/hyper.so in pydecode.hyper.Inside.prune_hypergraph (python/pydecode/hyper.cpp:15301)()
-
-
-    AttributeError: 'pydecode.hyper._InsideMarginals' object has no attribute 'threshold'
 
 
 # In[ ]:
