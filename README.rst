@@ -2,7 +2,7 @@
 PyDecode is a dynamic programming toolkit for researchers studying natural language processing.
 
 The interface and visualization code is written Python, the core algorithms are written in C++.
-For a full description of the project see the documentation_.
+For examples of some possible projects see the gallery_.
 
 .. _documentation: http://pydecode.readthedocs.org/
 
@@ -10,7 +10,6 @@ For a full description of the project see the documentation_.
 .. image:: _images/parsing_9_0.png
    :width: 500 px
    :align: center
-
 
 
 
@@ -28,20 +27,15 @@ Benefits
                           c.sr(Bigram(word, tag, prev))
                           for prev in emission[words[i-1]]))
 
-* **Efficient implementation.** Python front-end constructs C++ data structures.
+* **Efficient implementation.** Python front-end, C++ data structures and algorithms.
 
 
-  * If you need even more efficiency, you can use the hypergraph interface directly.
-
+  * If you need even more efficiency, access the C++ interface directly.
 
 
 * **Easy-to-use extensions.** Write only the max dynamic program.
 
-  * PyDecode provides the derivations, posteriors, max-marginals, and oracle scoring.
-
-  * Add some features and it can do structured training.
-
-  * Add constraints and it can run Lagrangian relaxation.
+  * PyDecode provides the derivations, marginals, oracle scores, and many other elements.
 
 
 Documentation, Tutorial and Gallery
@@ -64,38 +58,21 @@ This presentation_ discusses the background for this work.
 
 .. _presentation: https://github.com/srush/PyDecode/raw/master/writing/slides/slides.pdf
 
-Dynamic Programming
-======================
 
 * Simple imperative construction of dynamic programming structures.
 * Customizable GraphViz output for debugging.
 * Algorithms for best path, inside scores, outside scores, and oracle scores.
-* Pruning based on max-marginals.
+* Several types of pruning.
+* Integration with an (I)LP solver for constrained problems.
+* Lagrangian Relaxation optimization tools.
 * Semiring operations over hypergraph structures.
-* Integration with an LP solver.
-
-Constrained Dynamic Programming
-===============================
-
-* Hypergraphs with additional constraints.
-* Lagrangian Relaxation optimization of constrained problems.
-* ILP optimization optimization of constrained problems.
-
-Structured Prediction
-===============================
-
 * Hooks into PyStruct for structured training.
-
-Coming Soon
-===============================
-
-* A*, beam search, coarse-to-fine extensions.
-* Faster K-best algorithms.
+* Fast k-best algorithms.
 
 
 .. image:: https://travis-ci.org/srush/PyDecode.png?branch=master
     :target: https://travis-ci.org/srush/PyDecode
 
-.. _gallery: http://pydecode.readthedocs.org/en/latest/notebooks/gallery.html
+.. _gallery: http://pydecode.readthedocs.org/en/latest/notebooks/index.html
 .. _tutorial: http://pydecode.readthedocs.org/en/latest/notebooks/index.html
 .. _api: http://pydecode.readthedocs.org/en/latest/api.html
