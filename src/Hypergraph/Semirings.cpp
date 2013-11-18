@@ -4,30 +4,30 @@
 
 // These are not guaranteed to trigger, unless something is used in this file...
 // Which is why I moved the operators below to here.
-REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, ViterbiPotential);
-REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, LogViterbiPotential);
-REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, BoolPotential);
-REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, InsidePotential);
-REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, RealPotential);
-REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, TropicalPotential);
-REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, CountingPotential);
-// REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, CompPotential<ViterbiPotential, LogViterbiPotential>);
-// REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, SparseVectorPotential);
-// REGISTRY_TYPE_DEFINITION(RandomSemiringRegistry, TreePotential);
+BASE_SEMIRING_REGISTRY_DEFINITION(ViterbiPotential);
+BASE_SEMIRING_REGISTRY_DEFINITION(LogViterbiPotential);
+BASE_SEMIRING_REGISTRY_DEFINITION(BoolPotential);
+BASE_SEMIRING_REGISTRY_DEFINITION(InsidePotential);
+BASE_SEMIRING_REGISTRY_DEFINITION(RealPotential);
+BASE_SEMIRING_REGISTRY_DEFINITION(TropicalPotential);
+BASE_SEMIRING_REGISTRY_DEFINITION(CountingPotential);
+// BASE_SEMIRING_REGISTRY_DEFINITION(CompPotential<ViterbiPotential, LogViterbiPotential>);
+// BASE_SEMIRING_REGISTRY_DEFINITION(SparseVectorPotential);
+// BASE_SEMIRING_REGISTRY_DEFINITION(TreePotential);
+
+
+STATIC_SEMIRING_REGISTRY_DEFINITION(StaticViterbiPotential);
+STATIC_SEMIRING_REGISTRY_DEFINITION(StaticLogViterbiPotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticBoolPotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticInsidePotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticRealPotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticTropicalPotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticCountingPotential);
 
 
 // These are defined here while for the type registration above
 // to work, there must be something in this file that is guaranteed
 // to compile.
-bool operator==(const BaseSemiring& lhs, const BaseSemiring& rhs) {
-    return lhs.value == rhs.value;
-}
-
-BaseSemiring operator+(BaseSemiring lhs, const BaseSemiring &rhs) {
-    lhs += rhs;
-    return lhs;
-}
-
 BaseSemiring operator*(BaseSemiring lhs, const BaseSemiring &rhs) {
     lhs *= rhs;
     return lhs;

@@ -6,7 +6,7 @@
 #include "./common.h"
 
 #ifndef NUM_LOOPS
-#define NUM_LOOPS 1000
+#define NUM_LOOPS 1
 #endif
 
 TEST(Decode, TestHypergraph) {
@@ -58,12 +58,12 @@ TEST(Decode, ViterbiPotential) {
 TEST(Decode, SemiringPropertyTests) {
   srand(time(NULL));
   
-  vector<BaseRegistry<BaseSemiring>::creator_fnptr> creators = 
-      BaseRegistry<BaseSemiring>::retrieve_classes();
+  vector<BaseRegistry<BaseSemiring*>::creator_fnptr> creators = 
+      BaseRegistry<BaseSemiring*>::retrieve_classes();
   ASSERT_GT(creators.size(), 0);
 
-  foreach (BaseRegistry<BaseSemiring>::creator_fnptr fnptr, creators) {
-    // std::cout << "Beginning " << typeid(*(*fnptr)()).name() << std::endl;
+  foreach (BaseRegistry<BaseSemiring*>::creator_fnptr fnptr, creators) {
+    std::cout << "Beginning " << typeid(*(*fnptr)()).name() << std::endl;
     for(int i = 0; i < NUM_LOOPS; i++) {
       BaseSemiring* a = (*fnptr)();
       BaseSemiring* b = (*fnptr)();
@@ -82,6 +82,32 @@ TEST(Decode, SemiringPropertyTests) {
 }
 
 TEST(Decode, StaticSemiringTests) {
+  srand(time(NULL));
+  
+  vector<BaseRegistry<StaticBaseSemiringPotential*>::creator_fnptr> creators = 
+      BaseRegistry<StaticBaseSemiringPotential*>::retrieve_classes();
+  ASSERT_GT(creators.size(), 0);
+
+  foreach (BaseRegistry<StaticBaseSemiringPotential*>::creator_fnptr fnptr, creators) {
+    std::cout << "Beginning " << typeid(*(*fnptr)()).name() << std::endl;
+    for(int i = 0; i < NUM_LOOPS; i++) {
+      StaticBaseSemiringPotential* sb = (*fnptr)();
+      // std::cout << *sb->randValue() << std::endl;
+      // std::cout << "Type: " << typeid(*sb).name() << std::endl;
+      std::cout << "ValType: " << typeid((*sb).randValue()).name() << std::endl;
+      // StaticBaseSemiringPotential::ValType *a = (*sb).randValue();
+      // StaticBaseSemiringPotential::ValType *b = (*sb).randValue();
+      // StaticBaseSemiringPotential::ValType *c = (*sb).randValue();
+
+      // *c = (*sb).add(*a,*b);
+      // ASSERT_EQ(*c, (*sb).add(*a,*b));
+
+      // ASSERT_EQ((*sb).times(*a,(*sb).zero()), (*sb).zero());
+      // ASSERT_EQ((*sb).times(*a,(*sb).one()), *a);
+
+      // ASSERT_EQ((*sb).add(*a,(*sb).zero()), *a);
+    }
+  }
 
 }
 

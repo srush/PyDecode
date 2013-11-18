@@ -9,6 +9,180 @@
 #include "./common.h"
 
 
+
+class StaticBaseSemiringPotential {
+public:
+	typedef double ValType;
+	virtual ~StaticBaseSemiringPotential() {};
+
+	static inline StaticBaseSemiringPotential* create() { return new StaticBaseSemiringPotential(); }
+
+	static inline ValType add(ValType lhs, const ValType &rhs) {
+		return lhs += rhs;
+	}
+
+	static inline ValType times(ValType lhs, const ValType &rhs) {
+		return lhs *= rhs;
+	}
+
+
+	static inline ValType one() { return 1.0; }
+	static inline ValType zero() { return 0.0; }
+
+	static inline ValType* randValue() {
+		return new ValType(dRand(0.0,1.0));
+	}
+};
+
+class StaticViterbiPotential : public StaticBaseSemiringPotential {
+public:
+	static inline StaticViterbiPotential* create() { return new StaticViterbiPotential(); }
+	static inline ValType add(ValType lhs, const ValType &rhs) {
+		lhs = std::max(lhs, rhs);
+		return normalize(lhs);
+	}
+
+	inline void foo() {};
+
+	static inline ValType& normalize(ValType& val) {
+		if (val < 0.0) val = 0.0;
+		else if (val > 1.0) val = 1.0;
+		return val;
+	}
+
+	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticViterbiPotential);
+};
+
+class StaticLogViterbiPotential : public StaticBaseSemiringPotential {
+public:
+	static inline StaticLogViterbiPotential* create() { return new StaticLogViterbiPotential(); }
+
+	static inline ValType add(ValType lhs, const ValType &rhs) {
+		lhs = std::max(lhs, rhs);
+		std::cout << "log add" << std::endl;
+		return normalize(lhs);
+	}
+	static inline ValType times(ValType lhs, const ValType &rhs) {
+		lhs += rhs;
+		std::cout << "log times" << std::endl;
+		return normalize(lhs);
+	}
+
+	inline void foo() {};
+	static inline ValType one() { 
+		std::cout << "log one" << std::endl;
+		return 0.0; }
+	static inline ValType zero() { 
+		std::cout << "log zero" << std::endl;
+		return -INF; }
+
+	static inline ValType& normalize(ValType& val) {
+		std::cout << "log norm" << std::endl;
+		return val = val < -INF ? -INF : val;
+	}
+
+	static inline ValType* randValue() {
+		std::cout << "log rand" << std::endl;
+		return new ValType(dRand(-INF, 0.0));
+	}
+
+	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticLogViterbiPotential);
+};
+
+class StaticBoolPotential : public StaticBaseSemiringPotential {
+public:
+	typedef bool ValType;
+	static inline StaticBoolPotential* create() { 
+		return new StaticBoolPotential(); }
+	static inline ValType add(ValType lhs, const ValType &rhs) {
+		lhs = lhs || rhs;
+		return lhs;
+	}
+	static inline ValType times(ValType lhs, const ValType &rhs) {
+		lhs = lhs && rhs;
+		return lhs;
+	}
+	inline void foo() {};
+
+	static inline ValType one() { return true; }
+	static inline ValType zero() { return false; }
+
+	static inline ValType* randValue() {
+		return new ValType(dRand(0.0,1.0) > .5);
+	}
+
+	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticBoolPotential);
+};
+
+// class StaticInsidePotential : public StaticBaseSemiringPotential {
+// public:
+// 	static inline StaticInsidePotential* create() { return new StaticInsidePotential(); }
+// 	static inline ValType add(ValType lhs, const ValType &rhs) {
+// 		lhs = std::max(lhs, rhs);
+// 		return normalize(lhs);
+// 	}
+
+// 	static inline ValType& normalize(ValType& val) {
+// 		if (val < 0.0) val = 0.0;
+// 		else if (val > 1.0) val = 1.0;
+// 		return val;
+// 	}
+
+// 	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticInsidePotential);
+// };
+
+// class StaticRealPotential : public StaticBaseSemiringPotential {
+// public:
+// 	static inline StaticRealPotential* create() { return new StaticRealPotential(); }
+// 	static inline ValType add(ValType lhs, const ValType &rhs) {
+// 		lhs = std::max(lhs, rhs);
+// 		return normalize(lhs);
+// 	}
+
+// 	static inline ValType& normalize(ValType& val) {
+// 		if (val < 0.0) val = 0.0;
+// 		else if (val > 1.0) val = 1.0;
+// 		return val;
+// 	}
+
+// 	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticRealPotential);
+// };
+
+// class StaticTropicalPotential : public StaticBaseSemiringPotential {
+// public:
+// 	static inline StaticTropicalPotential* create() { return new StaticTropicalPotential(); }
+// 	static inline ValType add(ValType lhs, const ValType &rhs) {
+// 		lhs = std::max(lhs, rhs);
+// 		return normalize(lhs);
+// 	}
+
+// 	static inline ValType& normalize(ValType& val) {
+// 		if (val < 0.0) val = 0.0;
+// 		else if (val > 1.0) val = 1.0;
+// 		return val;
+// 	}
+
+// 	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticTropicalPotential);
+// };
+
+// class StaticCountingPotential : public StaticBaseSemiringPotential {
+// public:
+// 	static inline StaticCountingPotential* create() { return new StaticCountingPotential(); }
+// 	static inline ValType add(ValType lhs, const ValType &rhs) {
+// 		lhs = std::max(lhs, rhs);
+// 		return normalize(lhs);
+// 	}
+
+// 	static inline ValType& normalize(ValType& val) {
+// 		if (val < 0.0) val = 0.0;
+// 		else if (val > 1.0) val = 1.0;
+// 		return val;
+// 	}
+
+// 	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticCountingPotential);
+// };
+
+
 /**
  * An untemplated base class for use in registering types
  */
@@ -21,16 +195,25 @@ public:
 	static BaseSemiring zero() { return BaseSemiring(0.0); }
 	BaseSemiring identity() { return one(); }
 	BaseSemiring annihlator() { return zero(); }
-	BaseSemiring& operator+=(const BaseSemiring& rhs) {
+
+	inline BaseSemiring& operator+=(const BaseSemiring& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	BaseSemiring& operator*=(const BaseSemiring& rhs) {
+	inline BaseSemiring& operator*=(const BaseSemiring& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
-	friend bool operator==(const BaseSemiring& lhs, const BaseSemiring& rhs);
-	friend BaseSemiring operator+(BaseSemiring lhs, const BaseSemiring &rhs);
+
+	friend inline bool operator==(const BaseSemiring& lhs, const BaseSemiring& rhs) {
+	    return lhs.value == rhs.value;
+	}
+
+	friend inline BaseSemiring operator+(BaseSemiring lhs, const BaseSemiring &rhs) {
+	    lhs += rhs;
+	    return lhs;
+	}
+
 	friend BaseSemiring operator*(BaseSemiring lhs, const BaseSemiring &rhs);
 protected:
 	double value;
@@ -49,15 +232,15 @@ public:
 	BaseSemiringPotential(ValType val) : value(normalize(val)) {}
 	BaseSemiringPotential() : value(zero()) {}
 
-	operator ValType() const { return value; }
+	inline operator ValType() const { return value; }
 
-	SemiringPotential& operator=(SemiringPotential rhs) {
+	inline SemiringPotential& operator=(SemiringPotential rhs) {
 		normalize(rhs.value);
 		std::swap(value, rhs.value);
 		return *this;
 	}
 
-	SemiringPotential& operator=(ValType rhs) {
+	inline SemiringPotential& operator=(ValType rhs) {
 		normalize(rhs);
 		std::swap(value, rhs);
 		return *this;
@@ -71,24 +254,24 @@ public:
 		return lhs *= rhs;
 	}
 
-	friend bool operator==(const SemiringPotential& lhs,const SemiringPotential& rhs) {
+	friend inline bool operator==(const SemiringPotential& lhs,const SemiringPotential& rhs) {
 		return lhs.value == rhs.value;
 	}
 
-	friend SemiringPotential operator+(SemiringPotential lhs, const SemiringPotential &rhs) {
+	friend inline SemiringPotential operator+(SemiringPotential lhs, const SemiringPotential &rhs) {
 		lhs += rhs;
 		return lhs;
 	}
-	friend SemiringPotential operator*(SemiringPotential lhs, const SemiringPotential &rhs) {
+	friend inline SemiringPotential operator*(SemiringPotential lhs, const SemiringPotential &rhs) {
 		lhs *= rhs;
 		return lhs;
 	}
 
-	SemiringPotential& operator+=(const SemiringPotential& rhs) {
+	inline SemiringPotential& operator+=(const SemiringPotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	SemiringPotential& operator*=(const SemiringPotential& rhs) {
+	inline SemiringPotential& operator*=(const SemiringPotential& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
@@ -116,41 +299,33 @@ public:
 	ViterbiPotential(double value) : BaseSemiringPotential<double, ViterbiPotential>(normalize(value)) { }
 	ViterbiPotential() : BaseSemiringPotential<double, ViterbiPotential>() { }
 
-	ViterbiPotential& operator+=(const ViterbiPotential& rhs) {
+	inline ViterbiPotential& operator+=(const ViterbiPotential& rhs) {
 		value = std::max(value, rhs.value);
+		// std::cout << "vit add" << std::endl;
 		return *this;
 	}
-	ViterbiPotential& operator*=(const ViterbiPotential& rhs) {
+	inline ViterbiPotential& operator*=(const ViterbiPotential& rhs) {
 		value = value * rhs.value;
+		// std::cout << "vit times" << std::endl;
 		return *this;
 	}
 
 	double& normalize(double& val) {
+		// std::cout << "vit norm" << std::endl;
 		if (val < 0.0) val = 0.0;
 		else if (val > 1.0) val = 1.0;
 		return val;
 	}
 
-	static ViterbiPotential one() { return ViterbiPotential(1.0); }
-	static ViterbiPotential zero() { return ViterbiPotential(0.0); }
+	static ViterbiPotential one() { 
+		// std::cout << "vit noe" << std::endl;
+		return ViterbiPotential(1.0); }
+	static ViterbiPotential zero() { 
+		// std::cout << "vit zero" << std::endl;
+		return ViterbiPotential(0.0); }
 
 // protected:
-	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, ViterbiPotential);
-};
-
-template <typename T>
-class StaticBase {
-public:
-	typedef	T ValType;
-};
-
-class StaticPotential : public StaticBase<double> {
-public:
-	static ValType& normalize(ValType& val) {
-		if (val < 0.0) val = 0.0;
-		else if (val > 1.0) val = 1.0;
-		return val;
-	}
+	BASE_SEMIRING_REGISTRY_DECLARATION(ViterbiPotential);
 };
 
 
@@ -168,11 +343,11 @@ public:
 	LogViterbiPotential() :
 		BaseSemiringPotential<double, LogViterbiPotential>(LogViterbiPotential::zero()) {}
 
-	LogViterbiPotential& operator+=(const LogViterbiPotential& rhs) {
+	inline LogViterbiPotential& operator+=(const LogViterbiPotential& rhs) {
 		value = std::max(value, rhs.value);
 		return *this;
 	}
-	LogViterbiPotential& operator*=(const LogViterbiPotential& rhs) {
+	inline LogViterbiPotential& operator*=(const LogViterbiPotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
@@ -186,7 +361,7 @@ public:
 
 
 // protected:
-	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, LogViterbiPotential);
+	BASE_SEMIRING_REGISTRY_DECLARATION(LogViterbiPotential);
 };
 
 
@@ -202,11 +377,11 @@ public:
 	BoolPotential(bool value) : BaseSemiringPotential<bool, BoolPotential>(normalize(value)) { }
 	BoolPotential() : BaseSemiringPotential<bool, BoolPotential>() { }
 
-	BoolPotential& operator+=(const BoolPotential& rhs) {
+	inline BoolPotential& operator+=(const BoolPotential& rhs) {
 		value = value || rhs.value;
 		return *this;
 	}
-	BoolPotential& operator*=(const BoolPotential& rhs) {
+	inline BoolPotential& operator*=(const BoolPotential& rhs) {
 		value = value && rhs.value;
 		return *this;
 	}
@@ -217,7 +392,7 @@ public:
 
 
 // protected:
-	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, BoolPotential);
+	BASE_SEMIRING_REGISTRY_DECLARATION(BoolPotential);
 };
 
 /**
@@ -232,16 +407,16 @@ public:
 	InsidePotential(double value) : BaseSemiringPotential<double, InsidePotential>(normalize(value)) { }
 	InsidePotential() : BaseSemiringPotential<double, InsidePotential>(zero()) { }
 
-	InsidePotential& operator+=(const InsidePotential& rhs) {
+	inline InsidePotential& operator+=(const InsidePotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	InsidePotential& operator*=(const InsidePotential& rhs) {
+	inline InsidePotential& operator*=(const InsidePotential& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
 
-		friend InsidePotential operator/(InsidePotential lhs, const InsidePotential &rhs) {
+		friend inline InsidePotential operator/(InsidePotential lhs, const InsidePotential &rhs) {
 			lhs.value /= rhs.value;
 			return lhs;
 	}
@@ -256,7 +431,7 @@ public:
 	}
 
 // protected:
-	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, InsidePotential);
+	BASE_SEMIRING_REGISTRY_DECLARATION(InsidePotential);
 };
 
 /**
@@ -271,11 +446,11 @@ public:
 	RealPotential(double value) : BaseSemiringPotential<double, RealPotential>(normalize(value)) { }
 	RealPotential() : BaseSemiringPotential<double, RealPotential>(zero()) { }
 
-	RealPotential& operator+=(const RealPotential& rhs) {
+	inline RealPotential& operator+=(const RealPotential& rhs) {
 		value = std::min(value, rhs.value);
 		return *this;
 	}
-	RealPotential& operator*=(const RealPotential& rhs) {
+	inline RealPotential& operator*=(const RealPotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
@@ -286,7 +461,7 @@ public:
 
 
 // protected:
-	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, RealPotential);
+	BASE_SEMIRING_REGISTRY_DECLARATION(RealPotential);
 };
 
 /**
@@ -301,11 +476,11 @@ public:
 	TropicalPotential(double value) : BaseSemiringPotential<double, TropicalPotential>(normalize(value)) { }
 	TropicalPotential() : BaseSemiringPotential<double, TropicalPotential>(zero()) { }
 
-	TropicalPotential& operator+=(const TropicalPotential& rhs) {
+	inline TropicalPotential& operator+=(const TropicalPotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	TropicalPotential& operator*=(const TropicalPotential& rhs) {
+	inline TropicalPotential& operator*=(const TropicalPotential& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
@@ -320,7 +495,7 @@ public:
 	}
 
 // protected:
-	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, TropicalPotential);
+	BASE_SEMIRING_REGISTRY_DECLARATION(TropicalPotential);
 };
 
 
@@ -338,11 +513,11 @@ public:
 	CountingPotential(int value) : BaseSemiringPotential<int, CountingPotential>(normalize(value)) { }
 	CountingPotential() : BaseSemiringPotential<int, CountingPotential>(zero()) { }
 
-	CountingPotential& operator+=(const CountingPotential& rhs) {
+	inline CountingPotential& operator+=(const CountingPotential& rhs) {
 		value = value + rhs.value;
 		return *this;
 	}
-	CountingPotential& operator*=(const CountingPotential& rhs) {
+	inline CountingPotential& operator*=(const CountingPotential& rhs) {
 		value = value * rhs.value;
 		return *this;
 	}
@@ -357,7 +532,7 @@ public:
 	}
 
 // protected:
-	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, CountingPotential);
+	BASE_SEMIRING_REGISTRY_DECLARATION(CountingPotential);
 };
 
 /**
@@ -378,12 +553,12 @@ public:
 	CompPotential(MyVal value) : BaseSemiringPotential<MyVal, MyClass>(normalize(value)) { }
 	CompPotential() : BaseSemiringPotential<MyVal, MyClass>(zero()) { }
 
-	MyClass& operator+=(const MyClass& rhs) {
+	inline MyClass& operator+=(const MyClass& rhs) {
 		if (value.first < rhs.value.first) value = rhs.value;
 		return *this;
 	}
 
-	MyClass& operator*=(const MyClass& rhs) {
+	inline MyClass& operator*=(const MyClass& rhs) {
 		value.first = value.first * rhs.value.first;
 		value.second = value.second * rhs.value.second;
 		return *this;
@@ -399,7 +574,7 @@ public:
 	}
 
 // protected:
-// 	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, CompPotential);
+// 	BASE_SEMIRING_REGISTRY_DECLARATION(CompPotential);
 };
 
 
@@ -419,18 +594,18 @@ public:
 	SparseVectorPotential(const SparseVector vec) : BaseSemiringPotential<SparseVector, SparseVectorPotential>(vec) { }
 	SparseVectorPotential() : BaseSemiringPotential<SparseVector, SparseVectorPotential>(SparseVectorPotential::zero()) { }
 
-	SparseVectorPotential& operator+=(const SparseVectorPotential& rhs) {
+	inline SparseVectorPotential& operator+=(const SparseVectorPotential& rhs) {
 		return *this;
 	}
 
-	SparseVectorPotential& operator*=(const SparseVectorPotential& rhs);
+	inline SparseVectorPotential& operator*=(const SparseVectorPotential& rhs);
 
 	static SparseVectorPotential one() { return SparseVectorPotential(SparseVector()); }
 	static SparseVectorPotential zero() { return SparseVectorPotential(SparseVector()); }
 	static SparseVector randValue();
 
 // protected:
-	REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, SparseVectorPotential);
+	BASE_SEMIRING_REGISTRY_DECLARATION(SparseVectorPotential);
 };
 
 /**
@@ -446,11 +621,11 @@ public:
 TreePotential(Hypernode *value) : BaseSemiringPotential<Hypernode *, TreePotential>(normalize(value)) { }
 TreePotential() : BaseSemiringPotential<Hypernode *, TreePotential>(zero()) { }
 
-	TreePotential& operator+=(const TreePotential& rhs) {
+	inline TreePotential& operator+=(const TreePotential& rhs) {
 		return *this;
 	}
 
-	TreePotential& operator*=(const TreePotential& rhs) {
+	inline TreePotential& operator*=(const TreePotential& rhs) {
 		if (rhs.value == NULL or value == NULL) {
 			value = NULL;
 		} else {
@@ -471,7 +646,7 @@ TreePotential() : BaseSemiringPotential<Hypernode *, TreePotential>(zero()) { }
 	static const TreePotential zero() { return TreePotential(NULL); }
 
 // protected:
-	// REGISTRY_TYPE_DECLARATION(RandomSemiringRegistry, TreePotential);
+	// BASE_SEMIRING_REGISTRY_DECLARATION(TreePotential);
 };
 
 
@@ -506,10 +681,10 @@ class HypergraphPotentials {
 	}
 
 	SemiringType score(HEdge edge) const { return potentials_[edge->id()]; }
-	const SemiringType& operator[] (HEdge edge) const {
+	const inline SemiringType& operator[] (HEdge edge) const {
 		return potentials_[edge->id()];
 	}
-	SemiringType& operator[] (HEdge edge) {
+	inline SemiringType& operator[] (HEdge edge) {
 		return potentials_[edge->id()];
 	}
 

@@ -9,19 +9,28 @@
 #include "Hypergraph/Hypergraph.h"
 #include "./common.h"
 
-#define REGISTRY_TYPE_DECLARATION(REGISTRY, NAME) \
-    static REGISTRY<NAME> registry
+#define BASE_SEMIRING_REGISTRY_DECLARATION(NAME) \
+    static RandomSemiringRegistry<NAME> registry
 
-#define REGISTRY_TYPE_DEFINITION(REGISTRY, NAME) \
-    REGISTRY<NAME> NAME::registry = REGISTRY<NAME>(#NAME)
+#define BASE_SEMIRING_REGISTRY_DEFINITION(NAME) \
+    RandomSemiringRegistry<NAME> NAME::registry = RandomSemiringRegistry<NAME>(#NAME)
 
-#define REGISTRY_TYPE_REDEFINE(REGISTRY, NAME) \
-    NAME::registry = REGISTRY<NAME>(#NAME)
+#define BASE_SEMIRING_REGISTRY_REDEFINE(NAME) \
+    NAME::registry = RandomSemiringRegistry<NAME>(#NAME)
+
+#define STATIC_SEMIRING_REGISTRY_DECLARATION(NAME) \
+    static StaticSemiringRegistry<NAME> registry
+
+#define STATIC_SEMIRING_REGISTRY_DEFINITION(NAME) \
+    StaticSemiringRegistry<NAME> NAME::registry = StaticSemiringRegistry<NAME>(#NAME)
+
+#define STATIC_SEMIRING_REGISTRY_REDEFINE(NAME) \
+    NAME::registry = StaticSemiringRegistry<NAME>(#NAME)
 
 template<typename T>
 class BaseRegistry {
 public:
-    typedef T* (*creator_fnptr)();
+    typedef T (*creator_fnptr)();
     typedef std::map<std::string, creator_fnptr> RegistryMap;
     typedef std::pair<std::string, creator_fnptr> RegistryPair;
 
@@ -54,9 +63,21 @@ class BaseSemiring;
 template<typename T> BaseSemiring* createRandomSemiring() { return new T(T::randValue()); }
 
 template<typename T>
-struct RandomSemiringRegistry : BaseRegistry<BaseSemiring> { 
+struct RandomSemiringRegistry : BaseRegistry<BaseSemiring*> { 
     RandomSemiringRegistry(std::string const& s) { 
-        BaseRegistry<BaseSemiring>::getMap()->insert(std::make_pair(s, &createRandomSemiring<T>));
+        // std::cerr<< s << " and " << typeid(*createRandomSemiring<T>()).name() << std::endl;
+        BaseRegistry<BaseSemiring*>::getMap()->insert(BaseRegistry<BaseSemiring*>::RegistryPair(s, &createRandomSemiring<T>));
+    }
+};
+
+class StaticBaseSemiringPotential;
+template<typename T> StaticBaseSemiringPotential* createStaticSemiring() { return T::create(); }
+
+template<typename T>
+struct StaticSemiringRegistry : BaseRegistry<StaticBaseSemiringPotential*> { 
+    StaticSemiringRegistry(std::string const& s) { 
+        // std::cerr<< s << " and " << typeid(*createStaticSemiring<T>()).name() << std::endl;
+        BaseRegistry<StaticBaseSemiringPotential*>::getMap()->insert(BaseRegistry<StaticBaseSemiringPotential*>::RegistryPair(s, &createStaticSemiring<T>));
     }
 };
 
@@ -64,9 +85,9 @@ struct RandomSemiringRegistry : BaseRegistry<BaseSemiring> {
 template<typename T, typename B> B* createT() { return new T(); }
 
 template<typename T, typename B>
-struct GenericRegistry : BaseRegistry<B> { 
+struct GenericRegistry : BaseRegistry<B*> { 
     GenericRegistry(std::string const& s) { 
-        BaseRegistry<B>::getMap()->insert(std::make_pair(s, &createT<T, B>));
+        BaseRegistry<B>::getMap()->insert(BaseRegistry<B>::RegistryPair(s, &createT<T, B>));
     }
 };
 
