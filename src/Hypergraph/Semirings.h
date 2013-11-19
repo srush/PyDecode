@@ -28,11 +28,11 @@ public:
 		return val;
 	}
 
-	static inline ValType one() { return ValType(1.0); }
-	static inline ValType zero() { return ValType(0.0); }
+	static inline ValType zero() { return 0.0; }
+	static inline ValType one() { return 1.0; }
 
 	static inline ValType randValue() {
-		return ValType(dRand(0.0,1.0));
+		return dRand(0.0,1.0);
 	}
 };
 
@@ -43,8 +43,8 @@ public:
 		return normalize(lhs);
 	}
 
-	static inline ValType one() { return 0.0; }
 	static inline ValType zero() { return -INF; }
+	static inline ValType one() { return 0.0; }
 
 	static inline ValType& normalize(ValType& val) {
 		return val = val < -INF ? -INF : val;
@@ -66,6 +66,10 @@ public:
 		lhs *= rhs;
 		return normalize(lhs);
 	}
+
+	static inline ValType& normalize(ValType& val) {
+		return val = val < 0.0 ? 0.0 : val;
+	}
 };
 
 class StaticRealPotential : public StaticViterbiPotential {
@@ -80,38 +84,37 @@ public:
 		return normalize(lhs);
 	}
 
-	static inline ValType one() { return 0.0; }
 	static inline ValType zero() { return INF; }
+	static inline ValType one() { return 0.0; }
+
+	static inline ValType& normalize(ValType& val) {
+		return val = val > INF ? INF : val;
+	}
 
 	static ValType randValue() { return dRand(0.0, INF); }
 };
 
-class StaticTropicalPotential : public StaticViterbiPotential {
+class StaticTropicalPotential : public StaticRealPotential {
 public:
-	static inline ValType add(ValType lhs, const ValType &rhs) {
-		lhs += rhs;
-		return normalize(lhs);
-	}
-
-	static inline ValType one() { return 0.0; }
-	static inline ValType zero() { return INF; }
-
 	static inline ValType& normalize(ValType& val) {
 		if (val < 0.0) val = 0.0;
+		else if (val > INF) val = INF;
 		return val;
 	}
-
-	static ValType randValue() { return dRand(0.0, INF); }
 };
 
 class StaticBoolPotential {
 public:
 	typedef bool ValType;
 	static inline ValType add(const ValType& lhs, const ValType &rhs) {
-		return ValType(lhs || rhs);
+		return lhs || rhs;
 	}
 	static inline ValType times(const ValType& lhs, const ValType &rhs) {
-		return ValType(lhs && rhs);
+		return lhs && rhs;
+	}
+
+	static inline ValType& normalize(ValType& val) {
+		return val;
 	}
 
 	static inline ValType one() { return true; }
@@ -134,15 +137,14 @@ public:
 	}
 
 	static inline ValType& normalize(ValType& val) {
-		if (val < 0) val = 0;
-		return val;
+		return val = val < 0 ? 0 : val;
 	}
 
-	static inline ValType one() { return ValType(1); }
-	static inline ValType zero() { return ValType(0); }
+	static inline ValType one() { return 1; }
+	static inline ValType zero() { return 0; }
 
 	static inline ValType randValue() {
-		return ValType(rand());
+		return rand();
 	}
 };
 
@@ -463,8 +465,6 @@ public:
 };
 
 
-
-
 /**
  * Implements the Counting type of semiring as described in Huang 2006
  * +: +
@@ -620,10 +620,12 @@ class HypergraphProjection;
 
 template<typename SemiringType>
 class HypergraphPotentials {
+	typedef SemiringType S;
+	typedef typename SemiringType::ValType V;
  public:
 	HypergraphPotentials(const Hypergraph *hypergraph,
-										const vector<SemiringType> &potentials,
-										SemiringType bias)
+						const vector<V> &potentials,
+						V bias)
 	: hypergraph_(hypergraph),
 		potentials_(potentials),
 		bias_(bias) {
@@ -635,27 +637,31 @@ class HypergraphPotentials {
 			potentials_(hypergraph->edges().size(), SemiringType::one()),
 			bias_(SemiringType::one()) {}
 
-	SemiringType dot(const Hyperpath &path) const {
+	V dot(const Hyperpath &path) const {
 		path.check(*hypergraph_);
-		SemiringType score = SemiringType::one();
+		V score = SemiringType::one();
 		foreach (HEdge edge, path.edges()) {
 			score *= potentials_[edge->id()];
 		}
 		return score * bias_;
 	}
 
-	SemiringType score(HEdge edge) const { return potentials_[edge->id()]; }
-	const inline SemiringType& operator[] (HEdge edge) const {
+	V score(HEdge edge) const { return potentials_[edge->id()]; }
+	const inline V& operator[] (HEdge edge) const {
 		return potentials_[edge->id()];
 	}
-	inline SemiringType& operator[] (HEdge edge) {
+	inline V& operator[] (HEdge edge) {
 		return potentials_[edge->id()];
 	}
 
-	const SemiringType &bias() const { return bias_; }
-	SemiringType &bias() { return bias_; }
+	void insert(const HEdge& edge, const V& val) {
+		potentials_[edge->id()] = val;
+	}
 
-	HypergraphPotentials<SemiringType> *project_potentials(
+	const V &bias() const { return bias_; }
+	V &bias() { return bias_; }
+
+	HypergraphPotentials<S> *project_potentials(
 		const HypergraphProjection &projection) const;
 
 	/**
@@ -663,8 +669,8 @@ class HypergraphPotentials {
 	 *
 	 * @return New hypergraphpotentials.
 	 */
-	HypergraphPotentials <SemiringType> *times(
-			const HypergraphPotentials<SemiringType> &potentials) const;
+	HypergraphPotentials<S> *times(
+			const HypergraphPotentials<V> &potentials) const;
 
 	void check(const Hypergraph &graph) const {
 		if (!graph.same(*hypergraph_)) {
@@ -672,7 +678,7 @@ class HypergraphPotentials {
 		}
 	}
 
-	void check(const HypergraphPotentials<SemiringType> &potentials) const {
+	void check(const HypergraphPotentials<S> &potentials) const {
 		if (!potentials.hypergraph_->same(*hypergraph_)) {
 			throw HypergraphException("Hypergraph potentials do not match potentials.");
 		}
@@ -682,8 +688,8 @@ class HypergraphPotentials {
 
  protected:
 	const Hypergraph *hypergraph_;
-	vector<SemiringType> potentials_;
-	SemiringType bias_;
+	vector<V> potentials_;
+	V bias_;
 };
 
 

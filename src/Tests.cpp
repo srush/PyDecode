@@ -9,6 +9,7 @@
 #define NUM_LOOPS 1
 #endif
 
+
 TEST(Decode, TestHypergraph) {
   Hypergraph test;
   vector<HNode> nodes;
@@ -81,33 +82,34 @@ TEST(Decode, SemiringPropertyTests) {
   }
 }
 
+#ifndef SEMIRINGTEST
+#define SEMIRINGTEST(TYPE) \
+do { \
+  TYPE::ValType a = TYPE::randValue(); \
+  TYPE::ValType b = TYPE::randValue(); \
+  TYPE::ValType c = TYPE::add(a, b); \
+  TYPE::ValType d = TYPE::times(a, b); \
+  /* Test consistency */ \
+  ASSERT_EQ(a, TYPE::normalize(a)); \
+  ASSERT_EQ(c, TYPE::add(a,b)); \
+  ASSERT_EQ(d, TYPE::times(a,b)); \
+  /* Test properties */ \
+  ASSERT_EQ(TYPE::add(a, TYPE::zero()), a); \
+  ASSERT_EQ(TYPE::times(a, TYPE::one()), a); \
+  ASSERT_EQ(TYPE::times(a, TYPE::zero()), TYPE::zero()); \
+} while(0)
+#endif
+
 TEST(Decode, StaticSemiringTests) {
   srand(time(NULL));
   
-  // vector<BaseRegistry<StaticBaseSemiringPotential*>::creator_fnptr> creators = 
-  //     BaseRegistry<StaticBaseSemiringPotential*>::retrieve_classes();
-  // ASSERT_GT(creators.size(), 0);
-
-  // foreach (BaseRegistry<StaticBaseSemiringPotential*>::creator_fnptr fnptr, creators) {
-  //   std::cout << "Beginning " << typeid(*(*fnptr)()).name() << std::endl;
-  //   for(int i = 0; i < NUM_LOOPS; i++) {
-  //     StaticBaseSemiringPotential* sb = (*fnptr)();
-  //     // std::cout << *sb->randValue() << std::endl;
-  //     // std::cout << "Type: " << typeid(*sb).name() << std::endl;
-  //     std::cout << "ValType: " << typeid(*(*sb).randValue()).name() << std::endl;
-  //     ValType *a = (*sb).randValue();
-  //     ValType *b = (*sb).randValue();
-  //     ValType *c = (*sb).randValue();
-
-  //     *c = *(*sb).add(*a,*b);
-  //     ASSERT_EQ(*c, *(*sb).add(*a,*b));
-
-  //     ASSERT_EQ(*(*sb).times(*a,*(*sb).zero()), *(*sb).zero());
-  //     ASSERT_EQ(*(*sb).times(*a,*(*sb).one()), *a);
-
-  //     ASSERT_EQ(*(*sb).add(*a,*(*sb).zero()), *a);
-  //   }
-  // }
+  SEMIRINGTEST(StaticViterbiPotential);
+  // SEMIRINGTEST(StaticLogViterbiPotential);
+  SEMIRINGTEST(StaticInsidePotential);
+  SEMIRINGTEST(StaticRealPotential);
+  SEMIRINGTEST(StaticTropicalPotential);
+  SEMIRINGTEST(StaticCountingPotential);
+  SEMIRINGTEST(StaticBoolPotential);
 
 }
 

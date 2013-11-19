@@ -63,15 +63,15 @@ SparseVector SparseVectorPotential::randValue() {
     return randVec;
 }
 
-template <>
-inline double HypergraphPotentials<double>::dot(const Hyperpath &path) const {
-  path.check(*hypergraph_);
-  double score = 0.0;
-  foreach (HEdge edge, path.edges()) {
-    score += potentials_[edge->id()];
-  }
-  return score + bias_;
-}
+// template <>
+// inline double HypergraphPotentials<double>::dot(const Hyperpath &path) const {
+//   path.check(*hypergraph_);
+//   double score = 0.0;
+//   foreach (HEdge edge, path.edges()) {
+//     score += potentials_[edge->id()];
+//   }
+//   return score + bias_;
+// }
 
 template<typename SemiringType>
 HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::times(const HypergraphPotentials<SemiringType> &other) const {
@@ -153,24 +153,24 @@ inline HypergraphProjection *HypergraphProjection::project_hypergraph(
                                   node_map, edge_map);
 }
 
-inline const HypergraphPotentials<LogViterbiPotential> *
-pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
-             const vector<double> &vec) {
-  HypergraphPotentials<LogViterbiPotential> *potentials =
-      new HypergraphPotentials<LogViterbiPotential>(sparse_potentials.hypergraph());
-  foreach (HEdge edge, sparse_potentials.hypergraph()->edges()) {
-    SparseVector edge_constraints =
-        static_cast<SparseVector>(sparse_potentials.score(edge));
-    foreach (SparsePair pair, edge_constraints) {
-      (*potentials)[edge] *=
-          LogViterbiPotential(pair.second * vec[pair.first]);
-    }
-  }
-  SparseVector bias_constraints =
-      static_cast<SparseVector>(sparse_potentials.bias());
-  foreach (SparsePair pair, bias_constraints) {
-    potentials->bias() *= LogViterbiPotential(pair.second * vec[pair.first]);
-  }
-  return potentials;
-};
+// inline const HypergraphPotentials<LogViterbiPotential> *
+// pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
+//              const vector<double> &vec) {
+//   HypergraphPotentials<LogViterbiPotential> *potentials =
+//       new HypergraphPotentials<LogViterbiPotential>(sparse_potentials.hypergraph());
+//   foreach (HEdge edge, sparse_potentials.hypergraph()->edges()) {
+//     SparseVector edge_constraints =
+//         static_cast<SparseVector>(sparse_potentials.score(edge));
+//     foreach (SparsePair pair, edge_constraints) {
+//       (*potentials)[edge] *=
+//           LogViterbiPotential(pair.second * vec[pair.first]);
+//     }
+//   }
+//   SparseVector bias_constraints =
+//       static_cast<SparseVector>(sparse_potentials.bias());
+//   foreach (SparsePair pair, bias_constraints) {
+//     potentials->bias() *= LogViterbiPotential(pair.second * vec[pair.first]);
+//   }
+//   return potentials;
+// };
 
