@@ -8,264 +8,143 @@
 #include "Hypergraph/Hypergraph.h"
 #include "./common.h"
 
-struct ValType {
 
-	ValType() : value() {}
-	ValType(double val) : value(val) {}
-
-	virtual inline operator double() const { return value; }
-
-	virtual inline ValType& operator=(ValType rhs) {
-		std::swap(value, rhs.value);
-		return *this;
-	}
-
-	virtual inline ValType& operator=(double rhs) {
-		std::swap(value, rhs);
-		return *this;
-	}
-
-	friend inline bool operator==(const ValType& lhs,const ValType& rhs) {
-		return lhs.value == rhs.value;
-	}
-
-	friend inline ValType operator+(ValType lhs, const ValType &rhs) {
-		lhs += rhs;
-		return lhs;
-	}
-	friend inline ValType operator*(ValType lhs, const ValType &rhs) {
-		lhs *= rhs;
-		return lhs;
-	}
-
-	virtual inline ValType& operator+=(const ValType& rhs) {
-		value = value + rhs.value;
-		return *this;
-	}
-	virtual inline ValType& operator*=(const ValType& rhs) {
-		value = value * rhs.value;
-		return *this;
-	}
-
-	double value;
-};
-
-struct BoolValType : public ValType {
-
-	BoolValType() : value() {}
-	BoolValType(bool val) : value(val) {}
-
-	inline operator bool() const { return value; }
-
-	inline BoolValType& operator=(BoolValType rhs) {
-		std::swap(value, rhs.value);
-		return *this;
-	}
-
-	inline BoolValType& operator=(bool rhs) {
-		std::swap(value, rhs);
-		return *this;
-	}
-
-	friend inline bool operator==(const BoolValType& lhs,const BoolValType& rhs) {
-		return lhs.value == rhs.value;
-	}
-
-	friend inline BoolValType operator+(BoolValType lhs, const BoolValType &rhs) {
-		lhs += rhs;
-		return lhs;
-	}
-	friend inline BoolValType operator*(BoolValType lhs, const BoolValType &rhs) {
-		lhs *= rhs;
-		return lhs;
-	}
-
-	inline BoolValType& operator+=(const BoolValType& rhs) {
-		value = value || rhs.value;
-		return *this;
-	}
-	inline BoolValType& operator*=(const BoolValType& rhs) {
-		value = value && rhs.value;
-		return *this;
-	}
-
-	bool value;
-};
-
-
-
-class StaticBaseSemiringPotential {
+class StaticViterbiPotential {
 public:
-	virtual ~StaticBaseSemiringPotential() {};
-
-	static inline StaticBaseSemiringPotential* create() { return new StaticBaseSemiringPotential(); }
-
-	virtual inline ValType* add(const ValType& lhs, const ValType &rhs) {
-		return new ValType(lhs + rhs);
+	typedef double ValType;
+	static inline ValType add(ValType lhs, const ValType &rhs) {
+		lhs = std::max(lhs, rhs);
+		return normalize(lhs);
 	}
 
-	virtual inline ValType* times(const ValType& lhs, const ValType &rhs) {
-		return new ValType(lhs * rhs);
+	static inline ValType times(ValType lhs, const ValType &rhs) {
+		lhs *= rhs;
+		return normalize(lhs);
 	}
 
-
-	virtual inline ValType* one() { return new ValType(1.0); }
-	virtual inline ValType* zero() { return new ValType(0.0); }
-
-	virtual inline ValType* randValue() {
-		return new ValType(dRand(0.0,1.0));
-	}
-};
-
-class StaticViterbiPotential : public StaticBaseSemiringPotential {
-public:
-	static inline StaticViterbiPotential* create() { return new StaticViterbiPotential(); }
-	inline ValType* add(const ValType& lhs, const ValType &rhs) {
-		std::cout << "vit add" << std::endl;
-		return new ValType(std::max(lhs, rhs));
-	}
-
-	inline ValType& normalize(ValType& val) {
-		std::cout << "vit norm" << std::endl;
+	static inline ValType& normalize(ValType& val) {
 		if (val < 0.0) val = 0.0;
 		else if (val > 1.0) val = 1.0;
 		return val;
 	}
 
-	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticViterbiPotential);
+	static inline ValType one() { return ValType(1.0); }
+	static inline ValType zero() { return ValType(0.0); }
+
+	static inline ValType randValue() {
+		return ValType(dRand(0.0,1.0));
+	}
 };
 
-// class StaticLogViterbiPotential : public StaticBaseSemiringPotential {
-// public:
-// 	static inline StaticLogViterbiPotential* create() { return new StaticLogViterbiPotential(); }
-
-// 	inline ValType add(ValType lhs, const ValType &rhs) {
-// 		lhs = std::max(lhs, rhs);
-// 		std::cout << "log add" << std::endl;
-// 		return normalize(lhs);
-// 	}
-// 	inline ValType times(ValType lhs, const ValType &rhs) {
-// 		lhs += rhs;
-// 		std::cout << "log times" << std::endl;
-// 		return normalize(lhs);
-// 	}
-
-// 	inline void foo() {};
-// 	inline ValType one() { 
-// 		std::cout << "log one" << std::endl;
-// 		return 0.0; }
-// 	inline ValType zero() { 
-// 		std::cout << "log zero" << std::endl;
-// 		return -INF; }
-
-// 	inline ValType& normalize(ValType& val) {
-// 		std::cout << "log norm" << std::endl;
-// 		return val = val < -INF ? -INF : val;
-// 	}
-
-// 	inline ValType* randValue() {
-// 		std::cout << "log rand" << std::endl;
-// 		return new ValType(dRand(-INF, 0.0));
-// 	}
-
-// 	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticLogViterbiPotential);
-// };
-
-class StaticBoolPotential : public StaticBaseSemiringPotential {
+class StaticLogViterbiPotential : public StaticViterbiPotential {
 public:
-	static inline StaticBoolPotential* create() { return new StaticBoolPotential(); }
-
-	inline BoolValType* add(const ValType& lhs, const ValType &rhs) {
-		std::cout << "bool add" << std::endl;
-		return new BoolValType(lhs || rhs);
-	}
-	inline BoolValType* times(const ValType& lhs, const ValType &rhs) {
-		std::cout << "bool times" << std::endl;
-		return new BoolValType(lhs && rhs);
+	static inline ValType times(ValType lhs, const ValType &rhs) {
+		lhs += rhs;
+		return normalize(lhs);
 	}
 
-	inline BoolValType* one() { 
-		std::cout << "bool one" << std::endl;
-		return new BoolValType(true); }
-	inline BoolValType* zero() { 
-		std::cout << "bool zero" << std::endl;
-		return new BoolValType(false); }
+	static inline ValType one() { return 0.0; }
+	static inline ValType zero() { return -INF; }
 
-	inline BoolValType* randValue() {
-		std::cout << "bool rand" << std::endl;
-		return new BoolValType(dRand(0.0,1.0) > .5);
+	static inline ValType& normalize(ValType& val) {
+		return val = val < -INF ? -INF : val;
 	}
 
-	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticBoolPotential);
+	static inline ValType randValue() {
+		return dRand(-INF, 0.0);
+	}
 };
 
-// class StaticInsidePotential : public StaticBaseSemiringPotential {
-// public:
-// 	static inline StaticInsidePotential* create() { return new StaticInsidePotential(); }
-// 	static inline ValType add(ValType lhs, const ValType &rhs) {
-// 		lhs = std::max(lhs, rhs);
-// 		return normalize(lhs);
-// 	}
+class StaticInsidePotential : public StaticViterbiPotential {
+public:
+	static inline ValType add(ValType lhs, const ValType &rhs) {
+		lhs += rhs;
+		return normalize(lhs);
+	}
 
-// 	static inline ValType& normalize(ValType& val) {
-// 		if (val < 0.0) val = 0.0;
-// 		else if (val > 1.0) val = 1.0;
-// 		return val;
-// 	}
+	static inline ValType times(ValType lhs, const ValType &rhs) {
+		lhs *= rhs;
+		return normalize(lhs);
+	}
+};
 
-// 	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticInsidePotential);
-// };
+class StaticRealPotential : public StaticViterbiPotential {
+public:
+	static inline ValType add(ValType lhs, const ValType &rhs) {
+		lhs = std::min(lhs, rhs);
+		return normalize(lhs);
+	}
 
-// class StaticRealPotential : public StaticBaseSemiringPotential {
-// public:
-// 	static inline StaticRealPotential* create() { return new StaticRealPotential(); }
-// 	static inline ValType add(ValType lhs, const ValType &rhs) {
-// 		lhs = std::max(lhs, rhs);
-// 		return normalize(lhs);
-// 	}
+	static inline ValType times(ValType lhs, const ValType &rhs) {
+		lhs += rhs;
+		return normalize(lhs);
+	}
 
-// 	static inline ValType& normalize(ValType& val) {
-// 		if (val < 0.0) val = 0.0;
-// 		else if (val > 1.0) val = 1.0;
-// 		return val;
-// 	}
+	static inline ValType one() { return 0.0; }
+	static inline ValType zero() { return INF; }
 
-// 	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticRealPotential);
-// };
+	static ValType randValue() { return dRand(0.0, INF); }
+};
 
-// class StaticTropicalPotential : public StaticBaseSemiringPotential {
-// public:
-// 	static inline StaticTropicalPotential* create() { return new StaticTropicalPotential(); }
-// 	static inline ValType add(ValType lhs, const ValType &rhs) {
-// 		lhs = std::max(lhs, rhs);
-// 		return normalize(lhs);
-// 	}
+class StaticTropicalPotential : public StaticViterbiPotential {
+public:
+	static inline ValType add(ValType lhs, const ValType &rhs) {
+		lhs += rhs;
+		return normalize(lhs);
+	}
 
-// 	static inline ValType& normalize(ValType& val) {
-// 		if (val < 0.0) val = 0.0;
-// 		else if (val > 1.0) val = 1.0;
-// 		return val;
-// 	}
+	static inline ValType one() { return 0.0; }
+	static inline ValType zero() { return INF; }
 
-// 	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticTropicalPotential);
-// };
+	static inline ValType& normalize(ValType& val) {
+		if (val < 0.0) val = 0.0;
+		return val;
+	}
 
-// class StaticCountingPotential : public StaticBaseSemiringPotential {
-// public:
-// 	static inline StaticCountingPotential* create() { return new StaticCountingPotential(); }
-// 	static inline ValType add(ValType lhs, const ValType &rhs) {
-// 		lhs = std::max(lhs, rhs);
-// 		return normalize(lhs);
-// 	}
+	static ValType randValue() { return dRand(0.0, INF); }
+};
 
-// 	static inline ValType& normalize(ValType& val) {
-// 		if (val < 0.0) val = 0.0;
-// 		else if (val > 1.0) val = 1.0;
-// 		return val;
-// 	}
+class StaticBoolPotential {
+public:
+	typedef bool ValType;
+	static inline ValType add(const ValType& lhs, const ValType &rhs) {
+		return ValType(lhs || rhs);
+	}
+	static inline ValType times(const ValType& lhs, const ValType &rhs) {
+		return ValType(lhs && rhs);
+	}
 
-// 	STATIC_SEMIRING_REGISTRY_DECLARATION(StaticCountingPotential);
-// };
+	static inline ValType one() { return true; }
+	static inline ValType zero() { return false; }
+
+	static inline ValType randValue() { return dRand(0.0,1.0) > .5; }
+};
+
+class StaticCountingPotential {
+public:
+	typedef int ValType;
+	static inline ValType add(ValType lhs, const ValType &rhs) {
+		lhs += rhs;
+		return normalize(lhs);
+	}
+
+	static inline ValType times(ValType lhs, const ValType &rhs) {
+		lhs *= rhs;
+		return normalize(lhs);
+	}
+
+	static inline ValType& normalize(ValType& val) {
+		if (val < 0) val = 0;
+		return val;
+	}
+
+	static inline ValType one() { return ValType(1); }
+	static inline ValType zero() { return ValType(0); }
+
+	static inline ValType randValue() {
+		return ValType(rand());
+	}
+};
 
 
 /**

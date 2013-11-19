@@ -129,6 +129,53 @@ Hyperpath *general_viterbi(
   return new Hyperpath(graph, path);
 }
 
+template<typename StatSem>
+Hyperpath *general_viterbi(
+    const Hypergraph *graph,
+    const HypergraphPotentials<typename StatSem::ValType> &potentials) {
+
+  potentials.check(*graph);
+  Chart<typename StatSem::ValType> *chart = new Chart<typename StatSem::ValType>(graph);
+  vector<HEdge> back(graph->nodes().size(), NULL);
+
+  foreach (HNode node, graph->nodes()) {
+    if (node->terminal()) {
+      (*chart)[node] = StatSem::one();
+    }
+  }
+  foreach (HEdge edge, graph->edges()) {
+    typename StatSem::ValType score = potentials.score(edge);
+    foreach (HNode node, edge->tail_nodes()) {
+      typename StatSem::ValType(score, (*chart)[node]);
+    }
+    if (score > (*chart)[edge->head_node()]) {
+      (*chart)[edge->head_node()] = score;
+      back[edge->head_node()->id()] = edge;
+    }
+  }
+
+  // Collect backpointers.
+  vector<HEdge> path;
+  queue<HNode> to_examine;
+  to_examine.push(graph->root());
+  while (!to_examine.empty()) {
+    HNode node = to_examine.front();
+    HEdge edge = back[node->id()];
+    to_examine.pop();
+    if (edge == NULL) {
+      assert(node->terminal());
+      continue;
+    }
+    path.push_back(edge);
+    foreach (HNode node, edge->tail_nodes()) {
+      to_examine.push(node);
+    }
+  }
+  sort(path.begin(), path.end(), IdComparator());
+  delete chart;
+  return new Hyperpath(graph, path);
+}
+
 
 SPECIALIZE_FOR_SEMI(ViterbiPotential)
 SPECIALIZE_FOR_SEMI(LogViterbiPotential)
