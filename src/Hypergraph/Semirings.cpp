@@ -1,67 +1,71 @@
 // Copyright [2013] Alexander Rush
 
 #include "Hypergraph/Semirings.h"
+#include <exception>
+
+#define SPECIALIZE_FOR_SEMI(X)\
+  template class HypergraphPotentials<X>;
 
 // These are not guaranteed to trigger, unless something is used in this file...
 // Which is why I moved the operators below to here.
-BASE_SEMIRING_REGISTRY_DEFINITION(ViterbiPotential);
-BASE_SEMIRING_REGISTRY_DEFINITION(LogViterbiPotential);
-BASE_SEMIRING_REGISTRY_DEFINITION(BoolPotential);
-BASE_SEMIRING_REGISTRY_DEFINITION(InsidePotential);
-BASE_SEMIRING_REGISTRY_DEFINITION(RealPotential);
-BASE_SEMIRING_REGISTRY_DEFINITION(TropicalPotential);
-BASE_SEMIRING_REGISTRY_DEFINITION(CountingPotential);
+// BASE_SEMIRING_REGISTRY_DEFINITION(ViterbiPotential);
+// BASE_SEMIRING_REGISTRY_DEFINITION(LogViterbiPotential);
+// BASE_SEMIRING_REGISTRY_DEFINITION(BoolPotential);
+// BASE_SEMIRING_REGISTRY_DEFINITION(InsidePotential);
+// BASE_SEMIRING_REGISTRY_DEFINITION(RealPotential);
+// BASE_SEMIRING_REGISTRY_DEFINITION(TropicalPotential);
+// BASE_SEMIRING_REGISTRY_DEFINITION(CountingPotential);
 // BASE_SEMIRING_REGISTRY_DEFINITION(CompPotential<ViterbiPotential, LogViterbiPotential>);
 // BASE_SEMIRING_REGISTRY_DEFINITION(SparseVectorPotential);
 // BASE_SEMIRING_REGISTRY_DEFINITION(TreePotential);
 
 
-// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticViterbiPotential);
-// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticLogViterbiPotential);
-// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticBoolPotential);
-// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticInsidePotential);
-// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticRealPotential);
-// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticTropicalPotential);
-// STATIC_SEMIRING_REGISTRY_DEFINITION(StaticCountingPotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(ViterbiPotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(LogViterbiPotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(BoolPotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(InsidePotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(RealPotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(TropicalPotential);
+// STATIC_SEMIRING_REGISTRY_DEFINITION(CountingPotential);
 
 
 // These are defined here while for the type registration above
 // to work, there must be something in this file that is guaranteed
 // to compile.
-BaseSemiring operator*(BaseSemiring lhs, const BaseSemiring &rhs) {
-    lhs *= rhs;
-    return lhs;
-}
+// BaseSemiring operator*(BaseSemiring lhs, const BaseSemiring &rhs) {
+//     lhs *= rhs;
+//     return lhs;
+// }
 
 
-SparseVectorPotential& SparseVectorPotential::operator*=(const SparseVectorPotential& rhs) {
-  int i = 0, j = 0;
-  SparseVector vec;
-  while (i < value.size() || j < rhs.value.size()) {
-    if (j >= rhs.value.size() || (i < value.size() && value[i].first < rhs.value[j].first)) {
-      vec.push_back(pair<int, int>(value[i].first, value[i].second));
-      ++i;
-    } else if (i >= value.size() || (j < rhs.value.size() && value[i].first > rhs.value[j].first)) {
-      vec.push_back(pair<int, int>(rhs.value[j].first, rhs.value[j].second));
-      ++j;
-    } else {
-      vec.push_back(pair<int, int>(i, value[i].second + rhs.value[j].second));
-      ++i;
-      ++j;
-    }
-  }
-  value = vec;
-  return *this;
-}
+// SparseVectorPotential& SparseVectorPotential::operator*=(const SparseVectorPotential& rhs) {
+//   int i = 0, j = 0;
+//   SparseVector vec;
+//   while (i < value.size() || j < rhs.value.size()) {
+//     if (j >= rhs.value.size() || (i < value.size() && value[i].first < rhs.value[j].first)) {
+//       vec.push_back(pair<int, int>(value[i].first, value[i].second));
+//       ++i;
+//     } else if (i >= value.size() || (j < rhs.value.size() && value[i].first > rhs.value[j].first)) {
+//       vec.push_back(pair<int, int>(rhs.value[j].first, rhs.value[j].second));
+//       ++j;
+//     } else {
+//       vec.push_back(pair<int, int>(i, value[i].second + rhs.value[j].second));
+//       ++i;
+//       ++j;
+//     }
+//   }
+//   value = vec;
+//   return *this;
+// }
 
-SparseVector SparseVectorPotential::randValue() { 
-    SparseVector randVec;
-    int n = 20;
-    for(int i = 0; i < n; i++) {
-        randVec.push_back(SparsePair(rand(),rand()));
-    }
-    return randVec;
-}
+// SparseVector SparseVectorPotential::randValue() { 
+//     SparseVector randVec;
+//     int n = 20;
+//     for(int i = 0; i < n; i++) {
+//         randVec.push_back(SparsePair(rand(),rand()));
+//     }
+//     return randVec;
+// }
 
 // template <>
 // inline double HypergraphPotentials<double>::dot(const Hyperpath &path) const {
@@ -76,9 +80,9 @@ SparseVector SparseVectorPotential::randValue() {
 template<typename SemiringType>
 HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::times(const HypergraphPotentials<SemiringType> &other) const {
   check(other);
-  vector<SemiringType> new_potentials(potentials_);
+  vector<typename SemiringType::ValType> new_potentials(potentials_);
   for (uint i = 0; i < other.potentials_.size(); ++i) {
-    new_potentials[i] *= other.potentials_[i];
+    new_potentials[i] = SemiringType::times(new_potentials[i], other.potentials_[i]);
   }
   return new HypergraphPotentials<SemiringType>(hypergraph_,
                                new_potentials,
@@ -88,7 +92,7 @@ HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::times(co
 template<typename SemiringType>
 HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::project_potentials(
     const HypergraphProjection &projection) const {
-  vector<SemiringType> potentials(projection.new_graph->edges().size());
+  vector<typename SemiringType::ValType> potentials(projection.new_graph->edges().size());
   foreach (HEdge edge, projection.original_graph->edges()) {
     HEdge new_edge = projection.project(edge);
     if (new_edge != NULL && new_edge->id() >= 0) {
@@ -98,6 +102,18 @@ HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::project_
   }
   return new HypergraphPotentials<SemiringType>(projection.new_graph, potentials, bias_);
 }
+
+// Common std c++ problem: boolean vectors are specialized
+// and therefore cannot return a reference as a boolean.
+// Use insert instead.
+// template<>
+// BoolPotential::ValType& HypergraphPotentials<BoolPotential>::operator[] (HEdge edge) {
+//   throw -1;
+// }
+// template<>
+// const BoolPotential::ValType& HypergraphPotentials<BoolPotential>::operator[] (HEdge edge) const {
+//   throw -1;
+// }
 
 
 
@@ -173,4 +189,11 @@ inline HypergraphProjection *HypergraphProjection::project_hypergraph(
 //   }
 //   return potentials;
 // };
+
+
+
+SPECIALIZE_FOR_SEMI(ViterbiPotential)
+SPECIALIZE_FOR_SEMI(LogViterbiPotential)
+SPECIALIZE_FOR_SEMI(InsidePotential)
+SPECIALIZE_FOR_SEMI(BoolPotential)
 

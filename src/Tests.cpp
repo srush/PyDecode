@@ -26,62 +26,6 @@ TEST(Decode, TestHypergraph) {
   ASSERT_EQ(test.edges().size(), 1);
 }
 
-TEST(Decode, ViterbiPotential) {
-  // Test for correct normalization
-  ViterbiPotential high = ViterbiPotential(1.1);
-  ASSERT_EQ(high, ViterbiPotential(1.0));
-  ViterbiPotential low = ViterbiPotential(-0.1);
-  ASSERT_EQ(low, ViterbiPotential(0.0));
-
-  // Test assignment
-  high = 0.5;
-  ASSERT_EQ(high, ViterbiPotential(0.5));
-
-  // Test Operators
-  high += low;
-  ASSERT_EQ(high, ViterbiPotential(0.5));
-  low += high;
-  ASSERT_EQ(low, ViterbiPotential(0.5));
-  high *= low;
-  ASSERT_EQ(high, ViterbiPotential(0.25));
-  high *= ViterbiPotential::one();
-  ASSERT_EQ(high, ViterbiPotential(0.25));
-  high *= ViterbiPotential::zero();
-  ASSERT_EQ(high, ViterbiPotential::zero());
-
-  // Test casting
-  double d = 0.5;
-  high = 0.25;
-  d = (double)high + d;
-  ASSERT_EQ(d, 0.75);
-}
-
-TEST(Decode, SemiringPropertyTests) {
-  srand(time(NULL));
-  
-  vector<BaseRegistry<BaseSemiring*>::creator_fnptr> creators = 
-      BaseRegistry<BaseSemiring*>::retrieve_classes();
-  ASSERT_GT(creators.size(), 0);
-
-  foreach (BaseRegistry<BaseSemiring*>::creator_fnptr fnptr, creators) {
-    // std::cout << "Beginning " << typeid(*(*fnptr)()).name() << std::endl;
-    for(int i = 0; i < NUM_LOOPS; i++) {
-      BaseSemiring* a = (*fnptr)();
-      BaseSemiring* b = (*fnptr)();
-      BaseSemiring* c = (*fnptr)();
-      *c = *a + *b;
-      ASSERT_EQ(*c, *a + *b);
-      ASSERT_EQ(*a * a->annihlator(), a->annihlator());
-      ASSERT_EQ(*a * a->identity(), *a);
-      ASSERT_EQ(*a + a->annihlator(), *a);
-      *c = *a;
-      ASSERT_EQ(*a + *b, *c += *b);
-      *c = *a;
-      ASSERT_EQ(*a * *b, *c *= *b);
-    }
-  }
-}
-
 #ifndef SEMIRINGTEST
 #define SEMIRINGTEST(TYPE) \
 do { \
@@ -100,16 +44,15 @@ do { \
 } while(0)
 #endif
 
-TEST(Decode, StaticSemiringTests) {
-  srand(time(NULL));
-  
-  SEMIRINGTEST(StaticViterbiPotential);
-  // SEMIRINGTEST(StaticLogViterbiPotential);
-  SEMIRINGTEST(StaticInsidePotential);
-  SEMIRINGTEST(StaticRealPotential);
-  SEMIRINGTEST(StaticTropicalPotential);
-  SEMIRINGTEST(StaticCountingPotential);
-  SEMIRINGTEST(StaticBoolPotential);
+TEST(Decode, SemiringTests) {
+  srand(time(NULL));  
+  SEMIRINGTEST(ViterbiPotential);
+  SEMIRINGTEST(LogViterbiPotential);
+  SEMIRINGTEST(InsidePotential);
+  SEMIRINGTEST(RealPotential);
+  SEMIRINGTEST(TropicalPotential);
+  SEMIRINGTEST(CountingPotential);
+  SEMIRINGTEST(BoolPotential);
 
 }
 

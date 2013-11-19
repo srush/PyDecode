@@ -9,7 +9,7 @@
 #include "Hypergraph/Algorithms.h"
 //#include "Hypergraph/Subgradient.h"
 
-#define SPECIALIZE_FOR_SEMI(X)\
+#define SPECIALIZE_ALGORITHMS_FOR_SEMI(X)\
   template class Chart<X>;\
   template class HypergraphPotentials<X>;\
   template class Marginals<X>;\
@@ -31,6 +31,18 @@ struct IdComparator {
   }
 };
 
+// Common std c++ problem: boolean vectors are specialized
+// and therefore cannot return a reference as a boolean.
+// Use insert instead.
+// template<>
+// BoolPotential::ValType& Chart<BoolPotential>::operator[] (HNode node) {
+//   throw -1;
+// }
+// template<>
+// const BoolPotential::ValType& Chart<BoolPotential>::operator[] (HNode node) const {
+//   throw -1;
+// }
+
 template<typename S>
 Chart<S> *
 general_inside(const Hypergraph *graph,
@@ -42,17 +54,19 @@ general_inside(const Hypergraph *graph,
 
   foreach (HNode node, graph->nodes()) {
     if (node->terminal()) {
-      (*chart)[node] = S::one();
+      chart->insert(node, S::one());
     }
   }
   foreach (HEdge edge, graph->edges()) {
     typename S::ValType score = potentials.score(edge);
     foreach (HNode node, edge->tail_nodes()) {
-      score *= (*chart)[node];
+      score = S::times(score, (*chart)[node]);
     }
-    (*chart)[edge->head_node()] += score;
+    chart->insert(edge->head_node(), 
+                  S::add((*chart)[edge->head_node()], score));
   }
-  (*chart)[graph->root()] *= potentials.bias();
+  chart->insert(graph->root(), 
+                S::times((*chart)[graph->root()], potentials.bias()));
   return chart;
 }
 
@@ -65,7 +79,7 @@ general_outside(const Hypergraph *graph,
   inside_chart.check(graph);
   Chart<S> *chart = new Chart<S>(graph);
   const vector<HEdge> &edges = graph->edges();
-  (*chart)[graph->root()] = potentials.bias();
+  chart->insert(graph->root(), potentials.bias());
 
   for (int i = edges.size() - 1; i >= 0; --i) {
     HEdge edge = edges[i];
@@ -76,7 +90,7 @@ general_outside(const Hypergraph *graph,
         if (other_node->id() == node->id()) continue;
         other_score = S::times(other_score, inside_chart[other_node]);
       }
-      (*chart)[node] = S::add((*chart)[node], S::times(head_score, S::times(other_score, potentials.score(edge))));
+      chart->insert(node, S::add((*chart)[node], S::times(head_score, S::times(other_score, potentials.score(edge)))));
     }
   }
   return chart;
@@ -93,7 +107,7 @@ Hyperpath *general_viterbi(
 
   foreach (HNode node, graph->nodes()) {
     if (node->terminal()) {
-      (*chart)[node] = S::one();
+      chart->insert(node, S::one());
     }
   }
   foreach (HEdge edge, graph->edges()) {
@@ -102,7 +116,7 @@ Hyperpath *general_viterbi(
       score *= (*chart)[node];
     }
     if (score > (*chart)[edge->head_node()]) {
-      (*chart)[edge->head_node()] = score;
+      chart->insert(edge->head_node(), score);
       back[edge->head_node()->id()] = edge;
     }
   }
@@ -140,7 +154,7 @@ Hyperpath *general_viterbi(
 
   foreach (HNode node, graph->nodes()) {
     if (node->terminal()) {
-      (*chart)[node] = StatSem::one();
+      chart->insert(node, StatSem::one());
     }
   }
   foreach (HEdge edge, graph->edges()) {
@@ -149,7 +163,7 @@ Hyperpath *general_viterbi(
       typename StatSem::ValType(score, (*chart)[node]);
     }
     if (score > (*chart)[edge->head_node()]) {
-      (*chart)[edge->head_node()] = score;
+      chart->insert(edge->head_node(), score);
       back[edge->head_node()->id()] = edge;
     }
   }
@@ -177,14 +191,10 @@ Hyperpath *general_viterbi(
 }
 
 
-// SPECIALIZE_FOR_SEMI(StaticViterbiPotential)
-template class Chart<StaticViterbiPotential>;\
-template class HypergraphPotentials<StaticViterbiPotential>;\
-template class Marginals<StaticViterbiPotential>;\
-template Hyperpath *general_viterbi<StaticViterbiPotential>(const Hypergraph *graph,const HypergraphPotentials<StaticViterbiPotential> &potentials);
-// SPECIALIZE_FOR_SEMI(StaticLogViterbiPotential)
-// SPECIALIZE_FOR_SEMI(StaticInsidePotential)
-// SPECIALIZE_FOR_SEMI(StaticBoolPotential)
+SPECIALIZE_ALGORITHMS_FOR_SEMI(ViterbiPotential)
+SPECIALIZE_ALGORITHMS_FOR_SEMI(LogViterbiPotential)
+SPECIALIZE_ALGORITHMS_FOR_SEMI(InsidePotential)
+SPECIALIZE_ALGORITHMS_FOR_SEMI(BoolPotential)
 // SPECIALIZE_FOR_SEMI_MIN(SparseVectorPotential)
 
 // End General code.

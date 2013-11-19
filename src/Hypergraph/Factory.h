@@ -59,16 +59,16 @@ private:
 };
 
 
-class BaseSemiring;
-template<typename T> BaseSemiring* createRandomSemiring() { return new T(T::randValue()); }
+// class BaseSemiring;
+// template<typename T> BaseSemiring* createRandomSemiring() { return new T(T::randValue()); }
 
-template<typename T>
-struct RandomSemiringRegistry : BaseRegistry<BaseSemiring*> { 
-    RandomSemiringRegistry(std::string const& s) { 
-        // std::cerr<< s << " and " << typeid(*createRandomSemiring<T>()).name() << std::endl;
-        BaseRegistry<BaseSemiring*>::getMap()->insert(BaseRegistry<BaseSemiring*>::RegistryPair(s, &createRandomSemiring<T>));
-    }
-};
+// template<typename T>
+// struct RandomSemiringRegistry : BaseRegistry<BaseSemiring*> { 
+//     RandomSemiringRegistry(std::string const& s) { 
+//         // std::cerr<< s << " and " << typeid(*createRandomSemiring<T>()).name() << std::endl;
+//         BaseRegistry<BaseSemiring*>::getMap()->insert(BaseRegistry<BaseSemiring*>::RegistryPair(s, &createRandomSemiring<T>));
+//     }
+// };
 
 // class StaticBaseSemiringPotential;
 // template<typename T> StaticBaseSemiringPotential* createStaticSemiring() { return T::create(); }

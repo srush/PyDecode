@@ -28,10 +28,11 @@ public:
       chart_(hypergraph->nodes().size(), S::zero()) {}
 
 
-  V& operator[] (HNode node) { return chart_[node->id()]; }
-  const V& operator[] (HNode node) const { return chart_[node->id()]; }
+  // V& operator[] (HNode node) { return chart_[node->id()]; }
+  V operator[] (HNode node) const { return chart_[node->id()]; }
 
-  const V& get(HNode node) const { return chart_[node->id()]; }
+  V get(HNode node) const { return chart_[node->id()]; }
+  inline void insert(const HNode& node, const V& val) { chart_[node->id()] = val; }
 
 
   void check(const Hypergraph *hypergraph) const {
@@ -85,9 +86,9 @@ class Marginals {
     delete out_chart_;
   }
 
-  HypergraphPotentials<StaticBoolPotential> *threshold(const V &threshold) const {
-    HypergraphPotentials<StaticBoolPotential> *potentials =
-        new HypergraphPotentials<StaticBoolPotential>(hypergraph_);
+  HypergraphPotentials<BoolPotential> *threshold(const V &threshold) const {
+    HypergraphPotentials<BoolPotential> *potentials =
+        new HypergraphPotentials<BoolPotential>(hypergraph_);
     foreach (HEdge edge, hypergraph_->edges()) {
       potentials->insert(edge, threshold < marginal(edge));
     }
