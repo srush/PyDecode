@@ -27,7 +27,7 @@ class HypergraphLP:
     def __init__(self, lp, hypergraph, node_vars, edge_vars,
                  integral=False):
         r"""
-        Initialize the Hypergraph LP. 
+        Initialize the Hypergraph LP.
 
         Call with HypergraphLP.make_lp().
 
@@ -40,11 +40,11 @@ class HypergraphLP:
         hypergraph : :py:class:`Hypergraph`
            The hypergraph.
 
-        node_vars : map of Node to LP variable. 
+        node_vars : map of Node to LP variable.
            The node variables :math:`y(v)`
            for all :math:`v \in {\cal V}`.
 
-        edge_vars : map of Edge to LP variable. 
+        edge_vars : map of Edge to LP variable.
            The hyperedge variables :math:`y(e)`
            for all :math:`e \in {\cal E}`.
 
@@ -171,28 +171,37 @@ class HypergraphLP:
             for node in edge.tail:
                 in_edges[node.id].append(edge)
 
+        for edge in hypergraph.edges:
+            p = potentials[edge]
+            v = edge_vars[edge.id]
+
+
         # max \theta x
-        prob += sum([potentials[edge] * edge_vars[edge.id]
-                     for edge in hypergraph.edges])
+        prob += pulp.lpSum(
+            (potentials[edge] * edge_vars[edge.id]
+             for edge in hypergraph.edges))
+
+
 
         # x(r) = 1
         prob += node_vars[hypergraph.root.id] == 1
+
 
         # x(v) = \sum_{e : h(e) = v} x(e)
         for node in hypergraph.nodes:
             if node.is_terminal:
                 continue
             prob += node_vars[node.id] == \
-                sum([edge_vars[edge.id]
-                     for edge in node.edges])
+                pulp.lpSum((edge_vars[edge.id]
+                            for edge in node.edges))
 
         # x(v) = \sum_{e : v \in t(e)} x(e)
         for node in hypergraph.nodes:
             if node.id == hypergraph.root.id:
                 continue
             prob += node_vars[node.id] == \
-                sum([edge_vars[edge.id]
-                     for edge in in_edges[node.id]])
+                pulp.lpSum((edge_vars[edge.id]
+                            for edge in in_edges[node.id]))
 
         return HypergraphLP(prob, hypergraph, node_vars,
                             edge_vars, integral)

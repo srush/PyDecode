@@ -28,6 +28,16 @@ def test_all():
     for path in get_all_hyperpaths(s):
         valid_path(s, path)
 
+def chain_hypergraph(size=100):
+    hypergraph = ph.Hypergraph()
+    with hypergraph.builder() as b:
+        term = b.add_node()
+        last_node = term
+        for i in range(size):
+            head_node = b.add_node([([last_node], "0")])
+            last_node = head_node
+    return hypergraph
+
 def simple_hypergraph():
     """
     Create a simple fixed hypergraph.
@@ -42,7 +52,7 @@ def simple_hypergraph():
                                  ([head_node], "4")])
     return hypergraph
 
-def random_hypergraph():
+def random_hypergraph(size=50):
     """
     Generate a random hypergraph.
     """
@@ -50,18 +60,19 @@ def random_hypergraph():
     children = defaultdict(lambda: set())
     with hypergraph.builder() as b:
         terminals = []
-        for i in range(50):
+        for i in range(size):
             n = b.add_node()
             terminals.append(n)
             children[n.id] = set([n.id])
         nodes = list(terminals)
-        for node in range(50):
+        for node in range(size):
             node_a, node_b = random.sample(nodes, 2)
             if len(children[node_a.id] & children[node_b.id]) > 0: continue
             head_node = b.add_node((([node_a, node_b], node),))
             children[head_node.id] = \
                 set([head_node.id]) | children[node_a.id] | children[node_b.id]
             nodes.append(head_node)
+
     nt.assert_greater(len(hypergraph.nodes), 0)
     assert len(hypergraph.edges) > 0
     return hypergraph
