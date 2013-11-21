@@ -116,12 +116,12 @@ class ChartBuilder:
                                             label=label)
                 self._chart[label] = \
                     HypergraphSemiRing(None, [], [node])
-            else:
-                self._chart[label] = val.zero()
+            # else:
+            #     self._chart[label] = val.zero()
         else:
             self._chart[label] = val
         self._last = label
-        return self._chart[label]
+        #return self._chart[label]
 
     def __contains__(self, label):
         return label in self._chart

@@ -135,6 +135,25 @@ cdef class ViterbiPotentials:
                                            potentials, my_bias)
         return self
 
+    def from_vector(self, in_vec, bias=None):
+        cdef ViterbiPotential my_bias
+        if bias is None:
+            my_bias = Viterbi_one()
+        else:
+            my_bias = ViterbiPotential(<double> bias)
+
+        cdef vector[ViterbiPotential] potentials = \
+             vector[ViterbiPotential](self.hypergraph.thisptr.edges().size())
+
+        for i, v in enumerate(in_vec):
+            potentials[i] = ViterbiPotential(<double> v)
+
+        self.thisptr =  \
+          new CHypergraphViterbiPotentials(self.hypergraph.thisptr,
+                                              potentials, my_bias)
+        return self
+        
+
     cdef init(self, const CHypergraphViterbiPotentials *ptr):
         self.thisptr = ptr
         return self
@@ -406,6 +425,25 @@ cdef class LogViterbiPotentials:
           new CHypergraphLogViterbiPotentials(self.hypergraph.thisptr,
                                            potentials, my_bias)
         return self
+
+    def from_vector(self, in_vec, bias=None):
+        cdef LogViterbiPotential my_bias
+        if bias is None:
+            my_bias = LogViterbi_one()
+        else:
+            my_bias = LogViterbiPotential(<double> bias)
+
+        cdef vector[LogViterbiPotential] potentials = \
+             vector[LogViterbiPotential](self.hypergraph.thisptr.edges().size())
+
+        for i, v in enumerate(in_vec):
+            potentials[i] = LogViterbiPotential(<double> v)
+
+        self.thisptr =  \
+          new CHypergraphLogViterbiPotentials(self.hypergraph.thisptr,
+                                              potentials, my_bias)
+        return self
+        
 
     cdef init(self, const CHypergraphLogViterbiPotentials *ptr):
         self.thisptr = ptr
@@ -679,6 +717,25 @@ cdef class InsidePotentials:
                                            potentials, my_bias)
         return self
 
+    def from_vector(self, in_vec, bias=None):
+        cdef InsidePotential my_bias
+        if bias is None:
+            my_bias = Inside_one()
+        else:
+            my_bias = InsidePotential(<double> bias)
+
+        cdef vector[InsidePotential] potentials = \
+             vector[InsidePotential](self.hypergraph.thisptr.edges().size())
+
+        for i, v in enumerate(in_vec):
+            potentials[i] = InsidePotential(<double> v)
+
+        self.thisptr =  \
+          new CHypergraphInsidePotentials(self.hypergraph.thisptr,
+                                              potentials, my_bias)
+        return self
+        
+
     cdef init(self, const CHypergraphInsidePotentials *ptr):
         self.thisptr = ptr
         return self
@@ -951,6 +1008,25 @@ cdef class BoolPotentials:
                                            potentials, my_bias)
         return self
 
+    def from_vector(self, in_vec, bias=None):
+        cdef BoolPotential my_bias
+        if bias is None:
+            my_bias = Bool_one()
+        else:
+            my_bias = BoolPotential(<double> bias)
+
+        cdef vector[BoolPotential] potentials = \
+             vector[BoolPotential](self.hypergraph.thisptr.edges().size())
+
+        for i, v in enumerate(in_vec):
+            potentials[i] = BoolPotential(<double> v)
+
+        self.thisptr =  \
+          new CHypergraphBoolPotentials(self.hypergraph.thisptr,
+                                              potentials, my_bias)
+        return self
+        
+
     cdef init(self, const CHypergraphBoolPotentials *ptr):
         self.thisptr = ptr
         return self
@@ -1222,6 +1298,25 @@ cdef class SparseVectorPotentials:
           new CHypergraphSparseVectorPotentials(self.hypergraph.thisptr,
                                            potentials, my_bias)
         return self
+
+    def from_vector(self, in_vec, bias=None):
+        cdef SparseVectorPotential my_bias
+        if bias is None:
+            my_bias = SparseVector_one()
+        else:
+            my_bias = SparseVectorPotential(<vector[pair[int, int]]> bias)
+
+        cdef vector[SparseVectorPotential] potentials = \
+             vector[SparseVectorPotential](self.hypergraph.thisptr.edges().size())
+
+        for i, v in enumerate(in_vec):
+            potentials[i] = SparseVectorPotential(<vector[pair[int, int]]> v)
+
+        self.thisptr =  \
+          new CHypergraphSparseVectorPotentials(self.hypergraph.thisptr,
+                                              potentials, my_bias)
+        return self
+        
 
     cdef init(self, const CHypergraphSparseVectorPotentials *ptr):
         self.thisptr = ptr

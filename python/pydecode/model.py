@@ -8,7 +8,7 @@ from sklearn.feature_extraction import DictVectorizer
 import pydecode.hyper as ph
 import numpy as np
 import pydecode.chart as chart
-
+import time
 
 class DynamicProgrammingModel(StructuredModel):
     """
@@ -38,7 +38,7 @@ class DynamicProgrammingModel(StructuredModel):
 
         raise NotImplementedError()
 
-    def factored_psi(self, x, index):
+    def factored_psi(self, x, index, data):
         """
         Compute the features for a given index.
 
@@ -60,32 +60,49 @@ class DynamicProgrammingModel(StructuredModel):
         raise NotImplementedError()
 
     def psi(self, x, y):
-        features = set()
+        features = {}
+        data = self.initialize_features(x)
         for index in y:
-            features |= self.factored_psi(x, index)
-        f2 = {s: 1 for s in features}
-        final_features = self._vec.transform(f2)
+            f = self.factored_psi(x, index, data)
+            for k, v in f.iteritems():
+                features.setdefault(k, 0)
+                features[k] += v
+        #print features
+        final_features = self._vec.transform(features)
         return final_features
 
     def initialize(self, X, Y):
-        features = set()
-        sets = (self.factored_psi(x, index)
-                for x, y in zip(X, Y)
-                for index in y)
+        features = {}
+        sets = []
+        for x, y in zip(X, Y):
+            data = self.initialize_features(x)
+            sets += [self.factored_psi(x, index, data)
+                     for index in y]
         for s in sets:
-            features |= s
+            for k, v in s.iteritems():
+                features.setdefault(k, 0)
+                features[k] += v
 
-        features2 = {s: 1 for s in features}
-        t = self._vec.fit_transform(features2)
+        t = self._vec.fit_transform(features)
         self.size_psi = t.size
 
-    def inference(self, x, w):
+    def inference(self, x, w, relaxed=False):
+
+        # a = time.time()
         hypergraph = self._build_hypergraph(x)
+        # print time.time() - a
+        # b = time.time()
         potentials = self._build_potentials(hypergraph, x, w)
+        # print time.time() - b
         path = ph.best_path(hypergraph, potentials)
+        print "SCORE IS:", potentials.dot(path)
         y = set()
         for edge in path:
             y.add(hypergraph.label(edge))
+            #print repr(hypergraph.label(edge))
+        # print len(path.edges)
+        #print "DONE"
+        self.psi(x, y)
         return y
 
     def loss(self, yhat, y):
@@ -105,14 +122,30 @@ class DynamicProgrammingModel(StructuredModel):
         return c.finish()
 
     def _build_potentials(self, hypergraph, x, w):
-        def potential_builder(index):
-            return self._features(x, index).dot(w.T)
-        return ph.Potentials(hypergraph).build(potential_builder)
+        data = self.initialize_features(x)
+        features = [self.factored_psi(x, hypergraph.label(edge), data) for edge in hypergraph.edges]
+        f = self._vec.transform(features)
+        scores =  f * w.T
+        #print "Weights:", self._vec.inverse_transform(w) 
+        return ph.Potentials(hypergraph).from_vector(scores)
 
-    def _features(self, x, index):
-        d = self.factored_psi(x, index)
-        return self._vec.transform({s: 1 for s in d})
+        #return weights
+        #print len(), len(hypergraph.edges)
+        # def potential_builder(index):
+        #     return 
+        # return ph.Potentials(hypergraph).build(potential_builder)
+        # def potential_builder(index):
+        #      return self._features(x, index, data).dot(w.T)
+        # w2 = ph.Potentials(hypergraph).build(potential_builder)
+        # for edge in hypergraph.edges:
+        #     assert weights[edge] == w2[edge]
 
-    def _path_features(self, hypergraph, x, path):
-        return sum([self._features(x, hypergraph.label(edge))
-                    for edge in path])
+
+    # def _features(self, x, index, data):
+    #     d = self.factored_psi(x, index, data)
+    #     # This is slow. 
+    #     return self._vec.transform(d) # {s: 1 for s in d})
+
+    # def _path_features(self, hypergraph, x, path, data):
+    #     return sum((self._features(x, hypergraph.label(edge), data)
+    #                 for edge in path))
