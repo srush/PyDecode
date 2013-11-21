@@ -212,17 +212,26 @@ public:
 template<typename SemiringFirst, typename SemiringSecond>
 class CompPotential {
 public:
-    typedef std::pair<SemiringFirst, SemiringSecond> ValType;
+    typedef std::pair<typename SemiringFirst::ValType, typename SemiringSecond::ValType> ValType;
 
     static inline ValType add(ValType lhs, const ValType& rhs) {
         if (lhs.first < rhs.first) lhs = rhs;
         return lhs;
     }
-
     static inline ValType times(ValType lhs, const ValType& rhs) {
         lhs.first = SemiringFirst::times(lhs.first, rhs.first);
         lhs.second = SemiringSecond::times(lhs.second, rhs.second);
         return lhs;
+    }
+
+    static inline ValType safe_add(ValType lhs, const ValType& rhs) {
+        if (lhs.first < rhs.first) lhs = rhs;
+        return CompPotential::normalize(lhs);
+    }
+    static inline ValType safe_times(ValType lhs, const ValType& rhs) {
+        lhs.first = SemiringFirst::times(lhs.first, rhs.first);
+        lhs.second = SemiringSecond::times(lhs.second, rhs.second);
+        return CompPotential::normalize(lhs);
     }
 
     static inline ValType one() { return ValType(SemiringFirst::one(), SemiringSecond::one()); }
@@ -232,6 +241,10 @@ public:
         val.first = SemiringFirst::normalize(val.first);
         val.second = SemiringSecond::normalize(val.second);
         return val;
+    }
+
+    static inline ValType randValue() {
+        return ValType(SemiringFirst::randValue(), SemiringSecond::randValue());
     }
 };
 
@@ -255,7 +268,7 @@ public:
         return lhs;
     }
 
-    static inline ValType times(const ValType& lhs, const ValType& rhs) {
+    static ValType times(const ValType& lhs, const ValType& rhs) {
         int i = 0, j = 0;
         SparseVector vec;
         while (i < lhs.size() || j < rhs.size()) {
@@ -277,7 +290,7 @@ public:
     static inline ValType safe_add(ValType lhs, const ValType& rhs) {
         return lhs;
     }
-    static inline ValType safe_times(const ValType& lhs, const ValType& rhs) {
+    static ValType safe_times(const ValType& lhs, const ValType& rhs) {
         int i = 0, j = 0;
         SparseVector vec;
         while (i < lhs.size() || j < rhs.size()) {
@@ -324,11 +337,11 @@ public:
 class TreePotential {
 public:
     typedef Hypernode* ValType;
+
     static inline ValType add(ValType lhs, const ValType& rhs) {
         return lhs;
     }
-
-    static inline ValType times(ValType lhs, const ValType& rhs) {
+    static ValType times(ValType lhs, const ValType& rhs) {
         if (rhs == NULL or lhs == NULL) {
             lhs = NULL;
         } else {
@@ -346,8 +359,7 @@ public:
     static inline ValType safe_add(ValType lhs, const ValType& rhs) {
         return lhs;
     }
-
-    static inline ValType safe_times(ValType lhs, const ValType& rhs) {
+    static ValType safe_times(ValType lhs, const ValType& rhs) {
         if (rhs == NULL or lhs == NULL) {
             lhs = NULL;
         } else {

@@ -55,7 +55,7 @@ TEST(Decode, SemiringTests) {
         SEMIRINGTEST(TropicalPotential);
         SEMIRINGTEST(BoolPotential);
         SEMIRINGTEST(CountingPotential);
-        // SEMIRINGTEST(CVL);
+        SEMIRINGTEST(CVL);
         // SEMIRINGTEST(SparseVectorPotential);
         // SEMIRINGTEST(TreePotential);
     }
