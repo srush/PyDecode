@@ -4,7 +4,7 @@
 #include <ctime>
 #include "./foreach.h"
 
-#define INF 1e8
+#define INF 1e9
 #define foreach BOOST_FOREACH
 
 typedef unsigned int uint;
