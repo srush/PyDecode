@@ -8,10 +8,11 @@ import pydecode.constraints as cons
 import pydecode.optimization as opt
 import itertools
 from collections import defaultdict
+import pydecode.utils as utils
 
 def test_all():
     s = simple_hypergraph()
-    for path in get_all_hyperpaths(s):
+    for path in utils.all_paths(s):
         valid_path(s, path)
 
 def chain_hypergraph(size=100):
@@ -71,7 +72,6 @@ def hypergraphs():
     h = simple_hypergraph()
     print h
     yield h
-
 
 # TESTS FOR HYPERGRAPH CONSTRUCTION.
 
@@ -149,36 +149,18 @@ def valid_path(hypergraph, path):
 def test_construction():
     h = random_hypergraph()
 
-def rand_gen(arg=None):
-    return random.random()
-
-def random_inside_potentials(hypergraph):
-    return ph.InsidePotentials(hypergraph).build(rand_gen)
-
-def random_viterbi_potentials(hypergraph):
-    return ph.ViterbiPotentials(hypergraph).build(rand_gen)
-
-def random_log_viterbi_potentials(hypergraph):
-    return ph.LogViterbiPotentials(hypergraph).build(rand_gen)
-
-def rand_bool_gen(arg=None):
-    return random.random() > 0.5
-
-def random_bool_potentials(hypergraph):
-    return ph.BoolPotentials(hypergraph).build(rand_bool_gen)
-
 
 def test_best_path():
     """
     Test viterbi path finding.
     """
     for h in hypergraphs():
-        w = random_viterbi_potentials(h)
+        w = utils.random_viterbi_potentials(h)
         path = ph.best_path(h, w)
         nt.assert_not_equal(w.dot(path), 0.0)
         valid_path(h, path)
         same = False
-        for other_path in get_all_hyperpaths(h):
+        for other_path in utils.all_paths(h):
             assert w.dot(path) >= w.dot(other_path)
             if path == other_path: same = True
         assert same
@@ -189,7 +171,7 @@ def test_inside():
     Test inside chart gen.
     """
     for h in hypergraphs():
-        w = random_inside_potentials(h)
+        w = utils.random_inside_potentials(h)
         inside = ph.inside(h, w)
 
 
@@ -198,7 +180,7 @@ def test_outside():
     Test outside chart properties.
     """
     for h in hypergraphs():
-        w = random_viterbi_potentials(h)
+        w = utils.random_viterbi_potentials(h)
         path = ph.best_path(h, w)
         chart = ph.inside_values(h, w)
         best = w.dot(path)
@@ -216,11 +198,11 @@ def test_outside():
 def test_posteriors():
     "Check the posteriors by enumeration."
     for h in hypergraphs():
-        w = random_inside_potentials(h)
+        w = utils.random_inside_potentials(h)
         marg = ph.compute_marginals(h, w)
 
 
-        paths = get_all_hyperpaths(h)
+        paths = utils.all_paths(h)
         m = defaultdict(lambda: 0.0)
         total_score = 0.0
         for path in paths:
@@ -242,7 +224,7 @@ def test_max_marginals():
     Test that max-marginals are correct.
     """
     for h in hypergraphs():
-        w = random_viterbi_potentials(h)
+        w = utils.random_viterbi_potentials(h)
         print w.show(h)
 
         path = ph.best_path(h, w)
@@ -267,7 +249,7 @@ def test_max_marginals():
 
 def test_pruning():
     for h in hypergraphs():
-        w = random_viterbi_potentials(h)
+        w = utils.random_viterbi_potentials(h)
 
         original_path = ph.best_path(h, w)
         new_hyper, new_potentials = ph.prune_hypergraph(h, w, -0.99)
@@ -340,7 +322,7 @@ def test_constraint():
     Test constraint checking.
     """
     for h in hypergraphs():
-        w = random_viterbi_potentials(h)
+        w = utils.random_viterbi_potentials(h)
         constraints, edge = random_constraint(h)
         path = ph.best_path(h, w)
         match = constraints.check(path)
@@ -359,7 +341,7 @@ def test_constraint():
 
 def test_subgradient():
     for h in hypergraphs():
-        w = random_log_viterbi_potentials(h)
+        w = utils.random_log_viterbi_potentials(h)
         constraints, edge = random_have_constraint(h)
         path = ph.best_path(h, w)
         match = constraints.check(path)
@@ -375,7 +357,7 @@ def test_subgradient():
 def test_lp():
     import pydecode.lp as lp
     for h in hypergraphs():
-        w = random_log_viterbi_potentials(h)
+        w = utils.random_log_viterbi_potentials(h)
         g = lp.HypergraphLP.make_lp(h, w)
         g.solve()
         path = g.path
