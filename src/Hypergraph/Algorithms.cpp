@@ -101,7 +101,7 @@ Hyperpath *general_viterbi(
   foreach (HEdge edge, graph->edges()) {
     typename S::ValType score = potentials.score(edge);
     foreach (HNode node, edge->tail_nodes()) {
-      score *= (*chart)[node];
+      score = S::times(score, (*chart)[node]);
     }
     if (score > (*chart)[edge->head_node()]) {
       chart->insert(edge->head_node(), score);

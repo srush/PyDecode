@@ -175,7 +175,7 @@ def test_best_path():
     Test viterbi path finding.
     """
     for h in hypergraphs():
-        w = random_viterbi_potentials(h)
+        w = random_log_viterbi_potentials(h)
         path = ph.best_path(h, w)
         nt.assert_not_equal(w.dot(path), 0.0)
         valid_path(h, path)
@@ -286,9 +286,9 @@ def test_pruning():
                                new_potentials.dot(prune_path))
 
         # Test pruning amount.
-        prune = random.random()
+        prune = 0.001
         max_marginals = ph.compute_marginals(h, w)
-        new_hyper, new_potentials = ph.prune_hypergraph(h, w, 0.0)
+        new_hyper, new_potentials = ph.prune_hypergraph(h, w, prune)
 
         assert (len(new_hyper.edges) > 0)
         original_edges = {}
@@ -304,7 +304,7 @@ def test_pruning():
             orig = original_edges[name]
             nt.assert_almost_equal(w[orig], new_potentials[edge])
             m = max_marginals[orig]
-            nt.assert_greater(m, prune * original_score)
+            nt.assert_greater(m, prune)
 
 
 ### CONSTRAINT CODE
@@ -380,11 +380,27 @@ def test_lp():
     import pydecode.lp as lp
     for h in hypergraphs():
         w = random_log_viterbi_potentials(h)
-        print w
+        for edge in h.edges: print w[edge],
+        print
         g = lp.HypergraphLP.make_lp(h, w)
         g.solve()
         path = g.path
+        for edge in path:
+            print edge.id,
+        print
         opath = ph.best_path(h, w)
+        for edge in opath:
+            print edge.id,
+        print
+        print h
+
+        print
+        for path2 in get_all_hyperpaths(h):
+            for edge in path2:
+                print edge.id,
+            print
+            print w.dot(path2)
+            print
 
         nt.assert_almost_equal(w.dot(path), w.dot(opath))
         for edge in path.edges:

@@ -59,6 +59,7 @@ cdef extern from "Hypergraph/Semirings.h":
             const CHypergraph *hypergraph,
             const vector[double] potentials,
             double bias) except +
+        double bias()
 
 cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiPotential":
     double Viterbi_one "ViterbiPotential::one" ()
@@ -81,6 +82,7 @@ cdef class ViterbiPotentials:
     cdef Hypergraph hypergraph
     cdef const CHypergraphViterbiPotentials *thisptr
     cdef kind
+
     def __cinit__(self, Hypergraph graph):
         """
         Build the potential vector for a hypergraph.
@@ -108,6 +110,10 @@ cdef class ViterbiPotentials:
     property kind:
         def __get__(self):
             return self.kind
+
+    property bias:
+        def __get__(self):
+            return self.thisptr.bias()
 
     def build(self, fn, bias=None):
         """
@@ -333,6 +339,7 @@ cdef extern from "Hypergraph/Semirings.h":
             const CHypergraph *hypergraph,
             const vector[double] potentials,
             double bias) except +
+        double bias()
 
 cdef extern from "Hypergraph/Semirings.h" namespace "LogViterbiPotential":
     double LogViterbi_one "LogViterbiPotential::one" ()
@@ -355,6 +362,7 @@ cdef class LogViterbiPotentials:
     cdef Hypergraph hypergraph
     cdef const CHypergraphLogViterbiPotentials *thisptr
     cdef kind
+
     def __cinit__(self, Hypergraph graph):
         """
         Build the potential vector for a hypergraph.
@@ -382,6 +390,10 @@ cdef class LogViterbiPotentials:
     property kind:
         def __get__(self):
             return self.kind
+
+    property bias:
+        def __get__(self):
+            return self.thisptr.bias()
 
     def build(self, fn, bias=None):
         """
@@ -607,6 +619,7 @@ cdef extern from "Hypergraph/Semirings.h":
             const CHypergraph *hypergraph,
             const vector[double] potentials,
             double bias) except +
+        double bias()
 
 cdef extern from "Hypergraph/Semirings.h" namespace "InsidePotential":
     double Inside_one "InsidePotential::one" ()
@@ -629,6 +642,7 @@ cdef class InsidePotentials:
     cdef Hypergraph hypergraph
     cdef const CHypergraphInsidePotentials *thisptr
     cdef kind
+
     def __cinit__(self, Hypergraph graph):
         """
         Build the potential vector for a hypergraph.
@@ -656,6 +670,10 @@ cdef class InsidePotentials:
     property kind:
         def __get__(self):
             return self.kind
+
+    property bias:
+        def __get__(self):
+            return self.thisptr.bias()
 
     def build(self, fn, bias=None):
         """
@@ -881,6 +899,7 @@ cdef extern from "Hypergraph/Semirings.h":
             const CHypergraph *hypergraph,
             const vector[bool] potentials,
             bool bias) except +
+        bool bias()
 
 cdef extern from "Hypergraph/Semirings.h" namespace "BoolPotential":
     bool Bool_one "BoolPotential::one" ()
@@ -903,6 +922,7 @@ cdef class BoolPotentials:
     cdef Hypergraph hypergraph
     cdef const CHypergraphBoolPotentials *thisptr
     cdef kind
+
     def __cinit__(self, Hypergraph graph):
         """
         Build the potential vector for a hypergraph.
@@ -930,6 +950,10 @@ cdef class BoolPotentials:
     property kind:
         def __get__(self):
             return self.kind
+
+    property bias:
+        def __get__(self):
+            return self.thisptr.bias()
 
     def build(self, fn, bias=None):
         """
@@ -1155,6 +1179,7 @@ cdef extern from "Hypergraph/Semirings.h":
             const CHypergraph *hypergraph,
             const vector[vector[pair[int, int]]] potentials,
             vector[pair[int, int]] bias) except +
+        vector[pair[int, int]] bias()
 
 cdef extern from "Hypergraph/Semirings.h" namespace "SparseVectorPotential":
     vector[pair[int, int]] SparseVector_one "SparseVectorPotential::one" ()
@@ -1177,6 +1202,7 @@ cdef class SparseVectorPotentials:
     cdef Hypergraph hypergraph
     cdef const CHypergraphSparseVectorPotentials *thisptr
     cdef kind
+
     def __cinit__(self, Hypergraph graph):
         """
         Build the potential vector for a hypergraph.
@@ -1204,6 +1230,10 @@ cdef class SparseVectorPotentials:
     property kind:
         def __get__(self):
             return self.kind
+
+    property bias:
+        def __get__(self):
+            return self.thisptr.bias()
 
     def build(self, fn, bias=None):
         """

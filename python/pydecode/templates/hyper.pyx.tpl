@@ -59,6 +59,7 @@ cdef extern from "Hypergraph/Semirings.h":
             const CHypergraph *hypergraph,
             const vector[{{S.vtype}}] potentials,
             {{S.vtype}} bias) except +
+        {{S.vtype}} bias()
 
 cdef extern from "Hypergraph/Semirings.h" namespace "{{S.ctype}}":
     {{S.vtype}} {{S.type}}_one "{{S.ctype}}::one" ()
@@ -81,6 +82,7 @@ cdef class {{S.type}}Potentials:
     cdef Hypergraph hypergraph
     cdef const CHypergraph{{S.type}}Potentials *thisptr
     cdef kind
+
     def __cinit__(self, Hypergraph graph):
         """
         Build the potential vector for a hypergraph.
@@ -108,6 +110,10 @@ cdef class {{S.type}}Potentials:
     property kind:
         def __get__(self):
             return self.kind
+
+    property bias:
+        def __get__(self):
+            return self.thisptr.bias()
 
     def build(self, fn, bias=None):
         """

@@ -99,7 +99,7 @@ class Marginals {
   static const Marginals *compute(
                                   const Hypergraph *hypergraph,
                                   const HypergraphPotentials<S> *potentials) {
-    Chart<S> *in_chart =general_inside<S>(hypergraph, *potentials);
+    Chart<S> *in_chart = general_inside<S>(hypergraph, *potentials);
     Chart<S> *out_chart = general_outside<S>(hypergraph, *potentials,
                                             *in_chart);
     return new Marginals<S>(hypergraph, potentials,

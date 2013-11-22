@@ -107,7 +107,9 @@ pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potential
     SparseVector bias_constraints =
             static_cast<SparseVector>(sparse_potentials.bias());
     foreach (SparsePair pair, bias_constraints) {
-        potentials->bias() *= LogViterbiPotential::ValType(pair.second * vec[pair.first]);
+        potentials->bias() =
+            LogViterbiPotential::times(potentials->bias(),
+                                       LogViterbiPotential::ValType(pair.second * vec[pair.first]));
     }
     return potentials;
 };
