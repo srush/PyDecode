@@ -284,7 +284,7 @@ class {{S.type}}:
         cdef CHyperpath *path = \
             viterbi_{{S.type}}(graph.thisptr,
                                deref(potentials.thisptr))
-        return Path().init(path)
+        return Path().init(path, graph)
     {% endif %}
 
     @staticmethod

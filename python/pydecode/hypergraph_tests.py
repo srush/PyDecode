@@ -9,20 +9,6 @@ import pydecode.optimization as opt
 import itertools
 from collections import defaultdict
 
-def get_all_hyperpaths(h):
-    "Get all possible hyperpaths."
-    def paths(node):
-        if node.is_terminal:
-            yield tuple()
-        else:
-            for edge in node.edges:
-                t = [paths(node) for node in edge.tail]
-                for below in itertools.product(*t):
-                    yield (edge,) + sum(below, ())
-    paths = [ph.Path(h, list(edges)) for edges in paths(h.root)]
-    return paths
-
-
 def test_all():
     s = simple_hypergraph()
     for path in get_all_hyperpaths(s):
@@ -263,7 +249,7 @@ def test_max_marginals():
         best = w.dot(path)
         print "BEST"
 
-        print "\n".join(["%20s : %s"%(h.label(edge), w[edge]) for edge in path.edges])
+        print "\n".join(["%20s : %s"%(edge.label, w[edge]) for edge in path.edges])
         print best
         nt.assert_not_equal(best, 0.0)
         max_marginals = ph.compute_marginals(h, w)
@@ -305,11 +291,11 @@ def test_pruning():
         assert (len(new_hyper.edges) > 0)
         original_edges = {}
         for edge in h.edges:
-            original_edges[h.label(edge)] = edge
+            original_edges[edge.label] = edge
 
         new_edges = {}
         for edge in new_hyper.edges:
-            new_edges[h.label(edge)] = edge
+            new_edges[edge.label] = edge
 
         for name, edge in new_edges.iteritems():
 
@@ -325,7 +311,7 @@ def random_have_constraint(hypergraph):
     edge, = random.sample(hypergraph.edges, 1)
 
     def build_constraints(label):
-        l = hypergraph.label(edge)
+        l = edge.label
         if label == l:
             return [("have", 1)]
         return []
@@ -333,14 +319,12 @@ def random_have_constraint(hypergraph):
         build_constraints)
     return constraints, edge
 
-
-
 def random_constraint(hypergraph):
     "Produce a random constraint on an edge."
 
     edge, = random.sample(hypergraph.edges, 1)
     print edge.id
-    l = hypergraph.label(edge)
+    l = edge.label
 
     def build_constraints(label):
         if label == l:

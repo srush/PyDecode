@@ -277,7 +277,7 @@ class Viterbi:
         cdef CHyperpath *path = \
             viterbi_Viterbi(graph.thisptr,
                                deref(potentials.thisptr))
-        return Path().init(path)
+        return Path().init(path, graph)
     
 
     @staticmethod
@@ -568,7 +568,7 @@ class LogViterbi:
         cdef CHyperpath *path = \
             viterbi_LogViterbi(graph.thisptr,
                                deref(potentials.thisptr))
-        return Path().init(path)
+        return Path().init(path, graph)
     
 
     @staticmethod
@@ -859,7 +859,7 @@ class Inside:
         cdef CHyperpath *path = \
             viterbi_Inside(graph.thisptr,
                                deref(potentials.thisptr))
-        return Path().init(path)
+        return Path().init(path, graph)
     
 
     @staticmethod
@@ -1150,7 +1150,7 @@ class Bool:
         cdef CHyperpath *path = \
             viterbi_Bool(graph.thisptr,
                                deref(potentials.thisptr))
-        return Path().init(path)
+        return Path().init(path, graph)
     
 
     @staticmethod
