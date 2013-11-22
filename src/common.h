@@ -2,9 +2,10 @@
 #define COMMON_H
 
 #include <ctime>
+#include <cstdlib>
 #include "./foreach.h"
 
-#define INF 1e8
+#define INF 1e9
 #define foreach BOOST_FOREACH
 
 typedef unsigned int uint;
@@ -16,5 +17,10 @@ class Clock {
     return diffms;
   }
 };
+
+inline double dRand(double dMin, double dMax) {
+    double d = (double)rand() / RAND_MAX;
+    return dMin + d * (dMax - dMin);
+}
 
 #endif

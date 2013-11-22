@@ -24,7 +24,7 @@ Weight potentials :math:`R^{{\cal E}}` with :math:`(+, *) = (+, *)`.
 """
 },
   {"type": "Bool", "ptype": "BoolW",
-   "ctype": "BoolPotential", "vtype": "double",
+   "ctype": "BoolPotential", "vtype": "bool",
    "bool": True, "viterbi" : True,
       "description": r"""
 Weight potentials :math:`\{0,1\}^{{\cal E}}` with :math:`(+, *) = (\cap, \cup)`.
@@ -33,14 +33,14 @@ Weight potentials :math:`\{0,1\}^{{\cal E}}` with :math:`(+, *) = (\cap, \cup)`.
   {"type": "SparseVector", "ptype": "SparseVectorW",
    "ctype": "SparseVectorPotential", "vtype": "vector[pair[int, int]]",
    "bool": False, "viterbi" : False, "float": False,
-   "conversion" : """
-            d = {}
-            cdef vector[pair[int,int]] s= <vector[pair[int,int]]> self.wrap
-            for p in s:
-                d[p.first] = p.second
-            return d
-"""
-   }
+    "conversion" : "pass"}
+#             d = {}
+#             cdef vector[pair[int,int]] s= <vector[pair[int,int]]> self.wrap
+#             for p in s:
+#                 d[p.first] = p.second
+#             return d
+# """
+#    }
   ]
 }
 

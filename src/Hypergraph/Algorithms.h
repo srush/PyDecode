@@ -19,19 +19,20 @@
  */
 template<typename SemiringType>
 class Chart {
-public:
   typedef SemiringType S;
+  typedef typename SemiringType::ValType V;
+
+public:
   Chart<S>(const Hypergraph *hypergraph)
       : hypergraph_(hypergraph),
       chart_(hypergraph->nodes().size(), S::zero()) {}
 
 
-  S& operator[] (HNode node) { return chart_[node->id()]; }
-  const S& operator[] (HNode node) const {
-    return chart_[node->id()];
-  }
+  // V& operator[] (HNode node) { return chart_[node->id()]; }
+  V operator[] (HNode node) const { return chart_[node->id()]; }
 
-  const S& get(HNode node) const { return chart_[node->id()]; }
+  V get(HNode node) const { return chart_[node->id()]; }
+  inline void insert(const HNode& node, const V& val) { chart_[node->id()] = val; }
 
 
   void check(const Hypergraph *hypergraph) const {
@@ -42,7 +43,7 @@ public:
 
 protected:
   const Hypergraph *hypergraph_;
-  vector<S> chart_;
+  vector<V> chart_;
 };
 
 template<typename SemiringType>
@@ -63,12 +64,14 @@ Hyperpath *general_viterbi(
 
 template<typename SemiringType>
 class Marginals {
+  typedef SemiringType S;
+  typedef typename SemiringType::ValType V;
  public:
 
   Marginals(const Hypergraph *hypergraph,
-            const HypergraphPotentials<SemiringType> *potentials,
-            const Chart<SemiringType> *in_chart,
-            const Chart<SemiringType> *out_chart)
+            const HypergraphPotentials<S> *potentials,
+            const Chart<S> *in_chart,
+            const Chart<S> *out_chart)
       : hypergraph_(hypergraph),
       potentials_(potentials),
       in_chart_(in_chart),
@@ -83,49 +86,47 @@ class Marginals {
     delete out_chart_;
   }
 
-  HypergraphPotentials<BoolPotential> *threshold(
-      const SemiringType &threshold) const {
+  HypergraphPotentials<BoolPotential> *threshold(const V &threshold) const {
     HypergraphPotentials<BoolPotential> *potentials =
         new HypergraphPotentials<BoolPotential>(hypergraph_);
     foreach (HEdge edge, hypergraph_->edges()) {
-      (*potentials)[edge] = BoolPotential(threshold < marginal(edge));
+      potentials->insert(edge, threshold < marginal(edge));
     }
     return potentials;
   }
 
   // Compute the max-marginals for the potentialed hypergraph.
   static const Marginals *compute(
-      const Hypergraph *hypergraph,
-      const HypergraphPotentials<SemiringType> *potentials) {
-    Chart<SemiringType> *in_chart =
-        general_inside<SemiringType>(hypergraph, *potentials);
-    Chart<SemiringType> *out_chart =
-        general_outside<SemiringType>(hypergraph, *potentials,
-                                      *in_chart);
-    return new Marginals<SemiringType>(hypergraph, potentials,
-                                       in_chart, out_chart);
+                                  const Hypergraph *hypergraph,
+                                  const HypergraphPotentials<S> *potentials) {
+    Chart<S> *in_chart = general_inside<S>(hypergraph, *potentials);
+    Chart<S> *out_chart = general_outside<S>(hypergraph, *potentials,
+                                            *in_chart);
+    return new Marginals<S>(hypergraph, potentials,
+                           in_chart, out_chart);
   }
 
 
   // Get max-marginal for edge or node.
-  SemiringType marginal(HEdge edge) const {
-      SemiringType score = (*out_chart_)[edge->head_node()];
-      score *= potentials_->score(edge);
+  V marginal(HEdge edge) const {
+      V score = (*out_chart_)[edge->head_node()];
+      score = SemiringType::times(score, potentials_->score(edge));
       foreach (HNode node, edge->tail_nodes()) {
-        score *= (*in_chart_)[node];
+        score = SemiringType::times(score, (*in_chart_)[node]);
       }
       return score; /// (*in_chart_)[hypergraph_->root()];
   }
 
-  SemiringType marginal(HNode node) const {
-    return (*in_chart_)[node] * (*out_chart_)[node];
+  V marginal(HNode node) const {
+    return SemiringType::times((*in_chart_)[node], (*out_chart_)[node]);
   }
 
   template<typename OtherSemi>
-  OtherSemi dot(HypergraphPotentials<OtherSemi> other) const {
-    OtherSemi out_score = OtherSemi::one();
+  typename OtherSemi::ValType dot(HypergraphPotentials<OtherSemi> other) const {
+    typename OtherSemi::ValType out_score = OtherSemi::one();
     foreach (HEdge edge, hypergraph_->edges()) {
-      out_score += marginal(edge) * other.score(edge);
+      out_score = OtherSemi::add(out_score,
+                      OtherSemi::times(marginal(edge), other.score(edge)));
     }
     return out_score;
   }

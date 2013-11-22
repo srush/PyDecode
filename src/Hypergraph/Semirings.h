@@ -1,290 +1,204 @@
+// Copyright [2013] Alexander Rush
 
 #ifndef HYPERGRAPH_SEMIRING_H_
 #define HYPERGRAPH_SEMIRING_H_
 
 #include <algorithm>
+#include "Hypergraph/Factory.h"
 #include "Hypergraph/Hypergraph.h"
 #include "./common.h"
 
-/**
- * A base class of a potential with traits of a semiring
- * including + and * operators, and annihlator/identity elements.
- */
-template<typename ValType, typename SemiringPotential>
-class BaseSemiringPotential {
+
+class ViterbiPotential {
 public:
-	BaseSemiringPotential(const SemiringPotential& other)
-		: value(normalize(other.value)) {}
-	BaseSemiringPotential(ValType val) : value(normalize(val)) {}
-    BaseSemiringPotential() : value(zero()) {}
-
-	operator ValType() const { return value; }
-
-	SemiringPotential& operator=(SemiringPotential rhs) {
-		normalize(rhs.value);
-		std::swap(value, rhs.value);
-		return *this;
-	}
-
-	SemiringPotential& operator=(ValType rhs) {
-		normalize(rhs);
-		std::swap(value, rhs);
-		return *this;
-	}
-
-    static SemiringPotential add(SemiringPotential lhs, const SemiringPotential &rhs) {
-      return lhs + rhs;
+    typedef double ValType;
+    static inline ValType add(ValType lhs, const ValType &rhs) {
+        lhs = std::max(lhs, rhs);
+        return lhs;
+    }
+    static inline ValType times(ValType lhs, const ValType &rhs) {
+        lhs *= rhs;
+        return lhs;
     }
 
-    static SemiringPotential times(SemiringPotential lhs, const SemiringPotential &rhs) {
-      return lhs * rhs;
+    static inline ValType safe_add(ValType lhs, const ValType &rhs) {
+        lhs = std::max(lhs, rhs);
+        return ViterbiPotential::normalize(lhs);
+    }
+    static inline ValType safe_times(ValType lhs, const ValType &rhs) {
+        lhs *= rhs;
+        return ViterbiPotential::normalize(lhs);
     }
 
-	friend bool operator==(const SemiringPotential& lhs,const SemiringPotential& rhs) {
-		return lhs.value == rhs.value;
-	}
+    static inline ValType& normalize(ValType& val) {
+        if (val < 0.0) val = 0.0;
+        else if (val > 1.0) val = 1.0;
+        return val;
+    }
 
-	friend SemiringPotential operator+(SemiringPotential lhs, const SemiringPotential &rhs) {
-		lhs += rhs;
-		return lhs;
-	}
-	friend SemiringPotential operator*(SemiringPotential lhs, const SemiringPotential &rhs) {
-		lhs *= rhs;
-		return lhs;
-	}
+    static inline ValType zero() { return 0.0; }
+    static inline ValType one() { return 1.0; }
 
-	SemiringPotential& operator+=(const SemiringPotential& rhs) {
-		value = value + rhs.value;
-		return *this;
-	}
-	SemiringPotential& operator*=(const SemiringPotential& rhs) {
-		value = value * rhs.value;
-		return *this;
-	}
+    static inline ValType randValue() { return dRand(0.0,1.0); }
+};
 
-	static const SemiringPotential one() { return SemiringPotential(1.0); }
-	static const SemiringPotential zero() { return SemiringPotential(0.0); }
+class LogViterbiPotential : public ViterbiPotential {
+public:
+    static inline ValType times(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return lhs;
+    }
 
-	// Determines range of acceptable values
-	ValType normalize(ValType val) { return val; };
+    static inline ValType safe_add(ValType lhs, const ValType &rhs) {
+        lhs = std::max(lhs, rhs);
+        return LogViterbiPotential::normalize(lhs);
+    }
+    static inline ValType safe_times(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return LogViterbiPotential::normalize(lhs);
+    }
+
+    static inline ValType zero() { return -INF; }
+    static inline ValType one() { return 0.0; }
+
+    static inline ValType& normalize(ValType& val) {
+        return val = val < -INF ? -INF : val;
+    }
+
+    static inline ValType randValue() { return dRand(-INF, 0.0); }
+};
+
+class InsidePotential : public ViterbiPotential {
+public:
+    static inline ValType add(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+
+    static inline ValType safe_add(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return InsidePotential::normalize(lhs);
+    }
+};
+
+class RealPotential {
+public:
+    typedef double ValType;
+
+    static inline ValType add(ValType lhs, const ValType &rhs) {
+        lhs = std::min(lhs, rhs);
+        return lhs;
+    }
+    static inline ValType times(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+
+    static inline ValType safe_add(ValType lhs, const ValType &rhs) {
+        lhs = std::min(lhs, rhs);
+        return RealPotential::normalize(lhs);
+    }
+    static inline ValType safe_times(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return RealPotential::normalize(lhs);
+    }
+
+    static inline ValType zero() { return INF; }
+    static inline ValType one() { return 0.0; }
+
+    static inline ValType& normalize(ValType& val) {
+        if (val < NEGATIVE_INFINITY) val = NEGATIVE_INFINITY;
+        else if (val > INF - INFINITY_BUFFER) val = INF;
+        return val;
+    }
+
+    static ValType randValue() { return dRand(NEGATIVE_INFINITY, INF - INFINITY_BUFFER); }
 
 protected:
-	ValType value;
+    // Need specialized negative ranges for normalization purposes
+    // and to hold to Semiring properties.
+    static ValType INFINITY_BUFFER;
+    static ValType NEGATIVE_INFINITY;
 };
 
-/**
- * Implements the Viterbi type of semiring as described in Huang 2006.
- * +: max
- * *: *
- * 0: 0
- * 1: 1
- */
-class ViterbiPotential : public BaseSemiringPotential<double, ViterbiPotential> {
+class TropicalPotential : public RealPotential {
 public:
-ViterbiPotential(double value) : BaseSemiringPotential<double, ViterbiPotential>(normalize(value)) { }
-  ViterbiPotential() : BaseSemiringPotential<double, ViterbiPotential>() { }
-	ViterbiPotential& operator+=(const ViterbiPotential& rhs) {
-		value = std::max(value, rhs.value);
-		return *this;
-	}
-	ViterbiPotential& operator*=(const ViterbiPotential& rhs) {
-		value = value * rhs.value;
-		return *this;
-	}
+    static inline ValType safe_add(ValType lhs, const ValType &rhs) {
+        lhs = std::min(lhs, rhs);
+        return TropicalPotential::normalize(lhs);
+    }
+    static inline ValType safe_times(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return TropicalPotential::normalize(lhs);
+    }
 
-	double normalize(double val) const {
-		if (val < 0.0) val = 0.0;
-		else if (val > 1.0) val = 1.0;
-		return val;
-	}
+    static inline ValType& normalize(ValType& val) {
+        return val = val > INF ? INF : val < 0.0 ? 0.0 : val;
+    }
 
-	static const ViterbiPotential one() { return ViterbiPotential(1.0); }
-	static const ViterbiPotential zero() { return ViterbiPotential(0.0); }
+    static ValType randValue() { return dRand(0.0, INF); }
 };
 
-/**
- * Implements the log-space Viterbi type of semiring.
- * +: max
- * *: +
- * 0: -INF
- * 1: 0
- */
-class LogViterbiPotential : public BaseSemiringPotential<double, LogViterbiPotential> {
+class BoolPotential {
 public:
-     LogViterbiPotential(double value) :
-       BaseSemiringPotential<double, LogViterbiPotential>(normalize(value)) { }
-     LogViterbiPotential() :
-       BaseSemiringPotential<double, LogViterbiPotential>(LogViterbiPotential::zero()) {}
+    typedef bool ValType;
 
-     LogViterbiPotential& operator+=(const LogViterbiPotential& rhs) {
-       value = std::max(value, rhs.value);
-       return *this;
-     }
-     LogViterbiPotential& operator*=(const LogViterbiPotential& rhs) {
-       value = value + rhs.value;
-       return *this;
-     }
+    static inline ValType add(const ValType& lhs, const ValType &rhs) {
+        return lhs || rhs;
+    }
+    static inline ValType times(const ValType& lhs, const ValType &rhs) {
+        return lhs && rhs;
+    }
 
-     double normalize(double val) const {
-       if (val < -INF) return -INF;
-       return val;
-     }
+    static inline ValType safe_add(const ValType& lhs, const ValType &rhs) {
+        return lhs || rhs;
+    }
+    static inline ValType safe_times(const ValType& lhs, const ValType &rhs) {
+        return lhs && rhs;
+    }
 
-     static const LogViterbiPotential one() { return LogViterbiPotential(0.0); }
-     static const LogViterbiPotential zero() { return LogViterbiPotential(-INF); }
+    static inline ValType& normalize(ValType& val) {
+        return val;
+    }
+
+    static inline ValType one() { return true; }
+    static inline ValType zero() { return false; }
+
+    static inline ValType randValue() { return dRand(0.0,1.0) > .5; }
 };
 
-
-/**
- * Implements the Boolean type of semiring as described in Huang 2006
- * +: logical or
- * *: logical and
- * 0: false
- * 1: true
- */
-class BoolPotential : public BaseSemiringPotential<bool, BoolPotential> {
+class CountingPotential {
 public:
-BoolPotential(bool value) : BaseSemiringPotential<bool, BoolPotential>(normalize(value)) { }
-  BoolPotential() : BaseSemiringPotential<bool, BoolPotential>() { }
+    typedef int ValType;
 
-	BoolPotential& operator+=(const BoolPotential& rhs) {
-		value = value || rhs.value;
-		return *this;
-	}
-	BoolPotential& operator*=(const BoolPotential& rhs) {
-		value = value && rhs.value;
-		return *this;
-	}
+    static inline ValType add(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    static inline ValType times(ValType lhs, const ValType &rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
 
-	static const BoolPotential one() { return BoolPotential(true); }
-	static const BoolPotential zero() { return BoolPotential(false); }
+    static inline ValType safe_add(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return CountingPotential::normalize(lhs);
+    }
+    static inline ValType safe_times(ValType lhs, const ValType &rhs) {
+        lhs *= rhs;
+        return CountingPotential::normalize(lhs);
+    }
 
-	bool normalize(bool val) const { return val; }
-};
+    static inline ValType& normalize(ValType& val) {
+        return val = val < 0 ? 0 : val;
+    }
 
-/**
- * Implements the Inside type of semiring as described in Huang 2006
- * +: +
- * *: *
- * 0: 0
- * 1: 1
- */
-class InsidePotential : public BaseSemiringPotential<double, InsidePotential> {
-public:
-  InsidePotential(double value) : BaseSemiringPotential<double, InsidePotential>(normalize(value)) { }
+    static inline ValType one() { return 1; }
+    static inline ValType zero() { return 0; }
 
-  InsidePotential() :
-  BaseSemiringPotential<double, InsidePotential>(InsidePotential::zero()) {}
-
-	InsidePotential& operator+=(const InsidePotential& rhs) {
-		value = value + rhs.value;
-		return *this;
-	}
-	InsidePotential& operator*=(const InsidePotential& rhs) {
-		value = value * rhs.value;
-		return *this;
-	}
-
-    friend InsidePotential operator/(InsidePotential lhs, const InsidePotential &rhs) {
-      lhs.value /= rhs.value;
-      return lhs;
-	}
-
-	static const InsidePotential one() { return InsidePotential(1.0); }
-	static const InsidePotential zero() { return InsidePotential(0.0); }
-
-	double normalize(double val) const {
-		if (val < 0.0) val = 0.0;
-        if (val >= 1.0) val = 1.0;
-		return val;
-	}
-};
-
-/**
- * Implements the Real type of semiring as described in Huang 2006
- * +: min
- * *: +
- * 0: INF
- * 1: 0
- */
-class RealPotential : public BaseSemiringPotential<double, RealPotential> {
-public:
-RealPotential(double value) : BaseSemiringPotential<double, RealPotential>(normalize(value)) { }
-
-	RealPotential& operator+=(const RealPotential& rhs) {
-		value = std::min(value, rhs.value);
-		return *this;
-	}
-	RealPotential& operator*=(const RealPotential& rhs) {
-		value = value + rhs.value;
-		return *this;
-	}
-
-	static const RealPotential one() { return RealPotential(0.0); }
-	static const RealPotential zero() { return RealPotential(INF); }
-
-	double normalize(double val) const { return val; }
-};
-
-/**
- * Implements the Inside type of semiring as described in Huang 2006
- * +: min
- * *: +
- * 0: INF
- * 1: 0
- */
-class TropicalPotential : public BaseSemiringPotential<double, TropicalPotential> {
-public:
-TropicalPotential(double value) : BaseSemiringPotential<double, TropicalPotential>(normalize(value)) { }
-
-	TropicalPotential& operator+=(const TropicalPotential& rhs) {
-		value = value + rhs.value;
-		return *this;
-	}
-	TropicalPotential& operator*=(const TropicalPotential& rhs) {
-		value = value * rhs.value;
-		return *this;
-	}
-
-	static const TropicalPotential one() { return TropicalPotential(0.0); }
-	static const TropicalPotential zero() { return TropicalPotential(INF); }
-
-	double normalize(double val) const {
-		if (val < 0.0) val = 0.0;
-		return val;
-	}
-};
-
-
-
-
-/**
- * Implements the Counting type of semiring as described in Huang 2006
- * +: +
- * *: *
- * 0: 0
- * 1: 1
- */
-class CountingPotential : public BaseSemiringPotential<int, CountingPotential> {
-public:
-CountingPotential(int value) : BaseSemiringPotential<int, CountingPotential>(normalize(value)) { }
-
-	CountingPotential& operator+=(const CountingPotential& rhs) {
-		value = value + rhs.value;
-		return *this;
-	}
-	CountingPotential& operator*=(const CountingPotential& rhs) {
-		value = value * rhs.value;
-		return *this;
-	}
-
-	static const CountingPotential one() { return CountingPotential(1); }
-	static const CountingPotential zero() { return CountingPotential(0); }
-
-	int normalize(int val) const {
-		if(val < 0) val = 0;
-		return val;
-	}
+    static inline ValType randValue() {
+        return rand();
+    }
 };
 
 /**
@@ -295,35 +209,45 @@ CountingPotential(int value) : BaseSemiringPotential<int, CountingPotential>(nor
  * 0: (0, 0)
  * 1: (1, 1)
  */
-template<typename SemiringComp, typename SemiringOther>
-class CompPotential : public BaseSemiringPotential<std::pair<SemiringComp, SemiringOther>, CompPotential<SemiringComp, SemiringOther> > {
+template<typename SemiringFirst, typename SemiringSecond>
+class CompPotential {
 public:
-  typedef std::pair<SemiringComp, SemiringOther> MyVal;
-  typedef CompPotential<SemiringComp, SemiringOther> MyClass;
-  using BaseSemiringPotential<MyVal, MyClass>::value;
+    typedef std::pair<typename SemiringFirst::ValType, typename SemiringSecond::ValType> ValType;
 
-  CompPotential(MyVal value) : BaseSemiringPotential<MyVal, MyClass>(normalize(value)) { }
+    static inline ValType add(ValType lhs, const ValType& rhs) {
+        if (lhs.first < rhs.first) lhs = rhs;
+        return lhs;
+    }
+    static inline ValType times(ValType lhs, const ValType& rhs) {
+        lhs.first = SemiringFirst::times(lhs.first, rhs.first);
+        lhs.second = SemiringSecond::times(lhs.second, rhs.second);
+        return lhs;
+    }
 
-  MyClass& operator+=(const MyClass& rhs) {
-    if (value.first < rhs.value.first) value = rhs.value;
-    return *this;
-  }
+    static inline ValType safe_add(ValType lhs, const ValType& rhs) {
+        if (lhs.first < rhs.first) lhs = rhs;
+        return CompPotential::normalize(lhs);
+    }
+    static inline ValType safe_times(ValType lhs, const ValType& rhs) {
+        lhs.first = SemiringFirst::times(lhs.first, rhs.first);
+        lhs.second = SemiringSecond::times(lhs.second, rhs.second);
+        return CompPotential::normalize(lhs);
+    }
 
-  MyClass& operator*=(const MyClass& rhs) {
-    value.first = value.first * rhs.value.first;
-    value.second = value.second * rhs.value.second;
-    return *this;
-  }
+    static inline ValType one() { return ValType(SemiringFirst::one(), SemiringSecond::one()); }
+    static inline ValType zero() { return ValType(SemiringFirst::zero(), SemiringSecond::zero()); }
 
-  static const MyClass one() { return MyClass(val(SemiringComp::one(), SemiringOther::one())); }
-  static const MyClass zero() { return MyClass(val(SemiringComp::zero(), SemiringOther::zero())); }
+    static inline ValType& normalize(ValType& val) {
+        val.first = SemiringFirst::normalize(val.first);
+        val.second = SemiringSecond::normalize(val.second);
+        return val;
+    }
 
-  MyVal normalize(MyVal val) const {
-    val.first = val.first.normalize(val.first);
-    val.second = val.second.normalize(val.second);
-    return val;
-  }
+    static inline ValType randValue() {
+        return ValType(SemiringFirst::randValue(), SemiringSecond::randValue());
+    }
 };
+
 
 typedef pair<int, int> SparsePair;
 typedef vector<SparsePair> SparseVector;
@@ -336,311 +260,266 @@ typedef vector<SparsePair> SparseVector;
  * 0: Empty Vector
  * 1: Empty Vector
  */
-class SparseVectorPotential : public BaseSemiringPotential<SparseVector, SparseVectorPotential> {
+class SparseVectorPotential {
 public:
-SparseVectorPotential(const SparseVector vec) : BaseSemiringPotential<SparseVector, SparseVectorPotential>(vec) { }
-SparseVectorPotential() : BaseSemiringPotential<SparseVector, SparseVectorPotential>(SparseVectorPotential::zero()) { }
+    typedef SparseVector ValType;
 
-  	SparseVectorPotential& operator+=(const SparseVectorPotential& rhs) {
-		return *this;
-	}
-
-	SparseVectorPotential& operator*=(const SparseVectorPotential& rhs) {
-      int i = 0, j = 0;
-      SparseVector vec;
-      while (i < value.size() || j < rhs.value.size()) {
-        if (j >= rhs.value.size() || (i < value.size() && value[i].first < rhs.value[j].first)) {
-          vec.push_back(pair<int, int>(value[i].first, value[i].second));
-          ++i;
-        } else if (i >= value.size() || (j < rhs.value.size() && value[i].first > rhs.value[j].first)) {
-          vec.push_back(pair<int, int>(rhs.value[j].first, rhs.value[j].second));
-          ++j;
-        } else {
-          vec.push_back(pair<int, int>(value[i].first, value[i].second + rhs.value[j].second));
-          ++i;
-          ++j;
-        }
-      }
-      value = vec;
-      return *this;
-	}
-
-	static const SparseVectorPotential one() { return SparseVectorPotential(SparseVector()); }
-	static const SparseVectorPotential zero() { return SparseVectorPotential(SparseVector()); }
-
-	int normalize(int val) const {
-      return val;
-	}
-};
-
-
-
-class TreePotential : public BaseSemiringPotential<Hypernode *, TreePotential> {
-public:
-TreePotential(Hypernode *value) : BaseSemiringPotential<Hypernode *, TreePotential>(normalize(value)) { }
-
-	TreePotential& operator+=(const TreePotential& rhs) {
-		return *this;
-	}
-
-	TreePotential& operator*=(const TreePotential& rhs) {
-      if (rhs.value == NULL or value == NULL) {
-        value = NULL;
-      } else {
-        vector<HNode> tails;
-        tails.push_back(value);
-        tails.push_back(rhs.value);
-        Hypernode *node = new Hypernode("");
-        Hyperedge *edge = new Hyperedge("", node, tails);
-        node->add_edge(edge);
-        value = node;
-      }
-      return *this;
-	}
-
-	static const TreePotential one() {
-      return TreePotential(new Hypernode(""));
+    static inline ValType add(ValType lhs, const ValType& rhs) {
+        return lhs;
     }
-	static const TreePotential zero() { return TreePotential(NULL); }
 
-	Hypernode *normalize(Hypernode *val) const {
-		return val;
-	}
+    static ValType times(const ValType& lhs, const ValType& rhs) {
+        int i = 0, j = 0;
+        SparseVector vec;
+        while (i < value.size() || j < rhs.value.size()) {
+          if (j >= rhs.value.size() || (i < value.size() && value[i].first < rhs.value[j].first)) {
+            vec.push_back(pair<int, int>(value[i].first, value[i].second));
+            ++i;
+          } else if (i >= value.size() || (j < rhs.value.size() && value[i].first > rhs.value[j].first)) {
+            vec.push_back(pair<int, int>(rhs.value[j].first, rhs.value[j].second));
+            ++j;
+          } else {
+            vec.push_back(pair<int, int>(value[i].first, value[i].second + rhs.value[j].second));
+            ++i;
+            ++j;
+        }
+        return vec;
+    }
+
+    static inline ValType safe_add(ValType lhs, const ValType& rhs) {
+        return lhs;
+    }
+    static ValType safe_times(const ValType& lhs, const ValType& rhs) {
+        int i = 0, j = 0;
+        SparseVector vec;
+        while (i < lhs.size() || j < rhs.size()) {
+            if (j >= rhs.size() || (i < lhs.size() && lhs[i].first < rhs[j].first)) {
+                vec.push_back(SparsePair(lhs[i].first, lhs[i].second));
+                ++i;
+            } else if (i >= lhs.size() || (j < rhs.size() && lhs[i].first > rhs[j].first)) {
+                vec.push_back(SparsePair(rhs[j].first, rhs[j].second));
+                ++j;
+            } else {
+                vec.push_back(SparsePair(i, lhs[i].second + rhs[j].second));
+                ++i;
+                ++j;
+            }
+        }
+        return vec;
+    }
+
+    static inline ValType one() { return ValType(); }
+    static inline ValType zero() { return ValType(); }
+
+    static inline ValType randValue() {
+        SparseVector randVec;
+        for(int i = 0; i < 20; i++) {
+            randVec.push_back(SparsePair(rand(),rand()));
+        }
+        return randVec;
+    }
+
+    static inline ValType& normalize(ValType& val) {
+        return val;
+    }
 };
+
+/**
+ * Tree. *Experimental*
+ *
+ * +: No action
+ * *: NULL if either is NULL. Otherwise create a new node with rhs and lhs as tails
+ * 0: Empty Vector
+ * 1: Empty Vector
+ */
+class TreePotential {
+public:
+    typedef Hypernode* ValType;
+
+    static inline ValType add(ValType lhs, const ValType& rhs) {
+        return lhs;
+    }
+    static ValType times(ValType lhs, const ValType& rhs) {
+        if (rhs == NULL or lhs == NULL) {
+            lhs = NULL;
+        } else {
+            vector<HNode> tails;
+            tails.push_back(lhs);
+            tails.push_back(rhs);
+            Hypernode *node = new Hypernode("");
+            Hyperedge *edge = new Hyperedge("", node, tails);
+            node->add_edge(edge);
+            lhs = node;
+        }
+        return lhs;
+    }
+
+    static inline ValType safe_add(ValType lhs, const ValType& rhs) {
+        return lhs;
+    }
+    static ValType safe_times(ValType lhs, const ValType& rhs) {
+        if (rhs == NULL or lhs == NULL) {
+            lhs = NULL;
+        } else {
+            vector<HNode> tails;
+            tails.push_back(lhs);
+            tails.push_back(rhs);
+            Hypernode *node = new Hypernode("");
+            Hyperedge *edge = new Hyperedge("", node, tails);
+            node->add_edge(edge);
+            lhs = node;
+        }
+        return lhs;
+    }
+
+    static inline ValType one() { return new Hypernode(""); }
+    static inline ValType zero() { return NULL; }
+
+    static inline ValType& normalize(ValType& val) {
+        // Is this necessary?
+        return val;
+    }
+
+    static inline ValType randValue() {
+        // Figure this one out.
+        return TreePotential::one();
+    }
+};
+
+
+// Classes used to associate projections with Hypergraphs
 
 class HypergraphProjection;
 
 template<typename SemiringType>
 class HypergraphPotentials {
+    typedef SemiringType S;
+    typedef typename SemiringType::ValType V;
  public:
-  HypergraphPotentials(const Hypergraph *hypergraph,
-                    const vector<SemiringType> &potentials,
-                    SemiringType bias)
-  : hypergraph_(hypergraph),
-    potentials_(potentials),
-    bias_(bias) {
-      assert(potentials.size() == hypergraph->edges().size());
-  }
-
-  HypergraphPotentials(const Hypergraph *hypergraph)
+    HypergraphPotentials(const Hypergraph *hypergraph,
+                        const vector<V> &potentials,
+                        V bias)
     : hypergraph_(hypergraph),
-      potentials_(hypergraph->edges().size(), SemiringType::one()),
-      bias_(SemiringType::one()) {}
-
- SemiringType dot(const Hyperpath &path) const {
-   path.check(*hypergraph_);
-   SemiringType score = SemiringType::one();
-   foreach (HEdge edge, path.edges()) {
-     score *= potentials_[edge->id()];
-   }
-   return score * bias_;
- }
-
-  SemiringType score(HEdge edge) const { return potentials_[edge->id()]; }
-  const SemiringType& operator[] (HEdge edge) const {
-    return potentials_[edge->id()];
-  }
-  SemiringType& operator[] (HEdge edge) {
-    return potentials_[edge->id()];
-  }
-
-  const SemiringType &bias() const { return bias_; }
-  SemiringType &bias() { return bias_; }
-
-  HypergraphPotentials<SemiringType> *project_potentials(
-    const HypergraphProjection &projection) const;
-
-  /**
-   * Pairwise "times" with another set of potentials.
-   *
-   * @return New hypergraphpotentials.
-   */
-  HypergraphPotentials <SemiringType> *times(
-      const HypergraphPotentials<SemiringType> &potentials) const;
-
-  void check(const Hypergraph &graph) const {
-    if (!graph.same(*hypergraph_)) {
-      throw HypergraphException("Hypergraph does not match potentials.");
+        potentials_(potentials),
+        bias_(bias) {
+            assert(potentials.size() == hypergraph->edges().size());
     }
-  }
 
-  void check(const HypergraphPotentials<SemiringType> &potentials) const {
-    if (!potentials.hypergraph_->same(*hypergraph_)) {
-      throw HypergraphException("Hypergraph potentials do not match potentials.");
+    HypergraphPotentials(const Hypergraph *hypergraph)
+        : hypergraph_(hypergraph),
+            potentials_(hypergraph->edges().size(), SemiringType::one()),
+            bias_(SemiringType::one()) {}
+
+    V dot(const Hyperpath &path) const {
+        path.check(*hypergraph_);
+        V score = SemiringType::one();
+        foreach (HEdge edge, path.edges()) {
+            score = SemiringType::times(score, potentials_[edge->id()]);
+        }
+        return SemiringType::times(score, bias_);
     }
-  }
 
-  const Hypergraph *hypergraph() const { return hypergraph_; }
+    V score(HEdge edge) const { return potentials_[edge->id()]; }
+    inline V operator[] (HEdge edge) const {
+        return potentials_[edge->id()];
+    }
+    // inline V& operator[] (HEdge edge) {
+    //  return potentials_[edge->id()];
+    // }
+
+    void insert(const HEdge& edge, const V& val) {
+        potentials_[edge->id()] = val;
+    }
+
+    const V &bias() const { return bias_; }
+    V &bias() { return bias_; }
+
+    HypergraphPotentials<S> *project_potentials(
+        const HypergraphProjection &projection) const;
+
+    /**
+     * Pairwise "times" with another set of potentials.
+     *
+     * @return New hypergraphpotentials.
+     */
+    HypergraphPotentials<S> *times(
+            const HypergraphPotentials<S> &potentials) const;
+
+    void check(const Hypergraph &graph) const {
+        if (!graph.same(*hypergraph_)) {
+            throw HypergraphException("Hypergraph does not match potentials.");
+        }
+    }
+
+    void check(const HypergraphPotentials<S> &potentials) const {
+        if (!potentials.hypergraph_->same(*hypergraph_)) {
+            throw HypergraphException("Hypergraph potentials do not match potentials.");
+        }
+    }
+
+    const Hypergraph *hypergraph() const { return hypergraph_; }
 
  protected:
-  const Hypergraph *hypergraph_;
-  vector<SemiringType> potentials_;
-  SemiringType bias_;
+    const Hypergraph *hypergraph_;
+    vector<V> potentials_;
+    V bias_;
 };
-
 
 
 class HypergraphProjection {
  public:
-  HypergraphProjection(const Hypergraph *original,
-                       const Hypergraph *_new_graph,
-                       const vector<HNode> *node_map,
-                       const vector<HEdge> *edge_map)
-      : original_graph(original),
-      new_graph(_new_graph),
-      node_map_(node_map),
-      edge_map_(edge_map) {
-        assert(node_map->size() == original_graph->nodes().size());
-        assert(edge_map->size() == original_graph->edges().size());
+    HypergraphProjection(const Hypergraph *original,
+                                             const Hypergraph *_new_graph,
+                                             const vector<HNode> *node_map,
+                                             const vector<HEdge> *edge_map)
+            : original_graph(original),
+            new_graph(_new_graph),
+            node_map_(node_map),
+            edge_map_(edge_map) {
+                assert(node_map->size() == original_graph->nodes().size());
+                assert(edge_map->size() == original_graph->edges().size());
 #ifndef NDEBUG
-        foreach (HNode node, *node_map) {
-          assert(node == NULL ||
-                 node->id() < (int)_new_graph->nodes().size());
-        }
-        foreach (HEdge edge, *edge_map) {
-          assert(edge == NULL ||
-                 edge->id() < (int)_new_graph->edges().size());
-        }
+                foreach (HNode node, *node_map) {
+                    assert(node == NULL ||
+                                 node->id() < (int)_new_graph->nodes().size());
+                }
+                foreach (HEdge edge, *edge_map) {
+                    assert(edge == NULL ||
+                                 edge->id() < (int)_new_graph->edges().size());
+                }
 #endif
-      }
+            }
 
-  ~HypergraphProjection() {
-    delete node_map_;
-    delete edge_map_;
-  }
+    ~HypergraphProjection() {
+        delete node_map_;
+        delete edge_map_;
+    }
 
-  static HypergraphProjection *project_hypergraph(
-      const Hypergraph *hypergraph,
-      const HypergraphPotentials<BoolPotential> &edge_mask);
+    static HypergraphProjection *project_hypergraph(
+            const Hypergraph *hypergraph,
+            const HypergraphPotentials<BoolPotential> &edge_mask);
 
-  HEdge project(HEdge original) const {
-    return (*edge_map_)[original->id()];
-  }
+    HEdge project(HEdge original) const {
+        return (*edge_map_)[original->id()];
+    }
 
-  HNode project(HNode original) const {
-    return (*node_map_)[original->id()];
-  }
+    HNode project(HNode original) const {
+        return (*node_map_)[original->id()];
+    }
 
-  const Hypergraph *original_graph;
-  const Hypergraph *new_graph;
+    const Hypergraph *original_graph;
+    const Hypergraph *new_graph;
 
  private:
 
-  // Owned.
-  const vector<HNode> *node_map_;
-  const vector<HEdge> *edge_map_;
+    // Owned.
+    const vector<HNode> *node_map_;
+    const vector<HEdge> *edge_map_;
 };
 
-
-template <>
-inline double HypergraphPotentials<double>::dot(const Hyperpath &path) const {
-  path.check(*hypergraph_);
-  double score = 0.0;
-  foreach (HEdge edge, path.edges()) {
-    score += potentials_[edge->id()];
-  }
-  return score + bias_;
-}
-
-template<typename SemiringType>
-HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::times(const HypergraphPotentials<SemiringType> &other) const {
-  check(other);
-  vector<SemiringType> new_potentials(potentials_);
-  for (uint i = 0; i < other.potentials_.size(); ++i) {
-    new_potentials[i] *= other.potentials_[i];
-  }
-  return new HypergraphPotentials<SemiringType>(hypergraph_,
-                               new_potentials,
-                               bias_ * other.bias_);
-}
-
-template<typename SemiringType>
-HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::project_potentials(
-    const HypergraphProjection &projection) const {
-  vector<SemiringType> potentials(projection.new_graph->edges().size());
-  foreach (HEdge edge, projection.original_graph->edges()) {
-    HEdge new_edge = projection.project(edge);
-    if (new_edge != NULL && new_edge->id() >= 0) {
-      assert(new_edge->id() < projection.new_graph->edges().size());
-      potentials[new_edge->id()] = score(edge);
-    }
-  }
-  return new HypergraphPotentials<SemiringType>(projection.new_graph, potentials, bias_);
-}
-
-
-
-inline HypergraphProjection *HypergraphProjection::project_hypergraph(
-    const Hypergraph *hypergraph,
-    const HypergraphPotentials<BoolPotential> &edge_mask) {
-  vector<HNode> *node_map =
-      new vector<HNode>(hypergraph->nodes().size(), NULL);
-  vector<HEdge> *edge_map =
-      new vector<HEdge>(hypergraph->edges().size(), NULL);
-
-  Hypergraph *new_graph = new Hypergraph();
-  foreach (HNode node, hypergraph->nodes()) {
-    if (node->terminal()) {
-      // The node is a terminal, so just add it.
-      (*node_map)[node->id()] =
-          new_graph->add_terminal_node(node->label());
-    } else {
-      (*node_map)[node->id()] = new_graph->start_node(node->label());
-
-      // Try to add each of the edges of the node.
-      foreach (HEdge edge, node->edges()) {
-        if (!(bool)edge_mask[edge]) continue;
-        vector<HNode> tails;
-        bool all_tails_exist = true;
-        foreach (HNode tail_node, edge->tail_nodes()) {
-          HNode new_tail_node = (*node_map)[tail_node->id()];
-          if (new_tail_node == NULL) {
-            // The tail node was pruned.
-            all_tails_exist = false;
-            break;
-          } else {
-            tails.push_back(new_tail_node);
-          }
-        }
-        if (all_tails_exist) {
-          HEdge new_edge = new_graph->add_edge(tails, edge->label());
-          (*edge_map)[edge->id()] = new_edge;
-        }
-      }
-      bool success = true;
-      if (!new_graph->end_node()) {
-        (*node_map)[node->id()] = NULL;
-        success = false;
-      }
-      if (hypergraph->root()->id() == node->id()) {
-        assert(success);
-      }
-    }
-  }
-  new_graph->finish();
-  return new HypergraphProjection(hypergraph, new_graph,
-                                  node_map, edge_map);
-}
-
-inline const HypergraphPotentials<LogViterbiPotential> *
+const HypergraphPotentials<LogViterbiPotential> *
 pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
-             const vector<double> &vec) {
-  HypergraphPotentials<LogViterbiPotential> *potentials =
-      new HypergraphPotentials<LogViterbiPotential>(sparse_potentials.hypergraph());
-  foreach (HEdge edge, sparse_potentials.hypergraph()->edges()) {
-    SparseVector edge_constraints =
-        static_cast<SparseVector>(sparse_potentials.score(edge));
-    foreach (SparsePair pair, edge_constraints) {
-      (*potentials)[edge] *=
-          LogViterbiPotential(pair.second * vec[pair.first]);
-    }
-  }
-  SparseVector bias_constraints =
-      static_cast<SparseVector>(sparse_potentials.bias());
-  foreach (SparsePair pair, bias_constraints) {
-    potentials->bias() *= LogViterbiPotential(pair.second * vec[pair.first]);
-  }
-  return potentials;
-};
+             const vector<double> &vec);
+
 
 #endif // HYPERGRAPH_SEMIRING_H_

@@ -177,11 +177,8 @@ class HypergraphLP:
 
 
         # max \theta x
-        prob += pulp.lpSum(
-            (potentials[edge] * edge_vars[edge.id]
-             for edge in hypergraph.edges))
-
-
+        prob += sum([potentials[edge] * edge_vars[edge.id]
+                     for edge in hypergraph.edges]) + potentials.bias
 
         # x(r) = 1
         prob += node_vars[hypergraph.root.id] == 1

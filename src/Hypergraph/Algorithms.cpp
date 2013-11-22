@@ -9,7 +9,7 @@
 #include "Hypergraph/Algorithms.h"
 //#include "Hypergraph/Subgradient.h"
 
-#define SPECIALIZE_FOR_SEMI(X)\
+#define SPECIALIZE_ALGORITHMS_FOR_SEMI(X)\
   template class Chart<X>;\
   template class HypergraphPotentials<X>;\
   template class Marginals<X>;\
@@ -31,78 +31,127 @@ struct IdComparator {
   }
 };
 
-template<typename SemiringType>
-Chart<SemiringType> *
+template<typename S>
+Chart<S> *
 general_inside(const Hypergraph *graph,
-               const HypergraphPotentials<SemiringType> &potentials) {
+               const HypergraphPotentials<S> &potentials) {
   potentials.check(*graph);
 
   // Run Viterbi Hypergraph algorithm.
-  Chart<SemiringType> *chart = new Chart<SemiringType>(graph);
+  Chart<S> *chart = new Chart<S>(graph);
 
   foreach (HNode node, graph->nodes()) {
     if (node->terminal()) {
-      (*chart)[node] = SemiringType::one();
+      chart->insert(node, S::one());
     }
   }
   foreach (HEdge edge, graph->edges()) {
-    SemiringType score = potentials.score(edge);
+    typename S::ValType score = potentials.score(edge);
     foreach (HNode node, edge->tail_nodes()) {
-      score *= (*chart)[node];
+      score = S::times(score, (*chart)[node]);
     }
-    (*chart)[edge->head_node()] += score;
+    chart->insert(edge->head_node(),
+                  S::add((*chart)[edge->head_node()], score));
   }
-  (*chart)[graph->root()] *= potentials.bias();
+  chart->insert(graph->root(),
+                S::times((*chart)[graph->root()], potentials.bias()));
   return chart;
 }
 
-template<typename SemiringType>
-Chart<SemiringType> *
+template<typename S>
+Chart<S> *
 general_outside(const Hypergraph *graph,
-                const HypergraphPotentials<SemiringType> &potentials,
-                const Chart<SemiringType> &inside_chart) {
+                const HypergraphPotentials<S> &potentials,
+                const Chart<S> &inside_chart) {
   potentials.check(*graph);
   inside_chart.check(graph);
-  Chart<SemiringType> *chart = new Chart<SemiringType>(graph);
+  Chart<S> *chart = new Chart<S>(graph);
   const vector<HEdge> &edges = graph->edges();
-  (*chart)[graph->root()] = potentials.bias();
+  chart->insert(graph->root(), potentials.bias());
 
   for (int i = edges.size() - 1; i >= 0; --i) {
     HEdge edge = edges[i];
-    SemiringType head_score = (*chart)[edge->head_node()];
+    typename S::ValType head_score = (*chart)[edge->head_node()];
     foreach (HNode node, edge->tail_nodes()) {
-      SemiringType other_score = SemiringType::one();
+      typename S::ValType other_score = S::one();
       foreach (HNode other_node, edge->tail_nodes()) {
         if (other_node->id() == node->id()) continue;
-        other_score *= inside_chart[other_node];
+        other_score = S::times(other_score, inside_chart[other_node]);
       }
-      (*chart)[node] += head_score * other_score * potentials.score(edge);
+      chart->insert(node, S::add((*chart)[node], S::times(head_score, S::times(other_score, potentials.score(edge)))));
     }
   }
   return chart;
 }
 
-template<typename SemiringType>
+template<typename S>
 Hyperpath *general_viterbi(
     const Hypergraph *graph,
-    const HypergraphPotentials<SemiringType> &potentials) {
+    const HypergraphPotentials<S> &potentials) {
 
   potentials.check(*graph);
-  Chart<SemiringType> *chart = new Chart<SemiringType>(graph);
+  Chart<S> *chart = new Chart<S>(graph);
   vector<HEdge> back(graph->nodes().size(), NULL);
 
   foreach (HNode node, graph->nodes()) {
     if (node->terminal()) {
-      (*chart)[node] = SemiringType::one();
+      chart->insert(node, S::one());
     }
   }
   foreach (HEdge edge, graph->edges()) {
-    SemiringType score = potentials.score(edge);
+    typename S::ValType score = potentials.score(edge);
     foreach (HNode node, edge->tail_nodes()) {
-      score *= (*chart)[node];
+      score = S::times(score, (*chart)[node]);
     }
     if (score > (*chart)[edge->head_node()]) {
-      (*chart)[edge->head_node()] = score;
+      chart->insert(edge->head_node(), score);
+      back[edge->head_node()->id()] = edge;
+    }
+  }
+
+  // Collect backpointers.
+  vector<HEdge> path;
+  queue<HNode> to_examine;
+  to_examine.push(graph->root());
+  while (!to_examine.empty()) {
+    HNode node = to_examine.front();
+    HEdge edge = back[node->id()];
+    to_examine.pop();
+    if (edge == NULL) {
+      assert(node->terminal());
+      continue;
+    }
+    path.push_back(edge);
+    foreach (HNode node, edge->tail_nodes()) {
+      to_examine.push(node);
+    }
+  }
+  sort(path.begin(), path.end(), IdComparator());
+  delete chart;
+  return new Hyperpath(graph, path);
+}
+
+template<typename StatSem>
+Hyperpath *general_viterbi(
+    const Hypergraph *graph,
+    const HypergraphPotentials<typename StatSem::ValType> &potentials) {
+
+  potentials.check(*graph);
+  Chart<typename StatSem::ValType> *chart = new Chart<typename StatSem::ValType>(graph);
+  vector<HEdge> back(graph->nodes().size(), NULL);
+
+  foreach (HNode node, graph->nodes()) {
+    if (node->terminal()) {
+      chart->insert(node, StatSem::one());
+    }
+  }
+  foreach (HEdge edge, graph->edges()) {
+    typename StatSem::ValType score = potentials.score(edge);
+    foreach (HNode node, edge->tail_nodes()) {
+      typename StatSem::ValType(score, (*chart)[node]);
+    }
+    if (score > (*chart)[edge->head_node()]) {
+      chart->insert(edge->head_node(), score);
       back[edge->head_node()->id()] = edge;
     }
   }
@@ -130,10 +179,10 @@ Hyperpath *general_viterbi(
 }
 
 
-SPECIALIZE_FOR_SEMI(ViterbiPotential)
-SPECIALIZE_FOR_SEMI(LogViterbiPotential)
-SPECIALIZE_FOR_SEMI(InsidePotential)
-SPECIALIZE_FOR_SEMI(BoolPotential)
+SPECIALIZE_ALGORITHMS_FOR_SEMI(ViterbiPotential)
+SPECIALIZE_ALGORITHMS_FOR_SEMI(LogViterbiPotential)
+SPECIALIZE_ALGORITHMS_FOR_SEMI(InsidePotential)
+SPECIALIZE_ALGORITHMS_FOR_SEMI(BoolPotential)
 SPECIALIZE_FOR_SEMI_MIN(SparseVectorPotential)
 
 // End General code.

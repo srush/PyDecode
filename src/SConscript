@@ -3,6 +3,8 @@ Import('env')
 sources = [
     "Hypergraph/Hypergraph.cpp",
     "Hypergraph/Algorithms.cpp",
+    "Hypergraph/Semirings.cpp",
+    "Hypergraph/Factory.cpp",
     # "Hypergraph/Constraints.cpp",
     #"Hypergraph/Subgradient.cpp",
 

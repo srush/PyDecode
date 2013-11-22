@@ -32,7 +32,8 @@ for build_mode in ['debug', 'profile', 'opt']:
     local_libs[build_mode] = env.SConscript(dirs=sub_dirs, exports=['env'])
 
 # Run the C++ tests.
-env = Environment(ENV=os.environ, CPPPATH = ["src/"], CXX="clang++")
+env = Environment(ENV=os.environ, CXX="clang++")
+env.Append(CPPPATH = ["src/"], LIBPATH = ['/usr/lib/', '/usr/local/lib'])
 
 b = env.Program("build/test", 'src/Tests.cpp',
                 LIBS = ["pthread", "gtest"] + local_libs["debug"])
@@ -66,8 +67,7 @@ env.Alias("pytest", [pytests, pytests2])
 
 # Building the python library.
 
-env.Command(["python/pydecode/hyper.pyx",
-             ],
+env.Command(["python/pydecode/hyper.pyx",],
             ["python/pydecode/templates/hyper.pyx.tpl",
              "cython_jinja.py"],
             "python cython_jinja.py")
