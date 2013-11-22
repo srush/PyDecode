@@ -29,14 +29,15 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphViterbiPotentials theta) except +
 
     cdef cppclass CViterbiMarginals "Marginals<ViterbiPotential>":
-        ViterbiPotential marginal(const CHyperedge *edge)
-        ViterbiPotential marginal(const CHypernode *node)
+        double marginal(const CHyperedge *edge)
+        double marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
-            const ViterbiPotential &threshold)
+            const double &threshold)
         const CHypergraph *hypergraph()
 
     cdef cppclass CViterbiChart "Chart<ViterbiPotential>":
-        ViterbiPotential get(const CHypernode *node)
+        double get(const CHypernode *node)
+        void insert(const CHypernode& node, const double& val)
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<ViterbiPotential>":
     CViterbiMarginals *Viterbi_compute "Marginals<ViterbiPotential>::compute" (
@@ -45,29 +46,28 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<ViterbiPotential
 
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass ViterbiPotential:
-        ViterbiPotential()
-        ViterbiPotential(double)
-        double normalize(double)
+        pass
 
-cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiPotential":
-    ViterbiPotential Viterbi_one "ViterbiPotential::one" ()
-    ViterbiPotential Viterbi_zero "ViterbiPotential::zero" ()
-    ViterbiPotential Viterbi_add "ViterbiPotential::add" (ViterbiPotential, const ViterbiPotential)
-    ViterbiPotential Viterbi_times "ViterbiPotential::times" (ViterbiPotential, const ViterbiPotential)
-
-
-cdef extern from "Hypergraph/Algorithms.h" namespace "ViterbiPotential":
     cdef cppclass CHypergraphViterbiPotentials "HypergraphPotentials<ViterbiPotential>":
-        ViterbiPotential dot(const CHyperpath &path) except +
-        ViterbiPotential score(const CHyperedge *edge)
+        double dot(const CHyperpath &path) except +
+        double score(const CHyperedge *edge)
         CHypergraphViterbiPotentials *times(
             const CHypergraphViterbiPotentials &potentials)
         CHypergraphViterbiPotentials *project_potentials(
             const CHypergraphProjection)
         CHypergraphViterbiPotentials(
             const CHypergraph *hypergraph,
-            const vector[ViterbiPotential] potentials,
-            ViterbiPotential bias) except +
+            const vector[double] potentials,
+            double bias) except +
+
+cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiPotential":
+    double Viterbi_one "ViterbiPotential::one" ()
+    double Viterbi_zero "ViterbiPotential::zero" ()
+    double Viterbi_add "ViterbiPotential::add" (double, const double&)
+    double Viterbi_times "ViterbiPotential::times" (double, const double&)
+    double Viterbi_safeadd "ViterbiPotential::safe_add" (double, const double&)
+    double Viterbi_safetimes "ViterbiPotential::safe_times" (double, const double&)
+    double Viterbi_normalize "ViterbiPotential::normalize" (double&)
 
 
 cdef class ViterbiPotentials:
@@ -116,20 +116,20 @@ cdef class ViterbiPotentials:
 
         :param fn: A function from edge labels to potentials.
         """
-        cdef ViterbiPotential my_bias
+        cdef double my_bias
         if bias is None:
             my_bias = Viterbi_one()
         else:
-            my_bias = ViterbiPotential(<double> bias)
+            my_bias = bias
 
-        cdef vector[ViterbiPotential] potentials = \
-             vector[ViterbiPotential](self.hypergraph.thisptr.edges().size(),
+        cdef vector[double] potentials = \
+             vector[double](self.hypergraph.thisptr.edges().size(),
              Viterbi_zero())
         # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
             if result is None: potentials[i] = Viterbi_zero()
-            potentials[i] = ViterbiPotential(<double> result)
+            potentials[i] = result
         self.thisptr =  \
           new CHypergraphViterbiPotentials(self.hypergraph.thisptr,
                                            potentials, my_bias)
@@ -151,13 +151,13 @@ cdef class ViterbiPotentials:
         return _ViterbiW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _ViterbiW:
-    cdef ViterbiPotential wrap
+    cdef double wrap
 
     def __cinit__(self, val=None):
         if val is not None:
-            self.init(ViterbiPotential(<double>val))
+            self.init(val)
 
-    cdef init(self, ViterbiPotential wrap):
+    cdef init(self, double wrap):
         self.wrap = wrap
         return self
 
@@ -274,7 +274,7 @@ class Viterbi:
                          ViterbiPotentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
-        bool_potentials = marginals.threshold(_ViterbiW().init(ViterbiPotential(<double>threshold)))
+        bool_potentials = marginals.threshold(_ViterbiW().init(threshold))
         projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
         new_potential = potentials.project(new_graph, projection)
@@ -301,14 +301,15 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphLogViterbiPotentials theta) except +
 
     cdef cppclass CLogViterbiMarginals "Marginals<LogViterbiPotential>":
-        LogViterbiPotential marginal(const CHyperedge *edge)
-        LogViterbiPotential marginal(const CHypernode *node)
+        double marginal(const CHyperedge *edge)
+        double marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
-            const LogViterbiPotential &threshold)
+            const double &threshold)
         const CHypergraph *hypergraph()
 
     cdef cppclass CLogViterbiChart "Chart<LogViterbiPotential>":
-        LogViterbiPotential get(const CHypernode *node)
+        double get(const CHypernode *node)
+        void insert(const CHypernode& node, const double& val)
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<LogViterbiPotential>":
     CLogViterbiMarginals *LogViterbi_compute "Marginals<LogViterbiPotential>::compute" (
@@ -317,29 +318,28 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<LogViterbiPotent
 
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass LogViterbiPotential:
-        LogViterbiPotential()
-        LogViterbiPotential(double)
-        double normalize(double)
+        pass
 
-cdef extern from "Hypergraph/Semirings.h" namespace "LogViterbiPotential":
-    LogViterbiPotential LogViterbi_one "LogViterbiPotential::one" ()
-    LogViterbiPotential LogViterbi_zero "LogViterbiPotential::zero" ()
-    LogViterbiPotential LogViterbi_add "LogViterbiPotential::add" (LogViterbiPotential, const LogViterbiPotential)
-    LogViterbiPotential LogViterbi_times "LogViterbiPotential::times" (LogViterbiPotential, const LogViterbiPotential)
-
-
-cdef extern from "Hypergraph/Algorithms.h" namespace "LogViterbiPotential":
     cdef cppclass CHypergraphLogViterbiPotentials "HypergraphPotentials<LogViterbiPotential>":
-        LogViterbiPotential dot(const CHyperpath &path) except +
-        LogViterbiPotential score(const CHyperedge *edge)
+        double dot(const CHyperpath &path) except +
+        double score(const CHyperedge *edge)
         CHypergraphLogViterbiPotentials *times(
             const CHypergraphLogViterbiPotentials &potentials)
         CHypergraphLogViterbiPotentials *project_potentials(
             const CHypergraphProjection)
         CHypergraphLogViterbiPotentials(
             const CHypergraph *hypergraph,
-            const vector[LogViterbiPotential] potentials,
-            LogViterbiPotential bias) except +
+            const vector[double] potentials,
+            double bias) except +
+
+cdef extern from "Hypergraph/Semirings.h" namespace "LogViterbiPotential":
+    double LogViterbi_one "LogViterbiPotential::one" ()
+    double LogViterbi_zero "LogViterbiPotential::zero" ()
+    double LogViterbi_add "LogViterbiPotential::add" (double, const double&)
+    double LogViterbi_times "LogViterbiPotential::times" (double, const double&)
+    double LogViterbi_safeadd "LogViterbiPotential::safe_add" (double, const double&)
+    double LogViterbi_safetimes "LogViterbiPotential::safe_times" (double, const double&)
+    double LogViterbi_normalize "LogViterbiPotential::normalize" (double&)
 
 
 cdef class LogViterbiPotentials:
@@ -388,20 +388,20 @@ cdef class LogViterbiPotentials:
 
         :param fn: A function from edge labels to potentials.
         """
-        cdef LogViterbiPotential my_bias
+        cdef double my_bias
         if bias is None:
             my_bias = LogViterbi_one()
         else:
-            my_bias = LogViterbiPotential(<double> bias)
+            my_bias = bias
 
-        cdef vector[LogViterbiPotential] potentials = \
-             vector[LogViterbiPotential](self.hypergraph.thisptr.edges().size(),
+        cdef vector[double] potentials = \
+             vector[double](self.hypergraph.thisptr.edges().size(),
              LogViterbi_zero())
         # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
             if result is None: potentials[i] = LogViterbi_zero()
-            potentials[i] = LogViterbiPotential(<double> result)
+            potentials[i] = result
         self.thisptr =  \
           new CHypergraphLogViterbiPotentials(self.hypergraph.thisptr,
                                            potentials, my_bias)
@@ -423,13 +423,13 @@ cdef class LogViterbiPotentials:
         return _LogViterbiW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _LogViterbiW:
-    cdef LogViterbiPotential wrap
+    cdef double wrap
 
     def __cinit__(self, val=None):
         if val is not None:
-            self.init(LogViterbiPotential(<double>val))
+            self.init(val)
 
-    cdef init(self, LogViterbiPotential wrap):
+    cdef init(self, double wrap):
         self.wrap = wrap
         return self
 
@@ -546,7 +546,7 @@ class LogViterbi:
                          LogViterbiPotentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
-        bool_potentials = marginals.threshold(_LogViterbiW().init(LogViterbiPotential(<double>threshold)))
+        bool_potentials = marginals.threshold(_LogViterbiW().init(threshold))
         projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
         new_potential = potentials.project(new_graph, projection)
@@ -573,14 +573,15 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphInsidePotentials theta) except +
 
     cdef cppclass CInsideMarginals "Marginals<InsidePotential>":
-        InsidePotential marginal(const CHyperedge *edge)
-        InsidePotential marginal(const CHypernode *node)
+        double marginal(const CHyperedge *edge)
+        double marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
-            const InsidePotential &threshold)
+            const double &threshold)
         const CHypergraph *hypergraph()
 
     cdef cppclass CInsideChart "Chart<InsidePotential>":
-        InsidePotential get(const CHypernode *node)
+        double get(const CHypernode *node)
+        void insert(const CHypernode& node, const double& val)
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<InsidePotential>":
     CInsideMarginals *Inside_compute "Marginals<InsidePotential>::compute" (
@@ -589,29 +590,28 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<InsidePotential>
 
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass InsidePotential:
-        InsidePotential()
-        InsidePotential(double)
-        double normalize(double)
+        pass
 
-cdef extern from "Hypergraph/Semirings.h" namespace "InsidePotential":
-    InsidePotential Inside_one "InsidePotential::one" ()
-    InsidePotential Inside_zero "InsidePotential::zero" ()
-    InsidePotential Inside_add "InsidePotential::add" (InsidePotential, const InsidePotential)
-    InsidePotential Inside_times "InsidePotential::times" (InsidePotential, const InsidePotential)
-
-
-cdef extern from "Hypergraph/Algorithms.h" namespace "InsidePotential":
     cdef cppclass CHypergraphInsidePotentials "HypergraphPotentials<InsidePotential>":
-        InsidePotential dot(const CHyperpath &path) except +
-        InsidePotential score(const CHyperedge *edge)
+        double dot(const CHyperpath &path) except +
+        double score(const CHyperedge *edge)
         CHypergraphInsidePotentials *times(
             const CHypergraphInsidePotentials &potentials)
         CHypergraphInsidePotentials *project_potentials(
             const CHypergraphProjection)
         CHypergraphInsidePotentials(
             const CHypergraph *hypergraph,
-            const vector[InsidePotential] potentials,
-            InsidePotential bias) except +
+            const vector[double] potentials,
+            double bias) except +
+
+cdef extern from "Hypergraph/Semirings.h" namespace "InsidePotential":
+    double Inside_one "InsidePotential::one" ()
+    double Inside_zero "InsidePotential::zero" ()
+    double Inside_add "InsidePotential::add" (double, const double&)
+    double Inside_times "InsidePotential::times" (double, const double&)
+    double Inside_safeadd "InsidePotential::safe_add" (double, const double&)
+    double Inside_safetimes "InsidePotential::safe_times" (double, const double&)
+    double Inside_normalize "InsidePotential::normalize" (double&)
 
 
 cdef class InsidePotentials:
@@ -660,20 +660,20 @@ cdef class InsidePotentials:
 
         :param fn: A function from edge labels to potentials.
         """
-        cdef InsidePotential my_bias
+        cdef double my_bias
         if bias is None:
             my_bias = Inside_one()
         else:
-            my_bias = InsidePotential(<double> bias)
+            my_bias = bias
 
-        cdef vector[InsidePotential] potentials = \
-             vector[InsidePotential](self.hypergraph.thisptr.edges().size(),
+        cdef vector[double] potentials = \
+             vector[double](self.hypergraph.thisptr.edges().size(),
              Inside_zero())
         # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
             if result is None: potentials[i] = Inside_zero()
-            potentials[i] = InsidePotential(<double> result)
+            potentials[i] = result
         self.thisptr =  \
           new CHypergraphInsidePotentials(self.hypergraph.thisptr,
                                            potentials, my_bias)
@@ -695,13 +695,13 @@ cdef class InsidePotentials:
         return _InsideW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _InsideW:
-    cdef InsidePotential wrap
+    cdef double wrap
 
     def __cinit__(self, val=None):
         if val is not None:
-            self.init(InsidePotential(<double>val))
+            self.init(val)
 
-    cdef init(self, InsidePotential wrap):
+    cdef init(self, double wrap):
         self.wrap = wrap
         return self
 
@@ -818,7 +818,7 @@ class Inside:
                          InsidePotentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
-        bool_potentials = marginals.threshold(_InsideW().init(InsidePotential(<double>threshold)))
+        bool_potentials = marginals.threshold(_InsideW().init(threshold))
         projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
         new_potential = potentials.project(new_graph, projection)
@@ -845,14 +845,15 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphBoolPotentials theta) except +
 
     cdef cppclass CBoolMarginals "Marginals<BoolPotential>":
-        BoolPotential marginal(const CHyperedge *edge)
-        BoolPotential marginal(const CHypernode *node)
+        bool marginal(const CHyperedge *edge)
+        bool marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
-            const BoolPotential &threshold)
+            const bool &threshold)
         const CHypergraph *hypergraph()
 
     cdef cppclass CBoolChart "Chart<BoolPotential>":
-        BoolPotential get(const CHypernode *node)
+        bool get(const CHypernode *node)
+        void insert(const CHypernode& node, const bool& val)
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<BoolPotential>":
     CBoolMarginals *Bool_compute "Marginals<BoolPotential>::compute" (
@@ -861,29 +862,28 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<BoolPotential>":
 
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass BoolPotential:
-        BoolPotential()
-        BoolPotential(double)
-        double normalize(double)
+        pass
 
-cdef extern from "Hypergraph/Semirings.h" namespace "BoolPotential":
-    BoolPotential Bool_one "BoolPotential::one" ()
-    BoolPotential Bool_zero "BoolPotential::zero" ()
-    BoolPotential Bool_add "BoolPotential::add" (BoolPotential, const BoolPotential)
-    BoolPotential Bool_times "BoolPotential::times" (BoolPotential, const BoolPotential)
-
-
-cdef extern from "Hypergraph/Algorithms.h" namespace "BoolPotential":
     cdef cppclass CHypergraphBoolPotentials "HypergraphPotentials<BoolPotential>":
-        BoolPotential dot(const CHyperpath &path) except +
-        BoolPotential score(const CHyperedge *edge)
+        bool dot(const CHyperpath &path) except +
+        bool score(const CHyperedge *edge)
         CHypergraphBoolPotentials *times(
             const CHypergraphBoolPotentials &potentials)
         CHypergraphBoolPotentials *project_potentials(
             const CHypergraphProjection)
         CHypergraphBoolPotentials(
             const CHypergraph *hypergraph,
-            const vector[BoolPotential] potentials,
-            BoolPotential bias) except +
+            const vector[bool] potentials,
+            bool bias) except +
+
+cdef extern from "Hypergraph/Semirings.h" namespace "BoolPotential":
+    bool Bool_one "BoolPotential::one" ()
+    bool Bool_zero "BoolPotential::zero" ()
+    bool Bool_add "BoolPotential::add" (bool, const bool&)
+    bool Bool_times "BoolPotential::times" (bool, const bool&)
+    bool Bool_safeadd "BoolPotential::safe_add" (bool, const bool&)
+    bool Bool_safetimes "BoolPotential::safe_times" (bool, const bool&)
+    bool Bool_normalize "BoolPotential::normalize" (bool&)
 
 
 cdef class BoolPotentials:
@@ -932,20 +932,20 @@ cdef class BoolPotentials:
 
         :param fn: A function from edge labels to potentials.
         """
-        cdef BoolPotential my_bias
+        cdef bool my_bias
         if bias is None:
             my_bias = Bool_one()
         else:
-            my_bias = BoolPotential(<double> bias)
+            my_bias = bias
 
-        cdef vector[BoolPotential] potentials = \
-             vector[BoolPotential](self.hypergraph.thisptr.edges().size(),
+        cdef vector[bool] potentials = \
+             vector[bool](self.hypergraph.thisptr.edges().size(),
              Bool_zero())
         # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
             if result is None: potentials[i] = Bool_zero()
-            potentials[i] = BoolPotential(<double> result)
+            potentials[i] = result
         self.thisptr =  \
           new CHypergraphBoolPotentials(self.hypergraph.thisptr,
                                            potentials, my_bias)
@@ -967,13 +967,13 @@ cdef class BoolPotentials:
         return _BoolW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _BoolW:
-    cdef BoolPotential wrap
+    cdef bool wrap
 
     def __cinit__(self, val=None):
         if val is not None:
-            self.init(BoolPotential(<double>val))
+            self.init(val)
 
-    cdef init(self, BoolPotential wrap):
+    cdef init(self, bool wrap):
         self.wrap = wrap
         return self
 
@@ -1090,7 +1090,7 @@ class Bool:
                          BoolPotentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
-        bool_potentials = marginals.threshold(_BoolW().init(BoolPotential(<double>threshold)))
+        bool_potentials = marginals.threshold(_BoolW().init(threshold))
         projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
         new_potential = potentials.project(new_graph, projection)
@@ -1117,14 +1117,15 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphSparseVectorPotentials theta) except +
 
     cdef cppclass CSparseVectorMarginals "Marginals<SparseVectorPotential>":
-        SparseVectorPotential marginal(const CHyperedge *edge)
-        SparseVectorPotential marginal(const CHypernode *node)
+        vector[pair[int, int]] marginal(const CHyperedge *edge)
+        vector[pair[int, int]] marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
-            const SparseVectorPotential &threshold)
+            const vector[pair[int, int]] &threshold)
         const CHypergraph *hypergraph()
 
     cdef cppclass CSparseVectorChart "Chart<SparseVectorPotential>":
-        SparseVectorPotential get(const CHypernode *node)
+        vector[pair[int, int]] get(const CHypernode *node)
+        void insert(const CHypernode& node, const vector[pair[int, int]]& val)
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<SparseVectorPotential>":
     CSparseVectorMarginals *SparseVector_compute "Marginals<SparseVectorPotential>::compute" (
@@ -1133,29 +1134,28 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<SparseVectorPote
 
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass SparseVectorPotential:
-        SparseVectorPotential()
-        SparseVectorPotential(vector[pair[int, int]])
-        double normalize(double)
+        pass
 
-cdef extern from "Hypergraph/Semirings.h" namespace "SparseVectorPotential":
-    SparseVectorPotential SparseVector_one "SparseVectorPotential::one" ()
-    SparseVectorPotential SparseVector_zero "SparseVectorPotential::zero" ()
-    SparseVectorPotential SparseVector_add "SparseVectorPotential::add" (SparseVectorPotential, const SparseVectorPotential)
-    SparseVectorPotential SparseVector_times "SparseVectorPotential::times" (SparseVectorPotential, const SparseVectorPotential)
-
-
-cdef extern from "Hypergraph/Algorithms.h" namespace "SparseVectorPotential":
     cdef cppclass CHypergraphSparseVectorPotentials "HypergraphPotentials<SparseVectorPotential>":
-        SparseVectorPotential dot(const CHyperpath &path) except +
-        SparseVectorPotential score(const CHyperedge *edge)
+        vector[pair[int, int]] dot(const CHyperpath &path) except +
+        vector[pair[int, int]] score(const CHyperedge *edge)
         CHypergraphSparseVectorPotentials *times(
             const CHypergraphSparseVectorPotentials &potentials)
         CHypergraphSparseVectorPotentials *project_potentials(
             const CHypergraphProjection)
         CHypergraphSparseVectorPotentials(
             const CHypergraph *hypergraph,
-            const vector[SparseVectorPotential] potentials,
-            SparseVectorPotential bias) except +
+            const vector[vector[pair[int, int]]] potentials,
+            vector[pair[int, int]] bias) except +
+
+cdef extern from "Hypergraph/Semirings.h" namespace "SparseVectorPotential":
+    vector[pair[int, int]] SparseVector_one "SparseVectorPotential::one" ()
+    vector[pair[int, int]] SparseVector_zero "SparseVectorPotential::zero" ()
+    vector[pair[int, int]] SparseVector_add "SparseVectorPotential::add" (vector[pair[int, int]], const vector[pair[int, int]]&)
+    vector[pair[int, int]] SparseVector_times "SparseVectorPotential::times" (vector[pair[int, int]], const vector[pair[int, int]]&)
+    vector[pair[int, int]] SparseVector_safeadd "SparseVectorPotential::safe_add" (vector[pair[int, int]], const vector[pair[int, int]]&)
+    vector[pair[int, int]] SparseVector_safetimes "SparseVectorPotential::safe_times" (vector[pair[int, int]], const vector[pair[int, int]]&)
+    vector[pair[int, int]] SparseVector_normalize "SparseVectorPotential::normalize" (vector[pair[int, int]]&)
 
 
 cdef class SparseVectorPotentials:
@@ -1204,20 +1204,20 @@ cdef class SparseVectorPotentials:
 
         :param fn: A function from edge labels to potentials.
         """
-        cdef SparseVectorPotential my_bias
+        cdef vector[pair[int, int]] my_bias
         if bias is None:
             my_bias = SparseVector_one()
         else:
-            my_bias = SparseVectorPotential(<vector[pair[int, int]]> bias)
+            my_bias = bias
 
-        cdef vector[SparseVectorPotential] potentials = \
-             vector[SparseVectorPotential](self.hypergraph.thisptr.edges().size(),
+        cdef vector[vector[pair[int, int]]] potentials = \
+             vector[vector[pair[int, int]]](self.hypergraph.thisptr.edges().size(),
              SparseVector_zero())
         # cdef d result
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
             if result is None: potentials[i] = SparseVector_zero()
-            potentials[i] = SparseVectorPotential(<vector[pair[int, int]]> result)
+            potentials[i] = result
         self.thisptr =  \
           new CHypergraphSparseVectorPotentials(self.hypergraph.thisptr,
                                            potentials, my_bias)
@@ -1239,13 +1239,13 @@ cdef class SparseVectorPotentials:
         return _SparseVectorW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _SparseVectorW:
-    cdef SparseVectorPotential wrap
+    cdef vector[pair[int, int]] wrap
 
     def __cinit__(self, val=None):
         if val is not None:
-            self.init(SparseVectorPotential(<vector[pair[int, int]]>val))
+            self.init(val)
 
-    cdef init(self, SparseVectorPotential wrap):
+    cdef init(self, vector[pair[int, int]] wrap):
         self.wrap = wrap
         return self
 
@@ -1353,7 +1353,7 @@ class SparseVector:
                          SparseVectorPotentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
-        bool_potentials = marginals.threshold(_SparseVectorW().init(SparseVectorPotential(<vector[pair[int, int]]>threshold)))
+        bool_potentials = marginals.threshold(_SparseVectorW().init(threshold))
         projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
         new_potential = potentials.project(new_graph, projection)

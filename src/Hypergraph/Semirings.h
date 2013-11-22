@@ -314,9 +314,8 @@ public:
 
     static inline ValType randValue() { 
         SparseVector randVec;
-        int n = 20;
-        for(int i = 0; i < n; i++) {
-                randVec.push_back(SparsePair(rand(),rand()));
+        for(int i = 0; i < 20; i++) {
+            randVec.push_back(SparsePair(rand(),rand()));
         }
         return randVec;
     }

@@ -67,8 +67,7 @@ env.Alias("pytest", [pytests, pytests2])
 
 # Building the python library.
 
-env.Command(["python/pydecode/hyper.pyx",
-             ],
+env.Command(["python/pydecode/hyper.pyx",],
             ["python/pydecode/templates/hyper.pyx.tpl",
              "cython_jinja.py"],
             "python cython_jinja.py")
