@@ -15,8 +15,8 @@ vars = {"semirings":
    "bool": True, "viterbi" : True},
   {"type": "SparseVector", "ptype": "SparseVectorW",
    "ctype": "SparseVectorPotential", "vtype": "vector[pair[int, int]]",
-   "bool": False, "viterbi" : False, "float": False}
-#    "conversion" : """
+   "bool": False, "viterbi" : False, "float": False,
+    "conversion" : "pass"}
 #             d = {}
 #             cdef vector[pair[int,int]] s= <vector[pair[int,int]]> self.wrap
 #             for p in s:

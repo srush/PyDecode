@@ -69,10 +69,8 @@ def random_hypergraph():
 def hypergraphs():
     for i in range(10):
         h = random_hypergraph()
-        print h
         yield h
     h = simple_hypergraph()
-    print h
     yield h
 
 
@@ -387,6 +385,7 @@ def test_lp():
         g.solve()
         path = g.path
         opath = ph.best_path(h, w)
+
         nt.assert_almost_equal(w.dot(path), w.dot(opath))
         for edge in path.edges:
             assert edge in opath

@@ -1,4 +1,4 @@
-python cython_jinja.py
+python python/cython_jinja.py
 scons build/debug/src/libdecoding.a
 sudo rm -fr build/temp.linux-x86_64-2.7/
 sudo rm -fr build/lib.linux-x86_64-2.7/

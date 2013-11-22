@@ -31,18 +31,6 @@ struct IdComparator {
   }
 };
 
-// Common std c++ problem: boolean vectors are specialized
-// and therefore cannot return a reference as a boolean.
-// Use insert instead.
-// template<>
-// BoolPotential::ValType& Chart<BoolPotential>::operator[] (HNode node) {
-//   throw -1;
-// }
-// template<>
-// const BoolPotential::ValType& Chart<BoolPotential>::operator[] (HNode node) const {
-//   throw -1;
-// }
-
 template<typename S>
 Chart<S> *
 general_inside(const Hypergraph *graph,

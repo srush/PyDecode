@@ -37,20 +37,17 @@ cdef extern from "Hypergraph/Algorithms.h":
 
     cdef cppclass C{{S.type}}Chart "Chart<{{S.ctype}}>":
         {{S.vtype}} get(const CHypernode *node)
+        void insert(const CHypernode& node, const {{S.vtype}}& val)
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<{{S.ctype}}>":
     C{{S.type}}Marginals *{{S.type}}_compute "Marginals<{{S.ctype}}>::compute" (
                            const CHypergraph *hypergraph,
                            const CHypergraph{{S.type}}Potentials *potentials)
 
-cdef extern from "Hypergraph/Semirings.h" namespace "{{S.ctype}}":
-    {{S.vtype}} {{S.type}}_one "{{S.ctype}}::one" ()
-    {{S.vtype}} {{S.type}}_zero "{{S.ctype}}::zero" ()
-    {{S.vtype}} {{S.type}}_add "{{S.ctype}}::add" ({{S.vtype}}, const {{S.vtype}})
-    {{S.vtype}} {{S.type}}_times "{{S.ctype}}::times" ({{S.vtype}}, const {{S.vtype}})
+cdef extern from "Hypergraph/Semirings.h":
+    cdef cppclass {{S.ctype}}:
+        pass
 
-
-cdef extern from "Hypergraph/Algorithms.h" namespace "{{S.ctype}}":
     cdef cppclass CHypergraph{{S.type}}Potentials "HypergraphPotentials<{{S.ctype}}>":
         {{S.vtype}} dot(const CHyperpath &path) except +
         {{S.vtype}} score(const CHyperedge *edge)
@@ -62,6 +59,16 @@ cdef extern from "Hypergraph/Algorithms.h" namespace "{{S.ctype}}":
             const CHypergraph *hypergraph,
             const vector[{{S.vtype}}] potentials,
             {{S.vtype}} bias) except +
+
+cdef extern from "Hypergraph/Semirings.h" namespace "{{S.ctype}}":
+    {{S.vtype}} {{S.type}}_one "{{S.ctype}}::one" ()
+    {{S.vtype}} {{S.type}}_zero "{{S.ctype}}::zero" ()
+    {{S.vtype}} {{S.type}}_add "{{S.ctype}}::add" ({{S.vtype}}, const {{S.vtype}}&)
+    {{S.vtype}} {{S.type}}_times "{{S.ctype}}::times" ({{S.vtype}}, const {{S.vtype}}&)
+    {{S.vtype}} {{S.type}}_safeadd "{{S.ctype}}::safe_add" ({{S.vtype}}, const {{S.vtype}}&)
+    {{S.vtype}} {{S.type}}_safetimes "{{S.ctype}}::safe_times" ({{S.vtype}}, const {{S.vtype}}&)
+    {{S.vtype}} {{S.type}}_normalize "{{S.ctype}}::normalize" ({{S.vtype}}&)
+
 
 
 cdef class {{S.type}}Potentials:
@@ -142,63 +149,63 @@ cdef class {{S.type}}Potentials:
 
         Take the dot product with `path` :math:`\theta^{\top} y`.
         """
+
         return self.thisptr.dot(deref(path.thisptr))
         #return _{{S.ptype}}().init(self.thisptr.dot(deref(path.thisptr))).value
 
-# cdef class _{{S.ptype}}:
-#     cdef {{S.ctype}} wrap
+cdef class _{{S.ptype}}:
+    cdef {{S.vtype}} wrap
 
-#     def __cinit__(self, val=None):
-#         if val is not None:
-#             self.init({{S.ctype}}(<{{S.vtype}}>val))
+    def __cinit__(self, val=None):
+        if val is not None:
+            self.init(val)
 
-#     cdef init(self, {{S.ctype}} wrap):
-#         self.wrap = wrap
-#         return self
+    cdef init(self, {{S.vtype}} wrap):
+        self.wrap = wrap
+        return self
 
-#     {% if S.float %}
-#     def __float__(self):
-#         return <float>self.wrap
-#     {% endif %}
+    {% if S.float %}
+    def __float__(self):
+        return <float>self.wrap
+    {% endif %}
 
-#     {% if S.bool %}
-#     def __bool__(self):
-#         return <bool>self.wrap
-#     {% endif %}
+    {% if S.bool %}
+    def __bool__(self):
+        return <bool>self.wrap
+    {% endif %}
 
-# {#
-#     property value:
-#         def __get__(self):
-#             {% if S.float %}
-#             return <float>self.wrap
-#             {% elif S.bool %}
-#             return <bool>self.wrap
-#             {% else %}
-#             {{S.conversion}}
-#             {% endif %}
-# #}
+    property value:
+        def __get__(self):
+            {% if S.float %}
+            return <float>self.wrap
+            {% elif S.bool %}
+            return <bool>self.wrap
+            {% else %}
+            {{S.conversion}}
+            {% endif %}
 
-#     def __repr__(self):
-#         return str(self.value)
+    def __repr__(self):
+        return str(self.value)
 
-#     def __add__(_{{S.ptype}} self, _{{S.ptype}} other):
-#         return _{{S.ptype}}().init(
-#             {{S.type}}_add(self.wrap, other.wrap))
+    def __add__(_{{S.ptype}} self, _{{S.ptype}} other):
+        return _{{S.ptype}}().init(
+            {{S.type}}_add(self.wrap, other.wrap))
 
-#     def __mul__(_{{S.ptype}} self, _{{S.ptype}} other):
-#         return _{{S.ptype}}().init(
-#             {{S.type}}_times(self.wrap, other.wrap))
+    def __mul__(_{{S.ptype}} self, _{{S.ptype}} other):
+        return _{{S.ptype}}().init(
+            {{S.type}}_times(self.wrap, other.wrap))
 
-#     @staticmethod
-#     def one():
-#         return _{{S.ptype}}().init({{S.type}}_one())
+    @staticmethod
+    def one():
+        return _{{S.ptype}}().init({{S.type}}_one())
 
-#     @staticmethod
-#     def zero():
-#         return _{{S.ptype}}().init({{S.type}}_zero())
+    @staticmethod
+    def zero():
+        return _{{S.ptype}}().init({{S.type}}_zero())
 
-#     def __cmp__(_{{S.ptype}} self, _{{S.ptype}} other):
-#         return cmp(self.value, other.value)
+    def __cmp__(_{{S.ptype}} self, _{{S.ptype}} other):
+        return cmp(self.value, other.value)
+
 
 cdef class _{{S.type}}Chart:
     cdef C{{S.type}}Chart *chart
@@ -278,6 +285,7 @@ class {{S.type}}:
                          {{S.type}}Potentials potentials,
                          {{S.vtype}} threshold):
         marginals = compute_marginals(graph, potentials)
+
         bool_potentials = marginals.threshold(threshold)
         projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
