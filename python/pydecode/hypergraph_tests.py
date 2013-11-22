@@ -64,6 +64,7 @@ def random_hypergraph(size=50):
     assert len(hypergraph.edges) > 0
     return hypergraph
 
+
 def hypergraphs():
     for i in range(10):
         h = random_hypergraph()
@@ -398,6 +399,12 @@ def test_semirings():
         potentials = ph.Inside.Potentials(hypergraph).build(lambda l: 0.5)
 
 
+def test_serialization():
+    for hypergraph in hypergraphs():
+        s = utils.hypergraph_to_json(hypergraph)
+        hyper2 = utils.json_to_hypegraph(s)
+        nt.assert_equal(len(hypergraph.edges), len(hyper2.edges))
+        nt.assert_equal(len(hypergraph.nodes), len(hyper2.nodes))
 ## CONSTRUCTION CODE
 
 @nt.raises(Exception)
@@ -438,4 +445,4 @@ def test_bad_constraints():
 
 
 if __name__ == "__main__":
-    test_subgradient()
+    test_serialization()

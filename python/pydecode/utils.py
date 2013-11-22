@@ -1,6 +1,31 @@
 import pydecode.hyper as ph
 import random
 import itertools
+import json
+
+def hypergraph_to_json(graph):
+    data = []
+    for node in graph.nodes:
+        if not node.edges:
+            data.append([])
+        else:
+            data.append([([tail.id for tail in edge.tail], edge.label)
+                         for edge in node.edges])
+    return json.dumps(data)
+
+def json_to_hypergraph(s):
+    hypergraph = ph.Hypergraph()
+    nodes = {}
+    
+    with hypergraph.builder() as b:
+        for i, edge_ls in enumerate(json.loads(s)):
+            if not edge_ls:
+                nodes[i] = b.add_node()
+            else:
+                nodes[i] = b.add_node(
+                    [([nodes[node_id] for node_id in edge], lab) 
+                     for edge, lab in edge_ls])
+    return hypergraph
 
 def all_paths(graph):
     """
