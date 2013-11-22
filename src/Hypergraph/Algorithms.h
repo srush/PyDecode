@@ -100,7 +100,7 @@ class Marginals {
                                   const Hypergraph *hypergraph,
                                   const HypergraphPotentials<S> *potentials) {
     Chart<S> *in_chart =general_inside<S>(hypergraph, *potentials);
-    Chart<S> *out_chart = general_outside<S>(hypergraph, *potentials, 
+    Chart<S> *out_chart = general_outside<S>(hypergraph, *potentials,
                                             *in_chart);
     return new Marginals<S>(hypergraph, potentials,
                            in_chart, out_chart);
@@ -110,22 +110,22 @@ class Marginals {
   // Get max-marginal for edge or node.
   V marginal(HEdge edge) const {
       V score = (*out_chart_)[edge->head_node()];
-      score *= potentials_->score(edge);
+      score = SemiringType::times(score, potentials_->score(edge));
       foreach (HNode node, edge->tail_nodes()) {
-        score *= (*in_chart_)[node];
+        score = SemiringType::times(score, (*in_chart_)[node]);
       }
       return score; /// (*in_chart_)[hypergraph_->root()];
   }
 
   V marginal(HNode node) const {
-    return (*in_chart_)[node] * (*out_chart_)[node];
+    return SemiringType::times((*in_chart_)[node], (*out_chart_)[node]);
   }
 
   template<typename OtherSemi>
   typename OtherSemi::ValType dot(HypergraphPotentials<OtherSemi> other) const {
     typename OtherSemi::ValType out_score = OtherSemi::one();
     foreach (HEdge edge, hypergraph_->edges()) {
-      out_score = OtherSemi::add(out_score, 
+      out_score = OtherSemi::add(out_score,
                       OtherSemi::times(marginal(edge), other.score(edge)));
     }
     return out_score;

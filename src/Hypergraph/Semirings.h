@@ -312,7 +312,7 @@ public:
     static inline ValType one() { return ValType(); }
     static inline ValType zero() { return ValType(); }
 
-    static inline ValType randValue() { 
+    static inline ValType randValue() {
         SparseVector randVec;
         int n = 20;
         for(int i = 0; i < n; i++) {
@@ -416,9 +416,9 @@ class HypergraphPotentials {
         path.check(*hypergraph_);
         V score = SemiringType::one();
         foreach (HEdge edge, path.edges()) {
-            score *= potentials_[edge->id()];
+            score = SemiringType::times(score, potentials_[edge->id()]);
         }
-        return score * bias_;
+        return SemiringType::times(score, bias_);
     }
 
     V score(HEdge edge) const { return potentials_[edge->id()]; }
@@ -518,5 +518,10 @@ class HypergraphProjection {
     const vector<HNode> *node_map_;
     const vector<HEdge> *edge_map_;
 };
+
+const HypergraphPotentials<LogViterbiPotential> *
+pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
+             const vector<double> &vec);
+
 
 #endif // HYPERGRAPH_SEMIRING_H_

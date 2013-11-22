@@ -21,7 +21,7 @@ if use_cython:
                              ["python/pydecode/hyper.pyx",
                               "src/Hypergraph/Hypergraph.cpp",
                               "src/Hypergraph/Algorithms.cpp",
-                              #"src/Hypergraph/Constraints.cpp",
+                              "src/Hypergraph/Semirings.cpp",
                               #"src/Hypergraph/Subgradient.cpp",
                               ],
 
@@ -39,6 +39,7 @@ else:
                              ["python/pydecode/hyper.cpp",
                               "src/Hypergraph/Hypergraph.cpp",
                               "src/Hypergraph/Algorithms.cpp",
+                              "src/Hypergraph/Semirings.cpp",
                               #"src/Hypergraph/Constraints.cpp",
                               #"src/Hypergraph/Subgradient.cpp"
                               ],

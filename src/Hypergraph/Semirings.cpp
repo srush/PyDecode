@@ -16,11 +16,13 @@ HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::times(co
     check(other);
     vector<typename SemiringType::ValType> new_potentials(potentials_);
     for (uint i = 0; i < other.potentials_.size(); ++i) {
-        new_potentials[i] = SemiringType::times(new_potentials[i], other.potentials_[i]);
+        new_potentials[i] = SemiringType::times(new_potentials[i],
+                                                other.potentials_[i]);
     }
-    return new HypergraphPotentials<SemiringType>(hypergraph_,
-                                                             new_potentials,
-                                                             bias_ * other.bias_);
+    return new HypergraphPotentials<SemiringType>(
+        hypergraph_,
+        new_potentials,
+        SemiringType::times(bias_, other.bias_));
 }
 
 template<typename SemiringType>
@@ -37,7 +39,7 @@ HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::project_
     return new HypergraphPotentials<SemiringType>(projection.new_graph, potentials, bias_);
 }
 
-inline HypergraphProjection *HypergraphProjection::project_hypergraph(
+HypergraphProjection *HypergraphProjection::project_hypergraph(
         const Hypergraph *hypergraph,
         const HypergraphPotentials<BoolPotential> &edge_mask) {
     vector<HNode> *node_map =
@@ -89,7 +91,7 @@ inline HypergraphProjection *HypergraphProjection::project_hypergraph(
                                                                     node_map, edge_map);
 }
 
-inline const HypergraphPotentials<LogViterbiPotential> *
+const HypergraphPotentials<LogViterbiPotential> *
 pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
                          const vector<double> &vec) {
     HypergraphPotentials<LogViterbiPotential> *potentials =
@@ -116,4 +118,4 @@ SPECIALIZE_HYPER_FOR_SEMI(ViterbiPotential)
 SPECIALIZE_HYPER_FOR_SEMI(LogViterbiPotential)
 SPECIALIZE_HYPER_FOR_SEMI(InsidePotential)
 SPECIALIZE_HYPER_FOR_SEMI(BoolPotential)
-
+SPECIALIZE_HYPER_FOR_SEMI(SparseVectorPotential)

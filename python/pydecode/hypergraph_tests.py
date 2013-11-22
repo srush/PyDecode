@@ -78,6 +78,7 @@ def hypergraphs():
 
 # TESTS FOR HYPERGRAPH CONSTRUCTION.
 
+
 def test_numbering():
     """
     Check that the numbering nodes and edges is correct.
@@ -209,11 +210,11 @@ def test_outside():
         out_chart = ph.outside_values(h, w, chart)
         for node in h.nodes:
             other = chart[node] * out_chart[node]
-            nt.assert_less_equal(other.value, best + 1e-4)
+            nt.assert_less_equal(other, best + 1e-4)
         for edge in path.edges:
             for node in edge.tail:
                 if node.is_terminal:
-                    nt.assert_almost_equal(other.value, best)
+                    nt.assert_almost_equal(other, best)
 
 
 def test_posteriors():
@@ -234,11 +235,11 @@ def test_posteriors():
 
         for edge in h.edges:
             nt.assert_almost_equal(
-                marg[edge].value / marg[h.root].value,
+                marg[edge] / marg[h.root],
                 m[edge.id] / total_score, places=4)
 
         chart = ph.inside(h, w)
-        nt.assert_almost_equal(chart[h.root].value, total_score, places=4)
+        nt.assert_almost_equal(chart[h.root], total_score, places=4)
 
 def test_max_marginals():
     """
@@ -258,13 +259,13 @@ def test_max_marginals():
         max_marginals = ph.compute_marginals(h, w)
         for node in h.nodes:
             other = max_marginals[node]
-            nt.assert_less_equal(other.value, best + 1e-4)
+            nt.assert_less_equal(other, best + 1e-4)
 
         for edge in h.edges:
             other = max_marginals[edge]
-            nt.assert_less_equal(other.value, best + 1e-4)
+            nt.assert_less_equal(other, best + 1e-4)
             if edge in path:
-                nt.assert_almost_equal(other.value, best)
+                nt.assert_almost_equal(other, best)
 
 ### PRUNING CODE
 
@@ -381,14 +382,17 @@ def test_lp():
     import pydecode.lp as lp
     for h in hypergraphs():
         w = random_log_viterbi_potentials(h)
+        print w
         g = lp.HypergraphLP.make_lp(h, w)
         g.solve()
         path = g.path
         opath = ph.best_path(h, w)
         nt.assert_almost_equal(w.dot(path), w.dot(opath))
-
         for edge in path.edges:
-            assert(edge in opath)
+            assert edge in opath
+
+
+        # Constraint.
         constraints, edge = random_have_constraint(h)
         g = lp.HypergraphLP.make_lp(h, w)
         g.add_constraints(constraints)
@@ -461,4 +465,4 @@ def test_bad_constraints():
 
 
 if __name__ == "__main__":
-    test_subgradient()
+    test_lp()

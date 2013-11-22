@@ -62,10 +62,10 @@ general_inside(const Hypergraph *graph,
     foreach (HNode node, edge->tail_nodes()) {
       score = S::times(score, (*chart)[node]);
     }
-    chart->insert(edge->head_node(), 
+    chart->insert(edge->head_node(),
                   S::add((*chart)[edge->head_node()], score));
   }
-  chart->insert(graph->root(), 
+  chart->insert(graph->root(),
                 S::times((*chart)[graph->root()], potentials.bias()));
   return chart;
 }
@@ -195,6 +195,6 @@ SPECIALIZE_ALGORITHMS_FOR_SEMI(ViterbiPotential)
 SPECIALIZE_ALGORITHMS_FOR_SEMI(LogViterbiPotential)
 SPECIALIZE_ALGORITHMS_FOR_SEMI(InsidePotential)
 SPECIALIZE_ALGORITHMS_FOR_SEMI(BoolPotential)
-// SPECIALIZE_FOR_SEMI_MIN(SparseVectorPotential)
+SPECIALIZE_FOR_SEMI_MIN(SparseVectorPotential)
 
 // End General code.

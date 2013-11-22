@@ -2,6 +2,7 @@
 #define COMMON_H
 
 #include <ctime>
+#include <cstdlib>
 #include "./foreach.h"
 
 #define INF 1e9

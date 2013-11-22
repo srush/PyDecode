@@ -13,8 +13,8 @@ def subgradient(graph, potentials, constraints):
         score = dual_potentials.dot(path)
         vec = constraints.dot(path)
         subgrad = np.zeros(len(x))
-        for i in vec:
-            subgrad[i] = vec[i]
+        for i, j in vec:
+            subgrad[i] = j
         return score, subgrad, path
     return fn
 

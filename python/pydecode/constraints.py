@@ -38,7 +38,7 @@ class Constraints:
         constraints = self.potentials.dot(path)
         print "Constraints", constraints
         return [self.by_id[i]
-                for i, val in constraints.iteritems()
+                for i, val in constraints
                 if val != 0]
 
     def build(self, builder):
