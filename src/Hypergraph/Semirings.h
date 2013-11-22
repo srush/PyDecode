@@ -184,7 +184,7 @@ public:
         lhs += rhs;
         return CountingPotential::normalize(lhs);
     }
-    static inline ValType safe_times(ValType lhs, const ValType &rhs) {
+    static inline ValType safe_times(ValType lhs, const ValType &rhs ) {
         lhs *= rhs;
         return CountingPotential::normalize(lhs);
     }
@@ -268,20 +268,21 @@ public:
         return lhs;
     }
 
-    static ValType times(const ValType& lhs, const ValType& rhs) {
+    static ValType times(ValType value, const ValType& rhs) {
         int i = 0, j = 0;
         SparseVector vec;
-        while (i < value.size() || j < rhs.value.size()) {
-          if (j >= rhs.value.size() || (i < value.size() && value[i].first < rhs.value[j].first)) {
+        while (i < value.size() || j < rhs.size()) {
+          if (j >= rhs.size() || (i < value.size() && value[i].first < rhs[j].first)) {
             vec.push_back(pair<int, int>(value[i].first, value[i].second));
             ++i;
-          } else if (i >= value.size() || (j < rhs.value.size() && value[i].first > rhs.value[j].first)) {
-            vec.push_back(pair<int, int>(rhs.value[j].first, rhs.value[j].second));
+          } else if (i >= value.size() || (j < rhs.size() && value[i].first > rhs[j].first)) {
+            vec.push_back(pair<int, int>(rhs[j].first, rhs[j].second));
             ++j;
           } else {
-            vec.push_back(pair<int, int>(value[i].first, value[i].second + rhs.value[j].second));
+            vec.push_back(pair<int, int>(value[i].first, value[i].second + rhs[j].second));
             ++i;
             ++j;
+          }
         }
         return vec;
     }
@@ -289,24 +290,8 @@ public:
     static inline ValType safe_add(ValType lhs, const ValType& rhs) {
         return lhs;
     }
-    static ValType safe_times(const ValType& lhs, const ValType& rhs) {
-        int i = 0, j = 0;
-        SparseVector vec;
-        while (i < lhs.size() || j < rhs.size()) {
-            if (j >= rhs.size() || (i < lhs.size() && lhs[i].first < rhs[j].first)) {
-                vec.push_back(SparsePair(lhs[i].first, lhs[i].second));
-                ++i;
-            } else if (i >= lhs.size() || (j < rhs.size() && lhs[i].first > rhs[j].first)) {
-                vec.push_back(SparsePair(rhs[j].first, rhs[j].second));
-                ++j;
-            } else {
-                vec.push_back(SparsePair(i, lhs[i].second + rhs[j].second));
-                ++i;
-                ++j;
-            }
-        }
-        return vec;
-    }
+
+    static ValType safe_times(const ValType& lhs, const ValType& rhs) {}
 
     static inline ValType one() { return ValType(); }
     static inline ValType zero() { return ValType(); }

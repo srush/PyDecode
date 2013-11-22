@@ -357,32 +357,12 @@ def test_subgradient():
 def test_lp():
     import pydecode.lp as lp
     for h in hypergraphs():
-<<<<<<< HEAD
         w = utils.random_log_viterbi_potentials(h)
-=======
-        w = random_log_viterbi_potentials(h)
-        for edge in h.edges: print w[edge],
-        print
->>>>>>> semirings
+
         g = lp.HypergraphLP.make_lp(h, w)
         g.solve()
         path = g.path
-        for edge in path:
-            print edge.id,
-        print
         opath = ph.best_path(h, w)
-        for edge in opath:
-            print edge.id,
-        print
-        print h
-
-        print
-        for path2 in get_all_hyperpaths(h):
-            for edge in path2:
-                print edge.id,
-            print
-            print w.dot(path2)
-            print
 
         nt.assert_almost_equal(w.dot(path), w.dot(opath))
         for edge in path.edges:
@@ -425,7 +405,7 @@ def test_semirings():
 def test_serialization():
     for hypergraph in hypergraphs():
         s = utils.hypergraph_to_json(hypergraph)
-        hyper2 = utils.json_to_hypegraph(s)
+        hyper2 = utils.json_to_hypergraph(s)
         nt.assert_equal(len(hypergraph.edges), len(hyper2.edges))
         nt.assert_equal(len(hypergraph.nodes), len(hyper2.nodes))
 ## CONSTRUCTION CODE
@@ -468,8 +448,4 @@ def test_bad_constraints():
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     test_serialization()
-=======
-    test_lp()
->>>>>>> semirings
