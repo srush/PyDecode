@@ -5,6 +5,7 @@ Requires pystruct.
 
 from pystruct.models import StructuredModel
 from sklearn.feature_extraction import DictVectorizer
+from sklearn.feature_extraction.text import HashingVectorizer
 import pydecode.hyper as ph
 import numpy as np
 import pydecode.chart as chart
@@ -67,8 +68,9 @@ class DynamicProgrammingModel(StructuredModel):
             for k, v in f.iteritems():
                 features.setdefault(k, 0)
                 features[k] += v
-        #print features
+                
         final_features = self._vec.transform(features)
+        #print "Features:", self._vec.inverse_transform(final_features)
         return final_features
 
     def initialize(self, X, Y):
@@ -95,7 +97,7 @@ class DynamicProgrammingModel(StructuredModel):
         potentials = self._build_potentials(hypergraph, x, w)
         # print time.time() - b
         path = ph.best_path(hypergraph, potentials)
-        print "SCORE IS:", potentials.dot(path)
+        #print "SCORE IS:", potentials.dot(path)
         y = set()
         for edge in path:
             y.add(hypergraph.label(edge))
@@ -107,9 +109,14 @@ class DynamicProgrammingModel(StructuredModel):
 
     def loss(self, yhat, y):
         difference = 0
+        # print "GOLD", y
+        # print "CHECK", yhat
+        ydiff = set()
         for y1 in y:
             if y1 not in yhat:
                 difference += 1
+                ydiff.add(y1) 
+        #print "DIFF", difference, ydiff
         return difference
 
     def max_loss(self, y):
@@ -127,6 +134,7 @@ class DynamicProgrammingModel(StructuredModel):
         f = self._vec.transform(features)
         scores =  f * w.T
         #print "Weights:", self._vec.inverse_transform(w) 
+        #print 
         return ph.Potentials(hypergraph).from_vector(scores)
 
         #return weights
@@ -149,3 +157,17 @@ class DynamicProgrammingModel(StructuredModel):
     # def _path_features(self, hypergraph, x, path, data):
     #     return sum((self._features(x, hypergraph.label(edge), data)
     #                 for edge in path))
+
+
+# hm = TaggingCRFModel()
+# hm.initialize(data_X, data_Y)
+# for i in range(len(data_X))[:10]:
+#     s = set(data_Y[i])
+#     c = chart.ChartBuilder(lambda a: a,
+#                            chart.HypergraphSemiRing, True)
+#     hm.dynamic_program(data_X[i], c)
+#     h = c.finish()
+#     bool_pot = ph.BoolPotentials(h).build(lambda a: a in s)
+#     path = ph.best_path(h, bool_pot)
+#     #for edge in path: print h.label(edge)
+#     assert bool_pot.dot(path)
