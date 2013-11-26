@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="classClock" kind="class" prot="public">
     <compoundname>Clock</compoundname>
       <sectiondef kind="public-static-func">
@@ -22,14 +22,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/common.h" line="13" bodyfile="/home/srush/Projects/decoding/src/common.h" bodystart="13" bodyend="17"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/common.h" line="14" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/common.h" bodystart="14" bodyend="18"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/srush/Projects/decoding/src/common.h" line="11" bodyfile="/home/srush/Projects/decoding/src/common.h" bodystart="11" bodyend="18"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/common.h" line="12" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/common.h" bodystart="12" bodyend="19"/>
     <listofallmembers>
       <member refid="classClock_1af45b8db844300755b8c4244a65f60833" prot="public" virt="non-virtual"><scope>Clock</scope><name>diffclock</name></member>
     </listofallmembers>

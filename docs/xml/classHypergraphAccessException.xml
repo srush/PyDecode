@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="classHypergraphAccessException" kind="class" prot="public">
     <compoundname>HypergraphAccessException</compoundname>
     <basecompoundref refid="structHypergraphException" prot="public" virt="non-virtual">HypergraphException</basecompoundref>
@@ -8,6 +8,23 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
+      <node id="30">
+        <label>exception</label>
+      </node>
+      <node id="29">
+        <label>HypergraphException</label>
+        <link refid="structHypergraphException"/>
+        <childnode refid="30" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>HypergraphAccessException</label>
+        <link refid="classHypergraphAccessException"/>
+        <childnode refid="29" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
       <node id="33">
         <label>exception</label>
       </node>
@@ -23,25 +40,8 @@
         <childnode refid="32" relation="public-inheritance">
         </childnode>
       </node>
-    </inheritancegraph>
-    <collaborationgraph>
-      <node id="36">
-        <label>exception</label>
-      </node>
-      <node id="35">
-        <label>HypergraphException</label>
-        <link refid="structHypergraphException"/>
-        <childnode refid="36" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="34">
-        <label>HypergraphAccessException</label>
-        <link refid="classHypergraphAccessException"/>
-        <childnode refid="35" relation="public-inheritance">
-        </childnode>
-      </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="30" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="30" bodyend="30"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" line="30" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" bodystart="30" bodyend="30"/>
     <listofallmembers>
       <member refid="structHypergraphException_1a0d2a42fc6d68f2f128b7c14144d3fe66" prot="public" virt="non-virtual"><scope>HypergraphAccessException</scope><name>HypergraphException</name></member>
       <member refid="structHypergraphException_1aa9ad558de18804fa3e42e6a9dada8a8f" prot="public" virt="non-virtual"><scope>HypergraphAccessException</scope><name>s</name></member>

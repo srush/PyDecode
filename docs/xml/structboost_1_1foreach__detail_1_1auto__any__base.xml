@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="structboost_1_1foreach__detail_1_1auto__any__base" kind="struct" prot="public">
     <compoundname>boost::foreach_detail::auto_any_base</compoundname>
     <derivedcompoundref refid="structboost_1_1foreach__detail_1_1auto__any" prot="public" virt="non-virtual">boost::foreach_detail::auto_any&lt; T &gt;</derivedcompoundref>
@@ -15,7 +15,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/foreach.h" line="23" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="23" bodyend="23"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/foreach.h" line="23" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/foreach.h" bodystart="23" bodyend="23"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -34,7 +34,7 @@
         </childnode>
       </node>
     </inheritancegraph>
-    <location file="/home/srush/Projects/decoding/src/foreach.h" line="22" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="21" bodyend="24"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/foreach.h" line="22" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/foreach.h" bodystart="21" bodyend="24"/>
     <listofallmembers>
       <member refid="structboost_1_1foreach__detail_1_1auto__any__base_1a59b9aec27f7aad61c3bedea4b5a479b4" prot="public" virt="non-virtual"><scope>boost::foreach_detail::auto_any_base</scope><name>operator bool</name></member>
     </listofallmembers>

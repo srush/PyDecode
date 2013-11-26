@@ -1392,7 +1392,13 @@ cdef class _SparseVectorW:
     property value:
         def __get__(self):
             
-            pass
+            
+            d = {}
+            cdef vector[pair[int,int]] s= <vector[pair[int,int]]> self.wrap
+            for p in s:
+                d[p.first] = p.second
+            return d
+
             
 
     def __repr__(self):

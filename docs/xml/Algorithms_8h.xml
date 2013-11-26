@@ -1,88 +1,115 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="Algorithms_8h" kind="file">
     <compoundname>Algorithms.h</compoundname>
     <includes local="no">queue</includes>
     <includes local="no">vector</includes>
     <includes refid="common_8h" local="yes">./common.h</includes>
     <includes refid="Hypergraph_8h" local="yes">Hypergraph/Hypergraph.h</includes>
-    <includes refid="Semirings_8h" local="yes">Hypergraph/Semirings.h</includes>
+    <includes refid="semirings_8h" local="yes">Hypergraph/Semirings.h</includes>
     <includedby refid="Algorithms_8cpp" local="yes">src/Hypergraph/Algorithms.cpp</includedby>
     <incdepgraph>
-      <node id="30">
+      <node id="36">
         <label>queue</label>
       </node>
-      <node id="34">
-        <label>./foreach.h</label>
-        <link refid="foreach_8h_source"/>
+      <node id="47">
+        <label>Hypergraph/Semirings.h</label>
+        <link refid="semirings_8h_source"/>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
       </node>
-      <node id="36">
+      <node id="49">
+        <label>Hypergraph/Factory.h</label>
+        <link refid="Factory_8h_source"/>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="43">
         <label>cassert</label>
       </node>
-      <node id="39">
-        <label>string</label>
-      </node>
-      <node id="37">
-        <label>exception</label>
-      </node>
-      <node id="40">
-        <label>Hypergraph/Semirings.h</label>
-        <link refid="Semirings_8h_source"/>
-        <childnode refid="41" relation="include">
-        </childnode>
-        <childnode refid="35" relation="include">
-        </childnode>
-        <childnode refid="32" relation="include">
-        </childnode>
-      </node>
-      <node id="29">
+      <node id="35">
         <label>src/Hypergraph/Algorithms.h</label>
         <link refid="Algorithms.h"/>
-        <childnode refid="30" relation="include">
-        </childnode>
-        <childnode refid="31" relation="include">
-        </childnode>
-        <childnode refid="32" relation="include">
-        </childnode>
-        <childnode refid="35" relation="include">
-        </childnode>
-        <childnode refid="40" relation="include">
-        </childnode>
-      </node>
-      <node id="33">
-        <label>ctime</label>
-      </node>
-      <node id="31">
-        <label>vector</label>
-      </node>
-      <node id="32">
-        <label>./common.h</label>
-        <link refid="common_8h_source"/>
-        <childnode refid="33" relation="include">
-        </childnode>
-        <childnode refid="34" relation="include">
-        </childnode>
-      </node>
-      <node id="35">
-        <label>Hypergraph/Hypergraph.h</label>
-        <link refid="Hypergraph_8h_source"/>
         <childnode refid="36" relation="include">
         </childnode>
         <childnode refid="37" relation="include">
         </childnode>
         <childnode refid="38" relation="include">
         </childnode>
-        <childnode refid="39" relation="include">
+        <childnode refid="42" relation="include">
         </childnode>
-        <childnode refid="31" relation="include">
+        <childnode refid="47" relation="include">
         </childnode>
-        <childnode refid="32" relation="include">
-        </childnode>
+      </node>
+      <node id="46">
+        <label>string</label>
+      </node>
+      <node id="51">
+        <label>map</label>
+      </node>
+      <node id="44">
+        <label>exception</label>
+      </node>
+      <node id="39">
+        <label>ctime</label>
       </node>
       <node id="38">
-        <label>set</label>
+        <label>./common.h</label>
+        <link refid="common_8h_source"/>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+      </node>
+      <node id="37">
+        <label>vector</label>
       </node>
       <node id="41">
+        <label>./foreach.h</label>
+        <link refid="foreach_8h_source"/>
+      </node>
+      <node id="42">
+        <label>Hypergraph/Hypergraph.h</label>
+        <link refid="Hypergraph_8h_source"/>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="40">
+        <label>cstdlib</label>
+      </node>
+      <node id="50">
+        <label>iostream</label>
+      </node>
+      <node id="45">
+        <label>set</label>
+      </node>
+      <node id="48">
         <label>algorithm</label>
       </node>
     </incdepgraph>
@@ -113,7 +140,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="51" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="36" bodyend="57"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="50" column="1"/>
       </memberdef>
       <memberdef kind="function" id="Algorithms_8h_1a5f7cc67c9c79df40b872cf855238c68c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -143,7 +170,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="57" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="61" bodyend="83"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="55" column="1"/>
       </memberdef>
       <memberdef kind="function" id="Algorithms_8h_1a3a767a730f00c71b726b9c55f4a4d441" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -169,7 +196,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="62" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="86" bodyend="130"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="61" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -194,135 +221,136 @@
 <codeline lineno="15"><highlight class="normal"></highlight></codeline>
 <codeline lineno="20"><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
 <codeline lineno="21" refid="classChart" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classChart" kindref="compound">Chart</ref><sp/>{</highlight></codeline>
-<codeline lineno="22"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
-<codeline lineno="23"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>SemiringType<sp/>S;</highlight></codeline>
-<codeline lineno="24"><highlight class="normal"><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph)</highlight></codeline>
-<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>hypergraph_(hypergraph),</highlight></codeline>
-<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>chart_(hypergraph-&gt;nodes().size(),<sp/>S::zero())<sp/>{}</highlight></codeline>
-<codeline lineno="27"><highlight class="normal"></highlight></codeline>
-<codeline lineno="28"><highlight class="normal"></highlight></codeline>
-<codeline lineno="29"><highlight class="normal"><sp/><sp/>S&amp;<sp/>operator[]<sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart_[node-&gt;id()];<sp/>}</highlight></codeline>
-<codeline lineno="30"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>S&amp;<sp/>operator[]<sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart_[node-&gt;id()];</highlight></codeline>
-<codeline lineno="32"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>SemiringType<sp/>S;</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType::ValType<sp/>V;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph)</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>hypergraph_(hypergraph),</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>chart_(hypergraph-&gt;nodes().size(),<sp/>S::zero())<sp/>{}</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>V&amp;<sp/>operator[]<sp/>(HNode<sp/>node)<sp/>{<sp/>return<sp/>chart_[node-&gt;id()];<sp/>}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/>V<sp/>operator[]<sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart_[node-&gt;id()];<sp/>}</highlight></codeline>
 <codeline lineno="33"><highlight class="normal"></highlight></codeline>
-<codeline lineno="34"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>S&amp;<sp/></highlight><highlight class="keyword">get</highlight><highlight class="normal">(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart_[node-&gt;id()];<sp/>}</highlight></codeline>
-<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/>V<sp/></highlight><highlight class="keyword">get</highlight><highlight class="normal">(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart_[node-&gt;id()];<sp/>}</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>insert(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypernode" kindref="compound">HNode</ref>&amp;<sp/>node,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>V&amp;<sp/>val)<sp/>{<sp/>chart_[node-&gt;id()]<sp/>=<sp/>val;<sp/>}</highlight></codeline>
 <codeline lineno="36"><highlight class="normal"></highlight></codeline>
-<codeline lineno="37"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>check(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!hypergraph-&gt;<ref refid="classHypergraph_1afb3b5b2f485852d72787b5ab6c0d1862" kindref="member">same</ref>(*hypergraph_))<sp/>{</highlight></codeline>
-<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="structHypergraphException" kindref="compound">HypergraphException</ref>(</highlight><highlight class="stringliteral">&quot;Hypergraph<sp/>does<sp/>not<sp/>match<sp/>chart.&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="41"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="42"><highlight class="normal"></highlight></codeline>
-<codeline lineno="43"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
-<codeline lineno="44"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph_;</highlight></codeline>
-<codeline lineno="45"><highlight class="normal"><sp/><sp/>vector&lt;S&gt;<sp/>chart_;</highlight></codeline>
-<codeline lineno="46"><highlight class="normal">};</highlight></codeline>
-<codeline lineno="47"><highlight class="normal"></highlight></codeline>
-<codeline lineno="48"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
-<codeline lineno="49"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*general_inside(</highlight></codeline>
-<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>&amp;potentials);</highlight></codeline>
-<codeline lineno="52"><highlight class="normal"></highlight></codeline>
-<codeline lineno="53"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
-<codeline lineno="54"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*general_outside(</highlight></codeline>
-<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>&amp;potentials,</highlight></codeline>
-<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>&amp;inside_chart);</highlight></codeline>
-<codeline lineno="58"><highlight class="normal"></highlight></codeline>
-<codeline lineno="59"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
-<codeline lineno="60"><highlight class="normal"><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*general_viterbi(</highlight></codeline>
-<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>&amp;potentials);</highlight></codeline>
-<codeline lineno="63"><highlight class="normal"></highlight></codeline>
-<codeline lineno="64"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
-<codeline lineno="65" refid="classMarginals" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classMarginals" kindref="compound">Marginals</ref><sp/>{</highlight></codeline>
-<codeline lineno="66"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
-<codeline lineno="67"><highlight class="normal"></highlight></codeline>
-<codeline lineno="68"><highlight class="normal"><sp/><sp/><ref refid="classMarginals" kindref="compound">Marginals</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph,</highlight></codeline>
-<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>*potentials,</highlight></codeline>
-<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*in_chart,</highlight></codeline>
-<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*out_chart)</highlight></codeline>
-<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>hypergraph_(hypergraph),</highlight></codeline>
-<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>potentials_(potentials),</highlight></codeline>
-<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>in_chart_(in_chart),</highlight></codeline>
-<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>out_chart_(out_chart)<sp/>{</highlight></codeline>
-<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>potentials-&gt;check(*hypergraph);</highlight></codeline>
-<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>in_chart-&gt;check(hypergraph);</highlight></codeline>
-<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>out_chart-&gt;check(hypergraph);</highlight></codeline>
-<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="80"><highlight class="normal"></highlight></codeline>
-<codeline lineno="81"><highlight class="normal"><sp/><sp/>~<ref refid="classMarginals" kindref="compound">Marginals</ref>()<sp/>{</highlight></codeline>
-<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>in_chart_;</highlight></codeline>
-<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>out_chart_;</highlight></codeline>
-<codeline lineno="84"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="85"><highlight class="normal"></highlight></codeline>
-<codeline lineno="86"><highlight class="normal"><sp/><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;BoolPotential&gt;</ref><sp/>*threshold(</highlight></codeline>
-<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SemiringType<sp/>&amp;threshold)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;BoolPotential&gt;</ref><sp/>*potentials<sp/>=</highlight></codeline>
-<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;BoolPotential&gt;</ref>(hypergraph_);</highlight></codeline>
-<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>hypergraph_-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>(*potentials)[edge]<sp/>=<sp/><ref refid="classBoolPotential" kindref="compound">BoolPotential</ref>(threshold<sp/>&lt;<sp/><ref refid="classMarginals_1a3f2fc5e47cdf1b9d9ab7a3009f8c47ec" kindref="member">marginal</ref>(edge));</highlight></codeline>
-<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>potentials;</highlight></codeline>
-<codeline lineno="94"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="95"><highlight class="normal"></highlight></codeline>
-<codeline lineno="96"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Compute<sp/>the<sp/>max-marginals<sp/>for<sp/>the<sp/>potentialed<sp/>hypergraph.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="97"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classMarginals" kindref="compound">Marginals</ref><sp/>*compute(</highlight></codeline>
-<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph,</highlight></codeline>
-<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>*potentials)<sp/>{</highlight></codeline>
-<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*in_chart<sp/>=</highlight></codeline>
-<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>general_inside&lt;SemiringType&gt;(hypergraph,<sp/>*potentials);</highlight></codeline>
-<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*out_chart<sp/>=</highlight></codeline>
-<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>general_outside&lt;SemiringType&gt;(hypergraph,<sp/>*potentials,</highlight></codeline>
-<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*in_chart);</highlight></codeline>
-<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classMarginals" kindref="compound">Marginals&lt;SemiringType&gt;</ref>(hypergraph,<sp/>potentials,</highlight></codeline>
-<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>in_chart,<sp/>out_chart);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>check(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!hypergraph-&gt;<ref refid="classHypergraph_1afb3b5b2f485852d72787b5ab6c0d1862" kindref="member">same</ref>(*hypergraph_))<sp/>{</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="structHypergraphException" kindref="compound">HypergraphException</ref>(</highlight><highlight class="stringliteral">&quot;Hypergraph<sp/>does<sp/>not<sp/>match<sp/>chart.&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph_;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/>vector&lt;V&gt;<sp/>chart_;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*general_inside(</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>&amp;potentials);</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*general_outside(</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>&amp;potentials,</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>&amp;inside_chart);</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*general_viterbi(</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>&amp;potentials);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
+<codeline lineno="66" refid="classMarginals" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classMarginals" kindref="compound">Marginals</ref><sp/>{</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>SemiringType<sp/>S;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType::ValType<sp/>V;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><ref refid="classMarginals" kindref="compound">Marginals</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph,</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;S&gt;</ref><sp/>*potentials,</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref><sp/>*in_chart,</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref><sp/>*out_chart)</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>hypergraph_(hypergraph),</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>potentials_(potentials),</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>in_chart_(in_chart),</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>out_chart_(out_chart)<sp/>{</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>potentials-&gt;check(*hypergraph);</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>in_chart-&gt;check(hypergraph);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>out_chart-&gt;check(hypergraph);</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/>~<ref refid="classMarginals" kindref="compound">Marginals</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>in_chart_;</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>out_chart_;</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;BoolPotential&gt;</ref><sp/>*threshold(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>V<sp/>&amp;threshold)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;BoolPotential&gt;</ref><sp/>*potentials<sp/>=</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;BoolPotential&gt;</ref>(hypergraph_);</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>hypergraph_-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>potentials-&gt;insert(edge,<sp/>threshold<sp/>&lt;<sp/><ref refid="classMarginals_1a4768a5763dd9c9e4ce8ebfd6b98dbdb7" kindref="member">marginal</ref>(edge));</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>potentials;</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Compute<sp/>the<sp/>max-marginals<sp/>for<sp/>the<sp/>potentialed<sp/>hypergraph.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classMarginals" kindref="compound">Marginals</ref><sp/>*compute(</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph,</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;S&gt;</ref><sp/>*potentials)<sp/>{</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref><sp/>*in_chart<sp/>=<sp/>general_inside&lt;S&gt;(hypergraph,<sp/>*potentials);</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref><sp/>*out_chart<sp/>=<sp/>general_outside&lt;S&gt;(hypergraph,<sp/>*potentials,</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*in_chart);</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classMarginals" kindref="compound">Marginals&lt;S&gt;</ref>(hypergraph,<sp/>potentials,</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>in_chart,<sp/>out_chart);</highlight></codeline>
 <codeline lineno="107"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline lineno="108"><highlight class="normal"></highlight></codeline>
 <codeline lineno="109"><highlight class="normal"></highlight></codeline>
 <codeline lineno="110"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Get<sp/>max-marginal<sp/>for<sp/>edge<sp/>or<sp/>node.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="111" refid="classMarginals_1a3f2fc5e47cdf1b9d9ab7a3009f8c47ec" refkind="member"><highlight class="normal"><sp/><sp/>SemiringType<sp/><ref refid="classMarginals_1a3f2fc5e47cdf1b9d9ab7a3009f8c47ec" kindref="member">marginal</ref>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>SemiringType<sp/>score<sp/>=<sp/>(*out_chart_)[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()];</highlight></codeline>
-<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>score<sp/>*=<sp/>potentials_-&gt;score(edge);</highlight></codeline>
+<codeline lineno="111" refid="classMarginals_1a4768a5763dd9c9e4ce8ebfd6b98dbdb7" refkind="member"><highlight class="normal"><sp/><sp/>V<sp/><ref refid="classMarginals_1a4768a5763dd9c9e4ce8ebfd6b98dbdb7" kindref="member">marginal</ref>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>V<sp/>score<sp/>=<sp/>(*out_chart_)[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()];</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>score<sp/>=<sp/>SemiringType::times(score,<sp/>potentials_-&gt;score(edge));</highlight></codeline>
 <codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>score<sp/>*=<sp/>(*in_chart_)[node];</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>score<sp/>=<sp/>SemiringType::times(score,<sp/>(*in_chart_)[node]);</highlight></codeline>
 <codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>score;<sp/></highlight></codeline>
 <codeline lineno="118"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline lineno="119"><highlight class="normal"></highlight></codeline>
-<codeline lineno="120"><highlight class="normal"><sp/><sp/>SemiringType<sp/><ref refid="classMarginals_1a3f2fc5e47cdf1b9d9ab7a3009f8c47ec" kindref="member">marginal</ref>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(*in_chart_)[node]<sp/>*<sp/>(*out_chart_)[node];</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/>V<sp/><ref refid="classMarginals_1a4768a5763dd9c9e4ce8ebfd6b98dbdb7" kindref="member">marginal</ref>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>SemiringType::times((*in_chart_)[node],<sp/>(*out_chart_)[node]);</highlight></codeline>
 <codeline lineno="122"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline lineno="123"><highlight class="normal"></highlight></codeline>
 <codeline lineno="124"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>OtherSemi&gt;</highlight></codeline>
-<codeline lineno="125"><highlight class="normal"><sp/><sp/>OtherSemi<sp/>dot(<ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;OtherSemi&gt;</ref><sp/>other)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/>OtherSemi<sp/>out_score<sp/>=<sp/>OtherSemi::one();</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>OtherSemi::ValType<sp/>dot(<ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;OtherSemi&gt;</ref><sp/>other)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>OtherSemi::ValType<sp/>out_score<sp/>=<sp/>OtherSemi::one();</highlight></codeline>
 <codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>hypergraph_-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>out_score<sp/>+=<sp/><ref refid="classMarginals_1a3f2fc5e47cdf1b9d9ab7a3009f8c47ec" kindref="member">marginal</ref>(edge)<sp/>*<sp/>other.score(edge);</highlight></codeline>
-<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>out_score;</highlight></codeline>
-<codeline lineno="131"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="132"><highlight class="normal"></highlight></codeline>
-<codeline lineno="133"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>hypergraph_;</highlight></codeline>
-<codeline lineno="135"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="136"><highlight class="normal"></highlight></codeline>
-<codeline lineno="137"><highlight class="normal"><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
-<codeline lineno="138"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph_;</highlight></codeline>
-<codeline lineno="139"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>*potentials_;</highlight></codeline>
-<codeline lineno="140"><highlight class="normal"></highlight></codeline>
-<codeline lineno="141"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Pointer<sp/>to<sp/>inside<sp/>and<sp/>outside<sp/>charts.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="142"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Note<sp/>these<sp/>are<sp/>owned<sp/>by<sp/>the<sp/>object.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="143"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*in_chart_;</highlight></codeline>
-<codeline lineno="144"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*out_chart_;</highlight></codeline>
-<codeline lineno="145"><highlight class="normal">};</highlight></codeline>
-<codeline lineno="146"><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>out_score<sp/>=<sp/>OtherSemi::add(out_score,</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>OtherSemi::times(<ref refid="classMarginals_1a4768a5763dd9c9e4ce8ebfd6b98dbdb7" kindref="member">marginal</ref>(edge),<sp/>other.score(edge)));</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>out_score;</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>hypergraph_;</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph_;</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>*potentials_;</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"></highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Pointer<sp/>to<sp/>inside<sp/>and<sp/>outside<sp/>charts.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Note<sp/>these<sp/>are<sp/>owned<sp/>by<sp/>the<sp/>object.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*in_chart_;</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*out_chart_;</highlight></codeline>
+<codeline lineno="146"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="147"><highlight class="normal"></highlight></codeline>
 <codeline lineno="148"><highlight class="normal"></highlight></codeline>
-<codeline lineno="149"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/><sp/>//<sp/>HYPERGRAPH_ALGORITHMS_H_</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/><sp/>//<sp/>HYPERGRAPH_ALGORITHMS_H_</highlight></codeline>
     </programlisting>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h"/>
   </compounddef>
 </doxygen>

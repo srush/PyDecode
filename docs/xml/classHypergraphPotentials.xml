@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="classHypergraphPotentials" kind="class" prot="public">
     <compoundname>HypergraphPotentials</compoundname>
     <templateparamlist>
@@ -9,6 +9,34 @@
         <defname>SemiringType</defname>
       </param>
     </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classHypergraphPotentials_1ae7ecd2ea26b3c1199ff7bbe5747cf463" prot="private" static="no">
+        <type>SemiringType</type>
+        <definition>typedef SemiringType HypergraphPotentials&lt; SemiringType &gt;::S</definition>
+        <argsstring></argsstring>
+        <name>S</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="627" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="627" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classHypergraphPotentials_1a61c23e9a9347d419c91e26f05f897b93" prot="private" static="no">
+        <type>SemiringType::ValType</type>
+        <definition>typedef SemiringType::ValType HypergraphPotentials&lt; SemiringType &gt;::V</definition>
+        <argsstring></argsstring>
+        <name>V</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="628" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="628" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
       <sectiondef kind="protected-attrib">
       <memberdef kind="variable" id="classHypergraphPotentials_1ab7987052d58afe4dd8c0dc5a2b28646d" prot="protected" static="no" mutable="no">
         <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
@@ -21,11 +49,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="476" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="476" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="694" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="694" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classHypergraphPotentials_1a71c786c8cae1fb1e211ccf73c4e2428e" prot="protected" static="no" mutable="no">
-        <type>vector&lt; SemiringType &gt;</type>
-        <definition>vector&lt;SemiringType&gt; HypergraphPotentials&lt; SemiringType &gt;::potentials_</definition>
+      <memberdef kind="variable" id="classHypergraphPotentials_1a3cf1ed624d1056201f76b323a0ea603a" prot="protected" static="no" mutable="no">
+        <type>vector&lt; V &gt;</type>
+        <definition>vector&lt;V&gt; HypergraphPotentials&lt; SemiringType &gt;::potentials_</definition>
         <argsstring></argsstring>
         <name>potentials_</name>
         <briefdescription>
@@ -34,11 +62,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="477" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="477" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="695" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="695" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classHypergraphPotentials_1a4445262745ceeb16a1ca7863bb09b789" prot="protected" static="no" mutable="no">
-        <type>SemiringType</type>
-        <definition>SemiringType HypergraphPotentials&lt; SemiringType &gt;::bias_</definition>
+      <memberdef kind="variable" id="classHypergraphPotentials_1ad38c0fa80d8d23b9c00e5a9135708a21" prot="protected" static="no" mutable="no">
+        <type>V</type>
+        <definition>V HypergraphPotentials&lt; SemiringType &gt;::bias_</definition>
         <argsstring></argsstring>
         <name>bias_</name>
         <briefdescription>
@@ -47,25 +75,25 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="478" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="478" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="696" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="696" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classHypergraphPotentials_1a2f6b065fadfb37e841fbda5eefda3b4b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classHypergraphPotentials_1aedd21d7840634588e91f739ba02880af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>HypergraphPotentials&lt; SemiringType &gt;::HypergraphPotentials</definition>
-        <argsstring>(const Hypergraph *hypergraph, const vector&lt; SemiringType &gt; &amp;potentials, SemiringType bias)</argsstring>
+        <argsstring>(const Hypergraph *hypergraph, const vector&lt; V &gt; &amp;potentials, V bias)</argsstring>
         <name>HypergraphPotentials</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>hypergraph</declname>
         </param>
         <param>
-          <type>const vector&lt; SemiringType &gt; &amp;</type>
+          <type>const vector&lt; V &gt; &amp;</type>
           <declname>potentials</declname>
         </param>
         <param>
-          <type>SemiringType</type>
+          <type>V</type>
           <declname>bias</declname>
         </param>
         <briefdescription>
@@ -74,7 +102,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="421" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="416" bodyend="423"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="630" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="630" bodyend="637"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphPotentials_1a6df95733ad2c2e221adb8c208d2f7b94" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -91,11 +119,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="428" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="425" bodyend="428"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="639" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="639" bodyend="642"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphPotentials_1a4966eb1e98c1d525b916d2ebda6d5d47" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>SemiringType</type>
-        <definition>SemiringType HypergraphPotentials&lt; SemiringType &gt;::dot</definition>
+      <memberdef kind="function" id="classHypergraphPotentials_1adf86175d1a9f800898bd46291fe7e1f1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>V</type>
+        <definition>V HypergraphPotentials&lt; SemiringType &gt;::dot</definition>
         <argsstring>(const Hyperpath &amp;path) const </argsstring>
         <name>dot</name>
         <param>
@@ -108,11 +136,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="430" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="430" bodyend="437"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="644" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="644" bodyend="651"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphPotentials_1a2e948ac601e1f904f33584e62e788b17" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>SemiringType</type>
-        <definition>SemiringType HypergraphPotentials&lt; SemiringType &gt;::score</definition>
+      <memberdef kind="function" id="classHypergraphPotentials_1afa436afea328aa5a5926ca83dfa0d9ae" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>V</type>
+        <definition>V HypergraphPotentials&lt; SemiringType &gt;::score</definition>
         <argsstring>(HEdge edge) const </argsstring>
         <name>score</name>
         <param>
@@ -125,11 +153,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="439" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="439" bodyend="439"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="653" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="653" bodyend="653"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphPotentials_1a4ca52d79d42b7ba766d76d70f0b63c73" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>const SemiringType &amp;</type>
-        <definition>const SemiringType&amp; HypergraphPotentials&lt; SemiringType &gt;::operator[]</definition>
+      <memberdef kind="function" id="classHypergraphPotentials_1a5a582786ccbd23e9e4d50751ebc35b37" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>V</type>
+        <definition>V HypergraphPotentials&lt; SemiringType &gt;::operator[]</definition>
         <argsstring>(HEdge edge) const </argsstring>
         <name>operator[]</name>
         <param>
@@ -142,16 +170,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="440" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="440" bodyend="442"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="654" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="654" bodyend="656"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphPotentials_1a6b6e49969919c8603b098d43fbb05aab" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>SemiringType &amp;</type>
-        <definition>SemiringType&amp; HypergraphPotentials&lt; SemiringType &gt;::operator[]</definition>
-        <argsstring>(HEdge edge)</argsstring>
-        <name>operator[]</name>
+      <memberdef kind="function" id="classHypergraphPotentials_1a12776eb030ba83707ea5db10587861a8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void HypergraphPotentials&lt; SemiringType &gt;::insert</definition>
+        <argsstring>(const HEdge &amp;edge, const V &amp;val)</argsstring>
+        <name>insert</name>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>const <ref refid="classHyperedge" kindref="compound">HEdge</ref> &amp;</type>
           <declname>edge</declname>
+        </param>
+        <param>
+          <type>const V &amp;</type>
+          <declname>val</declname>
         </param>
         <briefdescription>
         </briefdescription>
@@ -159,11 +191,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="443" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="443" bodyend="445"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="661" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="661" bodyend="663"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphPotentials_1a72dd0916356a59d4f0e01bedf62a907c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>const SemiringType &amp;</type>
-        <definition>const SemiringType&amp; HypergraphPotentials&lt; SemiringType &gt;::bias</definition>
+      <memberdef kind="function" id="classHypergraphPotentials_1aa03f0c679761024a11939ad95c10f133" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const V &amp;</type>
+        <definition>const V&amp; HypergraphPotentials&lt; SemiringType &gt;::bias</definition>
         <argsstring>() const </argsstring>
         <name>bias</name>
         <briefdescription>
@@ -172,11 +204,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="447" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="447" bodyend="447"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="665" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="665" bodyend="665"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphPotentials_1a5b4006ad36e8a363d1aa2d4bf3ff8367" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>SemiringType &amp;</type>
-        <definition>SemiringType&amp; HypergraphPotentials&lt; SemiringType &gt;::bias</definition>
+      <memberdef kind="function" id="classHypergraphPotentials_1a923fb6fd75d27df641823faf092c6c3d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>V &amp;</type>
+        <definition>V&amp; HypergraphPotentials&lt; SemiringType &gt;::bias</definition>
         <argsstring>()</argsstring>
         <name>bias</name>
         <briefdescription>
@@ -185,10 +217,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="448" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="448" bodyend="448"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="666" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="666" bodyend="666"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphPotentials_1ae6272eeb59322141169b124fd0ae7ca9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
-        <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; *</type>
+        <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; *</type>
         <definition>HypergraphPotentials&lt; SemiringType &gt; * HypergraphPotentials&lt; SemiringType &gt;::project_potentials</definition>
         <argsstring>(const HypergraphProjection &amp;projection) const </argsstring>
         <name>project_potentials</name>
@@ -202,15 +234,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="451" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="558" bodyend="569"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="668" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Semirings.cpp" bodystart="29" bodyend="40"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphPotentials_1ae6904de03fd995939ff2bb209bec4272" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
-        <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; *</type>
+      <memberdef kind="function" id="classHypergraphPotentials_1ab98b157453b3ac2e804ccfdcf5da536e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; *</type>
         <definition>HypergraphPotentials&lt; SemiringType &gt; * HypergraphPotentials&lt; SemiringType &gt;::times</definition>
-        <argsstring>(const HypergraphPotentials&lt; SemiringType &gt; &amp;potentials) const </argsstring>
+        <argsstring>(const HypergraphPotentials&lt; S &gt; &amp;potentials) const </argsstring>
         <name>times</name>
         <param>
-          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; &amp;</type>
+          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; &amp;</type>
           <declname>potentials</declname>
         </param>
         <briefdescription>
@@ -220,7 +252,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="459" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="546" bodyend="555"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="676" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Semirings.cpp" bodystart="15" bodyend="26"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphPotentials_1acdb10b61fb74257174a67d29442d3575" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -237,15 +269,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="461" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="461" bodyend="465"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="679" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="679" bodyend="683"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphPotentials_1ac684bea65265b3ac01e36505d026ef9f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classHypergraphPotentials_1ad5d7be0e9e001b72f17802f1fe1266f4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void HypergraphPotentials&lt; SemiringType &gt;::check</definition>
-        <argsstring>(const HypergraphPotentials&lt; SemiringType &gt; &amp;potentials) const </argsstring>
+        <argsstring>(const HypergraphPotentials&lt; S &gt; &amp;potentials) const </argsstring>
         <name>check</name>
         <param>
-          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; &amp;</type>
+          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; &amp;</type>
           <declname>potentials</declname>
         </param>
         <briefdescription>
@@ -254,7 +286,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="467" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="467" bodyend="471"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="685" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="685" bodyend="689"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphPotentials_1a47fe92018d4b1b52ab2938d927536b0c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
@@ -267,26 +299,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="473" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="473" bodyend="473"/>
-      </memberdef>
-      <memberdef kind="function" id="classHypergraphPotentials_1a76b2414648d8a741c1f86dcdce8844e6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <templateparamlist>
-        </templateparamlist>
-        <type>double</type>
-        <definition>double HypergraphPotentials&lt; double &gt;::dot</definition>
-        <argsstring>(const Hyperpath &amp;path) const</argsstring>
-        <name>dot</name>
-        <param>
-          <type>const <ref refid="classHyperpath" kindref="compound">Hyperpath</ref> &amp;</type>
-          <declname>path</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="536" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="536" bodyend="543"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="691" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="691" bodyend="691"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -294,37 +307,38 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="57">
+      <node id="54">
         <label>HypergraphPotentials&lt; SemiringType &gt;</label>
         <link refid="classHypergraphPotentials"/>
-        <childnode refid="58" relation="usage">
+        <childnode refid="55" relation="usage">
           <edgelabel>hypergraph_</edgelabel>
         </childnode>
       </node>
-      <node id="58">
+      <node id="55">
         <label>Hypergraph</label>
         <link refid="classHypergraph"/>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="414" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="414" bodyend="479"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="626" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="626" bodyend="697"/>
     <listofallmembers>
-      <member refid="classHypergraphPotentials_1a72dd0916356a59d4f0e01bedf62a907c" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>bias</name></member>
-      <member refid="classHypergraphPotentials_1a5b4006ad36e8a363d1aa2d4bf3ff8367" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>bias</name></member>
-      <member refid="classHypergraphPotentials_1a4445262745ceeb16a1ca7863bb09b789" prot="protected" virt="non-virtual"><scope>HypergraphPotentials</scope><name>bias_</name></member>
+      <member refid="classHypergraphPotentials_1aa03f0c679761024a11939ad95c10f133" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>bias</name></member>
+      <member refid="classHypergraphPotentials_1a923fb6fd75d27df641823faf092c6c3d" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>bias</name></member>
+      <member refid="classHypergraphPotentials_1ad38c0fa80d8d23b9c00e5a9135708a21" prot="protected" virt="non-virtual"><scope>HypergraphPotentials</scope><name>bias_</name></member>
       <member refid="classHypergraphPotentials_1acdb10b61fb74257174a67d29442d3575" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>check</name></member>
-      <member refid="classHypergraphPotentials_1ac684bea65265b3ac01e36505d026ef9f" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>check</name></member>
-      <member refid="classHypergraphPotentials_1a4966eb1e98c1d525b916d2ebda6d5d47" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>dot</name></member>
-      <member refid="classHypergraphPotentials_1a76b2414648d8a741c1f86dcdce8844e6" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>dot</name></member>
+      <member refid="classHypergraphPotentials_1ad5d7be0e9e001b72f17802f1fe1266f4" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>check</name></member>
+      <member refid="classHypergraphPotentials_1adf86175d1a9f800898bd46291fe7e1f1" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>dot</name></member>
       <member refid="classHypergraphPotentials_1a47fe92018d4b1b52ab2938d927536b0c" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>hypergraph</name></member>
       <member refid="classHypergraphPotentials_1ab7987052d58afe4dd8c0dc5a2b28646d" prot="protected" virt="non-virtual"><scope>HypergraphPotentials</scope><name>hypergraph_</name></member>
-      <member refid="classHypergraphPotentials_1a2f6b065fadfb37e841fbda5eefda3b4b" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>HypergraphPotentials</name></member>
+      <member refid="classHypergraphPotentials_1aedd21d7840634588e91f739ba02880af" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>HypergraphPotentials</name></member>
       <member refid="classHypergraphPotentials_1a6df95733ad2c2e221adb8c208d2f7b94" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>HypergraphPotentials</name></member>
-      <member refid="classHypergraphPotentials_1a4ca52d79d42b7ba766d76d70f0b63c73" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>operator[]</name></member>
-      <member refid="classHypergraphPotentials_1a6b6e49969919c8603b098d43fbb05aab" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>operator[]</name></member>
-      <member refid="classHypergraphPotentials_1a71c786c8cae1fb1e211ccf73c4e2428e" prot="protected" virt="non-virtual"><scope>HypergraphPotentials</scope><name>potentials_</name></member>
+      <member refid="classHypergraphPotentials_1a12776eb030ba83707ea5db10587861a8" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>insert</name></member>
+      <member refid="classHypergraphPotentials_1a5a582786ccbd23e9e4d50751ebc35b37" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>operator[]</name></member>
+      <member refid="classHypergraphPotentials_1a3cf1ed624d1056201f76b323a0ea603a" prot="protected" virt="non-virtual"><scope>HypergraphPotentials</scope><name>potentials_</name></member>
       <member refid="classHypergraphPotentials_1ae6272eeb59322141169b124fd0ae7ca9" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>project_potentials</name></member>
-      <member refid="classHypergraphPotentials_1a2e948ac601e1f904f33584e62e788b17" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>score</name></member>
-      <member refid="classHypergraphPotentials_1ae6904de03fd995939ff2bb209bec4272" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>times</name></member>
+      <member refid="classHypergraphPotentials_1ae7ecd2ea26b3c1199ff7bbe5747cf463" prot="private" virt="non-virtual"><scope>HypergraphPotentials</scope><name>S</name></member>
+      <member refid="classHypergraphPotentials_1afa436afea328aa5a5926ca83dfa0d9ae" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>score</name></member>
+      <member refid="classHypergraphPotentials_1ab98b157453b3ac2e804ccfdcf5da536e" prot="public" virt="non-virtual"><scope>HypergraphPotentials</scope><name>times</name></member>
+      <member refid="classHypergraphPotentials_1a61c23e9a9347d419c91e26f05f897b93" prot="private" virt="non-virtual"><scope>HypergraphPotentials</scope><name>V</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

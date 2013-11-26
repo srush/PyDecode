@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="classHypergraphProjection" kind="class" prot="public">
     <compoundname>HypergraphProjection</compoundname>
       <sectiondef kind="public-attrib">
@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="524" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="524" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="741" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="741" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHypergraphProjection_1ac4b7e4c0d7da068ebc8c50f029984876" prot="public" static="no" mutable="no">
         <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
@@ -27,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="525" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="525" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="742" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="742" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -42,7 +42,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="530" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="530" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="747" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="747" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHypergraphProjection_1a2591ec6227618cb024cf1873983c29fa" prot="private" static="no" mutable="no">
         <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt; *</type>
@@ -55,7 +55,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="531" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="531" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="748" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="748" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -86,7 +86,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="492" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="485" bodyend="505"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="702" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="702" bodyend="722"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphProjection_1a00593a4957786c81decf47496d98b7e9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -99,7 +99,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="507" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="507" bodyend="510"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="724" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="724" bodyend="727"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphProjection_1a7415d20ef626a5491a89155fac95214d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
@@ -116,7 +116,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="516" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="516" bodyend="518"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="733" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="733" bodyend="735"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphProjection_1a0acb98ee5f83cf812539c38f72fe4f53" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
@@ -133,11 +133,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="520" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="520" bodyend="522"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="737" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="737" bodyend="739"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
-      <memberdef kind="function" id="classHypergraphProjection_1a2291ad78bd6edc98c498f06083d9de5f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classHypergraphProjection_1a2291ad78bd6edc98c498f06083d9de5f" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classHypergraphProjection" kindref="compound">HypergraphProjection</ref> *</type>
         <definition>HypergraphProjection * HypergraphProjection::project_hypergraph</definition>
         <argsstring>(const Hypergraph *hypergraph, const HypergraphPotentials&lt; BoolPotential &gt; &amp;edge_mask)</argsstring>
@@ -156,7 +156,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="514" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="573" bodyend="623"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="729" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Semirings.cpp" bodystart="42" bodyend="92"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -164,20 +164,20 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="61">
+      <node id="58">
         <label>Hypergraph</label>
         <link refid="classHypergraph"/>
       </node>
-      <node id="60">
+      <node id="57">
         <label>HypergraphProjection</label>
         <link refid="classHypergraphProjection"/>
-        <childnode refid="61" relation="usage">
+        <childnode refid="58" relation="usage">
           <edgelabel>new_graph</edgelabel>
           <edgelabel>original_graph</edgelabel>
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="483" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="483" bodyend="532"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="700" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="700" bodyend="749"/>
     <listofallmembers>
       <member refid="classHypergraphProjection_1a2591ec6227618cb024cf1873983c29fa" prot="private" virt="non-virtual"><scope>HypergraphProjection</scope><name>edge_map_</name></member>
       <member refid="classHypergraphProjection_1a47ce7226419eb74c575fd33f19187f95" prot="public" virt="non-virtual"><scope>HypergraphProjection</scope><name>HypergraphProjection</name></member>

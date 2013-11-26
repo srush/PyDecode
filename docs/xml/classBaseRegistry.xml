@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
+  <compounddef id="classBaseRegistry" kind="class" prot="public">
+    <compoundname>BaseRegistry</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classBaseRegistry_1a3222aae69e3d6dcb42aa460b5648b138" prot="public" static="no">
+        <type>T(*</type>
+        <definition>typedef T(* BaseRegistry&lt; T &gt;::creator_fnptr)()</definition>
+        <argsstring>)()</argsstring>
+        <name>creator_fnptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" line="33" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classBaseRegistry_1aaba26f2468c681055f4b50e9930f48e8" prot="public" static="no">
+        <type>std::map&lt; std::string, creator_fnptr &gt;</type>
+        <definition>typedef std::map&lt;std::string, creator_fnptr&gt; BaseRegistry&lt; T &gt;::RegistryMap</definition>
+        <argsstring></argsstring>
+        <name>RegistryMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" line="34" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classBaseRegistry_1a10aa78cd7b3f0958f2c845a1c1322f3c" prot="public" static="no">
+        <type>std::pair&lt; std::string, creator_fnptr &gt;</type>
+        <definition>typedef std::pair&lt;std::string, creator_fnptr&gt; BaseRegistry&lt; T &gt;::RegistryPair</definition>
+        <argsstring></argsstring>
+        <name>RegistryPair</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" line="35" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="classBaseRegistry_1a859bb9239fa64596027febafc6067fdc" prot="private" static="yes" mutable="no">
+        <type>RegistryMap *</type>
+        <definition>RegistryMap* BaseRegistry&lt; T &gt;::registry</definition>
+        <argsstring></argsstring>
+        <name>registry</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" line="57" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classBaseRegistry_1a0e3483b45baea1cfd9b793ae9bea6636" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual BaseRegistry&lt; T &gt;::~BaseRegistry</definition>
+        <argsstring>()</argsstring>
+        <name>~BaseRegistry</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" line="37" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" bodystart="37" bodyend="37"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classBaseRegistry_1a131d3e99f39079d7383579ff6edb6a18" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const vector&lt; creator_fnptr &gt;</type>
+        <definition>static const vector&lt;creator_fnptr&gt; BaseRegistry&lt; T &gt;::retrieve_classes</definition>
+        <argsstring>()</argsstring>
+        <name>retrieve_classes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" line="39" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" bodystart="39" bodyend="47"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-static-func">
+      <memberdef kind="function" id="classBaseRegistry_1a0a965354a4cb41cafe77640391154af8" prot="protected" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RegistryMap *</type>
+        <definition>static RegistryMap* BaseRegistry&lt; T &gt;::getMap</definition>
+        <argsstring>()</argsstring>
+        <name>getMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" line="50" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" bodystart="50" bodyend="54"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" line="31" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.h" bodystart="31" bodyend="59"/>
+    <listofallmembers>
+      <member refid="classBaseRegistry_1a3222aae69e3d6dcb42aa460b5648b138" prot="public" virt="non-virtual"><scope>BaseRegistry</scope><name>creator_fnptr</name></member>
+      <member refid="classBaseRegistry_1a0a965354a4cb41cafe77640391154af8" prot="protected" virt="non-virtual"><scope>BaseRegistry</scope><name>getMap</name></member>
+      <member refid="classBaseRegistry_1a859bb9239fa64596027febafc6067fdc" prot="private" virt="non-virtual"><scope>BaseRegistry</scope><name>registry</name></member>
+      <member refid="classBaseRegistry_1aaba26f2468c681055f4b50e9930f48e8" prot="public" virt="non-virtual"><scope>BaseRegistry</scope><name>RegistryMap</name></member>
+      <member refid="classBaseRegistry_1a10aa78cd7b3f0958f2c845a1c1322f3c" prot="public" virt="non-virtual"><scope>BaseRegistry</scope><name>RegistryPair</name></member>
+      <member refid="classBaseRegistry_1a131d3e99f39079d7383579ff6edb6a18" prot="public" virt="non-virtual"><scope>BaseRegistry</scope><name>retrieve_classes</name></member>
+      <member refid="classBaseRegistry_1a0e3483b45baea1cfd9b793ae9bea6636" prot="public" virt="virtual"><scope>BaseRegistry</scope><name>~BaseRegistry</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

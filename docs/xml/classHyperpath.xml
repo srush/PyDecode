@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="classHyperpath" kind="class" prot="public">
     <compoundname>Hyperpath</compoundname>
       <sectiondef kind="private-attrib">
@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="277" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="277" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" line="277" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" bodystart="277" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHyperpath_1a7840698f6eb93e77620bfc4232ec6b4f" prot="private" static="no" mutable="no">
         <type>set&lt; int &gt;</type>
@@ -27,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="278" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="278" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" line="278" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" bodystart="278" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHyperpath_1a132ed9f455026eccea0d5018ae9625ce" prot="private" static="no" mutable="no">
         <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt;</type>
@@ -40,7 +40,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="279" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="279" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" line="279" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" bodystart="279" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -63,7 +63,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="230" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="228" bodyend="239"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" line="228" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" bodystart="228" bodyend="239"/>
       </memberdef>
       <memberdef kind="function" id="classHyperpath_1aee6cb1fb9c52606806e0817c010ae079" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt; &amp;</type>
@@ -76,7 +76,7 @@
 <para>Get the edges in the path. In topological order. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="244" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="244" bodyend="246"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" line="244" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" bodystart="244" bodyend="246"/>
       </memberdef>
       <memberdef kind="function" id="classHyperpath_1a4b3afb4f45a178b45d2e5ebea64a010b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -93,7 +93,7 @@
 <para>Is edge in the hyperpath. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="251" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="251" bodyend="253"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" line="251" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" bodystart="251" bodyend="253"/>
       </memberdef>
       <memberdef kind="function" id="classHyperpath_1a79c1333bc9f94a042a8a11b42608cafb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -110,7 +110,7 @@
 <para>Is this hyperpath associated with the hypergraph. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="259" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="259" bodyend="263"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" line="259" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" bodystart="259" bodyend="263"/>
       </memberdef>
       <memberdef kind="function" id="classHyperpath_1a87517dfdb6e256155cd44910a4dcd2fc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -127,14 +127,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="265" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="265" bodyend="274"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" line="265" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" bodystart="265" bodyend="274"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="226" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="226" bodyend="280"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" line="226" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Hypergraph.h" bodystart="226" bodyend="280"/>
     <listofallmembers>
       <member refid="classHyperpath_1a79c1333bc9f94a042a8a11b42608cafb" prot="public" virt="non-virtual"><scope>Hyperpath</scope><name>check</name></member>
       <member refid="classHyperpath_1aee6cb1fb9c52606806e0817c010ae079" prot="public" virt="non-virtual"><scope>Hyperpath</scope><name>edges</name></member>

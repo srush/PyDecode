@@ -1,191 +1,94 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="classInsidePotential" kind="class" prot="public">
     <compoundname>InsidePotential</compoundname>
-    <basecompoundref refid="classBaseSemiringPotential" prot="public" virt="non-virtual">BaseSemiringPotential&lt; double, InsidePotential &gt;</basecompoundref>
-    <includes refid="Semirings_8h" local="no">Semirings.h</includes>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classInsidePotential_1ad6c35decc9bf06576f9b5aa36f63e4d8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>InsidePotential::InsidePotential</definition>
-        <argsstring>(double value)</argsstring>
-        <name>InsidePotential</name>
+    <basecompoundref refid="classViterbiPotential" prot="public" virt="non-virtual">ViterbiPotential</basecompoundref>
+    <includes refid="semirings_8h" local="no">semirings.h</includes>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classInsidePotential_1a324308f4bce0798b3e86f14f33e81e18" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+        <definition>static ValType InsidePotential::add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>add</name>
         <param>
-          <type>double</type>
-          <declname>value</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="174" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="174" bodyend="174"/>
-      </memberdef>
-      <memberdef kind="function" id="classInsidePotential_1a4e64f2040caf22e1888297cdf8f84117" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>InsidePotential::InsidePotential</definition>
-        <argsstring>()</argsstring>
-        <name>InsidePotential</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="177" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="176" bodyend="177"/>
-      </memberdef>
-      <memberdef kind="function" id="classInsidePotential_1a7d3a2d9d96d43a8fb3ca21ef28427aef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classInsidePotential" kindref="compound">InsidePotential</ref> &amp;</type>
-        <definition>InsidePotential&amp; InsidePotential::operator+=</definition>
-        <argsstring>(const InsidePotential &amp;rhs)</argsstring>
-        <name>operator+=</name>
-        <param>
-          <type>const <ref refid="classInsidePotential" kindref="compound">InsidePotential</ref> &amp;</type>
-          <declname>rhs</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="179" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="179" bodyend="182"/>
-      </memberdef>
-      <memberdef kind="function" id="classInsidePotential_1a734f80cc60476e168dca96bd998a71cc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classInsidePotential" kindref="compound">InsidePotential</ref> &amp;</type>
-        <definition>InsidePotential&amp; InsidePotential::operator*=</definition>
-        <argsstring>(const InsidePotential &amp;rhs)</argsstring>
-        <name>operator*=</name>
-        <param>
-          <type>const <ref refid="classInsidePotential" kindref="compound">InsidePotential</ref> &amp;</type>
-          <declname>rhs</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="183" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="183" bodyend="186"/>
-      </memberdef>
-      <memberdef kind="function" id="classInsidePotential_1aec5c7acf19d257b5136189f47d82901d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>double</type>
-        <definition>double InsidePotential::normalize</definition>
-        <argsstring>(double val) const </argsstring>
-        <name>normalize</name>
-        <param>
-          <type>double</type>
-          <declname>val</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="196" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="196" bodyend="200"/>
-      </memberdef>
-      </sectiondef>
-      <sectiondef kind="friend">
-      <memberdef kind="friend" id="classInsidePotential_1ac8d288033cc728099f348623edb45e36" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>friend <ref refid="classInsidePotential" kindref="compound">InsidePotential</ref></type>
-        <definition>InsidePotential operator/</definition>
-        <argsstring>(InsidePotential lhs, const InsidePotential &amp;rhs)</argsstring>
-        <name>operator/</name>
-        <param>
-          <type><ref refid="classInsidePotential" kindref="compound">InsidePotential</ref></type>
+          <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
           <declname>lhs</declname>
         </param>
         <param>
-          <type>const <ref refid="classInsidePotential" kindref="compound">InsidePotential</ref> &amp;</type>
+          <type>const <ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref> &amp;</type>
           <declname>rhs</declname>
         </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>Adds the two potentials. Not domain-safe. <simplesect kind="return"><para>An addition of the two arguments. </para></simplesect>
+</para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="188" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="188" bodyend="191"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="167" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="167" bodyend="170"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-static-func">
-      <memberdef kind="function" id="classInsidePotential_1ad1f44d0ba4f73b443647647274636b8f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classInsidePotential" kindref="compound">InsidePotential</ref></type>
-        <definition>static const InsidePotential InsidePotential::one</definition>
-        <argsstring>()</argsstring>
-        <name>one</name>
+      <memberdef kind="function" id="classInsidePotential_1acab9e20866b476e670e77b804d5cd9fd" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+        <definition>static ValType InsidePotential::safe_add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
+        <param>
+          <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>A normalized version of the add operation. Domain Safe. <simplesect kind="return"><para>Normalized addition of the two arguments. </para></simplesect>
+</para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="193" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="193" bodyend="193"/>
-      </memberdef>
-      <memberdef kind="function" id="classInsidePotential_1ae67f11d46ac6b110c73e989d42a3e0ab" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classInsidePotential" kindref="compound">InsidePotential</ref></type>
-        <definition>static const InsidePotential InsidePotential::zero</definition>
-        <argsstring>()</argsstring>
-        <name>zero</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="194" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="194" bodyend="194"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="176" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="176" bodyend="179"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Implements the Inside type of semiring as described in Huang 2006 +: + *: * 0: 0 1: 1 </para>    </detaileddescription>
+<para>Inside Semiring Potential for expressing the total probability of all derivations. Inherits from <ref refid="classViterbiPotential" kindref="compound">ViterbiPotential</ref>. Concept from Huang 2006. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="69">
-        <label>BaseSemiringPotential&lt; double, InsidePotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
-      </node>
-      <node id="68">
+      <node id="65">
         <label>InsidePotential</label>
         <link refid="classInsidePotential"/>
-        <childnode refid="69" relation="public-inheritance">
+        <childnode refid="66" relation="public-inheritance">
         </childnode>
+      </node>
+      <node id="66">
+        <label>ViterbiPotential</label>
+        <link refid="classViterbiPotential"/>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="71">
-        <label>BaseSemiringPotential&lt; double, InsidePotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
-      </node>
-      <node id="70">
+      <node id="67">
         <label>InsidePotential</label>
         <link refid="classInsidePotential"/>
-        <childnode refid="71" relation="public-inheritance">
+        <childnode refid="68" relation="public-inheritance">
         </childnode>
       </node>
+      <node id="68">
+        <label>ViterbiPotential</label>
+        <link refid="classViterbiPotential"/>
+      </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="172" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="172" bodyend="201"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="161" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="161" bodyend="180"/>
     <listofallmembers>
-      <member refid="classBaseSemiringPotential_1a3ccf8b43dd32e794f7a546caa2e8ffd9" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>add</name></member>
-      <member refid="classBaseSemiringPotential_1a54bb42020981d47a9ee5edbefdd0f4b3" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ae70438bcff496bff89daf4c4eac38ce4" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ac4f432c81a12368ae2b1d5230cc762c2" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classInsidePotential_1ad6c35decc9bf06576f9b5aa36f63e4d8" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>InsidePotential</name></member>
-      <member refid="classInsidePotential_1a4e64f2040caf22e1888297cdf8f84117" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>InsidePotential</name></member>
-      <member refid="classInsidePotential_1aec5c7acf19d257b5136189f47d82901d" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>normalize</name></member>
-      <member refid="classBaseSemiringPotential_1a87949cd4f8b8aceedaaac1a446c82190" prot="public" virt="non-virtual" ambiguityscope="BaseSemiringPotential&lt; double, InsidePotential &gt;::"><scope>InsidePotential</scope><name>normalize</name></member>
-      <member refid="classInsidePotential_1ad1f44d0ba4f73b443647647274636b8f" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>one</name></member>
-      <member refid="classBaseSemiringPotential_1a57bbc01de90082ca201dc151d821f0e9" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>operator double</name></member>
-      <member refid="classInsidePotential_1a734f80cc60476e168dca96bd998a71cc" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>operator*=</name></member>
-      <member refid="classInsidePotential_1a7d3a2d9d96d43a8fb3ca21ef28427aef" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>operator+=</name></member>
-      <member refid="classInsidePotential_1ac8d288033cc728099f348623edb45e36" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>operator/</name></member>
-      <member refid="classBaseSemiringPotential_1af3f7108cca054ed98908a2d536cfcec8" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>operator=</name></member>
-      <member refid="classBaseSemiringPotential_1a688918a5566844351e4fb4ddc95e9784" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>operator=</name></member>
-      <member refid="classBaseSemiringPotential_1a90188fa749f13b11996f2e328dfb4045" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>times</name></member>
-      <member refid="classBaseSemiringPotential_1a8ab78c41be222b13d87894877608567e" prot="protected" virt="non-virtual"><scope>InsidePotential</scope><name>value</name></member>
-      <member refid="classInsidePotential_1ae67f11d46ac6b110c73e989d42a3e0ab" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>zero</name></member>
+      <member refid="classInsidePotential_1a324308f4bce0798b3e86f14f33e81e18" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>add</name></member>
+      <member refid="classViterbiPotential_1a399a339744f11e45a5eb663d5f696341" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>normalize</name></member>
+      <member refid="classViterbiPotential_1a609b3afe096a44e2d54adbc954414ef3" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>one</name></member>
+      <member refid="classViterbiPotential_1abd257b5f70ad6f9c70c78f710f69938d" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>randValue</name></member>
+      <member refid="classInsidePotential_1acab9e20866b476e670e77b804d5cd9fd" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>safe_add</name></member>
+      <member refid="classViterbiPotential_1a0e2d68c29589a327d316495b2dba21e2" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>safe_times</name></member>
+      <member refid="classViterbiPotential_1a001ecb72b415808eeb92ef103cd47fa6" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>times</name></member>
+      <member refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>ValType</name></member>
+      <member refid="classViterbiPotential_1ad541ba415b6784405dba2a934b938206" prot="public" virt="non-virtual"><scope>InsidePotential</scope><name>zero</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

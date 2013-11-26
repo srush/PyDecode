@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="classMarginals" kind="class" prot="public">
     <compoundname>Marginals</compoundname>
     <templateparamlist>
@@ -7,6 +7,34 @@
         <type>typename SemiringType</type>
       </param>
     </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classMarginals_1a7ea818e720e83de6ba617a033eb95b21" prot="private" static="no">
+        <type>SemiringType</type>
+        <definition>typedef SemiringType Marginals&lt; SemiringType &gt;::S</definition>
+        <argsstring></argsstring>
+        <name>S</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="67" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classMarginals_1a659281a4aa2ce02a42e352fad76e5cfc" prot="private" static="no">
+        <type>SemiringType::ValType</type>
+        <definition>typedef SemiringType::ValType Marginals&lt; SemiringType &gt;::V</definition>
+        <argsstring></argsstring>
+        <name>V</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="68" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
       <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classMarginals_1a26ff4f0c3dda19eb315e14c4a2f04acf" prot="private" static="no" mutable="no">
         <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
@@ -19,7 +47,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="138" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="138" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="139" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="139" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classMarginals_1af1a9c69de9cb4b28f379471cbd54a039" prot="private" static="no" mutable="no">
         <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; *</type>
@@ -32,7 +60,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="139" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="139" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="140" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="140" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classMarginals_1ac36aed25df027191a363eb68d42c883f" prot="private" static="no" mutable="no">
         <type>const <ref refid="classChart" kindref="compound">Chart</ref>&lt; SemiringType &gt; *</type>
@@ -45,7 +73,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="143" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="143" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="144" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="144" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classMarginals_1a21d6e7684da39374f696372bcb1569cd" prot="private" static="no" mutable="no">
         <type>const <ref refid="classChart" kindref="compound">Chart</ref>&lt; SemiringType &gt; *</type>
@@ -58,29 +86,29 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="144" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="144" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="145" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="145" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classMarginals_1addd626b093b75fb94f39e609df1c5562" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classMarginals_1a2d7d12653e39b09457827a32fbdca941" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>Marginals&lt; SemiringType &gt;::Marginals</definition>
-        <argsstring>(const Hypergraph *hypergraph, const HypergraphPotentials&lt; SemiringType &gt; *potentials, const Chart&lt; SemiringType &gt; *in_chart, const Chart&lt; SemiringType &gt; *out_chart)</argsstring>
+        <argsstring>(const Hypergraph *hypergraph, const HypergraphPotentials&lt; S &gt; *potentials, const Chart&lt; S &gt; *in_chart, const Chart&lt; S &gt; *out_chart)</argsstring>
         <name>Marginals</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>hypergraph</declname>
         </param>
         <param>
-          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; *</type>
+          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; *</type>
           <declname>potentials</declname>
         </param>
         <param>
-          <type>const <ref refid="classChart" kindref="compound">Chart</ref>&lt; SemiringType &gt; *</type>
+          <type>const <ref refid="classChart" kindref="compound">Chart</ref>&lt; S &gt; *</type>
           <declname>in_chart</declname>
         </param>
         <param>
-          <type>const <ref refid="classChart" kindref="compound">Chart</ref>&lt; SemiringType &gt; *</type>
+          <type>const <ref refid="classChart" kindref="compound">Chart</ref>&lt; S &gt; *</type>
           <declname>out_chart</declname>
         </param>
         <briefdescription>
@@ -89,7 +117,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="75" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="68" bodyend="79"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="71" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="71" bodyend="82"/>
       </memberdef>
       <memberdef kind="function" id="classMarginals_1af2c1161ff1ed10bbeaf13e891413c73d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -102,15 +130,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="81" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="81" bodyend="84"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="84" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="84" bodyend="87"/>
       </memberdef>
-      <memberdef kind="function" id="classMarginals_1a4694cbbf0a521648532aa4e993baf6ff" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classMarginals_1a2b691cdc414a02296f00d7df2a4fdfc0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; <ref refid="classBoolPotential" kindref="compound">BoolPotential</ref> &gt; *</type>
         <definition>HypergraphPotentials&lt;BoolPotential&gt;* Marginals&lt; SemiringType &gt;::threshold</definition>
-        <argsstring>(const SemiringType &amp;threshold) const </argsstring>
+        <argsstring>(const V &amp;threshold) const </argsstring>
         <name>threshold</name>
         <param>
-          <type>const SemiringType &amp;</type>
+          <type>const V &amp;</type>
           <declname>threshold</declname>
         </param>
         <briefdescription>
@@ -119,11 +147,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="87" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="86" bodyend="94"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="89" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="89" bodyend="96"/>
       </memberdef>
-      <memberdef kind="function" id="classMarginals_1a3f2fc5e47cdf1b9d9ab7a3009f8c47ec" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>SemiringType</type>
-        <definition>SemiringType Marginals&lt; SemiringType &gt;::marginal</definition>
+      <memberdef kind="function" id="classMarginals_1a4768a5763dd9c9e4ce8ebfd6b98dbdb7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>V</type>
+        <definition>V Marginals&lt; SemiringType &gt;::marginal</definition>
         <argsstring>(HEdge edge) const </argsstring>
         <name>marginal</name>
         <param>
@@ -136,11 +164,11 @@
         </detaileddescription>
         <inbodydescription>
 <para>(*in_chart_)[hypergraph_-&gt;root()]; </para>        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="111" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="111" bodyend="118"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="111" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="111" bodyend="118"/>
       </memberdef>
-      <memberdef kind="function" id="classMarginals_1abdad467f0e621913921030bf81983f6e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>SemiringType</type>
-        <definition>SemiringType Marginals&lt; SemiringType &gt;::marginal</definition>
+      <memberdef kind="function" id="classMarginals_1adac159e3fde353ceeb9df7fa458385c2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>V</type>
+        <definition>V Marginals&lt; SemiringType &gt;::marginal</definition>
         <argsstring>(HNode node) const </argsstring>
         <name>marginal</name>
         <param>
@@ -153,16 +181,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="120" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="120" bodyend="122"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="120" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="120" bodyend="122"/>
       </memberdef>
-      <memberdef kind="function" id="classMarginals_1ac9ae705da7c123f0161b890e71033ebc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classMarginals_1a27d65a4007b9a1987dc5aba5ecc415b6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename OtherSemi</type>
           </param>
         </templateparamlist>
-        <type>OtherSemi</type>
-        <definition>OtherSemi Marginals&lt; SemiringType &gt;::dot</definition>
+        <type>OtherSemi::ValType</type>
+        <definition>OtherSemi::ValType Marginals&lt; SemiringType &gt;::dot</definition>
         <argsstring>(HypergraphPotentials&lt; OtherSemi &gt; other) const </argsstring>
         <name>dot</name>
         <param>
@@ -175,7 +203,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="125" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="125" bodyend="131"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="125" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="125" bodyend="132"/>
       </memberdef>
       <memberdef kind="function" id="classMarginals_1a93c6d5ae3f456aea32615d183535c352" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
@@ -188,21 +216,21 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="133" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="133" bodyend="135"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="134" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="134" bodyend="136"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
-      <memberdef kind="function" id="classMarginals_1a8f2ede76670cfbfede43af4120f0cb5d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classMarginals_1ac972d9aed6c6c7cf56908b7b48b6b336" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const <ref refid="classMarginals" kindref="compound">Marginals</ref> *</type>
         <definition>static const Marginals* Marginals&lt; SemiringType &gt;::compute</definition>
-        <argsstring>(const Hypergraph *hypergraph, const HypergraphPotentials&lt; SemiringType &gt; *potentials)</argsstring>
+        <argsstring>(const Hypergraph *hypergraph, const HypergraphPotentials&lt; S &gt; *potentials)</argsstring>
         <name>compute</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>hypergraph</declname>
         </param>
         <param>
-          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; *</type>
+          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; *</type>
           <declname>potentials</declname>
         </param>
         <briefdescription>
@@ -211,26 +239,28 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="99" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="97" bodyend="107"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="99" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="99" bodyend="107"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="65" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="65" bodyend="145"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" line="66" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.h" bodystart="66" bodyend="146"/>
     <listofallmembers>
-      <member refid="classMarginals_1a8f2ede76670cfbfede43af4120f0cb5d" prot="public" virt="non-virtual"><scope>Marginals</scope><name>compute</name></member>
-      <member refid="classMarginals_1ac9ae705da7c123f0161b890e71033ebc" prot="public" virt="non-virtual"><scope>Marginals</scope><name>dot</name></member>
+      <member refid="classMarginals_1ac972d9aed6c6c7cf56908b7b48b6b336" prot="public" virt="non-virtual"><scope>Marginals</scope><name>compute</name></member>
+      <member refid="classMarginals_1a27d65a4007b9a1987dc5aba5ecc415b6" prot="public" virt="non-virtual"><scope>Marginals</scope><name>dot</name></member>
       <member refid="classMarginals_1a93c6d5ae3f456aea32615d183535c352" prot="public" virt="non-virtual"><scope>Marginals</scope><name>hypergraph</name></member>
       <member refid="classMarginals_1a26ff4f0c3dda19eb315e14c4a2f04acf" prot="private" virt="non-virtual"><scope>Marginals</scope><name>hypergraph_</name></member>
       <member refid="classMarginals_1ac36aed25df027191a363eb68d42c883f" prot="private" virt="non-virtual"><scope>Marginals</scope><name>in_chart_</name></member>
-      <member refid="classMarginals_1a3f2fc5e47cdf1b9d9ab7a3009f8c47ec" prot="public" virt="non-virtual"><scope>Marginals</scope><name>marginal</name></member>
-      <member refid="classMarginals_1abdad467f0e621913921030bf81983f6e" prot="public" virt="non-virtual"><scope>Marginals</scope><name>marginal</name></member>
-      <member refid="classMarginals_1addd626b093b75fb94f39e609df1c5562" prot="public" virt="non-virtual"><scope>Marginals</scope><name>Marginals</name></member>
+      <member refid="classMarginals_1a4768a5763dd9c9e4ce8ebfd6b98dbdb7" prot="public" virt="non-virtual"><scope>Marginals</scope><name>marginal</name></member>
+      <member refid="classMarginals_1adac159e3fde353ceeb9df7fa458385c2" prot="public" virt="non-virtual"><scope>Marginals</scope><name>marginal</name></member>
+      <member refid="classMarginals_1a2d7d12653e39b09457827a32fbdca941" prot="public" virt="non-virtual"><scope>Marginals</scope><name>Marginals</name></member>
       <member refid="classMarginals_1a21d6e7684da39374f696372bcb1569cd" prot="private" virt="non-virtual"><scope>Marginals</scope><name>out_chart_</name></member>
       <member refid="classMarginals_1af1a9c69de9cb4b28f379471cbd54a039" prot="private" virt="non-virtual"><scope>Marginals</scope><name>potentials_</name></member>
-      <member refid="classMarginals_1a4694cbbf0a521648532aa4e993baf6ff" prot="public" virt="non-virtual"><scope>Marginals</scope><name>threshold</name></member>
+      <member refid="classMarginals_1a7ea818e720e83de6ba617a033eb95b21" prot="private" virt="non-virtual"><scope>Marginals</scope><name>S</name></member>
+      <member refid="classMarginals_1a2b691cdc414a02296f00d7df2a4fdfc0" prot="public" virt="non-virtual"><scope>Marginals</scope><name>threshold</name></member>
+      <member refid="classMarginals_1a659281a4aa2ce02a42e352fad76e5cfc" prot="private" virt="non-virtual"><scope>Marginals</scope><name>V</name></member>
       <member refid="classMarginals_1af2c1161ff1ed10bbeaf13e891413c73d" prot="public" virt="non-virtual"><scope>Marginals</scope><name>~Marginals</name></member>
     </listofallmembers>
   </compounddef>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="Algorithms_8cpp" kind="file">
     <compoundname>Algorithms.cpp</compoundname>
     <includes local="no">algorithm</includes>
@@ -8,105 +8,129 @@
     <includes local="no">iostream</includes>
     <includes refid="Algorithms_8h" local="yes">Hypergraph/Algorithms.h</includes>
     <incdepgraph>
-      <node id="19">
+      <node id="22">
         <label>queue</label>
       </node>
-      <node id="23">
-        <label>./foreach.h</label>
-        <link refid="foreach_8h_source"/>
-      </node>
-      <node id="15">
-        <label>cassert</label>
-      </node>
-      <node id="26">
-        <label>string</label>
-      </node>
-      <node id="16">
-        <label>exception</label>
-      </node>
-      <node id="27">
+      <node id="31">
         <label>Hypergraph/Semirings.h</label>
-        <link refid="Semirings_8h_source"/>
-        <childnode refid="14" relation="include">
+        <link refid="semirings_8h_source"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
         </childnode>
         <childnode refid="24" relation="include">
         </childnode>
-        <childnode refid="21" relation="include">
+      </node>
+      <node id="32">
+        <label>Hypergraph/Factory.h</label>
+        <link refid="Factory_8h_source"/>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
         </childnode>
       </node>
       <node id="18">
+        <label>cassert</label>
+      </node>
+      <node id="21">
         <label>Hypergraph/Algorithms.h</label>
         <link refid="Algorithms_8h_source"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>string</label>
+      </node>
+      <node id="33">
+        <label>map</label>
+      </node>
+      <node id="19">
+        <label>exception</label>
+      </node>
+      <node id="25">
+        <label>ctime</label>
+      </node>
+      <node id="24">
+        <label>./common.h</label>
+        <link refid="common_8h_source"/>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>vector</label>
+      </node>
+      <node id="27">
+        <label>./foreach.h</label>
+        <link refid="foreach_8h_source"/>
+      </node>
+      <node id="16">
+        <label>src/Hypergraph/Algorithms.cpp</label>
+        <link refid="Algorithms.cpp"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
         <childnode refid="19" relation="include">
         </childnode>
         <childnode refid="20" relation="include">
         </childnode>
         <childnode refid="21" relation="include">
         </childnode>
-        <childnode refid="24" relation="include">
-        </childnode>
-        <childnode refid="27" relation="include">
-        </childnode>
       </node>
-      <node id="22">
-        <label>ctime</label>
-      </node>
-      <node id="13">
-        <label>src/Hypergraph/Algorithms.cpp</label>
-        <link refid="Algorithms.cpp"/>
-        <childnode refid="14" relation="include">
-        </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
-        </childnode>
-        <childnode refid="17" relation="include">
-        </childnode>
+      <node id="28">
+        <label>Hypergraph/Hypergraph.h</label>
+        <link refid="Hypergraph_8h_source"/>
         <childnode refid="18" relation="include">
         </childnode>
-      </node>
-      <node id="20">
-        <label>vector</label>
-      </node>
-      <node id="17">
-        <label>iostream</label>
-      </node>
-      <node id="21">
-        <label>./common.h</label>
-        <link refid="common_8h_source"/>
-        <childnode refid="22" relation="include">
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
         </childnode>
         <childnode refid="23" relation="include">
         </childnode>
-      </node>
-      <node id="24">
-        <label>Hypergraph/Hypergraph.h</label>
-        <link refid="Hypergraph_8h_source"/>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
-        </childnode>
-        <childnode refid="25" relation="include">
-        </childnode>
-        <childnode refid="26" relation="include">
-        </childnode>
-        <childnode refid="20" relation="include">
-        </childnode>
-        <childnode refid="21" relation="include">
+        <childnode refid="24" relation="include">
         </childnode>
       </node>
-      <node id="25">
+      <node id="26">
+        <label>cstdlib</label>
+      </node>
+      <node id="20">
+        <label>iostream</label>
+      </node>
+      <node id="29">
         <label>set</label>
       </node>
-      <node id="14">
+      <node id="17">
         <label>algorithm</label>
       </node>
     </incdepgraph>
     <innerclass refid="structIdComparator" prot="public">IdComparator</innerclass>
     <innernamespace refid="namespacestd">std</innernamespace>
       <sectiondef kind="define">
-      <memberdef kind="define" id="Algorithms_8cpp_1ae7a5fa74fe94883f12ab3da381ca4916" prot="public" static="no">
-        <name>SPECIALIZE_FOR_SEMI</name>
+      <memberdef kind="define" id="Algorithms_8cpp_1acd95d3f59cabf0fac5f2f894f0eb0177" prot="public" static="no">
+        <name>SPECIALIZE_ALGORITHMS_FOR_SEMI</name>
         <param><defname>X</defname></param>
         <initializer>template class <ref refid="classChart" kindref="compound">Chart</ref>&lt;X&gt;;\
   template class <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt;X&gt;;\
@@ -118,7 +142,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="16" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="12" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" line="12" column="9" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" bodystart="12" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="Algorithms_8cpp_1a077309fff461c3d927fa4daf24d1f903" prot="public" static="no">
         <name>SPECIALIZE_FOR_SEMI_MIN</name>
@@ -133,26 +157,26 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="22" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="18" bodyend="-1"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" line="18" column="9" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" bodystart="18" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
-      <memberdef kind="function" id="Algorithms_8cpp_1acf44e5815af1bce9dd681507d2948f4e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="Algorithms_8cpp_1a3915e0084000456fb0967f199625f6c0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
-            <type>typename SemiringType</type>
+            <type>typename S</type>
           </param>
         </templateparamlist>
-        <type><ref refid="classChart" kindref="compound">Chart</ref>&lt; SemiringType &gt; *</type>
-        <definition>Chart&lt;SemiringType&gt;* general_inside</definition>
-        <argsstring>(const Hypergraph *graph, const HypergraphPotentials&lt; SemiringType &gt; &amp;potentials)</argsstring>
+        <type><ref refid="classChart" kindref="compound">Chart</ref>&lt; S &gt; *</type>
+        <definition>Chart&lt;S&gt;* general_inside</definition>
+        <argsstring>(const Hypergraph *graph, const HypergraphPotentials&lt; S &gt; &amp;potentials)</argsstring>
         <name>general_inside</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>graph</declname>
         </param>
         <param>
-          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; &amp;</type>
+          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; &amp;</type>
           <declname>potentials</declname>
         </param>
         <briefdescription>
@@ -161,28 +185,28 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="37" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="36" bodyend="57"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" line="36" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" bodystart="36" bodyend="59"/>
       </memberdef>
-      <memberdef kind="function" id="Algorithms_8cpp_1a5f7cc67c9c79df40b872cf855238c68c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="Algorithms_8cpp_1a46fea384ff5313430631959edb1913ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
-            <type>typename SemiringType</type>
+            <type>typename S</type>
           </param>
         </templateparamlist>
-        <type><ref refid="classChart" kindref="compound">Chart</ref>&lt; SemiringType &gt; *</type>
-        <definition>Chart&lt;SemiringType&gt;* general_outside</definition>
-        <argsstring>(const Hypergraph *graph, const HypergraphPotentials&lt; SemiringType &gt; &amp;potentials, const Chart&lt; SemiringType &gt; &amp;inside_chart)</argsstring>
+        <type><ref refid="classChart" kindref="compound">Chart</ref>&lt; S &gt; *</type>
+        <definition>Chart&lt;S&gt;* general_outside</definition>
+        <argsstring>(const Hypergraph *graph, const HypergraphPotentials&lt; S &gt; &amp;potentials, const Chart&lt; S &gt; &amp;inside_chart)</argsstring>
         <name>general_outside</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>graph</declname>
         </param>
         <param>
-          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; &amp;</type>
+          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; &amp;</type>
           <declname>potentials</declname>
         </param>
         <param>
-          <type>const <ref refid="classChart" kindref="compound">Chart</ref>&lt; SemiringType &gt; &amp;</type>
+          <type>const <ref refid="classChart" kindref="compound">Chart</ref>&lt; S &gt; &amp;</type>
           <declname>inside_chart</declname>
         </param>
         <briefdescription>
@@ -191,24 +215,24 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="63" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="61" bodyend="83"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" line="63" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" bodystart="63" bodyend="85"/>
       </memberdef>
-      <memberdef kind="function" id="Algorithms_8cpp_1a3a767a730f00c71b726b9c55f4a4d441" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="Algorithms_8cpp_1a006797a8ee1bfc835d5457b9efbc5ae8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
-            <type>typename SemiringType</type>
+            <type>typename S</type>
           </param>
         </templateparamlist>
         <type><ref refid="classHyperpath" kindref="compound">Hyperpath</ref> *</type>
         <definition>Hyperpath* general_viterbi</definition>
-        <argsstring>(const Hypergraph *graph, const HypergraphPotentials&lt; SemiringType &gt; &amp;potentials)</argsstring>
+        <argsstring>(const Hypergraph *graph, const HypergraphPotentials&lt; S &gt; &amp;potentials)</argsstring>
         <name>general_viterbi</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>graph</declname>
         </param>
         <param>
-          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; &amp;</type>
+          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; &amp;</type>
           <declname>potentials</declname>
         </param>
         <briefdescription>
@@ -217,7 +241,33 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="88" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="86" bodyend="130"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" line="88" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" bodystart="88" bodyend="132"/>
+      </memberdef>
+      <memberdef kind="function" id="Algorithms_8cpp_1afd1046fdfdac52f68f307a261b832420" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename StatSem</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classHyperpath" kindref="compound">Hyperpath</ref> *</type>
+        <definition>Hyperpath* general_viterbi</definition>
+        <argsstring>(const Hypergraph *graph, const HypergraphPotentials&lt; typename StatSem::ValType &gt; &amp;potentials)</argsstring>
+        <name>general_viterbi</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; typename StatSem::ValType &gt; &amp;</type>
+          <declname>potentials</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" line="135" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp" bodystart="135" bodyend="179"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -236,7 +286,7 @@
 <codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Algorithms.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">//#include<sp/>&quot;Hypergraph/Subgradient.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="11"><highlight class="normal"></highlight></codeline>
-<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SPECIALIZE_FOR_SEMI(X)\</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SPECIALIZE_ALGORITHMS_FOR_SEMI(X)\</highlight></codeline>
 <codeline lineno="13"><highlight class="preprocessor"><sp/><sp/>template<sp/>class<sp/>Chart&lt;X&gt;;\</highlight></codeline>
 <codeline lineno="14"><highlight class="preprocessor"><sp/><sp/>template<sp/>class<sp/>HypergraphPotentials&lt;X&gt;;\</highlight></codeline>
 <codeline lineno="15"><highlight class="preprocessor"><sp/><sp/>template<sp/>class<sp/>Marginals&lt;X&gt;;\</highlight></codeline>
@@ -258,113 +308,162 @@
 <codeline lineno="31"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline lineno="32"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="33"><highlight class="normal"></highlight></codeline>
-<codeline lineno="34"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
-<codeline lineno="35"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>S&gt;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref><sp/>*</highlight></codeline>
 <codeline lineno="36"><highlight class="normal">general_inside(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>&amp;potentials)<sp/>{</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;S&gt;</ref><sp/>&amp;potentials)<sp/>{</highlight></codeline>
 <codeline lineno="38"><highlight class="normal"><sp/><sp/>potentials.check(*graph);</highlight></codeline>
 <codeline lineno="39"><highlight class="normal"></highlight></codeline>
 <codeline lineno="40"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Run<sp/>Viterbi<sp/>Hypergraph<sp/>algorithm.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="41"><highlight class="normal"><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*chart<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref>(graph);</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref><sp/>*chart<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref>(graph);</highlight></codeline>
 <codeline lineno="42"><highlight class="normal"></highlight></codeline>
 <codeline lineno="43"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>graph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>())<sp/>{</highlight></codeline>
 <codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(node-&gt;<ref refid="classHypernode_1a1f60b0a9441e466f770429c510f2a35a" kindref="member">terminal</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>(*chart)[node]<sp/>=<sp/>SemiringType::one();</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>chart-&gt;insert(node,<sp/>S::one());</highlight></codeline>
 <codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="47"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline lineno="48"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>graph-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/>SemiringType<sp/>score<sp/>=<sp/>potentials.score(edge);</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>S::ValType<sp/>score<sp/>=<sp/>potentials.score(edge);</highlight></codeline>
 <codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>score<sp/>*=<sp/>(*chart)[node];</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>score<sp/>=<sp/>S::times(score,<sp/>(*chart)[node]);</highlight></codeline>
 <codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/>(*chart)[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()]<sp/>+=<sp/>score;</highlight></codeline>
-<codeline lineno="54"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="55"><highlight class="normal"><sp/><sp/>(*chart)[graph-&gt;<ref refid="classHypergraph_1affd640580b3c8f1302cc71de05edf6e8" kindref="member">root</ref>()]<sp/>*=<sp/>potentials.bias();</highlight></codeline>
-<codeline lineno="56"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart;</highlight></codeline>
-<codeline lineno="57"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="58"><highlight class="normal"></highlight></codeline>
-<codeline lineno="59"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
-<codeline lineno="60"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*</highlight></codeline>
-<codeline lineno="61"><highlight class="normal">general_outside(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>&amp;potentials,</highlight></codeline>
-<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>&amp;inside_chart)<sp/>{</highlight></codeline>
-<codeline lineno="64"><highlight class="normal"><sp/><sp/>potentials.check(*graph);</highlight></codeline>
-<codeline lineno="65"><highlight class="normal"><sp/><sp/>inside_chart.check(graph);</highlight></codeline>
-<codeline lineno="66"><highlight class="normal"><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*chart<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref>(graph);</highlight></codeline>
-<codeline lineno="67"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;HEdge&gt;<sp/>&amp;edges<sp/>=<sp/>graph-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>();</highlight></codeline>
-<codeline lineno="68"><highlight class="normal"><sp/><sp/>(*chart)[graph-&gt;<ref refid="classHypergraph_1affd640580b3c8f1302cc71de05edf6e8" kindref="member">root</ref>()]<sp/>=<sp/>potentials.bias();</highlight></codeline>
-<codeline lineno="69"><highlight class="normal"></highlight></codeline>
-<codeline lineno="70"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>edges.size()<sp/>-<sp/>1;<sp/>i<sp/>&gt;=<sp/>0;<sp/>--i)<sp/>{</highlight></codeline>
-<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge<sp/>=<sp/>edges[i];</highlight></codeline>
-<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/>SemiringType<sp/>head_score<sp/>=<sp/>(*chart)[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()];</highlight></codeline>
-<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>SemiringType<sp/>other_score<sp/>=<sp/>SemiringType::one();</highlight></codeline>
-<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>other_node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(other_node-&gt;id()<sp/>==<sp/>node-&gt;id())<sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
-<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>other_score<sp/>*=<sp/>inside_chart[other_node];</highlight></codeline>
-<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>(*chart)[node]<sp/>+=<sp/>head_score<sp/>*<sp/>other_score<sp/>*<sp/>potentials.score(edge);</highlight></codeline>
-<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="81"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="82"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart;</highlight></codeline>
-<codeline lineno="83"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="84"><highlight class="normal"></highlight></codeline>
-<codeline lineno="85"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SemiringType&gt;</highlight></codeline>
-<codeline lineno="86"><highlight class="normal"><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*general_viterbi(</highlight></codeline>
-<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SemiringType&gt;</ref><sp/>&amp;potentials)<sp/>{</highlight></codeline>
-<codeline lineno="89"><highlight class="normal"></highlight></codeline>
-<codeline lineno="90"><highlight class="normal"><sp/><sp/>potentials.check(*graph);</highlight></codeline>
-<codeline lineno="91"><highlight class="normal"><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref><sp/>*chart<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;SemiringType&gt;</ref>(graph);</highlight></codeline>
-<codeline lineno="92"><highlight class="normal"><sp/><sp/>vector&lt;HEdge&gt;<sp/>back(graph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>().size(),<sp/>NULL);</highlight></codeline>
-<codeline lineno="93"><highlight class="normal"></highlight></codeline>
-<codeline lineno="94"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>graph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(node-&gt;<ref refid="classHypernode_1a1f60b0a9441e466f770429c510f2a35a" kindref="member">terminal</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>(*chart)[node]<sp/>=<sp/>SemiringType::one();</highlight></codeline>
-<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="98"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="99"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>graph-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/>SemiringType<sp/>score<sp/>=<sp/>potentials.score(edge);</highlight></codeline>
-<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>score<sp/>*=<sp/>(*chart)[node];</highlight></codeline>
-<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(score<sp/>&gt;<sp/>(*chart)[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()])<sp/>{</highlight></codeline>
-<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>(*chart)[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()]<sp/>=<sp/>score;</highlight></codeline>
-<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>back[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()-&gt;id()]<sp/>=<sp/>edge;</highlight></codeline>
-<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="108"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="109"><highlight class="normal"></highlight></codeline>
-<codeline lineno="110"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Collect<sp/>backpointers.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="111"><highlight class="normal"><sp/><sp/>vector&lt;HEdge&gt;<sp/>path;</highlight></codeline>
-<codeline lineno="112"><highlight class="normal"><sp/><sp/>queue&lt;HNode&gt;<sp/>to_examine;</highlight></codeline>
-<codeline lineno="113"><highlight class="normal"><sp/><sp/>to_examine.push(graph-&gt;<ref refid="classHypergraph_1affd640580b3c8f1302cc71de05edf6e8" kindref="member">root</ref>());</highlight></codeline>
-<codeline lineno="114"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(!to_examine.empty())<sp/>{</highlight></codeline>
-<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node<sp/>=<sp/>to_examine.front();</highlight></codeline>
-<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge<sp/>=<sp/>back[node-&gt;id()];</highlight></codeline>
-<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/>to_examine.pop();</highlight></codeline>
-<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(edge<sp/>==<sp/>NULL)<sp/>{</highlight></codeline>
-<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>assert(node-&gt;<ref refid="classHypernode_1a1f60b0a9441e466f770429c510f2a35a" kindref="member">terminal</ref>());</highlight></codeline>
-<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
-<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/>path.push_back(edge);</highlight></codeline>
-<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>to_examine.push(node);</highlight></codeline>
-<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="126"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline lineno="127"><highlight class="normal"><sp/><sp/>sort(path.begin(),<sp/>path.end(),<sp/><ref refid="structIdComparator" kindref="compound">IdComparator</ref>());</highlight></codeline>
-<codeline lineno="128"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>chart;</highlight></codeline>
-<codeline lineno="129"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classHyperpath" kindref="compound">Hyperpath</ref>(graph,<sp/>path);</highlight></codeline>
-<codeline lineno="130"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="131"><highlight class="normal"></highlight></codeline>
-<codeline lineno="132"><highlight class="normal"></highlight></codeline>
-<codeline lineno="133"><highlight class="normal">SPECIALIZE_FOR_SEMI(<ref refid="classViterbiPotential" kindref="compound">ViterbiPotential</ref>)</highlight></codeline>
-<codeline lineno="134"><highlight class="normal">SPECIALIZE_FOR_SEMI(<ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref>)</highlight></codeline>
-<codeline lineno="135"><highlight class="normal">SPECIALIZE_FOR_SEMI(<ref refid="classInsidePotential" kindref="compound">InsidePotential</ref>)</highlight></codeline>
-<codeline lineno="136"><highlight class="normal">SPECIALIZE_FOR_SEMI(<ref refid="classBoolPotential" kindref="compound">BoolPotential</ref>)</highlight></codeline>
-<codeline lineno="137"><highlight class="normal">SPECIALIZE_FOR_SEMI_MIN(<ref refid="classSparseVectorPotential" kindref="compound">SparseVectorPotential</ref>)</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/>chart-&gt;insert(edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>(),</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>S::add((*chart)[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()],<sp/>score));</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/>chart-&gt;insert(graph-&gt;<ref refid="classHypergraph_1affd640580b3c8f1302cc71de05edf6e8" kindref="member">root</ref>(),</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>S::times((*chart)[graph-&gt;<ref refid="classHypergraph_1affd640580b3c8f1302cc71de05edf6e8" kindref="member">root</ref>()],<sp/>potentials.bias()));</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart;</highlight></codeline>
+<codeline lineno="59"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>S&gt;</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref><sp/>*</highlight></codeline>
+<codeline lineno="63"><highlight class="normal">general_outside(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;S&gt;</ref><sp/>&amp;potentials,</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref><sp/>&amp;inside_chart)<sp/>{</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/>potentials.check(*graph);</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/>inside_chart.check(graph);</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref><sp/>*chart<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref>(graph);</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;HEdge&gt;<sp/>&amp;edges<sp/>=<sp/>graph-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>();</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/>chart-&gt;insert(graph-&gt;<ref refid="classHypergraph_1affd640580b3c8f1302cc71de05edf6e8" kindref="member">root</ref>(),<sp/>potentials.bias());</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>edges.size()<sp/>-<sp/>1;<sp/>i<sp/>&gt;=<sp/>0;<sp/>--i)<sp/>{</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge<sp/>=<sp/>edges[i];</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>S::ValType<sp/>head_score<sp/>=<sp/>(*chart)[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()];</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>S::ValType<sp/>other_score<sp/>=<sp/>S::one();</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>other_node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(other_node-&gt;id()<sp/>==<sp/>node-&gt;id())<sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>other_score<sp/>=<sp/>S::times(other_score,<sp/>inside_chart[other_node]);</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>chart-&gt;insert(node,<sp/>S::add((*chart)[node],<sp/>S::times(head_score,<sp/>S::times(other_score,<sp/>potentials.score(edge)))));</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>S&gt;</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*general_viterbi(</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;S&gt;</ref><sp/>&amp;potentials)<sp/>{</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/>potentials.check(*graph);</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref><sp/>*chart<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;S&gt;</ref>(graph);</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/>vector&lt;HEdge&gt;<sp/>back(graph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>().size(),<sp/>NULL);</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>graph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(node-&gt;<ref refid="classHypernode_1a1f60b0a9441e466f770429c510f2a35a" kindref="member">terminal</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>chart-&gt;insert(node,<sp/>S::one());</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>graph-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>S::ValType<sp/>score<sp/>=<sp/>potentials.score(edge);</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>score<sp/>=<sp/>S::times(score,<sp/>(*chart)[node]);</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(score<sp/>&gt;<sp/>(*chart)[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()])<sp/>{</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>chart-&gt;insert(edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>(),<sp/>score);</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>back[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()-&gt;id()]<sp/>=<sp/>edge;</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Collect<sp/>backpointers.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/>vector&lt;HEdge&gt;<sp/>path;</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/>queue&lt;HNode&gt;<sp/>to_examine;</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/>to_examine.push(graph-&gt;<ref refid="classHypergraph_1affd640580b3c8f1302cc71de05edf6e8" kindref="member">root</ref>());</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(!to_examine.empty())<sp/>{</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node<sp/>=<sp/>to_examine.front();</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge<sp/>=<sp/>back[node-&gt;id()];</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/>to_examine.pop();</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(edge<sp/>==<sp/>NULL)<sp/>{</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>assert(node-&gt;<ref refid="classHypernode_1a1f60b0a9441e466f770429c510f2a35a" kindref="member">terminal</ref>());</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/>path.push_back(edge);</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>to_examine.push(node);</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/>sort(path.begin(),<sp/>path.end(),<sp/><ref refid="structIdComparator" kindref="compound">IdComparator</ref>());</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>chart;</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classHyperpath" kindref="compound">Hyperpath</ref>(graph,<sp/>path);</highlight></codeline>
+<codeline lineno="132"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>StatSem&gt;</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><ref refid="classHyperpath" kindref="compound">Hyperpath</ref><sp/>*general_viterbi(</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;typename StatSem::ValType&gt;</ref><sp/>&amp;potentials)<sp/>{</highlight></codeline>
 <codeline lineno="138"><highlight class="normal"></highlight></codeline>
-<codeline lineno="139"><highlight class="normal"></highlight><highlight class="comment">//<sp/>End<sp/>General<sp/>code.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/>potentials.check(*graph);</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;typename StatSem::ValType&gt;</ref><sp/>*chart<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classChart" kindref="compound">Chart&lt;typename StatSem::ValType&gt;</ref>(graph);</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/>vector&lt;HEdge&gt;<sp/>back(graph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>().size(),<sp/>NULL);</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>graph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(node-&gt;<ref refid="classHypernode_1a1f60b0a9441e466f770429c510f2a35a" kindref="member">terminal</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>chart-&gt;insert(node,<sp/>StatSem::one());</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>graph-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>StatSem::ValType<sp/>score<sp/>=<sp/>potentials.score(edge);</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>StatSem::ValType(score,<sp/>(*chart)[node]);</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(score<sp/>&gt;<sp/>(*chart)[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()])<sp/>{</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>chart-&gt;insert(edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>(),<sp/>score);</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>back[edge-&gt;<ref refid="classHyperedge_1aa78725750fe0cf3ee9178986fef9e31b" kindref="member">head_node</ref>()-&gt;id()]<sp/>=<sp/>edge;</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Collect<sp/>backpointers.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/>vector&lt;HEdge&gt;<sp/>path;</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/>queue&lt;HNode&gt;<sp/>to_examine;</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/>to_examine.push(graph-&gt;<ref refid="classHypergraph_1affd640580b3c8f1302cc71de05edf6e8" kindref="member">root</ref>());</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(!to_examine.empty())<sp/>{</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node<sp/>=<sp/>to_examine.front();</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge<sp/>=<sp/>back[node-&gt;id()];</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/>to_examine.pop();</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(edge<sp/>==<sp/>NULL)<sp/>{</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>assert(node-&gt;<ref refid="classHypernode_1a1f60b0a9441e466f770429c510f2a35a" kindref="member">terminal</ref>());</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/>path.push_back(edge);</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>to_examine.push(node);</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/>sort(path.begin(),<sp/>path.end(),<sp/><ref refid="structIdComparator" kindref="compound">IdComparator</ref>());</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>chart;</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classHyperpath" kindref="compound">Hyperpath</ref>(graph,<sp/>path);</highlight></codeline>
+<codeline lineno="179"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal"></highlight></codeline>
+<codeline lineno="182"><highlight class="normal">SPECIALIZE_ALGORITHMS_FOR_SEMI(<ref refid="classViterbiPotential" kindref="compound">ViterbiPotential</ref>)</highlight></codeline>
+<codeline lineno="183"><highlight class="normal">SPECIALIZE_ALGORITHMS_FOR_SEMI(<ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref>)</highlight></codeline>
+<codeline lineno="184"><highlight class="normal">SPECIALIZE_ALGORITHMS_FOR_SEMI(<ref refid="classInsidePotential" kindref="compound">InsidePotential</ref>)</highlight></codeline>
+<codeline lineno="185"><highlight class="normal">SPECIALIZE_ALGORITHMS_FOR_SEMI(<ref refid="classBoolPotential" kindref="compound">BoolPotential</ref>)</highlight></codeline>
+<codeline lineno="186"><highlight class="normal">SPECIALIZE_FOR_SEMI_MIN(<ref refid="classSparseVectorPotential" kindref="compound">SparseVectorPotential</ref>)</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"></highlight></codeline>
+<codeline lineno="188"><highlight class="normal"></highlight><highlight class="comment">//<sp/>End<sp/>General<sp/>code.</highlight><highlight class="normal"></highlight></codeline>
     </programlisting>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Algorithms.cpp"/>
   </compounddef>
 </doxygen>

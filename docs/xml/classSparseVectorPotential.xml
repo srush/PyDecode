@@ -1,96 +1,111 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="classSparseVectorPotential" kind="class" prot="public">
     <compoundname>SparseVectorPotential</compoundname>
-    <basecompoundref refid="classBaseSemiringPotential" prot="public" virt="non-virtual">BaseSemiringPotential&lt; SparseVector, SparseVectorPotential &gt;</basecompoundref>
-    <includes refid="Semirings_8h" local="no">Semirings.h</includes>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classSparseVectorPotential_1a1b2071d9c08f4b1be67eedae322ac348" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>SparseVectorPotential::SparseVectorPotential</definition>
-        <argsstring>(const SparseVector vec)</argsstring>
-        <name>SparseVectorPotential</name>
-        <param>
-          <type>const SparseVector</type>
-          <declname>vec</declname>
-        </param>
+    <includes refid="semirings_8h" local="no">semirings.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classSparseVectorPotential_1aafc3f5935f013cac513f4f558c07f38e" prot="public" static="no">
+        <type>SparseVector</type>
+        <definition>typedef SparseVector SparseVectorPotential::ValType</definition>
+        <argsstring></argsstring>
+        <name>ValType</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="341" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="341" bodyend="341"/>
-      </memberdef>
-      <memberdef kind="function" id="classSparseVectorPotential_1a4e74e747a7db3953101f6d277063fb11" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>SparseVectorPotential::SparseVectorPotential</definition>
-        <argsstring>()</argsstring>
-        <name>SparseVectorPotential</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="342" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="342" bodyend="342"/>
-      </memberdef>
-      <memberdef kind="function" id="classSparseVectorPotential_1af2d07a561b782575952b21809a545553" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classSparseVectorPotential" kindref="compound">SparseVectorPotential</ref> &amp;</type>
-        <definition>SparseVectorPotential&amp; SparseVectorPotential::operator+=</definition>
-        <argsstring>(const SparseVectorPotential &amp;rhs)</argsstring>
-        <name>operator+=</name>
-        <param>
-          <type>const <ref refid="classSparseVectorPotential" kindref="compound">SparseVectorPotential</ref> &amp;</type>
-          <declname>rhs</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="344" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="344" bodyend="346"/>
-      </memberdef>
-      <memberdef kind="function" id="classSparseVectorPotential_1a53ed7d7c472bc7be617ccf1b3e2587da" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classSparseVectorPotential" kindref="compound">SparseVectorPotential</ref> &amp;</type>
-        <definition>SparseVectorPotential&amp; SparseVectorPotential::operator*=</definition>
-        <argsstring>(const SparseVectorPotential &amp;rhs)</argsstring>
-        <name>operator*=</name>
-        <param>
-          <type>const <ref refid="classSparseVectorPotential" kindref="compound">SparseVectorPotential</ref> &amp;</type>
-          <declname>rhs</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="348" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="348" bodyend="366"/>
-      </memberdef>
-      <memberdef kind="function" id="classSparseVectorPotential_1a3322ae008e6edc0cecdaba5a6bc29faf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>int</type>
-        <definition>int SparseVectorPotential::normalize</definition>
-        <argsstring>(int val) const </argsstring>
-        <name>normalize</name>
-        <param>
-          <type>int</type>
-          <declname>val</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="371" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="371" bodyend="373"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="508" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="508" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
-      <memberdef kind="function" id="classSparseVectorPotential_1a0ac56d63cfc4edaabb63728431004819" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classSparseVectorPotential" kindref="compound">SparseVectorPotential</ref></type>
-        <definition>static const SparseVectorPotential SparseVectorPotential::one</definition>
+      <memberdef kind="function" id="classSparseVectorPotential_1af87990aa6c20a6248afaf5014260eb71" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType SparseVectorPotential::add</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>add</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="510" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="510" bodyend="512"/>
+      </memberdef>
+      <memberdef kind="function" id="classSparseVectorPotential_1a7da32aec7791bbe9a6a49d14d1eaea6f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType SparseVectorPotential::times</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>times</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="514" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="514" bodyend="531"/>
+      </memberdef>
+      <memberdef kind="function" id="classSparseVectorPotential_1a329ca11b178adeb822f848dfe40e5eb0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType SparseVectorPotential::safe_add</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="533" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="533" bodyend="535"/>
+      </memberdef>
+      <memberdef kind="function" id="classSparseVectorPotential_1af754743ffde6dd0e9f0139d04aa488bc" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType SparseVectorPotential::safe_times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_times</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="537" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="537" bodyend="540"/>
+      </memberdef>
+      <memberdef kind="function" id="classSparseVectorPotential_1a2f70b3437d37150fc9945eb9ef0fa004" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType SparseVectorPotential::one</definition>
         <argsstring>()</argsstring>
         <name>one</name>
         <briefdescription>
@@ -99,11 +114,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="368" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="368" bodyend="368"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="542" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="542" bodyend="542"/>
       </memberdef>
-      <memberdef kind="function" id="classSparseVectorPotential_1a096243c3b6645e54538d9611f29541f2" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classSparseVectorPotential" kindref="compound">SparseVectorPotential</ref></type>
-        <definition>static const SparseVectorPotential SparseVectorPotential::zero</definition>
+      <memberdef kind="function" id="classSparseVectorPotential_1a8967755207f8cccdef02de50430ebca6" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType SparseVectorPotential::zero</definition>
         <argsstring>()</argsstring>
         <name>zero</name>
         <briefdescription>
@@ -112,56 +127,54 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="369" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="369" bodyend="369"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="543" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="543" bodyend="543"/>
+      </memberdef>
+      <memberdef kind="function" id="classSparseVectorPotential_1a2428365f64570caba9d6e4c78b0598fb" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType SparseVectorPotential::randValue</definition>
+        <argsstring>()</argsstring>
+        <name>randValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="545" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="545" bodyend="551"/>
+      </memberdef>
+      <memberdef kind="function" id="classSparseVectorPotential_1a7f92f5738f8d90c0dc59beb7af9e608a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType &amp;</type>
+        <definition>static ValType&amp; SparseVectorPotential::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type>ValType &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="553" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="553" bodyend="555"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Sparse vector. <emphasis>Experimental</emphasis></para><para>+: Elementwise min *: Elementwise + 0: Empty Vector 1: Empty Vector </para>    </detaileddescription>
-    <inheritancegraph>
-      <node id="83">
-        <label>BaseSemiringPotential&lt; SparseVector, SparseVectorPotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
-      </node>
-      <node id="82">
-        <label>SparseVectorPotential</label>
-        <link refid="classSparseVectorPotential"/>
-        <childnode refid="83" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
-      <node id="85">
-        <label>BaseSemiringPotential&lt; SparseVector, SparseVectorPotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
-      </node>
-      <node id="84">
-        <label>SparseVectorPotential</label>
-        <link refid="classSparseVectorPotential"/>
-        <childnode refid="85" relation="public-inheritance">
-        </childnode>
-      </node>
-    </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="339" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="339" bodyend="374"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="506" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="506" bodyend="556"/>
     <listofallmembers>
-      <member refid="classBaseSemiringPotential_1a3ccf8b43dd32e794f7a546caa2e8ffd9" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>add</name></member>
-      <member refid="classBaseSemiringPotential_1a54bb42020981d47a9ee5edbefdd0f4b3" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ae70438bcff496bff89daf4c4eac38ce4" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ac4f432c81a12368ae2b1d5230cc762c2" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classSparseVectorPotential_1a3322ae008e6edc0cecdaba5a6bc29faf" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>normalize</name></member>
-      <member refid="classBaseSemiringPotential_1a87949cd4f8b8aceedaaac1a446c82190" prot="public" virt="non-virtual" ambiguityscope="BaseSemiringPotential&lt; SparseVector, SparseVectorPotential &gt;::"><scope>SparseVectorPotential</scope><name>normalize</name></member>
-      <member refid="classSparseVectorPotential_1a0ac56d63cfc4edaabb63728431004819" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>one</name></member>
-      <member refid="classBaseSemiringPotential_1a57bbc01de90082ca201dc151d821f0e9" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>operator SparseVector</name></member>
-      <member refid="classSparseVectorPotential_1a53ed7d7c472bc7be617ccf1b3e2587da" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>operator*=</name></member>
-      <member refid="classSparseVectorPotential_1af2d07a561b782575952b21809a545553" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>operator+=</name></member>
-      <member refid="classBaseSemiringPotential_1af3f7108cca054ed98908a2d536cfcec8" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>operator=</name></member>
-      <member refid="classBaseSemiringPotential_1a688918a5566844351e4fb4ddc95e9784" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>operator=</name></member>
-      <member refid="classSparseVectorPotential_1a1b2071d9c08f4b1be67eedae322ac348" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>SparseVectorPotential</name></member>
-      <member refid="classSparseVectorPotential_1a4e74e747a7db3953101f6d277063fb11" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>SparseVectorPotential</name></member>
-      <member refid="classBaseSemiringPotential_1a90188fa749f13b11996f2e328dfb4045" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>times</name></member>
-      <member refid="classBaseSemiringPotential_1a8ab78c41be222b13d87894877608567e" prot="protected" virt="non-virtual"><scope>SparseVectorPotential</scope><name>value</name></member>
-      <member refid="classSparseVectorPotential_1a096243c3b6645e54538d9611f29541f2" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>zero</name></member>
+      <member refid="classSparseVectorPotential_1af87990aa6c20a6248afaf5014260eb71" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>add</name></member>
+      <member refid="classSparseVectorPotential_1a7f92f5738f8d90c0dc59beb7af9e608a" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>normalize</name></member>
+      <member refid="classSparseVectorPotential_1a2f70b3437d37150fc9945eb9ef0fa004" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>one</name></member>
+      <member refid="classSparseVectorPotential_1a2428365f64570caba9d6e4c78b0598fb" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>randValue</name></member>
+      <member refid="classSparseVectorPotential_1a329ca11b178adeb822f848dfe40e5eb0" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>safe_add</name></member>
+      <member refid="classSparseVectorPotential_1af754743ffde6dd0e9f0139d04aa488bc" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>safe_times</name></member>
+      <member refid="classSparseVectorPotential_1a7da32aec7791bbe9a6a49d14d1eaea6f" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>times</name></member>
+      <member refid="classSparseVectorPotential_1aafc3f5935f013cac513f4f558c07f38e" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>ValType</name></member>
+      <member refid="classSparseVectorPotential_1a8967755207f8cccdef02de50430ebca6" prot="public" virt="non-virtual"><scope>SparseVectorPotential</scope><name>zero</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

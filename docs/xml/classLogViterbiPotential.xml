@@ -1,167 +1,184 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
   <compounddef id="classLogViterbiPotential" kind="class" prot="public">
     <compoundname>LogViterbiPotential</compoundname>
-    <basecompoundref refid="classBaseSemiringPotential" prot="public" virt="non-virtual">BaseSemiringPotential&lt; double, LogViterbiPotential &gt;</basecompoundref>
-    <includes refid="Semirings_8h" local="no">Semirings.h</includes>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classLogViterbiPotential_1ac70236c1624c64f25757da6737160c44" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>LogViterbiPotential::LogViterbiPotential</definition>
-        <argsstring>(double value)</argsstring>
-        <name>LogViterbiPotential</name>
-        <param>
-          <type>double</type>
-          <declname>value</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="115" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="114" bodyend="115"/>
-      </memberdef>
-      <memberdef kind="function" id="classLogViterbiPotential_1a34ddb497b57989303ea568df4c0c2cca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>LogViterbiPotential::LogViterbiPotential</definition>
-        <argsstring>()</argsstring>
-        <name>LogViterbiPotential</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="117" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="116" bodyend="117"/>
-      </memberdef>
-      <memberdef kind="function" id="classLogViterbiPotential_1a40c7549dfd572392604ed924f6069e40" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref> &amp;</type>
-        <definition>LogViterbiPotential&amp; LogViterbiPotential::operator+=</definition>
-        <argsstring>(const LogViterbiPotential &amp;rhs)</argsstring>
-        <name>operator+=</name>
-        <param>
-          <type>const <ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref> &amp;</type>
-          <declname>rhs</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="119" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="119" bodyend="122"/>
-      </memberdef>
-      <memberdef kind="function" id="classLogViterbiPotential_1a662f862db5fcea3058feda22b0f61047" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref> &amp;</type>
-        <definition>LogViterbiPotential&amp; LogViterbiPotential::operator*=</definition>
-        <argsstring>(const LogViterbiPotential &amp;rhs)</argsstring>
-        <name>operator*=</name>
-        <param>
-          <type>const <ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref> &amp;</type>
-          <declname>rhs</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="123" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="123" bodyend="126"/>
-      </memberdef>
-      <memberdef kind="function" id="classLogViterbiPotential_1a780781ec5706265b2d35a0d59e51449e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>double</type>
-        <definition>double LogViterbiPotential::normalize</definition>
-        <argsstring>(double val) const </argsstring>
-        <name>normalize</name>
-        <param>
-          <type>double</type>
-          <declname>val</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="128" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="128" bodyend="131"/>
-      </memberdef>
-      </sectiondef>
+    <basecompoundref refid="classViterbiPotential" prot="public" virt="non-virtual">ViterbiPotential</basecompoundref>
+    <includes refid="semirings_8h" local="no">semirings.h</includes>
       <sectiondef kind="public-static-func">
-      <memberdef kind="function" id="classLogViterbiPotential_1a4f3b6169c8dc1ca850954e4ccd4a4b90" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref></type>
-        <definition>static const LogViterbiPotential LogViterbiPotential::one</definition>
-        <argsstring>()</argsstring>
-        <name>one</name>
+      <memberdef kind="function" id="classLogViterbiPotential_1a6a832abcc2df981c5024ebede2208c3e" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+        <definition>static ValType LogViterbiPotential::times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>times</name>
+        <param>
+          <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>Adds the two log potentials. NOT domain-safe. <simplesect kind="return"><para>An addition of the two arguments. </para></simplesect>
+</para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="133" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="133" bodyend="133"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="104" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="104" bodyend="107"/>
       </memberdef>
-      <memberdef kind="function" id="classLogViterbiPotential_1afe56b116069ea3e5b66717ea598931e8" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classLogViterbiPotential" kindref="compound">LogViterbiPotential</ref></type>
-        <definition>static const LogViterbiPotential LogViterbiPotential::zero</definition>
+      <memberdef kind="function" id="classLogViterbiPotential_1a572106cac324f88f100a35ab2cd9a517" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+        <definition>static ValType LogViterbiPotential::safe_add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
+        <param>
+          <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>A normalized version of the add operation. Domain Safe. <simplesect kind="return"><para>Normalized max of the two arguments. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="113" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="113" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classLogViterbiPotential_1a1bae5a6f88f2cbedf55b0ae24b6847ec" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+        <definition>static ValType LogViterbiPotential::safe_times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_times</name>
+        <param>
+          <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>A normalized version of the times operation. Domain Safe. <simplesect kind="return"><para>Normalized times of the two arguments. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="121" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="121" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="classLogViterbiPotential_1a7c2a782d412d992c4a56a4ba34329097" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+        <definition>static ValType LogViterbiPotential::zero</definition>
         <argsstring>()</argsstring>
         <name>zero</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>The annihlator element of the semiring. <simplesect kind="return"><para>Negative infinity. </para></simplesect>
+</para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="134" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="134" bodyend="134"/>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="131" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="131" bodyend="131"/>
+      </memberdef>
+      <memberdef kind="function" id="classLogViterbiPotential_1a21d6d6221d79c45d7568e13e0293870c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+        <definition>static ValType LogViterbiPotential::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The identity element of the semiring. <simplesect kind="return"><para>0.0 </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="136" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="136" bodyend="136"/>
+      </memberdef>
+      <memberdef kind="function" id="classLogViterbiPotential_1aadb95b0a1d75ba027f72dffe46967bce" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref> &amp;</type>
+        <definition>static ValType&amp; LogViterbiPotential::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref> &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Normalizes a ValType to the specific domain of this Semiring. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>val</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>ValType reference to normalize </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A reference to the modified argument after it is normalized to the correct domain. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="144" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="144" bodyend="146"/>
+      </memberdef>
+      <memberdef kind="function" id="classLogViterbiPotential_1a3f032a2c25714256e315c77454cc0d5e" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" kindref="member">ValType</ref></type>
+        <definition>static ValType LogViterbiPotential::randValue</definition>
+        <argsstring>()</argsstring>
+        <name>randValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Provides a semi-random ValType that is within the domain specified by the semiring. <simplesect kind="return"><para>A random value between 0.0 and 1.0 </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="153" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="153" bodyend="153"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Implements the log-space Viterbi type of semiring. +: max *: + 0: -INF 1: 0 </para>    </detaileddescription>
+<para>Log Viterbi Semiring Potential for tracking the probability of the best derivation in log space. Inherits from <ref refid="classViterbiPotential" kindref="compound">ViterbiPotential</ref>. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="72">
+      <node id="69">
         <label>LogViterbiPotential</label>
         <link refid="classLogViterbiPotential"/>
-        <childnode refid="73" relation="public-inheritance">
+        <childnode refid="70" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="73">
-        <label>BaseSemiringPotential&lt; double, LogViterbiPotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
+      <node id="70">
+        <label>ViterbiPotential</label>
+        <link refid="classViterbiPotential"/>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="74">
+      <node id="71">
         <label>LogViterbiPotential</label>
         <link refid="classLogViterbiPotential"/>
-        <childnode refid="75" relation="public-inheritance">
+        <childnode refid="72" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="75">
-        <label>BaseSemiringPotential&lt; double, LogViterbiPotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
+      <node id="72">
+        <label>ViterbiPotential</label>
+        <link refid="classViterbiPotential"/>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="112" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="112" bodyend="135"/>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" line="98" column="1" bodyfile="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/semirings.h" bodystart="98" bodyend="154"/>
     <listofallmembers>
-      <member refid="classBaseSemiringPotential_1a3ccf8b43dd32e794f7a546caa2e8ffd9" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>add</name></member>
-      <member refid="classBaseSemiringPotential_1a54bb42020981d47a9ee5edbefdd0f4b3" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ae70438bcff496bff89daf4c4eac38ce4" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ac4f432c81a12368ae2b1d5230cc762c2" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classLogViterbiPotential_1ac70236c1624c64f25757da6737160c44" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>LogViterbiPotential</name></member>
-      <member refid="classLogViterbiPotential_1a34ddb497b57989303ea568df4c0c2cca" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>LogViterbiPotential</name></member>
-      <member refid="classLogViterbiPotential_1a780781ec5706265b2d35a0d59e51449e" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>normalize</name></member>
-      <member refid="classBaseSemiringPotential_1a87949cd4f8b8aceedaaac1a446c82190" prot="public" virt="non-virtual" ambiguityscope="BaseSemiringPotential&lt; double, LogViterbiPotential &gt;::"><scope>LogViterbiPotential</scope><name>normalize</name></member>
-      <member refid="classLogViterbiPotential_1a4f3b6169c8dc1ca850954e4ccd4a4b90" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>one</name></member>
-      <member refid="classBaseSemiringPotential_1a57bbc01de90082ca201dc151d821f0e9" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>operator double</name></member>
-      <member refid="classLogViterbiPotential_1a662f862db5fcea3058feda22b0f61047" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>operator*=</name></member>
-      <member refid="classLogViterbiPotential_1a40c7549dfd572392604ed924f6069e40" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>operator+=</name></member>
-      <member refid="classBaseSemiringPotential_1af3f7108cca054ed98908a2d536cfcec8" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>operator=</name></member>
-      <member refid="classBaseSemiringPotential_1a688918a5566844351e4fb4ddc95e9784" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>operator=</name></member>
-      <member refid="classBaseSemiringPotential_1a90188fa749f13b11996f2e328dfb4045" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>times</name></member>
-      <member refid="classBaseSemiringPotential_1a8ab78c41be222b13d87894877608567e" prot="protected" virt="non-virtual"><scope>LogViterbiPotential</scope><name>value</name></member>
-      <member refid="classLogViterbiPotential_1afe56b116069ea3e5b66717ea598931e8" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>zero</name></member>
+      <member refid="classViterbiPotential_1aa498764eb675bca7ae5633d140049aba" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>add</name></member>
+      <member refid="classLogViterbiPotential_1aadb95b0a1d75ba027f72dffe46967bce" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>normalize</name></member>
+      <member refid="classLogViterbiPotential_1a21d6d6221d79c45d7568e13e0293870c" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>one</name></member>
+      <member refid="classLogViterbiPotential_1a3f032a2c25714256e315c77454cc0d5e" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>randValue</name></member>
+      <member refid="classLogViterbiPotential_1a572106cac324f88f100a35ab2cd9a517" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>safe_add</name></member>
+      <member refid="classLogViterbiPotential_1a1bae5a6f88f2cbedf55b0ae24b6847ec" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>safe_times</name></member>
+      <member refid="classLogViterbiPotential_1a6a832abcc2df981c5024ebede2208c3e" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>times</name></member>
+      <member refid="classViterbiPotential_1a60ac3f3d90fe981c569c34af52dc8c2e" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>ValType</name></member>
+      <member refid="classLogViterbiPotential_1a7c2a782d412d992c4a56a4ba34329097" prot="public" virt="non-virtual"><scope>LogViterbiPotential</scope><name>zero</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.5">
+  <compounddef id="Factory_8cpp" kind="file">
+    <compoundname>Factory.cpp</compoundname>
+    <includes refid="Factory_8h" local="yes">Hypergraph/Factory.h</includes>
+    <incdepgraph>
+      <node id="54">
+        <label>Hypergraph/Factory.h</label>
+        <link refid="Factory_8h_source"/>
+        <childnode refid="55" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="63" relation="include">
+        </childnode>
+      </node>
+      <node id="59">
+        <label>cassert</label>
+      </node>
+      <node id="57">
+        <label>string</label>
+      </node>
+      <node id="56">
+        <label>map</label>
+      </node>
+      <node id="60">
+        <label>exception</label>
+      </node>
+      <node id="53">
+        <label>src/Hypergraph/Factory.cpp</label>
+        <link refid="Factory.cpp"/>
+        <childnode refid="54" relation="include">
+        </childnode>
+      </node>
+      <node id="64">
+        <label>ctime</label>
+      </node>
+      <node id="63">
+        <label>./common.h</label>
+        <link refid="common_8h_source"/>
+        <childnode refid="64" relation="include">
+        </childnode>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="66" relation="include">
+        </childnode>
+      </node>
+      <node id="62">
+        <label>vector</label>
+      </node>
+      <node id="66">
+        <label>./foreach.h</label>
+        <link refid="foreach_8h_source"/>
+      </node>
+      <node id="58">
+        <label>Hypergraph/Hypergraph.h</label>
+        <link refid="Hypergraph_8h_source"/>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="61" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="63" relation="include">
+        </childnode>
+      </node>
+      <node id="65">
+        <label>cstdlib</label>
+      </node>
+      <node id="55">
+        <label>iostream</label>
+      </node>
+      <node id="61">
+        <label>set</label>
+      </node>
+    </incdepgraph>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//<sp/>Copyright<sp/>[2013]<sp/>Alexander<sp/>Rush</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Factory.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>template&lt;&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/>BaseRegistry&lt;BaseSemiring*&gt;::RegistryMap*<sp/>BaseRegistry&lt;BaseSemiring*&gt;::registry<sp/>=<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/>BaseRegistry&lt;BaseSemiring*&gt;::registry<sp/>?<sp/>BaseRegistry&lt;BaseSemiring*&gt;::registry<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>new<sp/>BaseRegistry&lt;BaseSemiring*&gt;::RegistryMap;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">//<sp/>template&lt;&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">//<sp/>BaseRegistry&lt;StaticBaseSemiringPotential*&gt;::RegistryMap*<sp/>BaseRegistry&lt;StaticBaseSemiringPotential*&gt;::registry<sp/>=<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/>BaseRegistry&lt;StaticBaseSemiringPotential*&gt;::registry<sp/>?<sp/>BaseRegistry&lt;StaticBaseSemiringPotential*&gt;::registry<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>new<sp/>BaseRegistry&lt;StaticBaseSemiringPotential*&gt;::RegistryMap;</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/Volumes/Enki_Files/Documents/school/research/PyDecode/src/Hypergraph/Factory.cpp"/>
+  </compounddef>
+</doxygen>
