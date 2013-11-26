@@ -107,7 +107,7 @@ class HypergraphLP:
         for i, constraint in enumerate(constraints):
             self.lp += 0 == \
                 constraints.bias[i][1] + \
-                sum([coeff * self.edge_vars[edge.id]
+                pulp.lpSum([coeff * self.edge_vars[edge.id]
                      for (coeff, edge) in constraint])
 
     @staticmethod
@@ -177,7 +177,7 @@ class HypergraphLP:
 
 
         # max \theta x
-        prob += sum([potentials[edge] * edge_vars[edge.id]
+        prob += pulp.lpSum([potentials[edge] * edge_vars[edge.id]
                      for edge in hypergraph.edges]) + potentials.bias
 
         # x(r) = 1
