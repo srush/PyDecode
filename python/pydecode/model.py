@@ -10,6 +10,7 @@ import pydecode.hyper as ph
 import numpy as np
 import pydecode.chart as chart
 import time
+import pydecode.lp as lp
 
 class DynamicProgrammingModel(StructuredModel):
     """
@@ -20,8 +21,9 @@ class DynamicProgrammingModel(StructuredModel):
     :py:method:`DynamicProgrammingModel.factored_psi` to use.
 
     """
-    def __init__(self):
+    def __init__(self, constrained=False):
         self._vec = DictVectorizer()
+        self._constrained = constrained
 
     def dynamic_program(self, x, chart):
         r"""
@@ -38,6 +40,10 @@ class DynamicProgrammingModel(StructuredModel):
         """
 
         raise NotImplementedError()
+
+    def constraints(self, x, hypergraph):
+        return None
+        #raise NotImplementedError()
 
     def factored_psi(self, x, index, data):
         """
@@ -90,22 +96,32 @@ class DynamicProgrammingModel(StructuredModel):
 
     def inference(self, x, w, relaxed=False):
 
-        # a = time.time()
+
         hypergraph = self._build_hypergraph(x)
-        # print time.time() - a
-        # b = time.time()
         potentials = self._build_potentials(hypergraph, x, w)
-        # print time.time() - b
-        path = ph.best_path(hypergraph, potentials)
-        #print "SCORE IS:", potentials.dot(path)
+        if not self._constrained:
+            path = ph.best_path(hypergraph, potentials)
+        else:
+            constraints = self.constraints(x, hypergraph)
+            hyperlp = lp.make_lp(hypergraph, potentials, integral=True)
+            hyperlp.add_constraints(constraints)
+            hyperlp.pulp.solvers.GLPK(mip=1)
+            path = hyperlp.path
         y = set()
         for edge in path:
             y.add(hypergraph.label(edge))
+        self.psi(x, y)
+        return y
+
             #print repr(hypergraph.label(edge))
         # print len(path.edges)
         #print "DONE"
-        self.psi(x, y)
-        return y
+
+        # a = time.time()
+        # print time.time() - a
+        # b = time.time()
+        # print time.time() - b
+        #print "SCORE IS:", potentials.dot(path)
 
     def loss(self, yhat, y):
         difference = 0
