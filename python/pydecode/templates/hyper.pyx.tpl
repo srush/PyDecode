@@ -481,6 +481,24 @@ cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
         const CHypergraph *hypergraph,
         const CHypergraphBoolPotentials edge_mask)
 
+cdef extern from "Hypergraph/Algorithms.h":
+    CHyperpath *cbeam_search "beam_search" (
+        const CHypergraph *graph,
+        const CHypergraphLogViterbiPotentials &potentials,
+        const CHypergraphSparseVectorPotentials &constraints,
+        const CLogViterbiChart &outside)
+
+def beam_search(Hypergraph graph, LogViterbiPotentials potentials,
+                SparseVectorPotentials constraints,
+                _LogViterbiChart outside):
+    cdef CHyperpath *path = \
+        cbeam_search(graph.thisptr,
+                     deref(potentials.thisptr),
+                     deref(constraints.thisptr),
+                     deref(outside.chart))
+    return Path().init(path, graph)
+
+
 def pairwise_dot(SparseVectorPotentials potentials, vec):
     cdef vector[double] rvec
     for i in vec:

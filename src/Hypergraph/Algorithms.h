@@ -62,6 +62,12 @@ Hyperpath *general_viterbi(
     const Hypergraph *graph,
     const HypergraphPotentials<SemiringType> &potentials);
 
+Hyperpath *beam_search(
+    const Hypergraph *graph,
+    const HypergraphPotentials<LogViterbiPotential> &potentials,
+    const HypergraphPotentials<SparseVectorPotential> &constraints,
+    const Chart<LogViterbiPotential> &outside);
+
 template<typename SemiringType>
 class Marginals {
   typedef SemiringType S;
