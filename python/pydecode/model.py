@@ -103,7 +103,7 @@ class DynamicProgrammingModel(StructuredModel):
             path = ph.best_path(hypergraph, potentials)
         else:
             constraints = self.constraints(x, hypergraph)
-            hyperlp = lp.make_lp(hypergraph, potentials, integral=True)
+            hyperlp = lp.HypergraphLP.make_lp(hypergraph, potentials, integral=True)
             hyperlp.add_constraints(constraints)
             hyperlp.pulp.solvers.GLPK(mip=1)
             path = hyperlp.path
