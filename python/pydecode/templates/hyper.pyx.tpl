@@ -611,4 +611,4 @@ cdef class Bitset:
         self.data = data
 
     def set(self, int position, bool val):
-        self.bitset.set(position, val)
+        self.data.set(position, val)
