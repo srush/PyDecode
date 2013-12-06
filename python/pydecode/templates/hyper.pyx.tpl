@@ -611,6 +611,7 @@ cdef class Bitset:
 
     cdef init(self, cbitset data):
         self.data = data
+        return self
 
     def __setitem__(self, int position, bool val):
         self.data.set(position, val)

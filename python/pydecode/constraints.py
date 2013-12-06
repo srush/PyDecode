@@ -13,7 +13,8 @@ class Variables():
     def __init__(self, graph, num_variables, constraints):
         self.hypergraph = graph
         self.variables = num_variables
-        self.potentials = ph.SparseVectorPotentials(graph)
+        self.potentials = ph.BinaryVectorPotentials(graph)
+        self.constraints = constraints
 
     def build(self, build):
         self.potentials.build(build)
@@ -21,12 +22,13 @@ class Variables():
 
     def check(self, path):
         sparse_vars = self.potentials.dot(path)
-        d = dict(sparse_vars)
+        print sparse_vars
+        #d = dict(sparse_vars)
         for cons in self.constraints:
             val = cons.bias
             for var, coeff in zip(cons.variables, cons.coeffs):
-                if var in d:
-                    val += coeff * d[var]
+                if sparse_vars[var]:
+                    val += coeff
             if val != 0: yield cons.name
 
 class Constraints:
