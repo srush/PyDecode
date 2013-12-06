@@ -123,7 +123,7 @@ SPECIALIZE_HYPER_FOR_SEMI(BoolPotential)
 SPECIALIZE_HYPER_FOR_SEMI(SparseVectorPotential)
 SPECIALIZE_HYPER_FOR_SEMI(MinSparseVectorPotential)
 SPECIALIZE_HYPER_FOR_SEMI(MaxSparseVectorPotential)
-
+SPECIALIZE_HYPER_FOR_SEMI(BinaryVectorPotential)
 
 SparseVector combine_sparse_vectors(const SparseVector &value,
                                     const SparseVector &rhs,
