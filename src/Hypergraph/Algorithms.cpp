@@ -183,7 +183,6 @@ Hyperpath *beam_search(
     const HypergraphPotentials<LogViterbiPotential> &potentials,
     const HypergraphPotentials<SparseVectorPotential> &constraints,
     const Chart<LogViterbiPotential> &outside) {
-	int i = 0;
 }
 
 SPECIALIZE_ALGORITHMS_FOR_SEMI(ViterbiPotential)
