@@ -61,6 +61,26 @@ TEST(Decode, SemiringTests) {
     }
 }
 
+
+TEST(Decode, BinarySemiringTests) {
+	srand(time(NULL));
+    typedef CompPotential<ViterbiPotential, LogViterbiPotential> CVL;
+    for(uint i = 0; i < NUM_LOOPS; ++i) {
+		BinaryVectorPotential::ValType a = BinaryVectorPotential::randValue();
+		ASSERT_EQ(BinaryVectorPotential::times(a, BinaryVectorPotential::one()), a);
+		ASSERT_EQ(BinaryVectorPotential::times(a, BinaryVectorPotential::zero()), BinaryVectorPotential::zero());
+		ASSERT_EQ(BinaryVectorPotential::add(a, BinaryVectorPotential::zero()), a);
+	}
+
+	BinaryVectorPotential::ValType a = BinaryVectorPotential::ValType(0xfa);
+	BinaryVectorPotential::ValType b = BinaryVectorPotential::ValType(0x05);
+	BinaryVectorPotential::ValType c = BinaryVectorPotential::ValType(0x15);
+	ASSERT_EQ(BinaryVectorPotential::ValType(0xff), BinaryVectorPotential::times(a, b));
+	ASSERT_EQ(BinaryVectorPotential::ValType(0xff), BinaryVectorPotential::times(a, b));
+	ASSERT_TRUE(BinaryVectorPotential::valid(a, b));
+	ASSERT_FALSE(BinaryVectorPotential::valid(a, c));
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
