@@ -72,6 +72,8 @@ class BeamChart {
   typedef typename SemiringType::ValType V;
 
 public:
+  typedef map<bitset<BITMAPSIZE>, pair<V, V>, LessThan<BITMAPSIZE> > BeamMap;
+
   BeamChart<S>(const Hypergraph *hypergraph)
       : hypergraph_(hypergraph),
       chart_(hypergraph->nodes().size(), S::zero()) {}
@@ -80,9 +82,11 @@ public:
   //V operator[] (HNode node) const { return chart_[node->id()]; }
 
   V get(HNode node, bitset<BITMAPSIZE> bitmap) const { return chart_[node->id()][bitmap]; }
-  inline void insert(const HNode& node, const V& val, const V& val) { chart_[node->id()] = val; }
+  inline void insert(const HNode& node, const V& val, const V& future_val) {
+	  chart_[node->id()] = std::make_pair(val, future_val);
+  }
 
-  const map<bitset<BITMAPSIZE>, pair<V, V>, LessThan<BITMAPSIZE> >& get_all(HNode node) const {
+  const BeamMap & get_map(HNode node) const {
   	return chart_[node->id()];
   }
 
@@ -94,7 +98,7 @@ public:
 
 protected:
   const Hypergraph *hypergraph_;
-  vector<map<bitset<BITMAPSIZE>, pair<V, V>, LessThan<BITMAPSIZE> > > chart_;
+  vector<BeamMap> chart_;
 };
 
 template<typename SemiringType>

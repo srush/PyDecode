@@ -187,10 +187,33 @@ Hyperpath *general_viterbi(
 Hyperpath *beam_search(
     const Hypergraph *graph,
     const HypergraphPotentials<LogViterbiPotential> &potentials,
-    const HypergraphPotentials<SparseVectorPotential> &constraints,
+	//const HypergraphPotentials<SparseVectorPotential> &constraints,
+    const HypergraphPotentials<BinaryVectorPotential> &constraints,
     const Chart<LogViterbiPotential> &outside) {
   potentials.check(graph);
   constraints.check(graph);
+  
+  BeamChart<LogViterbiPotential::ValType> *chart = new BeamChart<LogViterbiPotential::ValType>(graph);
+  vector< map<bitset<BITMAPSIZE>, HEdge, LessThan> > back(graph->nodes().size());
+
+  foreach (HNode node, graph->nodes()) {
+    if (node->terminal()) {
+      chart->insert(node, BinaryVectorPotential::one(), LogViterbiPotential::one());
+    }
+  }
+  foreach (HEdge edge, graph->edges()) {
+    LogViterbiPotential::ValType score = potentials.score(edge);
+    foreach (HNode node, edge->tail_nodes()) {
+      LogViterbiPotential::ValType(score, (*chart)[node]);
+    }
+    if (score > (*chart)[edge->head_node()]) {
+      chart->insert(edge->head_node(), score);
+      back[edge->head_node()->id()] = edge;
+    }
+  }
+
+
+
   
 }
 
