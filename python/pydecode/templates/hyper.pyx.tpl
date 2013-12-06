@@ -8,6 +8,12 @@ from libcpp cimport bool
 include "wrap.pxd"
 include "hypergraph.pyx"
 
+# Cython template hack.
+cdef extern from "<bitset>" namespace "std":
+    cdef cppclass cbitset "bitset<1600>":
+        void set(int, int)
+        bool& operator[](int)
+
 
 
 ############# This is the templated semiring part. ##############
@@ -113,7 +119,7 @@ cdef class {{S.type}}Potentials:
 
     property bias:
         def __get__(self):
-            return self.thisptr.bias()
+            return _{{S.ptype}}_from_cpp(self.thisptr.bias())
 
     def build(self, fn, bias=None):
         """
@@ -127,7 +133,7 @@ cdef class {{S.type}}Potentials:
         if bias is None:
             my_bias = {{S.type}}_one()
         else:
-            my_bias = bias
+            my_bias = _{{S.ptype}}_to_cpp(bias)
 
         cdef vector[{{S.vtype}}] potentials = \
              vector[{{S.vtype}}](self.hypergraph.thisptr.edges().size(),
@@ -136,7 +142,7 @@ cdef class {{S.type}}Potentials:
         for i, ty in enumerate(self.hypergraph.edge_labels):
             result = fn(ty)
             if result is None: potentials[i] = {{S.type}}_zero()
-            potentials[i] = result
+            potentials[i] = _{{S.ptype}}_to_cpp(result)
         self.thisptr =  \
           new CHypergraph{{S.type}}Potentials(self.hypergraph.thisptr,
                                               potentials, my_bias)
@@ -147,12 +153,13 @@ cdef class {{S.type}}Potentials:
              vector[{{S.vtype}}](self.hypergraph.thisptr.edges().size())
 
         for i, edge in enumerate(self.hypergraph.edges):
-            potentials[i] = other_potentials[edge]
+            potentials[i] = _{{S.ptype}}_to_cpp(other_potentials[edge])
 
         self.thisptr =  \
-          new CHypergraph{{S.type}}Potentials(self.hypergraph.thisptr,
-                                              potentials,
-                                              other_potentials.bias)
+          new CHypergraph{{S.type}}Potentials(
+            self.hypergraph.thisptr,
+            potentials,
+            _{{S.ptype}}_to_cpp(other_potentials.bias))
 
         return self
 
@@ -161,13 +168,13 @@ cdef class {{S.type}}Potentials:
         if bias is None:
             my_bias = {{S.type}}_one()
         else:
-            my_bias = bias
+            my_bias = _{{S.ptype}}_to_cpp(bias)
 
         cdef vector[{{S.vtype}}] potentials = \
              vector[{{S.vtype}}](self.hypergraph.thisptr.edges().size())
 
         for i, v in enumerate(in_vec):
-            potentials[i] = v
+            potentials[i] = _{{S.ptype}}_to_cpp(v)
 
         self.thisptr =  \
           new CHypergraph{{S.type}}Potentials(self.hypergraph.thisptr,
@@ -180,7 +187,7 @@ cdef class {{S.type}}Potentials:
         return self
 
     def __getitem__(self, Edge edge not None):
-        return self.thisptr.score(edge.edgeptr)
+        return _{{S.ptype}}_from_cpp(self.thisptr.score(edge.edgeptr))
 
     def dot(self, Path path not None):
         r"""
@@ -189,62 +196,79 @@ cdef class {{S.type}}Potentials:
         Take the dot product with `path` :math:`\theta^{\top} y`.
         """
 
-        return self.thisptr.dot(deref(path.thisptr))
+        return _{{S.ptype}}_from_cpp(self.thisptr.dot(deref(path.thisptr)))
         #return _{{S.ptype}}().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _{{S.ptype}}:
-    cdef {{S.vtype}} wrap
-
-    def __cinit__(self, val=None):
-        if val is not None:
-            self.init(val)
-
-    cdef init(self, {{S.vtype}} wrap):
-        self.wrap = wrap
-        return self
-
-    {% if S.float %}
-    def __float__(self):
-        return <float>self.wrap
-    {% endif %}
-
-    {% if S.bool %}
-    def __bool__(self):
-        return <bool>self.wrap
-    {% endif %}
-
-    property value:
-        def __get__(self):
-            {% if S.float %}
-            return <float>self.wrap
-            {% elif S.bool %}
-            return <bool>self.wrap
-            {% else %}
-            {{S.conversion}}
-            {% endif %}
-
-    def __repr__(self):
-        return str(self.value)
-
-    def __add__(_{{S.ptype}} self, _{{S.ptype}} other):
-        return _{{S.ptype}}().init(
-            {{S.type}}_add(self.wrap, other.wrap))
-
-    def __mul__(_{{S.ptype}} self, _{{S.ptype}} other):
-        return _{{S.ptype}}().init(
-            {{S.type}}_times(self.wrap, other.wrap))
-
     @staticmethod
     def one():
-        return _{{S.ptype}}().init({{S.type}}_one())
+        return _{{S.ptype}}_from_cpp({{S.type}}_one())
 
     @staticmethod
     def zero():
-        return _{{S.ptype}}().init({{S.type}}_zero())
+        return _{{S.ptype}}_from_cpp({{S.type}}_zero())
 
-    def __cmp__(_{{S.ptype}} self, _{{S.ptype}} other):
-        return cmp(self.value, other.value)
 
+cdef {{S.vtype}} _{{S.ptype}}_to_cpp({{S.intype}} val):
+    {% if 'to_cpp' in S %}
+    return {{S.to_cpp}}
+    {% else %}
+    return val
+    {% endif %}
+
+
+cdef _{{S.ptype}}_from_cpp({{S.vtype}} val):
+    {% if 'from_cpp' in S %}
+    return {{S.from_cpp}}
+    {% else %}
+    return val
+    {% endif %}
+
+
+    # cdef {{S.vtype}} wrap
+
+    # def __cmp__(_{{S.ptype}} self, _{{S.ptype}} other):
+    #     return cmp(self.value, other.value)
+
+
+    # def __cinit__(self, val=None):
+    #     if val is not None:
+    #         self.init(val)
+
+    # cdef init(self, {{S.vtype}} wrap):
+    #     self.wrap = wrap
+    #     return self
+
+    # {% if S.float %}
+    # def __float__(self):
+    #     return <float>self.wrap
+    # {% endif %}
+
+    # {% if S.bool %}
+    # def __bool__(self):
+    #     return <bool>self.wrap
+    # {% endif %}
+
+    # property value:
+    #     def __get__(self):
+    #         {% if S.float %}
+    #         return <float>self.wrap
+    #         {% elif S.bool %}
+    #         return <bool>self.wrap
+    #         {% else %}
+    #         {{S.conversion}}
+    #         {% endif %}
+
+    # def __repr__(self):
+    #     return str(self.value)
+
+    # def __add__(_{{S.ptype}} self, _{{S.ptype}} other):
+    #     return _{{S.ptype}}().init(
+    #         {{S.type}}_add(self.wrap, other.wrap))
+
+    # def __mul__(_{{S.ptype}} self, _{{S.ptype}} other):
+    #     return _{{S.ptype}}().init(
+    #         {{S.type}}_times(self.wrap, other.wrap))
 
 cdef class _{{S.type}}Chart:
     cdef C{{S.type}}Chart *chart
@@ -254,7 +278,7 @@ cdef class _{{S.type}}Chart:
         self.kind = {{S.type}}
 
     def __getitem__(self, Node node):
-        return self.chart.get(node.nodeptr)
+        return _{{S.ptype}}_from_cpp(self.chart.get(node.nodeptr))
 
 cdef class _{{S.type}}Marginals:
     cdef const C{{S.type}}Marginals *thisptr
@@ -265,9 +289,11 @@ cdef class _{{S.type}}Marginals:
 
     def __getitem__(self, obj):
         if isinstance(obj, Edge):
-            return self.thisptr.marginal((<Edge>obj).edgeptr)
+            return _{{S.ptype}}_from_cpp(
+                self.thisptr.marginal((<Edge>obj).edgeptr))
         elif isinstance(obj, Node):
-            return self.thisptr.marginal((<Node>obj).nodeptr)
+            return _{{S.ptype}}_from_cpp(
+                self.thisptr.marginal((<Node>obj).nodeptr))
         else:
             raise HypergraphAccessException(
                 "Only nodes and edges have {{S.type}} marginal values." + \
@@ -322,10 +348,11 @@ class {{S.type}}:
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
                          {{S.type}}Potentials potentials,
-                         {{S.vtype}} threshold):
+                         threshold):
         marginals = compute_marginals(graph, potentials)
 
-        bool_potentials = marginals.threshold(threshold)
+        bool_potentials = marginals.threshold(
+            threshold)
         projection = Projection(graph, bool_potentials)
         new_graph = projection.project(graph)
         new_potential = potentials.project(new_graph, projection)
@@ -480,6 +507,8 @@ inside_values = inside
 outside_values = outside
 
 ####### Methods that use specific potential ########
+
+
 cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHypergraph *new_graph
@@ -576,3 +605,15 @@ cdef class Projection:
         new_graph.init(projection.new_graph, node_labels, edge_labels)
 
         return new_graph
+
+cdef class Bitset:
+    cdef cbitset data
+
+    cdef init(self, cbitset data):
+        self.data = data
+
+    def __setitem__(self, int position, bool val):
+        self.data.set(position, val)
+
+    def __getitem__(self, int position):
+        return self.data[position]

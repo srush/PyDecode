@@ -4,10 +4,12 @@
 #define HYPERGRAPH_SEMIRING_H_
 
 #include <algorithm>
+#include <bitset>
 #include "Hypergraph/Factory.h"
 #include "Hypergraph/Hypergraph.h"
 #include "./common.h"
 
+#define BITMAPSIZE 1600
 
 class ViterbiPotential {
 public:
@@ -540,5 +542,50 @@ const HypergraphPotentials<LogViterbiPotential> *
 pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
              const vector<double> &vec);
 
+/**
+ * Binary vector. *Experimental*
+ *
+ * +: Bitwise AND.
+ * *: Bitwise OR.
+ * 0: All one bitset.
+ * 1: All zero bitset.
+ */
+
+class BinaryVectorPotential {
+public:
+	typedef bitset<BITMAPSIZE> ValType;
+
+	static inline ValType add(ValType lhs, const ValType& rhs) {
+		lhs &= rhs;
+		return lhs;
+	}
+
+	static inline ValType times(ValType value, const ValType& rhs) {
+		value |= rhs;
+		return value;
+	}
+    
+	static inline ValType one() { 
+		ValType vec = ValType(0x0);
+		return vec;
+	}
+    
+	static inline ValType zero() {
+		ValType vec = ValType(0x0);
+		vec.set();
+		return vec;
+	}
+    
+	static inline ValType randValue() { return ValType(dRand(0, 0xfffffff)); }
+    
+	static inline ValType& normalize(ValType& val) {
+        return val;
+    }
+	
+	static inline bool valid(ValType lhs, const ValType & rhs) {
+		lhs &= rhs;
+		return (lhs == 0x0);
+	}
+};
 
 #endif // HYPERGRAPH_SEMIRING_H_
