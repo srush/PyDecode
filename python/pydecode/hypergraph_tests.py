@@ -31,12 +31,12 @@ def simple_hypergraph():
     """
     hypergraph = ph.Hypergraph()
     with hypergraph.builder() as b:
-        term = [b.add_node() for i in range(4)]
+        term = [b.add_node([], "start " + str(i)) for i in range(4)]
         head_node = b.add_node([([term[0], term[1]], "0"),
-                                ([term[0]], "1")])
+                                ([term[0]], "1")], "mid")
         head_node2 = b.add_node([([head_node, term[2]], "2"),
                                  ([head_node, term[3]], "3"),
-                                 ([head_node], "4")])
+                                 ([head_node], "4")], "top")
     return hypergraph
 
 def random_hypergraph(size=50):
@@ -337,6 +337,7 @@ def test_constraint():
 
         nt.assert_equal(len(match), 1)
 
+
 ### SUBGRADIENT OPTIMIZATION CODE
 
 def test_subgradient():
@@ -447,5 +448,45 @@ def test_bad_constraints():
     best_constrained(h2, w2, c1)
 
 
+# Beam search tests.
+
+def test_future_constraints():
+    """
+    Test constraint checking.
+    """
+    hypergraph = simple_hypergraph()
+
+
+    def build_constraints(label):
+        if label == "1":
+            return [("one", 1)]
+        return []
+    constraints = cons.Constraints(hypergraph, [("one", -1)]). \
+        build(build_constraints)
+
+    # Compute min and max potentials.
+    min_potentials = ph.MinSparseVectorPotentials(hypergraph).\
+        from_potentials(constraints.potentials)
+    max_potentials = ph.MaxSparseVectorPotentials(hypergraph).\
+        from_potentials(constraints.potentials)
+
+    print "sparse"
+    for edge in hypergraph.edges:
+        print edge.label, constraints.potentials[edge]
+
+    # Compute min and max potentials.
+    print "min"
+    in_chart = ph.inside(hypergraph, min_potentials)
+    out_chart = ph.outside(hypergraph, min_potentials, in_chart)
+    for node in hypergraph.nodes:
+        print "%20s %20s %20s"%(node.label, in_chart[node], out_chart[node])
+
+
+    print "max"
+    in_chart = ph.inside(hypergraph, max_potentials)
+    out_chart = ph.outside(hypergraph, max_potentials, in_chart)
+    for node in hypergraph.nodes:
+        print "%20s %20s %20s"%(node.label, in_chart[node], out_chart[node])
+
 if __name__ == "__main__":
-    test_serialization()
+    test_future_constraints()

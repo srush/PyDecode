@@ -2,21 +2,17 @@ srush
 -----
 
 Create some utility classes
-- edges __str__ function
-- get random path
-- serialize hypergraph
 
-- get perceptron working.
+- write beam search function.
+- faster checks.
 
-
-- beam search...
 - profile
 - delete memory
 - k-best
 - Make lazy weights
 
 
-minor 
+minor
 ------
 - allow primal setting. (python)
 - paste in thesis
