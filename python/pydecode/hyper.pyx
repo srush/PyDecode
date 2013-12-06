@@ -2746,6 +2746,10 @@ cdef extern from "Hypergraph/Semirings.h":
         const CHypergraphSparseVectorPotentials sparse_potentials,
         const vector[double] vec)
 
+    bool cvalid_binary_vectors "valid_binary_vectors" (cbitset lhs,
+                                                       cbitset rhs)
+
+
 cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
     CHypergraphProjection *cproject_hypergraph "HypergraphProjection::project_hypergraph"(
         const CHypergraph *hypergraph,
@@ -2845,3 +2849,6 @@ cdef class Bitset:
 
     def __getitem__(self, int position):
         return self.data[position]
+
+def valid_binary_vectors(Bitset lhs, Bitset rhs):
+    return cvalid_binary_vectors(lhs.data, rhs.data)
