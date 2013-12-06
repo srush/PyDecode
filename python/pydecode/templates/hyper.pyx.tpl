@@ -142,6 +142,20 @@ cdef class {{S.type}}Potentials:
                                               potentials, my_bias)
         return self
 
+    def from_potentials(self, other_potentials):
+        cdef vector[{{S.vtype}}] potentials = \
+             vector[{{S.vtype}}](self.hypergraph.thisptr.edges().size())
+
+        for i, edge in enumerate(self.hypergraph.edges):
+            potentials[i] = other_potentials[edge]
+
+        self.thisptr =  \
+          new CHypergraph{{S.type}}Potentials(self.hypergraph.thisptr,
+                                              potentials,
+                                              other_potentials.bias)
+
+        return self
+
     def from_vector(self, in_vec, bias=None):
         cdef {{S.vtype}} my_bias
         if bias is None:

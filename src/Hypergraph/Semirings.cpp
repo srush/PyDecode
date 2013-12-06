@@ -121,3 +121,43 @@ SPECIALIZE_HYPER_FOR_SEMI(LogViterbiPotential)
 SPECIALIZE_HYPER_FOR_SEMI(InsidePotential)
 SPECIALIZE_HYPER_FOR_SEMI(BoolPotential)
 SPECIALIZE_HYPER_FOR_SEMI(SparseVectorPotential)
+SPECIALIZE_HYPER_FOR_SEMI(MinSparseVectorPotential)
+SPECIALIZE_HYPER_FOR_SEMI(MaxSparseVectorPotential)
+
+
+SparseVector combine_sparse_vectors(const SparseVector &value,
+                                    const SparseVector &rhs,
+                                    const Operator &op) {
+    int i = 0, j = 0;
+    SparseVector vec;
+    while (i < value.size() || j < rhs.size()) {
+        if (j >= rhs.size() ||
+            (i < value.size() && value[i].first < rhs[j].first)) {
+            int val = op(0, value[i].second);
+            if (val != 0) {
+                vec.push_back(
+                    pair<int, int>(value[i].first, val));
+            }
+            ++i;
+        } else if (i >= value.size() ||
+                   (j < rhs.size() && value[i].first > rhs[j].first)) {
+            int val = op(0, rhs[j].second);
+            if (val != 0) {
+                vec.push_back(
+                    pair<int, int>(rhs[j].first,
+                                   val));
+            }
+            ++j;
+        } else {
+            int val = op(value[i].second, rhs[j].second);
+            if (val != 0) {
+                vec.push_back(
+                    pair<int, int>(value[i].first,
+                                   val));
+            }
+            ++i;
+            ++j;
+        }
+    }
+    return vec;
+}

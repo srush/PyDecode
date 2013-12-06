@@ -33,7 +33,24 @@ Weight potentials :math:`\{0,1\}^{{\cal E}}` with :math:`(+, *) = (\cap, \cup)`.
   {"type": "SparseVector", "ptype": "SparseVectorW",
    "ctype": "SparseVectorPotential", "vtype": "vector[pair[int, int]]",
    "bool": False, "viterbi" : False, "float": False,
-    "conversion" : "pass"}
+    "conversion" : "pass"},
+  {"type": "MinSparseVector", "ptype": "MinSparseVectorW",
+   "ctype": "MinSparseVectorPotential",
+   "vtype": "vector[pair[int, int]]",
+   "bool": False, "viterbi" : False, "float": False,
+    "conversion" : "pass"},
+  {"type": "MaxSparseVector", "ptype": "MaxSparseVectorW",
+   "ctype": "MaxSparseVectorPotential",
+   "vtype": "vector[pair[int, int]]",
+   "bool": False, "viterbi" : False, "float": False,
+    "conversion" : "pass"},
+  {"type": "BinaryVector", "ptype": "BinaryVectorW",
+   "ctype": "BinaryVectorPotential",
+   "vtype": "vector[pair[int, int]]",
+   "bool": False, "viterbi" : False, "float": False,
+    "conversion" : "pass"},
+
+
 #             d = {}
 #             cdef vector[pair[int,int]] s= <vector[pair[int,int]]> self.wrap
 #             for p in s:

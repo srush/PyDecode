@@ -67,18 +67,24 @@ general_outside(const Hypergraph *graph,
   inside_chart.check(graph);
   Chart<S> *chart = new Chart<S>(graph);
   const vector<HEdge> &edges = graph->edges();
-  chart->insert(graph->root(), potentials.bias());
+  chart->insert(graph->root(), S::one());//potentials.bias());
 
   for (int i = edges.size() - 1; i >= 0; --i) {
     HEdge edge = edges[i];
     typename S::ValType head_score = (*chart)[edge->head_node()];
+    if (edge->head_node()->id() == graph->root()->id()) {
+        head_score = potentials.bias();
+    }
     foreach (HNode node, edge->tail_nodes()) {
       typename S::ValType other_score = S::one();
       foreach (HNode other_node, edge->tail_nodes()) {
         if (other_node->id() == node->id()) continue;
         other_score = S::times(other_score, inside_chart[other_node]);
       }
-      chart->insert(node, S::add((*chart)[node], S::times(head_score, S::times(other_score, potentials.score(edge)))));
+      chart->insert(node, S::add((*chart)[node],
+                                 S::times(head_score,
+                                          S::times(other_score,
+                                                   potentials.score(edge)))));
     }
   }
   return chart;
@@ -190,5 +196,7 @@ SPECIALIZE_ALGORITHMS_FOR_SEMI(LogViterbiPotential)
 SPECIALIZE_ALGORITHMS_FOR_SEMI(InsidePotential)
 SPECIALIZE_ALGORITHMS_FOR_SEMI(BoolPotential)
 SPECIALIZE_FOR_SEMI_MIN(SparseVectorPotential)
+SPECIALIZE_FOR_SEMI_MIN(MinSparseVectorPotential)
+SPECIALIZE_FOR_SEMI_MIN(MaxSparseVectorPotential)
 
 // End General code.
