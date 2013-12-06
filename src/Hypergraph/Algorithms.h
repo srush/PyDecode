@@ -46,6 +46,49 @@ protected:
   vector<V> chart_;
 };
 
+template <size_t N>
+class LessThan {
+  bool operator() (const bitset<N> &lhs, const bitset<N> &rhs) const {
+	for (int i = N-1; i > 0; i--) {
+	  if (lhs[i] != rhs[i]) {
+	  	return (lhs[i] < rhs[i])
+	  }
+	}
+	return false;
+  }	
+};
+
+/**
+ * A dynamic programming chart for SemiringType.
+ */
+template<typename SemiringType>
+class Chart {
+  typedef SemiringType S;
+  typedef typename SemiringType::ValType V;
+
+public:
+  Chart<S>(const Hypergraph *hypergraph)
+      : hypergraph_(hypergraph),
+      chart_(hypergraph->nodes().size(), S::zero()) {}
+
+
+  //V operator[] (HNode node) const { return chart_[node->id()]; }
+
+  V get(HNode node, bitset<BITMAPSIZE> bitmap) const { return chart_[node->id()][bitmap]; }
+  inline void insert(const HNode& node, const V& val) { chart_[node->id()] = val; }
+
+
+  void check(const Hypergraph *hypergraph) const {
+    if (!hypergraph->same(*hypergraph_)) {
+      throw HypergraphException("Hypergraph does not match chart.");
+    }
+  }
+
+protected:
+  const Hypergraph *hypergraph_;
+  vector<map<bitset<BITMAPSIZE>, pair<V, V>, LessThan> > chart_;
+};
+
 template<typename SemiringType>
 Chart<SemiringType> *general_inside(
     const Hypergraph *graph,

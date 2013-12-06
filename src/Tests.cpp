@@ -27,7 +27,7 @@ do { \
 } while(0)
 #endif
 
-
+/*
 TEST(Decode, TestHypergraph) {
     Hypergraph test;
     vector<HNode> nodes;
@@ -60,7 +60,7 @@ TEST(Decode, SemiringTests) {
         // SEMIRINGTEST(TreePotential);
     }
 }
-
+*/
 
 TEST(Decode, BinarySemiringTests) {
 	srand(time(NULL));
