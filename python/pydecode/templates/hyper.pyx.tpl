@@ -12,6 +12,8 @@ include "hypergraph.pyx"
 cdef extern from "<bitset>" namespace "std":
     cdef cppclass cbitset "bitset<1600>":
         void set(int, int)
+        bool& operator[](int)
+
 
 
 ############# This is the templated semiring part. ##############
@@ -610,5 +612,8 @@ cdef class Bitset:
     cdef init(self, cbitset data):
         self.data = data
 
-    def set(self, int position, bool val):
+    def __setitem__(self, int position, bool val):
         self.data.set(position, val)
+
+    def __getitem__(self, int position):
+        return self.data[position]
