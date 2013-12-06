@@ -251,52 +251,63 @@ public:
 };
 
 
+
 typedef pair<int, int> SparsePair;
+// Sparse vector [(i_1, val_1), (i_2, val_2), ... (i_n, val_n)]
+// Assumptions.
+// (1) i_{j-1} < i_{j}
+// (2) if no i_j then val_j = 0
+// (3) if i_0 == -1 then it is zero value.
 typedef vector<SparsePair> SparseVector;
 
-/**
- * Sparse vector. *Experimental*
- *
- * +: Elementwise min
- * *: Elementwise +
- * 0: Empty Vector
- * 1: Empty Vector
- */
+struct Operator {
+    virtual int operator()(int x, int y) const = 0;
+};
+
+struct PlusOperator : public Operator {
+    int operator()(int x, int y) const { return x + y; }
+};
+
+struct MinOperator : public Operator {
+    int operator()(int x, int y) const { return min(x, y); }
+};
+
+struct MaxOperator : public Operator {
+    int operator()(int x, int y) const { return max(x, y); }
+};
+
+SparseVector combine_sparse_vectors(const SparseVector &value,
+                                    const SparseVector &rhs,
+                                    const Operator &op);
+
 class SparseVectorPotential {
 public:
     typedef SparseVector ValType;
 
+    static inline bool is_zero(const ValType &val) {
+        return val.size() == 1 && val[0].first == -1;
+    }
+
     static inline ValType add(ValType lhs, const ValType& rhs) {
+        if (SparseVectorPotential::is_zero(lhs)) return rhs;
+        if (SparseVectorPotential::is_zero(rhs)) return lhs;
         return lhs;
     }
 
-    static ValType times(ValType value, const ValType& rhs) {
-        int i = 0, j = 0;
-        SparseVector vec;
-        while (i < value.size() || j < rhs.size()) {
-          if (j >= rhs.size() || (i < value.size() && value[i].first < rhs[j].first)) {
-            vec.push_back(pair<int, int>(value[i].first, value[i].second));
-            ++i;
-          } else if (i >= value.size() || (j < rhs.size() && value[i].first > rhs[j].first)) {
-            vec.push_back(pair<int, int>(rhs[j].first, rhs[j].second));
-            ++j;
-          } else {
-            vec.push_back(pair<int, int>(value[i].first, value[i].second + rhs[j].second));
-            ++i;
-            ++j;
-          }
+    static ValType times(ValType lhs, const ValType& rhs) {
+        if (SparseVectorPotential::is_zero(lhs) ||
+            SparseVectorPotential::is_zero(rhs)) {
+            return SparseVectorPotential::zero();
         }
-        return vec;
+        return combine_sparse_vectors(lhs, rhs, PlusOperator());
     }
-
-    static inline ValType safe_add(ValType lhs, const ValType& rhs) {
-        return lhs;
-    }
-
-    static ValType safe_times(const ValType& lhs, const ValType& rhs) {}
 
     static inline ValType one() { return ValType(); }
-    static inline ValType zero() { return ValType(); }
+    static inline ValType zero() {
+        SparseVector vec(1);
+        vec[0] = pair<int, int>(-1, -1);
+        return vec;
+    }
 
     static inline ValType randValue() {
         SparseVector randVec;
@@ -308,6 +319,29 @@ public:
 
     static inline ValType& normalize(ValType& val) {
         return val;
+    }
+};
+
+
+class MinSparseVectorPotential : public SparseVectorPotential {
+public:
+    typedef SparseVector ValType;
+
+    static inline ValType add(ValType lhs, const ValType& rhs) {
+        if (SparseVectorPotential::is_zero(lhs)) return rhs;
+        if (SparseVectorPotential::is_zero(rhs)) return lhs;
+        return combine_sparse_vectors(lhs, rhs, MinOperator());
+    }
+};
+
+class MaxSparseVectorPotential : public SparseVectorPotential {
+public:
+    typedef SparseVector ValType;
+
+    static inline ValType add(ValType lhs, const ValType& rhs) {
+        if (SparseVectorPotential::is_zero(lhs)) return rhs;
+        if (SparseVectorPotential::is_zero(rhs)) return lhs;
+        return combine_sparse_vectors(lhs, rhs, MaxOperator());
     }
 };
 
