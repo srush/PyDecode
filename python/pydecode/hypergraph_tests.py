@@ -317,6 +317,23 @@ def random_constraint(hypergraph):
         build_constraints)
     return constraints, edge
 
+
+def random_constraint_trans(hypergraph):
+    "Produce a random constraint on an edge."
+
+    edge, = random.sample(hypergraph.edges, 1)
+    l = edge.label
+
+    def build_variables(label):
+        if label == l: return [(0, 1)]
+        return []
+    constraints = [Constraint("have", [0], [1], -1),
+                   Constraint("not", [0], [1], 0)]
+    variables = cons.Variables(hypergraph, 1, constraints)\
+                                 .build(build_variables)
+    return variables, edge
+
+
 def test_constraint():
     """
     Test constraint checking.
@@ -480,7 +497,6 @@ def test_future_constraints():
     out_chart = ph.outside(hypergraph, min_potentials, in_chart)
     for node in hypergraph.nodes:
         print "%20s %20s %20s"%(node.label, in_chart[node], out_chart[node])
-
 
     print "max"
     in_chart = ph.inside(hypergraph, max_potentials)

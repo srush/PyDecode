@@ -1,6 +1,34 @@
 import pydecode.hyper as ph
 from collections import defaultdict
 
+class Constraint:
+    def __init__(self, name, variables, coeffs, bias):
+        self.name = name
+        self.variables = variables
+        self.coeffs = coeffs
+        self.bias = bias
+
+
+class Variables():
+    def __init__(self, graph, num_variables, constraints):
+        self.hypergraph = graph
+        self.variables = num_variables
+        self.potentials = ph.SparseVectorPotentials(graph)
+
+    def build(self, build):
+        self.potentials.build(build)
+        return self
+
+    def check(self, path):
+        sparse_vars = self.potentials.dot(path)
+        d = dict(sparse_vars)
+        for cons in self.constraints:
+            val = cons.bias
+            for var, coeff in zip(cons.variables, cons.coeffs):
+                if var in d:
+                    val += coeff * d[var]
+            if val != 0: yield cons.name
+
 class Constraints:
     r"""
     Stores linear hyperedge constraints of the form :math:`A y = b`,
