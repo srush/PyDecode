@@ -542,6 +542,8 @@ const HypergraphPotentials<LogViterbiPotential> *
 pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
              const vector<double> &vec);
 
+typedef bitset<BITMAPSIZE> binvec;
+
 /**
  * Binary vector. *Experimental*
  *
@@ -564,24 +566,24 @@ public:
 		value |= rhs;
 		return value;
 	}
-    
-	static inline ValType one() { 
+
+	static inline ValType one() {
 		ValType vec = ValType(0x0);
 		return vec;
 	}
-    
+
 	static inline ValType zero() {
 		ValType vec = ValType(0x0);
 		vec.set();
 		return vec;
 	}
-    
+
 	static inline ValType randValue() { return ValType(dRand(0, 0xfffffff)); }
-    
+
 	static inline ValType& normalize(ValType& val) {
         return val;
     }
-	
+
 	static inline bool valid(ValType lhs, const ValType & rhs) {
 		lhs &= rhs;
 		return (lhs == 0x0);

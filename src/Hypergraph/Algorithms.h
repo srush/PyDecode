@@ -48,6 +48,7 @@ protected:
 
 template <size_t N>
 class LessThan {
+public:
   bool operator() (const bitset<N> &lhs, const bitset<N> &rhs) const {
 	for (int i = N-1; i > 0; i--) {
 	  if (lhs[i] != rhs[i]) {
@@ -55,39 +56,60 @@ class LessThan {
 	  }
 	}
 	return false;
-  }	
+  }
 };
 
-template<typename SemiringType::ValType>
 struct Score {
-  
+    Score() {}
+
+  Score(double cs, double fs) :
+    current_score(cs),
+        future_score(fs) {}
+
+    double total_score() {
+        return current_score + future_score;
+    }
+    double current_score;
+    double future_score;
 };
 
-/**
- * A dynamic programming chart for SemiringType.
- */
-template<typename SemiringType>
 class BeamChart {
-  typedef SemiringType S;
-  typedef typename SemiringType::ValType V;
-
 public:
-  typedef map<bitset<BITMAPSIZE>, pair<V, V>, LessThan<BITMAPSIZE> > BeamMap;
+  typedef map<binvec, pair<binvec, Score> *, LessThan<BITMAPSIZE> > BeamMap;
+  typedef vector<pair<binvec, Score > > Beam;
 
-  BeamChart<S>(const Hypergraph *hypergraph)
+  BeamChart(const Hypergraph *hypergraph)
       : hypergraph_(hypergraph),
-      chart_(hypergraph->nodes().size(), S::zero()) {}
+      chart_(hypergraph->nodes().size()) {}
 
-
-  //V operator[] (HNode node) const { return chart_[node->id()]; }
-
-  V get(HNode node, bitset<BITMAPSIZE> bitmap) const { return chart_[node->id()][bitmap]; }
-  inline void insert(const HNode& node, const V& val, const V& future_val) {
-	  chart_[node->id()] = std::make_pair(val, future_val);
+  Score get(HNode node, binvec bitmap) {
+      return chart_[node->id()][bitmap]->second;
   }
 
-  const BeamMap & get_map(HNode node) const {
+  inline void insert(const HNode& node,
+                     binvec bitmap,
+                     double val,
+                     double future_val) {
+      BeamMap::iterator iter = chart_[node->id()].find(bitmap);
+      if (iter != chart_[node->id()].end()) {
+          if (val + future_val >
+              iter->second->second.total_score()) {
+              iter->second->second = Score(val, future_val);
+          }
+
+      } else {
+          beam_[node->id()].push_back(
+              pair<binvec, Score>(bitmap, Score(val, future_val)));
+          chart_[node->id()][bitmap] = &beam_[node->id()].back();
+      }
+  }
+
+  const BeamMap &get_map(HNode node) const {
   	return chart_[node->id()];
+  }
+
+  const Beam &get_beam(HNode node) const {
+  	return beam_[node->id()];
   }
 
   void check(const Hypergraph *hypergraph) const {
@@ -99,6 +121,7 @@ public:
 protected:
   const Hypergraph *hypergraph_;
   vector<BeamMap> chart_;
+  vector<Beam > beam_;
 };
 
 template<typename SemiringType>

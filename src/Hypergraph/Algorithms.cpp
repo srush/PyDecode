@@ -189,32 +189,68 @@ Hyperpath *beam_search(
     const HypergraphPotentials<LogViterbiPotential> &potentials,
 	//const HypergraphPotentials<SparseVectorPotential> &constraints,
     const HypergraphPotentials<BinaryVectorPotential> &constraints,
-    const Chart<LogViterbiPotential> &outside) {
+    const Chart<LogViterbiPotential> &future) {
   potentials.check(graph);
   constraints.check(graph);
-  
-  BeamChart<LogViterbiPotential::ValType> *chart = new BeamChart<LogViterbiPotential::ValType>(graph);
-  vector< map<bitset<BITMAPSIZE>, HEdge, LessThan> > back(graph->nodes().size());
+  BeamChart *chart = new BeamChart(graph);
+
+  //vector<map<binvec, HEdge, LessThan> > back(graph->nodes().size());
 
   foreach (HNode node, graph->nodes()) {
-    if (node->terminal()) {
-      chart->insert(node, BinaryVectorPotential::one(), LogViterbiPotential::one());
-    }
+      if (node->terminal()) {
+          chart->insert(node,
+                        BinaryVectorPotential::one(),
+                        LogViterbiPotential::one(),
+                        future[node]);
+      }
   }
   foreach (HEdge edge, graph->edges()) {
-    LogViterbiPotential::ValType score = potentials.score(edge);
-    foreach (HNode node, edge->tail_nodes()) {
-      LogViterbiPotential::ValType(score, (*chart)[node]);
-    }
-    if (score > (*chart)[edge->head_node()]) {
-      chart->insert(edge->head_node(), score);
-      back[edge->head_node()->id()] = edge;
-    }
+      vector<const BeamChart::Beam *> beam_maps(edge->tail_nodes().size());
+      int i = 0;
+      foreach (HNode node, edge->tail_nodes()) {
+          beam_maps[i] = &chart->get_beam(node);
+          i++;
+      }
+      vector<int> position(edge->tail_nodes().size(), 0);
+      while(true) {
+          position[0] += 1;
+          bool done = false;
+          for (int i = 0; i < edge->tail_nodes().size(); ++i) {
+              if (position[i] >= beam_maps[i]->size()) {
+                  if (i == edge->tail_nodes().size()) {
+                      done = true;
+                      break;
+                  } else {
+                      position[i] = 0;
+                      position[i + 1]++;
+                  }
+              }
+          }
+          if (done) break;
+
+          bool failed = false;
+          binvec cur = constraints.score(edge);
+          double score = potentials.score(edge);
+
+          for (int i = 0; i < edge->tail_nodes().size(); ++i) {
+              const binvec &one = (*beam_maps[i])[position[i]].first;
+              double one_score =
+                      (*beam_maps[i])[position[i]].second.current_score;
+              if (!BinaryVectorPotential::valid(cur, one)) {
+                  failed = true;
+                  break;
+              }
+              cur = BinaryVectorPotential::times(cur, one);
+              score = LogViterbiPotential::times(score, one_score);
+          }
+          if (!failed) {
+              chart->insert(edge->head_node(),
+                            cur,
+                            score,
+                            future[edge->head_node()]);
+          }
+      }
   }
-
-
-
-  
 }
 
 SPECIALIZE_ALGORITHMS_FOR_SEMI(ViterbiPotential)
