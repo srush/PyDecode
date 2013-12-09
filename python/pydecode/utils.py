@@ -16,20 +16,35 @@ def hypergraph_to_json(graph):
 def json_to_hypergraph(s):
     hypergraph = ph.Hypergraph()
     nodes = {}
-    
+
     with hypergraph.builder() as b:
         for i, edge_ls in enumerate(json.loads(s)):
             if not edge_ls:
                 nodes[i] = b.add_node()
             else:
                 nodes[i] = b.add_node(
-                    [([nodes[node_id] for node_id in edge], lab) 
+                    [([nodes[node_id] for node_id in edge], lab)
                      for edge, lab in edge_ls])
     return hypergraph
 
+def json_to_potentials(s, potentials,
+                       potential_type,
+                       val_convert=lambda a:a):
+    data = json.loads(s)
+    return potential_type.from_vector(
+        [val_convert(value) for value in data["values"]],
+        val_convert(data["bias"]))
+
+def potentials_to_json(graph, potentials,
+                       val_convert=lambda a:a):
+    data = {"values" : [val_convert(potentials.score(edge))
+                        for edge in graph.edges]
+            "bias" : val_convert(potentials.bias)}
+    return json.dumps(data)
+
 def all_paths(graph):
     """
-    Gets all possible hyperpaths.    
+    Gets all possible hyperpaths.
     """
     def paths(node):
         if node.is_terminal:
