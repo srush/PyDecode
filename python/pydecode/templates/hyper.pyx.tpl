@@ -522,22 +522,58 @@ cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
         const CHypergraph *hypergraph,
         const CHypergraphBoolPotentials edge_mask)
 
+
 cdef extern from "Hypergraph/Algorithms.h":
-    CHyperpath *cbeam_search "beam_search" (
+    cdef cppclass CScore "Score":
+        double current_score
+        double future_score
+
+    cdef cppclass CBeamChart "BeamChart":
+        CHyperpath *get_path()
+        vector[pair[cbitset, CScore]] get_beam(const CHypernode *node)
+
+    CBeamChart *cbeam_search "beam_search" (
         const CHypergraph *graph,
         const CHypergraphLogViterbiPotentials &potentials,
-        const CHypergraphSparseVectorPotentials &constraints,
-        const CLogViterbiChart &outside)
+        const CHypergraphBinaryVectorPotentials &constraints,
+        const CLogViterbiChart &outside,
+        double lower_bound,
+        int beam_size)
 
-def beam_search(Hypergraph graph, LogViterbiPotentials potentials,
-                SparseVectorPotentials constraints,
-                _LogViterbiChart outside):
-    cdef CHyperpath *path = \
+cdef class BeamChart:
+    cdef CBeamChart *thisptr
+    cdef Hypergraph graph
+
+    cdef init(self, CBeamChart *chart, Hypergraph graph):
+        self.thisptr = chart
+        self.graph = graph
+
+    property path:
+        def __get__(self):
+            return Path().init(self.thisptr.get_path(), self.graph)
+
+    def __getitem__(self, Node node):
+        cdef vector[pair[cbitset, CScore]] beam = self.thisptr.get_beam(node.nodeptr)
+        data = []
+        for i in range(beam.size()):
+            data.append((Bitset().init(beam[i].first),
+                         beam[i].second.current_score))
+        return data
+
+def beam_search(Hypergraph graph,
+                LogViterbiPotentials potentials,
+                BinaryVectorPotentials constraints,
+                _LogViterbiChart outside,
+                double lower_bound,
+                int beam_size):
+    cdef CBeamChart *chart = \
         cbeam_search(graph.thisptr,
                      deref(potentials.thisptr),
                      deref(constraints.thisptr),
-                     deref(outside.chart))
-    return Path().init(path, graph)
+                     deref(outside.chart),
+                     lower_bound,
+                     beam_size)
+    return BeamChart().init(chart, graph)
 
 
 def pairwise_dot(SparseVectorPotentials potentials, vec):

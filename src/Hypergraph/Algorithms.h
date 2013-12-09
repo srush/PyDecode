@@ -62,47 +62,42 @@ public:
 struct Score {
     Score() {}
 
-  Score(double cs, double fs) :
-    current_score(cs),
+  Score(HEdge e, double cs, double fs) :
+        edge(e),
+        current_score(cs),
         future_score(fs) {}
 
-    double total_score() {
+    double total_score() const {
         return current_score + future_score;
     }
+
+    HEdge edge;
     double current_score;
     double future_score;
 };
 
 class BeamChart {
 public:
-  typedef map<binvec, pair<binvec, Score> *, LessThan<BITMAPSIZE> > BeamMap;
-  typedef vector<pair<binvec, Score > > Beam;
+  typedef map<binvec, Score, LessThan<BITMAPSIZE> > BeamMap;
+  typedef vector<pair<binvec, Score> > Beam;
 
-  BeamChart(const Hypergraph *hypergraph)
+  BeamChart(const Hypergraph *hypergraph,
+            int beam_size,
+            const Chart<LogViterbiPotential> *future,
+            double lower_bound)
       : hypergraph_(hypergraph),
-      chart_(hypergraph->nodes().size()) {}
+          beam_size_(beam_size),
+          future_(future),
+          lower_bound_(lower_bound),
+          chart_(hypergraph->nodes().size()) {}
 
   Score get(HNode node, binvec bitmap) {
-      return chart_[node->id()][bitmap]->second;
+      return chart_[node->id()][bitmap];
   }
 
-  inline void insert(const HNode& node,
-                     binvec bitmap,
-                     double val,
-                     double future_val) {
-      BeamMap::iterator iter = chart_[node->id()].find(bitmap);
-      if (iter != chart_[node->id()].end()) {
-          if (val + future_val >
-              iter->second->second.total_score()) {
-              iter->second->second = Score(val, future_val);
-          }
+  void insert(HNode node, HEdge edge, binvec bitmap, double val);
 
-      } else {
-          beam_[node->id()].push_back(
-              pair<binvec, Score>(bitmap, Score(val, future_val)));
-          chart_[node->id()][bitmap] = &beam_[node->id()].back();
-      }
-  }
+  void finish(HNode node);
 
   const BeamMap &get_map(HNode node) const {
   	return chart_[node->id()];
@@ -118,10 +113,32 @@ public:
     }
   }
 
+  HEdge get_best_edge(HNode node) {
+      const Beam &beam = get_beam(node);
+      double score = -INF;
+      HEdge best = NULL;
+      for (int i = 0; i < beam.size(); ++i) {
+          if (beam[i].second.current_score > score) {
+              best = beam[i].second.edge;
+              score = beam[i].second.current_score;
+          }
+      }
+      return best;
+  }
+
+  Hyperpath *get_path();
+
 protected:
   const Hypergraph *hypergraph_;
+
+  int beam_size_;
+
+  // The (upper bound) future score and a lower bound of total score.
+  const Chart<LogViterbiPotential> *future_;
+  double lower_bound_;
+
   vector<BeamMap> chart_;
-  vector<Beam > beam_;
+  vector<Beam> beam_;
 };
 
 template<typename SemiringType>
@@ -140,11 +157,13 @@ Hyperpath *general_viterbi(
     const Hypergraph *graph,
     const HypergraphPotentials<SemiringType> &potentials);
 
-Hyperpath *beam_search(
+BeamChart *beam_search(
     const Hypergraph *graph,
     const HypergraphPotentials<LogViterbiPotential> &potentials,
-    const HypergraphPotentials<SparseVectorPotential> &constraints,
-    const Chart<LogViterbiPotential> &outside);
+    const HypergraphPotentials<BinaryVectorPotential> &constraints,
+    const Chart<LogViterbiPotential> &outside,
+    double lower_bound,
+    int beam_size);
 
 template<typename SemiringType>
 class Marginals {
