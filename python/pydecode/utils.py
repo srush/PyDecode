@@ -38,7 +38,7 @@ def json_to_potentials(s, potentials,
 def potentials_to_json(graph, potentials,
                        val_convert=lambda a:a):
     data = {"values" : [val_convert(potentials.score(edge))
-                        for edge in graph.edges]
+                        for edge in graph.edges],
             "bias" : val_convert(potentials.bias)}
     return json.dumps(data)
 

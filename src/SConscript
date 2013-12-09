@@ -5,7 +5,7 @@ sources = [
     "Hypergraph/Algorithms.cpp",
     "Hypergraph/Semirings.cpp",
     "Hypergraph/Factory.cpp",
-    # "Hypergraph/Constraints.cpp",
+    "Hypergraph/BeamSearch.cpp",
     #"Hypergraph/Subgradient.cpp",
 
     ]

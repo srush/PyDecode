@@ -7,12 +7,8 @@ from libcpp cimport bool
 
 include "wrap.pxd"
 include "hypergraph.pyx"
+include "beam.pyx"
 
-# Cython template hack.
-cdef extern from "<bitset>" namespace "std":
-    cdef cppclass cbitset "bitset<1600>":
-        void set(int, int)
-        bool& operator[](int)
 
 
 
@@ -2756,8 +2752,8 @@ cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
         const CHypergraphBoolPotentials edge_mask)
 
 
-cdef extern from "Hypergraph/Algorithms.h":
-    cdef cppclass CScore "Score":
+cdef extern from "Hypergraph/BeamSearch.h":
+    cdef cppclass CScore "BeamScore":
         double current_score
         double future_score
 
@@ -2873,19 +2869,6 @@ cdef class Projection:
         new_graph.init(projection.new_graph, node_labels, edge_labels)
 
         return new_graph
-
-cdef class Bitset:
-    cdef cbitset data
-
-    cdef init(self, cbitset data):
-        self.data = data
-        return self
-
-    def __setitem__(self, int position, bool val):
-        self.data.set(position, val)
-
-    def __getitem__(self, int position):
-        return self.data[position]
 
 def valid_binary_vectors(Bitset lhs, Bitset rhs):
     return cvalid_binary_vectors(lhs.data, rhs.data)

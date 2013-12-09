@@ -22,7 +22,7 @@ if use_cython:
                               "src/Hypergraph/Hypergraph.cpp",
                               "src/Hypergraph/Algorithms.cpp",
                               "src/Hypergraph/Semirings.cpp",
-                              #"src/Hypergraph/Subgradient.cpp",
+                              "src/Hypergraph/BeamSearch.cpp",
                               ],
 
                              language='c++',
@@ -40,6 +40,7 @@ else:
                               "src/Hypergraph/Hypergraph.cpp",
                               "src/Hypergraph/Algorithms.cpp",
                               "src/Hypergraph/Semirings.cpp",
+                              "src/Hypergraph/BeamSearch.cpp",
                               #"src/Hypergraph/Constraints.cpp",
                               #"src/Hypergraph/Subgradient.cpp"
                               ],
