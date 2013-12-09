@@ -317,6 +317,7 @@ def random_constraint(hypergraph):
         build_constraints)
     return constraints, edge
 
+
 def test_constraint():
     """
     Test constraint checking.
@@ -337,6 +338,42 @@ def test_constraint():
 
         nt.assert_equal(len(match), 1)
 
+def random_constraint_trans(hypergraph):
+    "Produce a random constraint on an edge."
+
+    edge, = random.sample(hypergraph.edges, 1)
+    l = edge.label
+
+    def build_variables(label):
+        if label == l:
+            b = ph.Bitset()
+            b[0] = 1
+            return b
+        return None
+    constraints = [cons.Constraint("have", [0], [1], -1),
+                   cons.Constraint("not", [0], [1], 0)]
+    variables = cons.Variables(hypergraph, 1, constraints)\
+                                 .build(build_variables)
+    return variables, edge
+
+def test_variables():
+    """
+    Test variable constraint checking.
+    """
+    for h in hypergraphs():
+        w = utils.random_viterbi_potentials(h)
+        variables, edge = random_constraint_trans(h)
+        path = ph.best_path(h, w)
+        match = list(variables.check(path))
+        if edge not in path:
+            print "Should not have", edge.id
+            assert "have" in match
+            assert "not" not in match
+        else:
+            print "Should have", edge.id
+            assert "have" not in match
+
+        nt.assert_equal(len(match), 1)
 
 ### SUBGRADIENT OPTIMIZATION CODE
 
@@ -481,7 +518,6 @@ def test_future_constraints():
     for node in hypergraph.nodes:
         print "%20s %20s %20s"%(node.label, in_chart[node], out_chart[node])
 
-
     print "max"
     in_chart = ph.inside(hypergraph, max_potentials)
     out_chart = ph.outside(hypergraph, max_potentials, in_chart)
@@ -489,4 +525,4 @@ def test_future_constraints():
         print "%20s %20s %20s"%(node.label, in_chart[node], out_chart[node])
 
 if __name__ == "__main__":
-    test_future_constraints()
+    test_variables()

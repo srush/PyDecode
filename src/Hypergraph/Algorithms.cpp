@@ -295,7 +295,7 @@ BeamChart *beam_search(
 
             for (int i = 0; i < beam_left.size(); ++i) {
                 const binvec &left_sig = beam_left[i].first;
-                if (!BVP::valid(sig, left_sig)) continue;
+                if (!valid_binary_vectors(sig, left_sig)) continue;
 
                 double left_score = beam_left[i].second.current_score;
                 const binvec mid_sig = BVP::times(sig, left_sig);
@@ -303,7 +303,7 @@ BeamChart *beam_search(
 
                 for (int j = 0; j < beam_right.size(); ++j) {
                     const binvec &right_sig = beam_right[j].first;
-                    if (!BVP::valid(mid_sig, right_sig)) continue;
+                    if (!valid_binary_vectors(mid_sig, right_sig)) continue;
                     double right_score = beam_right[j].second.current_score;
                     const binvec final_sig = BVP::times(mid_sig, right_sig);
                     double full_score = LVP::times(mid_score, right_score);

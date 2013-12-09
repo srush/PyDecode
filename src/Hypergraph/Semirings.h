@@ -583,11 +583,9 @@ public:
 	static inline ValType& normalize(ValType& val) {
         return val;
     }
-
-	static inline bool valid(ValType lhs, const ValType & rhs) {
-		lhs &= rhs;
-		return (lhs == 0x0);
-	}
 };
+
+bool valid_binary_vectors(const bitset<BITMAPSIZE> &lhs,
+                          const bitset<BITMAPSIZE> &rhs);
 
 #endif // HYPERGRAPH_SEMIRING_H_
