@@ -553,6 +553,7 @@ cdef class BeamChart:
     cdef init(self, CBeamChart *chart, Hypergraph graph):
         self.thisptr = chart
         self.graph = graph
+        return self
 
     property path:
         def __get__(self):

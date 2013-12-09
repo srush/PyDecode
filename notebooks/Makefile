@@ -48,3 +48,6 @@ Fibonacci.py: Fibonacci.ipynb
 
 Fibonacci.rst: Fibonacci.ipynb
 	ipython nbconvert --to rst Fibonacci.ipynb
+
+BeamSearch.py: BeamSearch.ipynb
+	ipython nbconvert --to python BeamSearch.ipynb

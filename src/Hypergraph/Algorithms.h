@@ -89,7 +89,8 @@ public:
           beam_size_(beam_size),
           future_(future),
           lower_bound_(lower_bound),
-          chart_(hypergraph->nodes().size()) {}
+          chart_(hypergraph->nodes().size()),
+          beam_(hypergraph->nodes().size()) {}
 
   Score get(HNode node, binvec bitmap) {
       return chart_[node->id()][bitmap];
