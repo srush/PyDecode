@@ -287,11 +287,9 @@ BeamChart *beam_search(
             const binvec &sig = constraints.score(edge);
             double score = potentials.score(edge);
 
-            // Assume binary edges.
+            // Assume unary/binary edges.
             HNode node_left = edge->tail_nodes()[0];
-            HNode node_right = edge->tail_nodes()[1];
             const BeamChart::Beam &beam_left = chart->get_beam(node_left);
-            const BeamChart::Beam &beam_right = chart->get_beam(node_left);
 
             for (int i = 0; i < beam_left.size(); ++i) {
                 const binvec &left_sig = beam_left[i].first;
@@ -300,6 +298,14 @@ BeamChart *beam_search(
                 double left_score = beam_left[i].second.current_score;
                 const binvec mid_sig = BVP::times(sig, left_sig);
                 double mid_score = LVP::times(score, left_score);
+
+                if (edge->tail_nodes().size() == 1) {
+                    chart->insert(node, edge, mid_sig, mid_score);
+                    continue;
+                }
+
+                HNode node_right = edge->tail_nodes()[1];
+                const BeamChart::Beam &beam_right = chart->get_beam(node_left);
 
                 for (int j = 0; j < beam_right.size(); ++j) {
                     const binvec &right_sig = beam_right[j].first;
@@ -350,8 +356,7 @@ void BeamChart::insert(HNode node,
 
     BeamMap::iterator iter = chart_[node->id()].find(bitmap);
     if (iter != chart_[node->id()].end()) {
-        if (val + future_val >
-            iter->second.total_score()) {
+        if (val + future_val > iter->second.total_score()) {
             iter->second = Score(edge, val, future_val);
         }
     } else {
