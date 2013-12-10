@@ -1,6 +1,8 @@
 // Copyright [2013] Alexander Rush
 
+#include "./common.h"
 #include "Hypergraph/BeamSearch.h"
+
 
 BeamChart *beam_search(
     const Hypergraph *graph,
@@ -9,6 +11,7 @@ BeamChart *beam_search(
     const Chart<LogViterbiPotential> &future,
     double lower_bound,
     int beam_size) {
+    typedef pair<binvec, BeamScore> BeamPair;
 
     // Check the inputs.
     potentials.check(graph);
@@ -39,19 +42,49 @@ BeamChart *beam_search(
             // Assume unary/binary edges.
             HNode node_left = edge->tail_nodes()[0];
             const BeamChart::Beam &beam_left = chart->get_beam(node_left);
+            bool unary = edge->tail_nodes().size() == 1;
+            vector<bool> valid_right;
+
+            // Optimization.
+            binvec and_sig_right;
+            if (!unary) {
+                and_sig_right.flip();
+                binvec and_sig;
+                and_sig.flip();
+
+                foreach (const BeamPair &p, beam_left) {
+                    and_sig &= p.first;
+                }
+
+                HNode node_right = edge->tail_nodes()[1];
+                const BeamChart::Beam &beam_right = chart->get_beam(node_right);
+                valid_right.resize(beam_right.size(), false);
+                int j = 0;
+                foreach (const BeamPair &p, beam_right) {
+                    const binvec &right_sig = p.first;
+                    if (VALID_BINARY_VECTORS(sig, right_sig) &&
+                        VALID_BINARY_VECTORS(and_sig, right_sig)) {
+                        valid_right[j] = true;
+                        and_sig_right &= p.first;
+                    }
+                    ++j;
+                }
+            }
 
             vector<int> back_position(edge->tail_nodes().size());
-            for (int i = 0; i < beam_left.size(); ++i) {
-                const binvec &left_sig = beam_left[i].first;
-                if (!VALID_BINARY_VECTORS(sig, left_sig)) continue;
+            int i = -1;
+            foreach (const BeamPair &p_left, beam_left) {
+                ++i;
+                const binvec &left_sig = p_left.first;
+                if (!VALID_BINARY_VECTORS(sig, left_sig) ||
+                    !VALID_BINARY_VECTORS(and_sig_right, left_sig)) continue;
 
-                double left_score = beam_left[i].second.current_score;
+                double left_score = p_left.second.current_score;
                 const binvec mid_sig = BVP::times(sig, left_sig);
                 double mid_score = LVP::times(score, left_score);
                 back_position[0] = i;
 
                 if (edge->tail_nodes().size() == 1) {
-
                     chart->insert(node, edge, mid_sig, mid_score,
                                   back_position);
                     continue;
@@ -61,12 +94,14 @@ BeamChart *beam_search(
                 HNode node_right = edge->tail_nodes()[1];
                 const BeamChart::Beam &beam_right = chart->get_beam(node_right);
 
-                for (int j = 0; j < beam_right.size(); ++j) {
-
-                    const binvec &right_sig = beam_right[j].first;
+                int j = -1;
+                foreach (const BeamPair &p_right, beam_right) {
+                    ++j;
+                    if (!valid_right[j]) continue;
+                    const binvec &right_sig = p_right.first;
                     if (!VALID_BINARY_VECTORS(mid_sig, right_sig)) continue;
                     back_position[1] = j;
-                    double right_score = beam_right[j].second.current_score;
+                    double right_score = p_right.second.current_score;
                     const binvec full_sig = BVP::times(mid_sig, right_sig);
                     double full_score = LVP::times(mid_score, right_score);
 
@@ -90,7 +125,9 @@ Hyperpath *BeamChart::get_path(int result) {
         pair<HNode, int> p = to_examine.front();
         HNode node = p.first;
         int position = p.second;
-        BeamScore score = get_beam(node)[position].second;
+        Beam::const_iterator iter = get_beam(node).begin();
+        for (int i = 0; i < position; i++, ++iter) {}
+        BeamScore score = iter->second;
         HEdge edge = score.edge;
 
         to_examine.pop();
@@ -120,21 +157,57 @@ void BeamChart::insert(HNode node,
     if (val + future_val < lower_bound_) return;
 
     Beam &b = beam_[node->id()];
-    for (int i = 0; i < min((int)b.size(), beam_size_); ++i) {
-        pair<binvec, BeamScore> &cur = b[i];
-        if (cur.first == bitmap) {
-            if (val + future_val > cur.second.total_score()) {
-                cur.second = BeamScore(edge, val, future_val, bp);
-                return;
-            } else {
-                return;
-            }
-        }
+    int limit = min((int)b.size(), beam_size_);
+    if (limit >= beam_size_ && val < b.back().second.current_score) return;
 
-    }
-    for (int i = 0; i < min((int)b.size(), beam_size_); ++i) {
-        pair<binvec, BeamScore> &cur = b[i];
-        if (val + future_val > cur.second.total_score()) {
+    // Check overlap.
+
+    //
+    // for (int i = 0; i < limit; ++i) {
+    //     pair<binvec, BeamScore> &cur = b[i];
+    //     if (cur.first == bitmap) {
+    //         if (val + future_val > cur.second.total_score()) {
+    //             cur.second = BeamScore(edge, val, future_val, bp);
+    //             return;
+    //         } else {
+    //             return;
+    //         }
+    //     }
+
+    // }
+    //
+    // int i = -1;
+    // if () {
+
+    // }
+
+    // Binary search.
+
+    // int upper = limit;
+    // int lower = 0;
+    // int cur = (upper + lower) / 2;
+    // while(true) {
+    //     assert(cur >= lower);
+    //     assert(cur <= upper);
+    //     pair<binvec, BeamScore> &p = b[cur];
+    //     if (cur == lower || cur == upper) {
+    //         b.insert(b.begin() + cur,
+    //                  pair<binvec, BeamScore>(bitmap,
+    //                                          BeamScore(edge, val, future_val, bp)));
+    //         return;
+    //     }
+
+    //     if (val >= p.second.current_score) {
+    //         upper = cur;
+    //         cur = (cur + lower) / 2;
+    //     } else if (val < p.second.current_score) {
+    //         lower = cur;
+    //         cur = (cur + upper) / 2;
+    //     }
+    // }
+
+    for (int i = 0; i < limit; ++i) {
+        if (val >= b[i].second.current_score) {
             b.insert(b.begin() + i,
                      pair<binvec, BeamScore>(bitmap,
                                              BeamScore(edge, val, future_val, bp)));

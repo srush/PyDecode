@@ -1,14 +1,15 @@
+
 #cython: embedsignature=True
 from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp.list cimport list
 from libcpp.pair cimport pair
 from libcpp cimport bool
 
 include "wrap.pxd"
 include "hypergraph.pyx"
 include "beam.pyx"
-
 
 
 ############# This is the templated semiring part. ##############
@@ -559,9 +560,10 @@ cdef class BeamChart:
     def __getitem__(self, Node node):
         cdef vector[pair[cbitset, CScore]] beam = self.thisptr.get_beam(node.nodeptr)
         data = []
-        for i in range(beam.size()):
-            data.append((Bitset().init(beam[i].first),
-                         beam[i].second.current_score))
+        i = 0
+        for p in beam:
+            data.append((Bitset().init(p.first),
+                         p.second.current_score))
         return data
 
 def beam_search(Hypergraph graph,

@@ -9,7 +9,7 @@
 #include "Hypergraph/Hypergraph.h"
 #include "./common.h"
 
-#define BITMAPSIZE 1600
+#define BITMAPSIZE 500
 
 #define VALID_BINARY_VECTORS(X, Y)                \
     (X & Y).none()

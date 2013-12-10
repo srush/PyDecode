@@ -1,6 +1,6 @@
 # Cython template hack.
 cdef extern from "<bitset>" namespace "std":
-    cdef cppclass cbitset "bitset<1600>":
+    cdef cppclass cbitset "bitset<500>":
         void set(int, int)
         bool& operator[](int)
 

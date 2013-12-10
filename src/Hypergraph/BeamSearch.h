@@ -9,6 +9,7 @@
 #include "Hypergraph/Semirings.h"
 #include "Hypergraph/Algorithms.h"
 
+#include <list>
 
 template <size_t N>
 class LessThan {
@@ -80,11 +81,6 @@ public:
     if (!hypergraph->same(*hypergraph_)) {
       throw HypergraphException("Hypergraph does not match chart.");
     }
-  }
-
-  HEdge get_best_edge(HNode node) {
-      const Beam &beam = get_beam(node);
-      return beam[0].second.edge;
   }
 
   Hyperpath *get_path(int result);
