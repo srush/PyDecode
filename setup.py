@@ -26,7 +26,7 @@ if use_cython:
                               ],
 
                              language='c++',
-                             extra_compile_args=['-O0'],
+                             extra_compile_args=['-O2', "-ggdb"],
                              include_dirs=[r'src/', "."],
                              )]
                              #extra_objects=['build/debug/src/libdecoding.a'],

@@ -11,7 +11,6 @@ include "beam.pyx"
 
 
 
-
 ############# This is the templated semiring part. ##############
 
 {% for S in semirings %}
@@ -531,7 +530,7 @@ cdef extern from "Hypergraph/BeamSearch.h":
         double future_score
 
     cdef cppclass CBeamChart "BeamChart":
-        CHyperpath *get_path()
+        CHyperpath *get_path(int result)
         vector[pair[cbitset, CScore]] get_beam(const CHypernode *node)
 
     CBeamChart *cbeam_search "beam_search" (
@@ -551,9 +550,11 @@ cdef class BeamChart:
         self.graph = graph
         return self
 
-    property path:
-        def __get__(self):
-            return Path().init(self.thisptr.get_path(), self.graph)
+    def path(self, int result):
+        return Path().init(self.thisptr.get_path(result),
+                           self.graph)
+
+
 
     def __getitem__(self, Node node):
         cdef vector[pair[cbitset, CScore]] beam = self.thisptr.get_beam(node.nodeptr)

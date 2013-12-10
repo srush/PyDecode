@@ -11,6 +11,9 @@
 
 #define BITMAPSIZE 1600
 
+#define VALID_BINARY_VECTORS(X, Y)                \
+    (X & Y).none()
+
 class ViterbiPotential {
 public:
     typedef double ValType;

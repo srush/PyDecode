@@ -26,10 +26,12 @@ public:
 struct BeamScore {
     BeamScore() {}
 
-  BeamScore(HEdge e, double cs, double fs) :
+  BeamScore(HEdge e, double cs, double fs,
+            const vector<int> &bp) :
         edge(e),
         current_score(cs),
-        future_score(fs) {}
+            future_score(fs),
+            back_position(bp) {}
 
     double total_score() const {
         return current_score + future_score;
@@ -38,6 +40,7 @@ struct BeamScore {
     HEdge edge;
     double current_score;
     double future_score;
+    vector<int> back_position;
 };
 
 class BeamChart {
@@ -60,7 +63,8 @@ public:
       return chart_[node->id()][bitmap];
   }
 
-  void insert(HNode node, HEdge edge, binvec bitmap, double val);
+  void insert(HNode node, HEdge edge, binvec bitmap, double val,
+              const vector<int> &back_position);
 
   void finish(HNode node);
 
@@ -80,18 +84,10 @@ public:
 
   HEdge get_best_edge(HNode node) {
       const Beam &beam = get_beam(node);
-      double score = -INF;
-      HEdge best = NULL;
-      for (int i = 0; i < beam.size(); ++i) {
-          if (beam[i].second.current_score > score) {
-              best = beam[i].second.edge;
-              score = beam[i].second.current_score;
-          }
-      }
-      return best;
+      return beam[0].second.edge;
   }
 
-  Hyperpath *get_path();
+  Hyperpath *get_path(int result);
 
 protected:
   const Hypergraph *hypergraph_;

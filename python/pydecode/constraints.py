@@ -20,6 +20,11 @@ class Variables():
         self.potentials.build(build)
         return self
 
+    def build_vector(self, build):
+        vector = build(self.hypergraph)
+        self.potentials.from_vector(vector)
+        return self
+
     def check(self, path):
         sparse_vars = self.potentials.dot(path)
         print sparse_vars
@@ -66,7 +71,7 @@ class Constraints:
         #     print edge.id, self.potentials[edge]
         constraints = self.potentials.dot(path)
         #print "Constraints", constraints
-        return [self.by_id[i]
+        return [(self.by_id[i], val)
                 for i, val in constraints
                 if val != 0]
 
@@ -104,6 +109,23 @@ class Constraints:
 
         self.potentials.build(lambda a: edge_values[a], bias=self.bias)
         return self
+
+    def build_vector(self, builder):
+        v = builder(self.hypergraph)
+        final = []
+        self.all_constraints = defaultdict(lambda: [])
+        edge_values = {}
+        for i, edge in enumerate(self.hypergraph.edges):
+            semi = []
+            for name, coeff in v[i]:
+                constraint = self.by_label[name]
+                semi.append((constraint, coeff))
+                self.all_constraints[constraint].append((coeff, edge))
+            final.append(semi)
+
+        self.potentials.from_vector(final, bias=self.bias)
+        return self
+
 
     def __iter__(self):
         return self.all_constraints.itervalues()

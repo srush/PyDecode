@@ -116,7 +116,7 @@ pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potential
 
 bool valid_binary_vectors(const bitset<BITMAPSIZE> &lhs,
                           const bitset<BITMAPSIZE> &rhs) {
-    return ((lhs & rhs) == 0x0);
+    return ((lhs & rhs).none());
 }
 
 

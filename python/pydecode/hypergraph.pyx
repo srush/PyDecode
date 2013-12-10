@@ -25,7 +25,7 @@ cdef class Hypergraph:
     cdef CHypergraph *thisptr
     cdef edge_labels
     cdef node_labels
-
+    cdef _cached_edges
     def __cinit__(Hypergraph self):
         """
         Create a new hypergraph.
@@ -33,6 +33,7 @@ cdef class Hypergraph:
         self.thisptr = new CHypergraph()
         self.edge_labels = []
         self.node_labels = []
+        self._cached_edges = None
 
     cdef Hypergraph init(self, const CHypergraph *ptr,
                          node_labels=[], edge_labels=[]):
@@ -67,7 +68,9 @@ cdef class Hypergraph:
 
     property edges:
         def __get__(self):
-            return convert_edges(self.thisptr.edges(), self)
+            if not self._cached_edges:
+                self._cached_edges = convert_edges(self.thisptr.edges(), self)
+            return self._cached_edges
 
     property edges_size:
         def __get__(self):
@@ -77,7 +80,7 @@ cdef class Hypergraph:
         """
         label(edge)
 
-        Deprecated. 
+        Deprecated.
 
         The label associated with a hyperedge `edge`.
         """
@@ -87,14 +90,14 @@ cdef class Hypergraph:
         """
         node_label(node)
 
-        Deprecated. 
+        Deprecated.
 
         The label associated with a node `node`.
         """
         return self.node_labels[node.id]
 
     def __str__(self):
-        s = "Hypergraph: Edges: %s Nodes: %s"%(len(self.edges), 
+        s = "Hypergraph: Edges: %s Nodes: %s"%(len(self.edges),
                                                len(self.nodes)) + "\n"
         s += "Root %s"%(self.root.id) + "\n"
         for edge in self.edges:
@@ -200,9 +203,9 @@ cdef class GraphBuilder:
         cdef vector[const CHypernode *] tail_node_ptrs
         cdef const CHyperedge *edgeptr
         if edges == []:
-            nodeptr = self.thisptr.add_terminal_node(str(label))
+            nodeptr = self.thisptr.add_terminal_node("")
         else:
-            nodeptr = self.thisptr.start_node(str(label))
+            nodeptr = self.thisptr.start_node("")
             for edge_cons in edges:
                 try:
                     tail_nodes, t = edge_cons
@@ -249,7 +252,7 @@ cdef class Node:
     cdef Hypergraph graph
 
 
-    cdef Node init(self, const CHypernode *nodeptr, 
+    cdef Node init(self, const CHypernode *nodeptr,
                    Hypergraph graph):
         self.nodeptr = nodeptr
         self.graph = graph
@@ -276,7 +279,7 @@ cdef class Node:
 
     property label:
         def __get__(self):
-            return self.graph.node_label(self) 
+            return self.graph.node_label(self)
 
     def __str__(self):
         return self.nodeptr.label()
@@ -336,7 +339,7 @@ cdef class Edge:
 
     property label:
         def __get__(self):
-            return self.graph.label(self) 
+            return self.graph.label(self)
 
     property id:
         def __get__(self):
@@ -346,11 +349,11 @@ cdef class Edge:
     def _removed(self):
         return (self.edgeptr.id() == -1)
 
-cdef convert_edges(vector[const CHyperedge *] edges, 
+cdef convert_edges(vector[const CHyperedge *] edges,
                    Hypergraph graph):
     return [Edge().init(edge, graph) for edge in edges]
 
-cdef convert_nodes(vector[const CHypernode *] nodes, 
+cdef convert_nodes(vector[const CHypernode *] nodes,
                    Hypergraph graph):
     return [Node().init(node, graph) for node in nodes]
 
