@@ -46,35 +46,46 @@ struct BeamScore {
 
 class BeamChart {
 public:
-  typedef map<binvec, BeamScore, LessThan<BITMAPSIZE> > BeamMap;
+    //typedef map<binvec, BeamScore, LessThan<BITMAPSIZE> > BeamMap;
   typedef vector<pair<binvec, BeamScore> > Beam;
+  typedef vector<pair<binvec, BeamScore> *> BeamPointers;
 
   BeamChart(const Hypergraph *hypergraph,
             int beam_size,
             const Chart<LogViterbiPotential> *future,
-            double lower_bound)
+            double lower_bound,
+            const vector<int> &groups,
+            int num_groups)
       : hypergraph_(hypergraph),
           beam_size_(beam_size),
           future_(future),
           lower_bound_(lower_bound),
-          chart_(hypergraph->nodes().size()),
-          beam_(hypergraph->nodes().size()) {}
+          //chart_(hypergraph->nodes().size()),
+          beam_nodes_(hypergraph->nodes().size()),
+          beam_(num_groups),
+          groups_(groups),
+          nodes_left_(num_groups) {
+              foreach (HNode node, hypergraph->nodes()) {
+                  int group = groups_[node->id()];
+                  nodes_left_[group].insert(node->id());
+              }
+          }
 
-  BeamScore get(HNode node, binvec bitmap) {
-      return chart_[node->id()][bitmap];
-  }
+  /* BeamScore get(HNode node, binvec bitmap) { */
+  /*     return chart_[node->id()][bitmap]; */
+  /* } */
 
   void insert(HNode node, HEdge edge, binvec bitmap, double val,
               const vector<int> &back_position);
 
   void finish(HNode node);
 
-  const BeamMap &get_map(HNode node) const {
-  	return chart_[node->id()];
-  }
+  /* const BeamMap &get_map(HNode node) const { */
+  /* 	return chart_[node->id()]; */
+  /* } */
 
-  const Beam &get_beam(HNode node) const {
-  	return beam_[node->id()];
+  const BeamPointers &get_beam(HNode node) const {
+  	return beam_nodes_[node->id()];
   }
 
   void check(const Hypergraph *hypergraph) const {
@@ -94,8 +105,13 @@ protected:
   const Chart<LogViterbiPotential> *future_;
   double lower_bound_;
 
-  vector<BeamMap> chart_;
+  //vector<BeamMap> chart_;
   vector<Beam> beam_;
+  vector<BeamPointers> beam_nodes_;
+
+  // Mapping from nodes to beam group.
+  vector<int> groups_;
+  vector<set<int> > nodes_left_;
 };
 
 BeamChart *beam_search(
