@@ -524,6 +524,7 @@ cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
         const CHypergraph *hypergraph,
         const CHypergraphBoolPotentials edge_mask)
 
+ctypedef pair[cbitset, CScore] BeamP
 
 cdef extern from "Hypergraph/BeamSearch.h":
     cdef cppclass CScore "BeamScore":
@@ -532,7 +533,7 @@ cdef extern from "Hypergraph/BeamSearch.h":
 
     cdef cppclass CBeamChart "BeamChart":
         CHyperpath *get_path(int result)
-        vector[pair[cbitset, CScore]] get_beam(const CHypernode *node)
+        vector[BeamP *] get_beam(const CHypernode *node)
 
     CBeamChart *cbeam_search "beam_search" (
         const CHypergraph *graph,
@@ -540,7 +541,11 @@ cdef extern from "Hypergraph/BeamSearch.h":
         const CHypergraphBinaryVectorPotentials &constraints,
         const CLogViterbiChart &outside,
         double lower_bound,
-        int beam_size)
+        int beam_size,
+        vector[int] groups,
+        int num_groups)
+
+
 
 cdef class BeamChart:
     cdef CBeamChart *thisptr
@@ -558,7 +563,7 @@ cdef class BeamChart:
 
 
     def __getitem__(self, Node node):
-        cdef vector[pair[cbitset, CScore]] beam = self.thisptr.get_beam(node.nodeptr)
+        cdef vector[BeamP *] beam = self.thisptr.get_beam(node.nodeptr)
         data = []
         i = 0
         for p in beam:
@@ -571,14 +576,22 @@ def beam_search(Hypergraph graph,
                 BinaryVectorPotentials constraints,
                 _LogViterbiChart outside,
                 double lower_bound,
-                int beam_size):
+                int beam_size,
+                groups, int num_groups):
+    cdef vector[int] cgroups
+    cgroups.resize(graph.nodes_size())
+    for i, group in enumerate(groups):
+        cgroups[i] = group
+
     cdef CBeamChart *chart = \
         cbeam_search(graph.thisptr,
                      deref(potentials.thisptr),
                      deref(constraints.thisptr),
                      deref(outside.chart),
                      lower_bound,
-                     beam_size)
+                     beam_size,
+                     cgroups,
+                     num_groups)
     return BeamChart().init(chart, graph)
 
 

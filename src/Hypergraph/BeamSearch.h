@@ -120,7 +120,9 @@ BeamChart *beam_search(
     const HypergraphPotentials<BinaryVectorPotential> &constraints,
     const Chart<LogViterbiPotential> &outside,
     double lower_bound,
-    int beam_size);
+    int beam_size,
+    const vector<int> &groups,
+    int num_groups);
 
 
 #endif  // HYPERGRAPH_BEAMSEARCH_H_
