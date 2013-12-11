@@ -12,6 +12,7 @@ import pydecode.chart as chart
 import time
 import pydecode.lp as lp
 import pulp
+import sys
 
 class DynamicProgrammingModel(StructuredModel):
     """
@@ -22,9 +23,14 @@ class DynamicProgrammingModel(StructuredModel):
     :py:method:`DynamicProgrammingModel.factored_psi` to use.
 
     """
-    def __init__(self, constrained=False):
+    def __init__(self, constrained=False, use_gurobi=True,
+                 use_relaxed=False):
         self._vec = DictVectorizer()
         self._constrained = constrained
+        self._use_gurobi = use_gurobi
+        self._use_relaxed = use_relaxed
+        self._debug = False
+
 
     def dynamic_program(self, x, chart):
         r"""
@@ -67,17 +73,19 @@ class DynamicProgrammingModel(StructuredModel):
         """
         raise NotImplementedError()
 
-    def psi(self, x, y):
+    def psi(self, x, y, fractions=None):
+        if not fractions:
+            fractions = [1] * len(y)
+        assert(len(fractions) == len(y))
         features = {}
         data = self.initialize_features(x)
-        for index in y:
+        for index, frac in zip(y, fractions):
             f = self.factored_psi(x, index, data)
             for k, v in f.iteritems():
                 features.setdefault(k, 0)
-                features[k] += v
-                
+                features[k] += v * frac
+
         final_features = self._vec.transform(features)
-        #print "Features:", self._vec.inverse_transform(final_features)
         return final_features
 
     def initialize(self, X, Y):
@@ -96,23 +104,42 @@ class DynamicProgrammingModel(StructuredModel):
         self.size_psi = t.size
 
     def inference(self, x, w, relaxed=False):
-
-
+        relaxed = relaxed or self._use_relaxed
+        if self._debug: a = time.time()
         hypergraph = self._build_hypergraph(x)
+        if self._debug: print >>sys.stderr, "BUILD HYPERGRAPH:", time.time() -a 
+
+        if self._debug: a = time.time()
         potentials = self._build_potentials(hypergraph, x, w)
+        if self._debug: print >>sys.stderr, "BUILD POTENTIALS:", time.time() - a
         if not self._constrained:
+            if self._debug: a = time.time()
             path = ph.best_path(hypergraph, potentials)
+            if self._debug: print >>sys.stderr, "BEST PATH:", time.time() - a
+
         else:
+            if self._debug: a = time.time()
             constraints = self.constraints(x, hypergraph)
-            hyperlp = lp.HypergraphLP.make_lp(hypergraph, potentials, integral=True)
+            hyperlp = lp.HypergraphLP.make_lp(hypergraph, potentials, integral=not relaxed)
             hyperlp.add_constraints(constraints)
-            hyperlp.solve(pulp.solvers.GLPK(mip=1))
-            path = hyperlp.path
-        y = set()
-        for edge in path:
-            y.add(hypergraph.label(edge))
-        self.psi(x, y)
+            if self._debug: print >>sys.stderr, "BUILD LP:", time.time() - a
+
+            if self._debug: a = time.time()
+            if self._use_gurobi:
+                hyperlp.solve(pulp.solvers.GUROBI(mip=1 if not relaxed else 0))
+            else:
+                hyperlp.solve(pulp.solvers.GLPK(mip=1 if not relaxed else 0 ))
+            if self._debug: print >>sys.stderr, "SOLVE LP:", time.time() - a
+
+            if relaxed:
+                path = hyperlp.decode_fractional()
+            else:
+                path = hyperlp.path
+        if self._debug: print 
+        y = set([edge.label for edge in path])
         return y
+
+
 
             #print repr(hypergraph.label(edge))
         # print len(path.edges)
@@ -132,7 +159,7 @@ class DynamicProgrammingModel(StructuredModel):
         for y1 in y:
             if y1 not in yhat:
                 difference += 1
-                ydiff.add(y1) 
+                ydiff.add(y1)
         #print "DIFF", difference, ydiff
         return difference
 
@@ -150,14 +177,14 @@ class DynamicProgrammingModel(StructuredModel):
         features = [self.factored_psi(x, hypergraph.label(edge), data) for edge in hypergraph.edges]
         f = self._vec.transform(features)
         scores =  f * w.T
-        #print "Weights:", self._vec.inverse_transform(w) 
-        #print 
+        #print "Weights:", self._vec.inverse_transform(w)
+        #print
         return ph.Potentials(hypergraph).from_vector(scores)
 
         #return weights
         #print len(), len(hypergraph.edges)
         # def potential_builder(index):
-        #     return 
+        #     return
         # return ph.Potentials(hypergraph).build(potential_builder)
         # def potential_builder(index):
         #      return self._features(x, index, data).dot(w.T)
@@ -168,7 +195,7 @@ class DynamicProgrammingModel(StructuredModel):
 
     # def _features(self, x, index, data):
     #     d = self.factored_psi(x, index, data)
-    #     # This is slow. 
+    #     # This is slow.
     #     return self._vec.transform(d) # {s: 1 for s in d})
 
     # def _path_features(self, hypergraph, x, path, data):
