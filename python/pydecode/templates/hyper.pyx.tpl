@@ -524,16 +524,22 @@ cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
         const CHypergraph *hypergraph,
         const CHypergraphBoolPotentials edge_mask)
 
-ctypedef pair[cbitset, CScore] BeamP
 
 cdef extern from "Hypergraph/BeamSearch.h":
-    cdef cppclass CScore "BeamScore":
+    cdef cppclass CBeamHyp "BeamHyp":
+        cbitset bitset
         double current_score
         double future_score
 
     cdef cppclass CBeamChart "BeamChart":
         CHyperpath *get_path(int result)
-        vector[BeamP *] get_beam(const CHypernode *node)
+        vector[CBeamHyp *] get_beam(const CHypernode *node)
+
+    cdef cppclass CBeamGroups "BeamGroups":
+        CBeamGroups(const CHypergraph *graph,
+                    const vector[int] groups,
+                    const vector[int] group_limit,
+                    int num_groups)
 
     CBeamChart *cbeam_search "beam_search" (
         const CHypergraph *graph,
@@ -541,10 +547,7 @@ cdef extern from "Hypergraph/BeamSearch.h":
         const CHypergraphBinaryVectorPotentials &constraints,
         const CLogViterbiChart &outside,
         double lower_bound,
-        int beam_size,
-        vector[int] groups,
-        int num_groups)
-
+        CBeamGroups *groups)
 
 
 cdef class BeamChart:
@@ -563,12 +566,12 @@ cdef class BeamChart:
 
 
     def __getitem__(self, Node node):
-        cdef vector[BeamP *] beam = self.thisptr.get_beam(node.nodeptr)
+        cdef vector[CBeamHyp *] beam = self.thisptr.get_beam(node.nodeptr)
         data = []
         i = 0
         for p in beam:
-            data.append((Bitset().init(p.first),
-                         p.second.current_score))
+            data.append((Bitset().init(p.bitset),
+                         p.current_score))
         return data
 
 def beam_search(Hypergraph graph,
@@ -576,12 +579,21 @@ def beam_search(Hypergraph graph,
                 BinaryVectorPotentials constraints,
                 _LogViterbiChart outside,
                 double lower_bound,
-                int beam_size,
-                groups, int num_groups):
-    cdef vector[int] cgroups
-    cgroups.resize(graph.nodes_size())
-    for i, group in enumerate(groups):
-        cgroups[i] = group
+                groups,
+                group_limits,
+                int num_groups):
+    cdef vector[int] cgroups = groups
+    cdef vector[int] cgroup_limits = group_limits
+    cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
+                                                    cgroups,
+                                                    cgroup_limits,
+                                                    num_groups)
+    # cgroups.resize(graph.nodes_size())
+    # cdef vector[int] cgroup_limits
+    # cgroups.resize(graph.nodes_size())
+
+    # for i, group in enumerate(groups):
+    #     cgroups[i] = group
 
     cdef CBeamChart *chart = \
         cbeam_search(graph.thisptr,
@@ -589,9 +601,7 @@ def beam_search(Hypergraph graph,
                      deref(constraints.thisptr),
                      deref(outside.chart),
                      lower_bound,
-                     beam_size,
-                     cgroups,
-                     num_groups)
+                     beam_groups)
     return BeamChart().init(chart, graph)
 
 
