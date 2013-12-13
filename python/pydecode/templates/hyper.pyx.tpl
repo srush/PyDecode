@@ -11,7 +11,6 @@ include "wrap.pxd"
 include "hypergraph.pyx"
 include "beam.pyx"
 
-
 ############# This is the templated semiring part. ##############
 
 {% for S in semirings %}
@@ -84,6 +83,9 @@ cdef class {{S.type}}Potentials:
     cdef Hypergraph hypergraph
     cdef const CHypergraph{{S.type}}Potentials *thisptr
     cdef kind
+
+    def __dealloc__(self):
+        del self.thisptr
 
     def __cinit__(self, Hypergraph graph):
         """
@@ -275,6 +277,10 @@ cdef class _{{S.type}}Chart:
 
     def __getitem__(self, Node node):
         return _{{S.ptype}}_from_cpp(self.chart.get(node.nodeptr))
+
+    def __dealloc__(self):
+        del self.chart
+
 
 cdef class _{{S.type}}Marginals:
     cdef const C{{S.type}}Marginals *thisptr
@@ -526,13 +532,20 @@ cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
 
 
 cdef extern from "Hypergraph/BeamSearch.h":
-    cdef cppclass CScore "BeamScore":
+    cdef cppclass CBeamHyp "BeamHyp":
+        cbitset sig
         double current_score
         double future_score
 
     cdef cppclass CBeamChart "BeamChart":
         CHyperpath *get_path(int result)
-        vector[pair[cbitset, CScore]] get_beam(const CHypernode *node)
+        vector[CBeamHyp *] get_beam(const CHypernode *node)
+
+    cdef cppclass CBeamGroups "BeamGroups":
+        CBeamGroups(const CHypergraph *graph,
+                    const vector[int] groups,
+                    const vector[int] group_limit,
+                    int num_groups)
 
     CBeamChart *cbeam_search "beam_search" (
         const CHypergraph *graph,
@@ -540,7 +553,8 @@ cdef extern from "Hypergraph/BeamSearch.h":
         const CHypergraphBinaryVectorPotentials &constraints,
         const CLogViterbiChart &outside,
         double lower_bound,
-        int beam_size)
+        const CBeamGroups &groups)
+
 
 cdef class BeamChart:
     cdef CBeamChart *thisptr
@@ -555,15 +569,13 @@ cdef class BeamChart:
         return Path().init(self.thisptr.get_path(result),
                            self.graph)
 
-
-
     def __getitem__(self, Node node):
-        cdef vector[pair[cbitset, CScore]] beam = self.thisptr.get_beam(node.nodeptr)
+        cdef vector[CBeamHyp *] beam = self.thisptr.get_beam(node.nodeptr)
         data = []
         i = 0
         for p in beam:
-            data.append((Bitset().init(p.first),
-                         p.second.current_score))
+            data.append((Bitset().init(p.sig),
+                         p.current_score))
         return data
 
 def beam_search(Hypergraph graph,
@@ -571,14 +583,30 @@ def beam_search(Hypergraph graph,
                 BinaryVectorPotentials constraints,
                 _LogViterbiChart outside,
                 double lower_bound,
-                int beam_size):
+                groups,
+                group_limits,
+                int num_groups):
+    cdef vector[int] cgroups = groups
+    cdef vector[int] cgroup_limits = group_limits
+    cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
+                                                    cgroups,
+                                                    cgroup_limits,
+                                                    num_groups)
+    # cgroups.resize(graph.nodes_size())
+    # cdef vector[int] cgroup_limits
+    # cgroups.resize(graph.nodes_size())
+
+    # for i, group in enumerate(groups):
+    #     cgroups[i] = group
+
     cdef CBeamChart *chart = \
         cbeam_search(graph.thisptr,
                      deref(potentials.thisptr),
                      deref(constraints.thisptr),
                      deref(outside.chart),
                      lower_bound,
-                     beam_size)
+                     deref(beam_groups)
+)
     return BeamChart().init(chart, graph)
 
 

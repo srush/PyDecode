@@ -10,108 +10,124 @@ BeamChart *beam_search(
     const HypergraphPotentials<BinaryVectorPotential> &constraints,
     const Chart<LogViterbiPotential> &future,
     double lower_bound,
-    int beam_size) {
-    typedef pair<binvec, BeamScore> BeamPair;
+    const BeamGroups &groups) {
 
     // Check the inputs.
     potentials.check(graph);
     constraints.check(graph);
+    groups.check(graph);
+
     typedef BinaryVectorPotential BVP;
     typedef LogViterbiPotential LVP;
 
-    BeamChart *chart = new BeamChart(graph, beam_size,
+    BeamChart *chart = new BeamChart(graph, &groups,
                                      &future, lower_bound);
 
     // 1) Initialize the chart with terminal nodes.
     foreach (HNode node, graph->nodes()) {
-
         if (node->terminal()) {
             vector<int> back_position;
             chart->insert(node, NULL, BVP::one(), LVP::one(),
                           back_position);
-            chart->finish(node);
             continue;
         }
+    }
 
-        // 2) Enumerate over each edge (in topological order).
-        foreach (HEdge edge, node->edges()) {
+    for (int group = 0; group < groups.groups_size(); ++group) {
+        foreach (HNode node, groups.group_nodes(group)) {
 
-            const binvec &sig = constraints.score(edge);
-            double score = potentials.score(edge);
+            // 2) Enumerate over each edge (in topological order).
+            foreach (HEdge edge, node->edges()) {
 
-            // Assume unary/binary edges.
-            HNode node_left = edge->tail_nodes()[0];
-            const BeamChart::Beam &beam_left = chart->get_beam(node_left);
-            bool unary = edge->tail_nodes().size() == 1;
-            vector<bool> valid_right;
+                const binvec &sig = constraints.score(edge);
+                double score = potentials.score(edge);
 
-            // Optimization.
-            binvec and_sig_right;
-            if (!unary) {
-                and_sig_right.flip();
-                binvec and_sig;
-                and_sig.flip();
+                // Assume unary/binary edges.
+                HNode node_left = edge->tail_nodes()[0];
+                const BeamChart::BeamPointers &beam_left =
+                        chart->get_beam(node_left);
 
-                foreach (const BeamPair &p, beam_left) {
-                    and_sig &= p.first;
-                }
+                bool unary = edge->tail_nodes().size() == 1;
 
-                HNode node_right = edge->tail_nodes()[1];
-                const BeamChart::Beam &beam_right = chart->get_beam(node_right);
-                valid_right.resize(beam_right.size(), false);
-                int j = 0;
-                foreach (const BeamPair &p, beam_right) {
-                    const binvec &right_sig = p.first;
-                    if (VALID_BINARY_VECTORS(sig, right_sig) &&
-                        VALID_BINARY_VECTORS(and_sig, right_sig)) {
-                        valid_right[j] = true;
-                        and_sig_right &= p.first;
+                // Optimization.
+                vector<bool> valid_right;
+                binvec and_sig_right;
+                if (!unary) {
+                    and_sig_right.flip();
+                    binvec and_sig;
+                    and_sig.flip();
+
+                    foreach (const BeamHyp *p, beam_left) {
+                        and_sig &= p->sig;
                     }
-                    ++j;
+
+                    HNode node_right = edge->tail_nodes()[1];
+                    const BeamChart::BeamPointers &beam_right =
+                            chart->get_beam(node_right);
+                    valid_right.resize(beam_right.size(), false);
+                    int j = 0;
+                    foreach (const BeamHyp *p, beam_right) {
+                        const binvec &right_sig = p->sig;
+                        if (VALID_BINARY_VECTORS(sig, right_sig) &&
+                            VALID_BINARY_VECTORS(and_sig, right_sig)) {
+                            valid_right[j] = true;
+                            and_sig_right &= p->sig;
+                        }
+                        ++j;
+                    }
                 }
-            }
+                // End Optimization.
 
-            vector<int> back_position(edge->tail_nodes().size());
-            int i = -1;
-            foreach (const BeamPair &p_left, beam_left) {
-                ++i;
-                const binvec &left_sig = p_left.first;
-                if (!VALID_BINARY_VECTORS(sig, left_sig) ||
-                    !VALID_BINARY_VECTORS(and_sig_right, left_sig)) continue;
+                vector<int> back_position(edge->tail_nodes().size());
+                int i = -1;
+                foreach (const BeamHyp *p_left, beam_left) {
+                    ++i;
 
-                double left_score = p_left.second.current_score;
-                const binvec mid_sig = BVP::times(sig, left_sig);
-                double mid_score = LVP::times(score, left_score);
-                back_position[0] = i;
+                    // Check valid.
+                    if (!VALID_BINARY_VECTORS(sig, p_left->sig) ||
+                        !VALID_BINARY_VECTORS(and_sig_right, p_left->sig)) continue;
 
-                if (edge->tail_nodes().size() == 1) {
-                    chart->insert(node, edge, mid_sig, mid_score,
-                                  back_position);
-                    continue;
-                }
+                    // Construct sig and score.
+                    const binvec mid_sig = BVP::times(sig, p_left->sig);
+                    double mid_score =
+                            LVP::times(score, p_left->current_score);
+                    back_position[0] = i;
 
-                // Do right node.
-                HNode node_right = edge->tail_nodes()[1];
-                const BeamChart::Beam &beam_right = chart->get_beam(node_right);
 
-                int j = -1;
-                foreach (const BeamPair &p_right, beam_right) {
-                    ++j;
-                    if (!valid_right[j]) continue;
-                    const binvec &right_sig = p_right.first;
-                    if (!VALID_BINARY_VECTORS(mid_sig, right_sig)) continue;
-                    back_position[1] = j;
-                    double right_score = p_right.second.current_score;
-                    const binvec full_sig = BVP::times(mid_sig, right_sig);
-                    double full_score = LVP::times(mid_score, right_score);
+                    if (unary) {
+                        chart->insert(node, edge, mid_sig, mid_score,
+                                      back_position);
+                        continue;
+                    }
 
-                    // Insert into the chart.
-                    chart->insert(node, edge, full_sig, full_score,
-                                  back_position);
+                    // Do right node.
+                    HNode node_right = edge->tail_nodes()[1];
+                    const BeamChart::BeamPointers &beam_right =
+                            chart->get_beam(node_right);
+
+                    int j = -1;
+                    foreach (const BeamHyp *p_right, beam_right) {
+                        ++j;
+
+                        // Check if this signature is valid.
+                        if (!valid_right[j]) continue;
+                        if (!VALID_BINARY_VECTORS(mid_sig, p_right->sig)) continue;
+
+                        // Construct scores and sig.
+                        back_position[1] = j;
+                        const binvec full_sig =
+                                BVP::times(mid_sig, p_right->sig);
+                        double full_score =
+                                LVP::times(mid_score, p_right->current_score);
+
+                        // Insert into the chart.
+                        chart->insert(node, edge, full_sig, full_score,
+                                      back_position);
+                    }
                 }
             }
         }
-        chart->finish(node);
+        chart->finish(group);
     }
     return chart;
 }
@@ -125,10 +141,9 @@ Hyperpath *BeamChart::get_path(int result) {
         pair<HNode, int> p = to_examine.front();
         HNode node = p.first;
         int position = p.second;
-        Beam::const_iterator iter = get_beam(node).begin();
-        for (int i = 0; i < position; i++, ++iter) {}
-        BeamScore score = iter->second;
-        HEdge edge = score.edge;
+
+        BeamHyp *score = get_beam(node)[position];
+        HEdge edge = score->edge;
 
         to_examine.pop();
         if (edge == NULL) {
@@ -139,7 +154,7 @@ Hyperpath *BeamChart::get_path(int result) {
         for (int i = 0; i < edge->tail_nodes().size(); ++i) {
             HNode node = edge->tail_nodes()[i];
             to_examine.push(pair<HNode, int>(node,
-                                             score.back_position[i]));
+                                             score->back_position[i]));
 
         }
     }
@@ -152,29 +167,55 @@ void BeamChart::insert(HNode node,
                        binvec bitmap,
                        double val,
                        const vector<int> &bp) {
+
     // Check that the node is not bounded out.
+
+
     double future_val = (*future_)[node];
     if (val + future_val < lower_bound_) return;
-
-    Beam &b = beam_[node->id()];
-    int limit = min((int)b.size(), beam_size_);
-    if (limit >= beam_size_ && val < b.back().second.current_score) return;
+    int group = groups_->group(node);
+    assert(current_group_ == group);
+    Beam &b = beam_[group];
+    int beam_size = groups_->group_limit(group);
+    int limit = min((int)b.size(), beam_size);
+    if (limit >= beam_size &&
+        val + future_val < b[beam_size].total_score()) return;
 
     // Check overlap.
 
     //
-    // for (int i = 0; i < limit; ++i) {
-    //     pair<binvec, BeamScore> &cur = b[i];
-    //     if (cur.first == bitmap) {
-    //         if (val + future_val > cur.second.total_score()) {
-    //             cur.second = BeamScore(edge, val, future_val, bp);
-    //             return;
-    //         } else {
-    //             return;
-    //         }
-    //     }
+    //if (bitmap.any()) {
+        for (int i = 0; i < limit; ++i) {
+            if (b[i].node->id() == node->id() && b[i].sig == bitmap) {
+                if (val + future_val > b[i].total_score()) {
+                    b[i] = BeamHyp(edge, node, bitmap, val, future_val, bp);
+                    return;
+                } else {
+                    return;
+                }
+            }
+        }
+        //}
 
-    // }
+
+    for (int i = 0; i < limit; ++i) {
+        if (val + future_val >= b[i].total_score()) {
+            b.insert(b.begin() + i,
+                     BeamHyp(edge, node, bitmap, val, future_val, bp));
+            if (b.size() >= beam_size) {
+                b.resize(beam_size);
+            }
+            return;
+        }
+    }
+
+
+    if (b.size() < beam_size)  {
+        b.push_back(
+            BeamHyp(edge, node, bitmap, val, future_val, bp));
+    }
+
+
     //
     // int i = -1;
     // if () {
@@ -206,20 +247,6 @@ void BeamChart::insert(HNode node,
     //     }
     // }
 
-    for (int i = 0; i < limit; ++i) {
-        if (val >= b[i].second.current_score) {
-            b.insert(b.begin() + i,
-                     pair<binvec, BeamScore>(bitmap,
-                                             BeamScore(edge, val, future_val, bp)));
-            return;
-        }
-    }
-
-    if (b.size() < beam_size_) {
-        b.push_back(
-            pair<binvec, BeamScore>(bitmap,
-                                    BeamScore(edge, val, future_val, bp)));
-    }
 
 
     // BeamMap::iterator iter = chart_[node->id()].find(bitmap);
@@ -232,25 +259,15 @@ void BeamChart::insert(HNode node,
     // }
 }
 
-void BeamChart::finish(HNode node) {
-    return;
-    // BeamMap &map = chart_[node->id()];
-    // for (int k = 0; k < beam_size_; ++k) {
-    //     double score = -INF;
-    //     const binvec *b = NULL;
-    //     BeamMap::const_iterator iter;
-    //     for (iter = map.begin(); iter != map.end();
-    //          ++iter) {
-    //         double cur = iter->second.total_score();
-    //         if (cur > score) {
-    //             score = cur;
-    //             b = &iter->first;
-    //         }
-    //     }
-    //     if (b == NULL) break;
-    //     beam_[node->id()].push_back(pair<binvec, BeamScore>(*b, map[*b]));
-    //     map.erase(*b);
-    // }
+void BeamChart::finish(int group) {
+    // Finished all nodes in the group.
+    assert(group == current_group_);
+    Beam &b = beam_[group];
+    for (int i = 0; i < b.size(); ++i) {
+        BeamPointers &bp = beam_nodes_[b[i].node->id()];
+        bp.push_back(&b[i]);
+    }
+    current_group_++;
 }
 
 // Non-binary beam search.
