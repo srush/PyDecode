@@ -11,6 +11,8 @@ include "wrap.pxd"
 include "hypergraph.pyx"
 include "beam.pyx"
 
+
+
 ############# This is the templated semiring part. ##############
 
 {% for S in semirings %}
@@ -29,6 +31,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *graph,
         const CHypergraph{{S.type}}Potentials theta) except +
 
+    CHyperpath *count_constrained_viterbi_{{S.type}} "count_constrained_viterbi<{{S.ctype}}>"(
+        const CHypergraph *graph,
+        const CHypergraph{{S.type}}Potentials theta,
+        const CHypergraphCountingPotentials counts, int limit) except +
+
     cdef cppclass C{{S.type}}Marginals "Marginals<{{S.ctype}}>":
         {{S.vtype}} marginal(const CHyperedge *edge)
         {{S.vtype}} marginal(const CHypernode *node)
@@ -39,6 +46,7 @@ cdef extern from "Hypergraph/Algorithms.h":
     cdef cppclass C{{S.type}}Chart "Chart<{{S.ctype}}>":
         {{S.vtype}} get(const CHypernode *node)
         void insert(const CHypernode& node, const {{S.vtype}}& val)
+
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<{{S.ctype}}>":
     C{{S.type}}Marginals *{{S.type}}_compute "Marginals<{{S.ctype}}>::compute" (
@@ -335,8 +343,21 @@ class {{S.type}}:
                 {{S.type}}Potentials potentials):
         cdef CHyperpath *path = \
             viterbi_{{S.type}}(graph.thisptr,
-                               deref(potentials.thisptr))
+                                                 deref(potentials.thisptr))
         return Path().init(path, graph)
+
+    @staticmethod
+    def count_constrained_viterbi(Hypergraph graph,
+                                  {{S.type}}Potentials potentials,
+                                  CountingPotentials count_potentials,
+                                  int limit):
+        cdef CHyperpath *path = \
+            count_constrained_viterbi_{{S.type}}(graph.thisptr,
+                                                 deref(potentials.thisptr),
+                                                 deref(count_potentials.thisptr),
+                                                 limit)
+        return Path().init(path, graph)
+
     {% endif %}
 
     @staticmethod
@@ -674,5 +695,20 @@ cdef class Projection:
 
         return new_graph
 
+
+
+
 def valid_binary_vectors(Bitset lhs, Bitset rhs):
     return cvalid_binary_vectors(lhs.data, rhs.data)
+
+
+# cdef extern from "Hypergraph/Algorithms.h":
+#     CHypergraphProjection *extend_hypergraph_by_count(
+#         CHypergraph *graph,
+#         CHypergraphCountingPotentials potentials,
+#         int limit)
+
+# def extend_hypergraph_by_count(Hypergraph graph, CountingPotential potentials,
+#                                int limit):
+#     CHypergraphProjection *projection = extend_hypergraph_by_count(graph.thisptr, potentials.thisptr, limit)
+#     return Projection.init(projection)

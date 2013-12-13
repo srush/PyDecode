@@ -376,6 +376,8 @@ cdef class Path:
     cdef const CHyperpath *thisptr
     cdef Hypergraph graph
 
+    def __dealloc__(self):
+        del self.thisptr
 
     def __cinit__(self, Hypergraph graph=None, edges=[]):
         """

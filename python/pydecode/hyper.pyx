@@ -11,6 +11,8 @@ include "wrap.pxd"
 include "hypergraph.pyx"
 include "beam.pyx"
 
+
+
 ############# This is the templated semiring part. ##############
 
 
@@ -29,6 +31,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *graph,
         const CHypergraphViterbiPotentials theta) except +
 
+    CHyperpath *count_constrained_viterbi_Viterbi "count_constrained_viterbi<ViterbiPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphViterbiPotentials theta,
+        const CHypergraphCountingPotentials counts, int limit) except +
+
     cdef cppclass CViterbiMarginals "Marginals<ViterbiPotential>":
         double marginal(const CHyperedge *edge)
         double marginal(const CHypernode *node)
@@ -39,6 +46,7 @@ cdef extern from "Hypergraph/Algorithms.h":
     cdef cppclass CViterbiChart "Chart<ViterbiPotential>":
         double get(const CHypernode *node)
         void insert(const CHypernode& node, const double& val)
+
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<ViterbiPotential>":
     CViterbiMarginals *Viterbi_compute "Marginals<ViterbiPotential>::compute" (
@@ -321,8 +329,21 @@ class Viterbi:
                 ViterbiPotentials potentials):
         cdef CHyperpath *path = \
             viterbi_Viterbi(graph.thisptr,
-                               deref(potentials.thisptr))
+                                                 deref(potentials.thisptr))
         return Path().init(path, graph)
+
+    @staticmethod
+    def count_constrained_viterbi(Hypergraph graph,
+                                  ViterbiPotentials potentials,
+                                  CountingPotentials count_potentials,
+                                  int limit):
+        cdef CHyperpath *path = \
+            count_constrained_viterbi_Viterbi(graph.thisptr,
+                                                 deref(potentials.thisptr),
+                                                 deref(count_potentials.thisptr),
+                                                 limit)
+        return Path().init(path, graph)
+
     
 
     @staticmethod
@@ -363,6 +384,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *graph,
         const CHypergraphLogViterbiPotentials theta) except +
 
+    CHyperpath *count_constrained_viterbi_LogViterbi "count_constrained_viterbi<LogViterbiPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphLogViterbiPotentials theta,
+        const CHypergraphCountingPotentials counts, int limit) except +
+
     cdef cppclass CLogViterbiMarginals "Marginals<LogViterbiPotential>":
         double marginal(const CHyperedge *edge)
         double marginal(const CHypernode *node)
@@ -373,6 +399,7 @@ cdef extern from "Hypergraph/Algorithms.h":
     cdef cppclass CLogViterbiChart "Chart<LogViterbiPotential>":
         double get(const CHypernode *node)
         void insert(const CHypernode& node, const double& val)
+
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<LogViterbiPotential>":
     CLogViterbiMarginals *LogViterbi_compute "Marginals<LogViterbiPotential>::compute" (
@@ -655,8 +682,21 @@ class LogViterbi:
                 LogViterbiPotentials potentials):
         cdef CHyperpath *path = \
             viterbi_LogViterbi(graph.thisptr,
-                               deref(potentials.thisptr))
+                                                 deref(potentials.thisptr))
         return Path().init(path, graph)
+
+    @staticmethod
+    def count_constrained_viterbi(Hypergraph graph,
+                                  LogViterbiPotentials potentials,
+                                  CountingPotentials count_potentials,
+                                  int limit):
+        cdef CHyperpath *path = \
+            count_constrained_viterbi_LogViterbi(graph.thisptr,
+                                                 deref(potentials.thisptr),
+                                                 deref(count_potentials.thisptr),
+                                                 limit)
+        return Path().init(path, graph)
+
     
 
     @staticmethod
@@ -697,6 +737,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *graph,
         const CHypergraphInsidePotentials theta) except +
 
+    CHyperpath *count_constrained_viterbi_Inside "count_constrained_viterbi<InsidePotential>"(
+        const CHypergraph *graph,
+        const CHypergraphInsidePotentials theta,
+        const CHypergraphCountingPotentials counts, int limit) except +
+
     cdef cppclass CInsideMarginals "Marginals<InsidePotential>":
         double marginal(const CHyperedge *edge)
         double marginal(const CHypernode *node)
@@ -707,6 +752,7 @@ cdef extern from "Hypergraph/Algorithms.h":
     cdef cppclass CInsideChart "Chart<InsidePotential>":
         double get(const CHypernode *node)
         void insert(const CHypernode& node, const double& val)
+
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<InsidePotential>":
     CInsideMarginals *Inside_compute "Marginals<InsidePotential>::compute" (
@@ -989,8 +1035,21 @@ class Inside:
                 InsidePotentials potentials):
         cdef CHyperpath *path = \
             viterbi_Inside(graph.thisptr,
-                               deref(potentials.thisptr))
+                                                 deref(potentials.thisptr))
         return Path().init(path, graph)
+
+    @staticmethod
+    def count_constrained_viterbi(Hypergraph graph,
+                                  InsidePotentials potentials,
+                                  CountingPotentials count_potentials,
+                                  int limit):
+        cdef CHyperpath *path = \
+            count_constrained_viterbi_Inside(graph.thisptr,
+                                                 deref(potentials.thisptr),
+                                                 deref(count_potentials.thisptr),
+                                                 limit)
+        return Path().init(path, graph)
+
     
 
     @staticmethod
@@ -1031,6 +1090,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *graph,
         const CHypergraphBoolPotentials theta) except +
 
+    CHyperpath *count_constrained_viterbi_Bool "count_constrained_viterbi<BoolPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphBoolPotentials theta,
+        const CHypergraphCountingPotentials counts, int limit) except +
+
     cdef cppclass CBoolMarginals "Marginals<BoolPotential>":
         bool marginal(const CHyperedge *edge)
         bool marginal(const CHypernode *node)
@@ -1041,6 +1105,7 @@ cdef extern from "Hypergraph/Algorithms.h":
     cdef cppclass CBoolChart "Chart<BoolPotential>":
         bool get(const CHypernode *node)
         void insert(const CHypernode& node, const bool& val)
+
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<BoolPotential>":
     CBoolMarginals *Bool_compute "Marginals<BoolPotential>::compute" (
@@ -1323,8 +1388,21 @@ class Bool:
                 BoolPotentials potentials):
         cdef CHyperpath *path = \
             viterbi_Bool(graph.thisptr,
-                               deref(potentials.thisptr))
+                                                 deref(potentials.thisptr))
         return Path().init(path, graph)
+
+    @staticmethod
+    def count_constrained_viterbi(Hypergraph graph,
+                                  BoolPotentials potentials,
+                                  CountingPotentials count_potentials,
+                                  int limit):
+        cdef CHyperpath *path = \
+            count_constrained_viterbi_Bool(graph.thisptr,
+                                                 deref(potentials.thisptr),
+                                                 deref(count_potentials.thisptr),
+                                                 limit)
+        return Path().init(path, graph)
+
     
 
     @staticmethod
@@ -1365,6 +1443,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *graph,
         const CHypergraphSparseVectorPotentials theta) except +
 
+    CHyperpath *count_constrained_viterbi_SparseVector "count_constrained_viterbi<SparseVectorPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphSparseVectorPotentials theta,
+        const CHypergraphCountingPotentials counts, int limit) except +
+
     cdef cppclass CSparseVectorMarginals "Marginals<SparseVectorPotential>":
         vector[pair[int, int]] marginal(const CHyperedge *edge)
         vector[pair[int, int]] marginal(const CHypernode *node)
@@ -1375,6 +1458,7 @@ cdef extern from "Hypergraph/Algorithms.h":
     cdef cppclass CSparseVectorChart "Chart<SparseVectorPotential>":
         vector[pair[int, int]] get(const CHypernode *node)
         void insert(const CHypernode& node, const vector[pair[int, int]]& val)
+
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<SparseVectorPotential>":
     CSparseVectorMarginals *SparseVector_compute "Marginals<SparseVectorPotential>::compute" (
@@ -1687,6 +1771,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *graph,
         const CHypergraphMinSparseVectorPotentials theta) except +
 
+    CHyperpath *count_constrained_viterbi_MinSparseVector "count_constrained_viterbi<MinSparseVectorPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphMinSparseVectorPotentials theta,
+        const CHypergraphCountingPotentials counts, int limit) except +
+
     cdef cppclass CMinSparseVectorMarginals "Marginals<MinSparseVectorPotential>":
         vector[pair[int, int]] marginal(const CHyperedge *edge)
         vector[pair[int, int]] marginal(const CHypernode *node)
@@ -1697,6 +1786,7 @@ cdef extern from "Hypergraph/Algorithms.h":
     cdef cppclass CMinSparseVectorChart "Chart<MinSparseVectorPotential>":
         vector[pair[int, int]] get(const CHypernode *node)
         void insert(const CHypernode& node, const vector[pair[int, int]]& val)
+
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<MinSparseVectorPotential>":
     CMinSparseVectorMarginals *MinSparseVector_compute "Marginals<MinSparseVectorPotential>::compute" (
@@ -2009,6 +2099,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *graph,
         const CHypergraphMaxSparseVectorPotentials theta) except +
 
+    CHyperpath *count_constrained_viterbi_MaxSparseVector "count_constrained_viterbi<MaxSparseVectorPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphMaxSparseVectorPotentials theta,
+        const CHypergraphCountingPotentials counts, int limit) except +
+
     cdef cppclass CMaxSparseVectorMarginals "Marginals<MaxSparseVectorPotential>":
         vector[pair[int, int]] marginal(const CHyperedge *edge)
         vector[pair[int, int]] marginal(const CHypernode *node)
@@ -2019,6 +2114,7 @@ cdef extern from "Hypergraph/Algorithms.h":
     cdef cppclass CMaxSparseVectorChart "Chart<MaxSparseVectorPotential>":
         vector[pair[int, int]] get(const CHypernode *node)
         void insert(const CHypernode& node, const vector[pair[int, int]]& val)
+
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<MaxSparseVectorPotential>":
     CMaxSparseVectorMarginals *MaxSparseVector_compute "Marginals<MaxSparseVectorPotential>::compute" (
@@ -2331,6 +2427,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *graph,
         const CHypergraphBinaryVectorPotentials theta) except +
 
+    CHyperpath *count_constrained_viterbi_BinaryVector "count_constrained_viterbi<BinaryVectorPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphBinaryVectorPotentials theta,
+        const CHypergraphCountingPotentials counts, int limit) except +
+
     cdef cppclass CBinaryVectorMarginals "Marginals<BinaryVectorPotential>":
         cbitset marginal(const CHyperedge *edge)
         cbitset marginal(const CHypernode *node)
@@ -2341,6 +2442,7 @@ cdef extern from "Hypergraph/Algorithms.h":
     cdef cppclass CBinaryVectorChart "Chart<BinaryVectorPotential>":
         cbitset get(const CHypernode *node)
         void insert(const CHypernode& node, const cbitset& val)
+
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<BinaryVectorPotential>":
     CBinaryVectorMarginals *BinaryVector_compute "Marginals<BinaryVectorPotential>::compute" (
@@ -2626,6 +2728,334 @@ class BinaryVector:
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
                          BinaryVectorPotentials potentials,
+                         threshold):
+        marginals = compute_marginals(graph, potentials)
+
+        bool_potentials = marginals.threshold(
+            threshold)
+        projection = Projection(graph, bool_potentials)
+        new_graph = projection.project(graph)
+        new_potential = potentials.project(new_graph, projection)
+        return new_graph, new_potential
+
+
+
+
+cdef extern from "Hypergraph/Algorithms.h":
+    CCountingChart *inside_Counting "general_inside<CountingPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphCountingPotentials theta) except +
+
+    CCountingChart *outside_Counting "general_outside<CountingPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphCountingPotentials theta,
+        CCountingChart inside_chart) except +
+
+    CHyperpath *viterbi_Counting"general_viterbi<CountingPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphCountingPotentials theta) except +
+
+    CHyperpath *count_constrained_viterbi_Counting "count_constrained_viterbi<CountingPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphCountingPotentials theta,
+        const CHypergraphCountingPotentials counts, int limit) except +
+
+    cdef cppclass CCountingMarginals "Marginals<CountingPotential>":
+        int marginal(const CHyperedge *edge)
+        int marginal(const CHypernode *node)
+        CHypergraphBoolPotentials *threshold(
+            const int &threshold)
+        const CHypergraph *hypergraph()
+
+    cdef cppclass CCountingChart "Chart<CountingPotential>":
+        int get(const CHypernode *node)
+        void insert(const CHypernode& node, const int& val)
+
+
+cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<CountingPotential>":
+    CCountingMarginals *Counting_compute "Marginals<CountingPotential>::compute" (
+                           const CHypergraph *hypergraph,
+                           const CHypergraphCountingPotentials *potentials)
+
+cdef extern from "Hypergraph/Semirings.h":
+    cdef cppclass CountingPotential:
+        pass
+
+    cdef cppclass CHypergraphCountingPotentials "HypergraphPotentials<CountingPotential>":
+        int dot(const CHyperpath &path) except +
+        int score(const CHyperedge *edge)
+        CHypergraphCountingPotentials *times(
+            const CHypergraphCountingPotentials &potentials)
+        CHypergraphCountingPotentials *project_potentials(
+            const CHypergraphProjection)
+        CHypergraphCountingPotentials(
+            const CHypergraph *hypergraph,
+            const vector[int] potentials,
+            int bias) except +
+        int bias()
+
+cdef extern from "Hypergraph/Semirings.h" namespace "CountingPotential":
+    int Counting_one "CountingPotential::one" ()
+    int Counting_zero "CountingPotential::zero" ()
+    int Counting_add "CountingPotential::add" (int, const int&)
+    int Counting_times "CountingPotential::times" (int, const int&)
+    int Counting_safeadd "CountingPotential::safe_add" (int, const int&)
+    int Counting_safetimes "CountingPotential::safe_times" (int, const int&)
+    int Counting_normalize "CountingPotential::normalize" (int&)
+
+
+
+cdef class CountingPotentials:
+    r"""
+    Potential vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
+
+    Acts as a dictionary::
+       >> print potentials[edge]
+    """
+    cdef Hypergraph hypergraph
+    cdef const CHypergraphCountingPotentials *thisptr
+    cdef kind
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    def __cinit__(self, Hypergraph graph):
+        """
+        Build the potential vector for a hypergraph.
+
+        :param hypergraph: The underlying hypergraph.
+        """
+        self.hypergraph = graph
+        self.kind = Counting
+
+    def times(self, CountingPotentials other):
+        cdef const CHypergraphCountingPotentials *new_potentials = \
+            self.thisptr.times(deref(other.thisptr))
+        return CountingPotentials(self.hypergraph).init(new_potentials)
+
+    def project(self, Hypergraph graph, Projection projection):
+        cdef CountingPotentials new_potentials = CountingPotentials(graph)
+        cdef const CHypergraphCountingPotentials *ptr = \
+            self.thisptr.project_potentials(deref(projection.thisptr))
+        return new_potentials.init(ptr)
+
+    def show(self, Hypergraph graph):
+        return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
+           for edge in graph.edges])
+
+    property kind:
+        def __get__(self):
+            return self.kind
+
+    property bias:
+        def __get__(self):
+            return _CountingW_from_cpp(self.thisptr.bias())
+
+    def build(self, fn, bias=None):
+        """
+        build(fn)
+
+        Build the potential vector for a hypergraph.
+
+        :param fn: A function from edge labels to potentials.
+        """
+        cdef int my_bias
+        if bias is None:
+            my_bias = Counting_one()
+        else:
+            my_bias = _CountingW_to_cpp(bias)
+
+        cdef vector[int] potentials = \
+             vector[int](self.hypergraph.thisptr.edges().size(),
+             Counting_zero())
+        # cdef d result
+        for i, ty in enumerate(self.hypergraph.edge_labels):
+            result = fn(ty)
+            if result is None: potentials[i] = Counting_zero()
+            potentials[i] = _CountingW_to_cpp(result)
+        self.thisptr =  \
+          new CHypergraphCountingPotentials(self.hypergraph.thisptr,
+                                              potentials, my_bias)
+        return self
+
+    def from_potentials(self, other_potentials):
+        cdef vector[int] potentials = \
+             vector[int](self.hypergraph.thisptr.edges().size())
+
+        for i, edge in enumerate(self.hypergraph.edges):
+            potentials[i] = _CountingW_to_cpp(other_potentials[edge])
+
+        self.thisptr =  \
+          new CHypergraphCountingPotentials(
+            self.hypergraph.thisptr,
+            potentials,
+            _CountingW_to_cpp(other_potentials.bias))
+
+        return self
+
+    def from_vector(self, in_vec, bias=None):
+        cdef int my_bias
+        if bias is None:
+            my_bias = Counting_one()
+        else:
+            my_bias = _CountingW_to_cpp(bias)
+
+        cdef vector[int] potentials = \
+             vector[int](self.hypergraph.thisptr.edges().size())
+
+        for i, v in enumerate(in_vec):
+            potentials[i] = _CountingW_to_cpp(v)
+
+        self.thisptr =  \
+          new CHypergraphCountingPotentials(self.hypergraph.thisptr,
+                                              potentials, my_bias)
+        return self
+
+
+    cdef init(self, const CHypergraphCountingPotentials *ptr):
+        self.thisptr = ptr
+        return self
+
+    def __getitem__(self, Edge edge not None):
+        return _CountingW_from_cpp(self.thisptr.score(edge.edgeptr))
+
+    def dot(self, Path path not None):
+        r"""
+        dot(path)
+
+        Take the dot product with `path` :math:`\theta^{\top} y`.
+        """
+
+        return _CountingW_from_cpp(self.thisptr.dot(deref(path.thisptr)))
+        #return _CountingW().init(self.thisptr.dot(deref(path.thisptr))).value
+
+cdef class _CountingW:
+    @staticmethod
+    def one():
+        return _CountingW_from_cpp(Counting_one())
+
+    @staticmethod
+    def zero():
+        return _CountingW_from_cpp(Counting_zero())
+
+
+cdef int _CountingW_to_cpp(int val):
+    
+    return val
+    
+
+
+cdef _CountingW_from_cpp(int val):
+    
+    return val
+    
+
+
+    # cdef int wrap
+
+    # def __cmp__(_CountingW self, _CountingW other):
+    #     return cmp(self.value, other.value)
+
+
+    # def __cinit__(self, val=None):
+    #     if val is not None:
+    #         self.init(val)
+
+    # cdef init(self, int wrap):
+    #     self.wrap = wrap
+    #     return self
+
+    # 
+
+    # 
+
+    # property value:
+    #     def __get__(self):
+    #         
+    #         
+    #         
+
+    # def __repr__(self):
+    #     return str(self.value)
+
+    # def __add__(_CountingW self, _CountingW other):
+    #     return _CountingW().init(
+    #         Counting_add(self.wrap, other.wrap))
+
+    # def __mul__(_CountingW self, _CountingW other):
+    #     return _CountingW().init(
+    #         Counting_times(self.wrap, other.wrap))
+
+cdef class _CountingChart:
+    cdef CCountingChart *chart
+    cdef kind
+
+    def __init__(self):
+        self.kind = Counting
+
+    def __getitem__(self, Node node):
+        return _CountingW_from_cpp(self.chart.get(node.nodeptr))
+
+    def __dealloc__(self):
+        del self.chart
+
+
+cdef class _CountingMarginals:
+    cdef const CCountingMarginals *thisptr
+
+    cdef init(self, const CCountingMarginals *ptr):
+        self.thisptr = ptr
+        return self
+
+    def __getitem__(self, obj):
+        if isinstance(obj, Edge):
+            return _CountingW_from_cpp(
+                self.thisptr.marginal((<Edge>obj).edgeptr))
+        elif isinstance(obj, Node):
+            return _CountingW_from_cpp(
+                self.thisptr.marginal((<Node>obj).nodeptr))
+        else:
+            raise HypergraphAccessException(
+                "Only nodes and edges have Counting marginal values." + \
+                "Passed %s."%obj)
+    
+
+class Counting:
+    Chart = _CountingChart
+    Marginals = _CountingMarginals
+    #Semi = _CountingW
+    Potentials = CountingPotentials
+
+    @staticmethod
+    def inside(Hypergraph graph,
+               CountingPotentials potentials):
+        cdef _CountingChart chart = _CountingChart()
+        chart.chart = inside_Counting(graph.thisptr, deref(potentials.thisptr))
+        return chart
+
+    @staticmethod
+    def outside(Hypergraph graph,
+                CountingPotentials potentials,
+                _CountingChart inside_chart):
+        cdef _CountingChart out_chart = _CountingChart()
+        out_chart.chart = outside_Counting(graph.thisptr,
+                                             deref(potentials.thisptr),
+                                             deref(inside_chart.chart))
+        return out_chart
+
+    
+
+    @staticmethod
+    def compute_marginals(Hypergraph graph,
+                          CountingPotentials potentials):
+        cdef const CCountingMarginals *marginals = \
+            Counting_compute(graph.thisptr, potentials.thisptr)
+        return _CountingMarginals().init(marginals)
+
+
+    @staticmethod
+    def prune_hypergraph(Hypergraph graph,
+                         CountingPotentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
 
@@ -2950,5 +3380,20 @@ cdef class Projection:
 
         return new_graph
 
+
+
+
 def valid_binary_vectors(Bitset lhs, Bitset rhs):
     return cvalid_binary_vectors(lhs.data, rhs.data)
+
+
+# cdef extern from "Hypergraph/Algorithms.h":
+#     CHypergraphProjection *extend_hypergraph_by_count(
+#         CHypergraph *graph,
+#         CHypergraphCountingPotentials potentials,
+#         int limit)
+
+# def extend_hypergraph_by_count(Hypergraph graph, CountingPotential potentials,
+#                                int limit):
+#     CHypergraphProjection *projection = extend_hypergraph_by_count(graph.thisptr, potentials.thisptr, limit)
+#     return Projection.init(projection)

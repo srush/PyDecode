@@ -88,7 +88,7 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
     }
     new_graph->finish();
     return new HypergraphProjection(hypergraph, new_graph,
-                                                                    node_map, edge_map);
+                                    node_map, edge_map);
 }
 
 const HypergraphPotentials<LogViterbiPotential> *
@@ -128,6 +128,7 @@ SPECIALIZE_HYPER_FOR_SEMI(SparseVectorPotential)
 SPECIALIZE_HYPER_FOR_SEMI(MinSparseVectorPotential)
 SPECIALIZE_HYPER_FOR_SEMI(MaxSparseVectorPotential)
 SPECIALIZE_HYPER_FOR_SEMI(BinaryVectorPotential)
+SPECIALIZE_HYPER_FOR_SEMI(CountingPotential)
 
 SparseVector combine_sparse_vectors(const SparseVector &value,
                                     const SparseVector &rhs,

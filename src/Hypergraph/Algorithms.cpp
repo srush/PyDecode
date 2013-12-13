@@ -13,7 +13,8 @@
   template class Chart<X>;\
   template class HypergraphPotentials<X>;\
   template class Marginals<X>;\
-  template Hyperpath *general_viterbi<X>(const Hypergraph *graph,const HypergraphPotentials<X> &potentials);
+  template Hyperpath *general_viterbi<X>(const Hypergraph *graph,const HypergraphPotentials<X> &potentials);\
+  template Hyperpath *count_constrained_viterbi<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, const HypergraphPotentials<CountingPotential> &count_potentials, int limit);
 
 #define SPECIALIZE_FOR_SEMI_MIN(X)\
   template class Chart<X>;\
@@ -131,60 +132,258 @@ Hyperpath *general_viterbi(
   return new Hyperpath(graph, path);
 }
 
-template<typename StatSem>
-Hyperpath *general_viterbi(
-    const Hypergraph *graph,
-    const HypergraphPotentials<typename StatSem::ValType> &potentials) {
 
-  potentials.check(*graph);
-  Chart<typename StatSem::ValType> *chart = new Chart<typename StatSem::ValType>(graph);
-  vector<HEdge> back(graph->nodes().size(), NULL);
+struct EdgeGroup {
+    EdgeGroup(HEdge _edge, int back_left, int back_right)
+            : edge(_edge), back(2)
+    {
+        back[0] = back_left;
+        back[1] = back_right;
+    }
+    vector<int> back;
+    HEdge edge;
+};
+
+struct NodeCount {
+    NodeCount(int _count, HNode _node) {
+        count = _count;
+        node = _node;
+    }
+    int count;
+    HNode node;
+};
+
+template<typename StatSem>
+struct NodeScore {
+    NodeScore()
+            :
+            count(-1),
+            edge(NULL),
+            back(0),
+            score(StatSem::zero()) {}
+
+    NodeScore(int _count, HEdge _edge, typename StatSem::ValType _score)
+            :
+            count(_count),
+            edge(_edge),
+            back(0),
+            score(_score) {}
+
+    NodeScore(int _count, HEdge _edge, int i, int j, typename StatSem::ValType _score)
+            :
+            count(_count),
+            edge(_edge),
+            back(2),
+            score(_score) {
+        back[0] = i;
+        back[1] = j;
+    }
+
+    int count;
+    HEdge edge;
+    vector<int> back;
+    typename StatSem::ValType score;
+};
+
+
+template<typename S>
+Hyperpath *count_constrained_viterbi(
+    const Hypergraph *graph,
+    const HypergraphPotentials<S> &weight_potentials,
+    const HypergraphPotentials<CountingPotential> &count_potentials,
+    int limit) {
+
+  weight_potentials.check(*graph);
+  count_potentials.check(*graph);
+
+  vector<vector<NodeScore<S> > > chart(graph->nodes().size());
 
   foreach (HNode node, graph->nodes()) {
     if (node->terminal()) {
-      chart->insert(node, StatSem::one());
+        chart[node->id()].push_back(
+            NodeScore<S>(0, NULL, S::one()));
     }
-  }
-  foreach (HEdge edge, graph->edges()) {
-    typename StatSem::ValType score = potentials.score(edge);
-    foreach (HNode node, edge->tail_nodes()) {
-      typename StatSem::ValType(score, (*chart)[node]);
+    // Bucket edges.
+    vector<NodeScore<S> > counts(limit + 1);
+    foreach (HEdge edge, node->edges()) {
+        bool unary = edge->tail_nodes().size() == 1;
+        HNode left_node = edge->tail_nodes()[0];
+
+        int start_count = count_potentials.score(edge);
+        typename S::ValType start_score = weight_potentials.score(edge);
+        for (int i = 0; i < chart[left_node->id()].size(); ++i) {
+            int total = start_count + chart[left_node->id()][i].count;
+            typename S::ValType total_score =
+                    S::times(start_score,
+                                   chart[left_node->id()][i].score);
+            if (total > limit) continue;
+            if (unary) {
+                if (total_score > counts[total].score) {
+                    counts[total] = NodeScore<S>(total, edge, i, -1, total_score);
+                }
+            } else {
+                HNode right_node = edge->tail_nodes()[1];
+                for (int j = 0; j < chart[right_node->id()].size(); ++j) {
+                    int total = start_count + chart[left_node->id()][i].count
+                            + chart[right_node->id()][j].count;
+                    typename S::ValType final_score =
+                            S::times(total_score,
+                                           chart[right_node->id()][j].score);
+
+                    if (total > limit) continue;
+                    if (final_score > counts[total].score) {
+                        counts[total] = NodeScore<S>(total, edge, i, j, final_score);
+                    }
+                }
+            }
+        }
     }
-    if (score > (*chart)[edge->head_node()]) {
-      chart->insert(edge->head_node(), score);
-      back[edge->head_node()->id()] = edge;
+
+    // Compute scores.
+    for (int count = 0; count <= limit; ++count) {
+        if (counts[count].edge == NULL) continue;
+        chart[node->id()].push_back(counts[count]);
     }
   }
 
   // Collect backpointers.
   vector<HEdge> path;
-  queue<HNode> to_examine;
-  to_examine.push(graph->root());
+  queue<pair<HNode, int> > to_examine;
+  int result = -1;
+  int i = -1;
+  foreach (NodeScore<S> score, chart[graph->root()->id()]) {
+      ++i;
+      if (score.count == limit) {
+          result = i;
+      }
+  }
+
+  to_examine.push(pair<HNode, int>(graph->root(), result));
   while (!to_examine.empty()) {
-    HNode node = to_examine.front();
-    HEdge edge = back[node->id()];
-    to_examine.pop();
-    if (edge == NULL) {
-      assert(node->terminal());
-      continue;
-    }
-    path.push_back(edge);
-    foreach (HNode node, edge->tail_nodes()) {
-      to_examine.push(node);
-    }
+      if (result == -1) break;
+      pair<HNode, int> p = to_examine.front();
+      HNode node = p.first;
+      int position = p.second;
+
+      NodeScore<S> &score = chart[node->id()][position];
+      HEdge edge = score.edge;
+
+      to_examine.pop();
+      if (edge == NULL) {
+          assert(node->terminal());
+          continue;
+      }
+      path.push_back(edge);
+      for (int i = 0; i < edge->tail_nodes().size(); ++i) {
+          HNode node = edge->tail_nodes()[i];
+          to_examine.push(pair<HNode, int>(node,
+                                           score.back[i]));
+
+      }
   }
   sort(path.begin(), path.end(), IdComparator());
-  delete chart;
   return new Hyperpath(graph, path);
+}
+
+HypergraphProjection *extend_hypergraph_by_count(
+    Hypergraph *hypergraph,
+    const HypergraphPotentials<CountingPotential> &potentials,
+    int limit) {
+
+    Hypergraph *new_graph = new Hypergraph();
+    vector<vector<NodeCount > > new_nodes(hypergraph->nodes().size());
+
+    vector<vector<HNode> > reverse_node_map(hypergraph->nodes().size());;
+    vector<vector<HEdge> > reverse_edge_map(hypergraph->edges().size());;
+
+    foreach (HNode node, hypergraph->nodes()) {
+        if (node->terminal()) {
+            // The node is a terminal, so just add it.
+            new_nodes[node->id()].push_back(
+                NodeCount(0, new_graph->add_terminal_node(node->label())));
+        } else {
+            // Bucket edges.
+            vector<vector<EdgeGroup> > counts(limit);
+            foreach (HEdge edge, node->edges()) {
+                bool unary = edge->tail_nodes().size() == 1;
+                HNode left_node = edge->tail_nodes()[0];
+
+                int score = potentials.score(edge);
+                for (int i = 0; i < new_nodes[left_node->id()].size(); ++i) {
+                    int total = score + new_nodes[left_node->id()][i].count;
+                    if (total > limit) continue;
+                    if (unary) {
+                        counts[total].push_back(EdgeGroup(edge, i, 0));
+                    } else {
+
+                        HNode right_node = edge->tail_nodes()[1];
+                        for (int j = 0; j < new_nodes[right_node->id()].size(); ++j) {
+                            int total = score + new_nodes[left_node->id()][i].count
+                                    + new_nodes[right_node->id()][j].count;
+                            if (total > limit) continue;
+                            counts[total].push_back(EdgeGroup(edge, i, j));
+                        }
+                    }
+                }
+            }
+
+            // Make new nodes.
+            for (int count = 0; count < limit; ++count) {
+                if (counts[count].size() == 0) continue;
+                new_nodes[node->id()].push_back(
+                    NodeCount(count,
+                              new_graph->start_node(node->label())));
+                vector<HNode> tails;
+                foreach (EdgeGroup edge_group, counts[count]) {
+                    HEdge edge = edge_group.edge;
+                    for (int i = 0; i < edge_group.back.size(); ++i) {
+                        tails.push_back(new_nodes[edge->tail_nodes()[i]->id()]
+                                        [edge_group.back[i]].node);
+
+                    }
+                    HEdge new_edge = new_graph->add_edge(tails, edge->label());
+                    reverse_edge_map[edge->id()].push_back(new_edge);
+                }
+                new_graph->end_node();
+                reverse_node_map[node->id()].push_back(
+                    new_nodes[node->id()].back().node);
+            }
+        }
+    }
+    new_graph->finish();
+
+    // Create node maps.
+    vector<HNode> *node_map =
+            new vector<HNode>(new_graph->nodes().size(), NULL);
+    vector<HEdge> *edge_map =
+            new vector<HEdge>(new_graph->edges().size(), NULL);
+
+
+    foreach (HNode node, hypergraph->nodes()) {
+        foreach (HNode new_node, reverse_node_map[node->id()]) {
+            if (new_node->id() == -1) continue;
+            (*node_map)[new_node->id()] = node;
+        }
+    }
+    foreach (HEdge edge, hypergraph->edges()) {
+        foreach (HEdge new_edge, reverse_edge_map[edge->id()]) {
+            if (new_edge->id() == -1) continue;
+            (*edge_map)[new_edge->id()] = edge;
+        }
+    }
+    return new HypergraphProjection(hypergraph, new_graph,
+                                    node_map, edge_map);
 }
 
 SPECIALIZE_ALGORITHMS_FOR_SEMI(ViterbiPotential)
 SPECIALIZE_ALGORITHMS_FOR_SEMI(LogViterbiPotential)
 SPECIALIZE_ALGORITHMS_FOR_SEMI(InsidePotential)
 SPECIALIZE_ALGORITHMS_FOR_SEMI(BoolPotential)
+SPECIALIZE_ALGORITHMS_FOR_SEMI(CountingPotential)
 SPECIALIZE_FOR_SEMI_MIN(SparseVectorPotential)
 SPECIALIZE_FOR_SEMI_MIN(MinSparseVectorPotential)
 SPECIALIZE_FOR_SEMI_MIN(MaxSparseVectorPotential)
 SPECIALIZE_FOR_SEMI_MIN(BinaryVectorPotential)
+
 
 // End General code.

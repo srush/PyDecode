@@ -64,7 +64,14 @@ Weight potentials :math:`\{0,1\}^{{\cal E}}` with :math:`(+, *) = (\cap, \cup)`.
    "from_cpp": "Bitset().init(val)"
    },
 
-
+{"type": "Counting", "ptype": "CountingW",
+   "ctype": "CountingPotential",
+   "vtype": "int",
+   "intype": "int",
+   "viterbi" : False,
+   "description": r"""
+"""
+   }
 #             d = {}
 #             cdef vector[pair[int,int]] s= <vector[pair[int,int]]> self.wrap
 #             for p in s:

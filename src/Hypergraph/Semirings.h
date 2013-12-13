@@ -206,6 +206,23 @@ public:
     }
 };
 
+class IntPotential {
+public:
+    typedef int ValType;
+
+    static inline ValType add(ValType lhs, const ValType &rhs) {
+        /* lhs *= rhs; */
+        /* return lhs; */
+    }
+    static inline ValType times(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+
+    static inline ValType one() { return 0; }
+    static inline ValType zero() { return -1e5; }
+};
+
 /**
  * Comparison pair. *Experimental*
  * Type (s, t) op (s', t')
@@ -421,8 +438,8 @@ class HypergraphPotentials {
     typedef typename SemiringType::ValType V;
  public:
     HypergraphPotentials(const Hypergraph *hypergraph,
-                        const vector<V> &potentials,
-                        V bias)
+                         const vector<V> &potentials,
+                         V bias)
     : hypergraph_(hypergraph),
         potentials_(potentials),
         bias_(bias) {

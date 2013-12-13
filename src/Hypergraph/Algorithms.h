@@ -70,6 +70,13 @@ Hyperpath *general_viterbi(
     const HypergraphPotentials<SemiringType> &potentials);
 
 template<typename SemiringType>
+Hyperpath *count_constrained_viterbi(
+    const Hypergraph *graph,
+    const HypergraphPotentials<SemiringType> &weight_potentials,
+    const HypergraphPotentials<CountingPotential> &count_potentials,
+    int limit);
+
+template<typename SemiringType>
 class Marginals {
   typedef SemiringType S;
   typedef typename SemiringType::ValType V;
@@ -151,6 +158,12 @@ class Marginals {
   const Chart<SemiringType> *in_chart_;
   const Chart<SemiringType> *out_chart_;
 };
+
+
+HypergraphProjection *extend_hypergraph_by_count(
+    Hypergraph *graph,
+    HypergraphPotentials<CountingPotential> potentials,
+    int limit);
 
 
 

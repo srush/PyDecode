@@ -33,7 +33,7 @@ def best_constrained_path(graph, potentials, constraints):
     return extras[-1]
 
 
-def _subgradient(graph, weight_potentials, potentials):
+def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path):
     r"""
     Compute a subgradient with respect to potentials.
 
@@ -57,7 +57,7 @@ def _subgradient(graph, weight_potentials, potentials):
     def fn(x):
         mod_weights = ph.pairwise_dot(potentials, x);
         dual_weights = weight_potentials.times(mod_weights)
-        path = ph.best_path(graph, dual_weights)
+        path = best_path_fn(graph, dual_weights)
         score = dual_weights.dot(path)
         vec = potentials.dot(path)
         subgrad = np.zeros(len(x))

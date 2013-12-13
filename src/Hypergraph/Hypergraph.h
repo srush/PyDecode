@@ -190,6 +190,7 @@ class Hypergraph {
    */
   bool same(const Hypergraph &other) const { return other.id_ == id_; }
 
+
  private:
 
   // For construction.
