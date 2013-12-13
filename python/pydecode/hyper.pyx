@@ -11,7 +11,6 @@ include "wrap.pxd"
 include "hypergraph.pyx"
 include "beam.pyx"
 
-
 ############# This is the templated semiring part. ##############
 
 
@@ -2754,7 +2753,7 @@ cdef extern from "Hypergraph/Semirings.h" namespace "HypergraphProjection":
 
 cdef extern from "Hypergraph/BeamSearch.h":
     cdef cppclass CBeamHyp "BeamHyp":
-        cbitset bitset
+        cbitset sig
         double current_score
         double future_score
 
@@ -2774,7 +2773,7 @@ cdef extern from "Hypergraph/BeamSearch.h":
         const CHypergraphBinaryVectorPotentials &constraints,
         const CLogViterbiChart &outside,
         double lower_bound,
-        CBeamGroups *groups)
+        const CBeamGroups &groups)
 
 
 cdef class BeamChart:
@@ -2790,14 +2789,12 @@ cdef class BeamChart:
         return Path().init(self.thisptr.get_path(result),
                            self.graph)
 
-
-
     def __getitem__(self, Node node):
         cdef vector[CBeamHyp *] beam = self.thisptr.get_beam(node.nodeptr)
         data = []
         i = 0
         for p in beam:
-            data.append((Bitset().init(p.bitset),
+            data.append((Bitset().init(p.sig),
                          p.current_score))
         return data
 
@@ -2828,7 +2825,8 @@ def beam_search(Hypergraph graph,
                      deref(constraints.thisptr),
                      deref(outside.chart),
                      lower_bound,
-                     beam_groups)
+                     deref(beam_groups)
+)
     return BeamChart().init(chart, graph)
 
 

@@ -20,7 +20,9 @@ struct BeamGroups {
     : hypergraph_(graph),
       groups_(groups),
       group_limit_(group_limit),
-      num_groups_(num_groups) {
+        num_groups_(num_groups),
+        group_nodes_(num_groups)
+    {
         if (hypergraph_->nodes().size() != groups.size()) {
             throw HypergraphException(
                 "Hypergraph does not match groups.");
@@ -65,13 +67,13 @@ struct BeamGroups {
 
 struct BeamHyp {
     BeamHyp() {}
-
-    BeamHyp(HEdge _edge,
-              binvec _sig,
-              double _cs,
-              double _fs,
-              const vector<int> &_bp)
-    : edge(_edge), sig(_sig),
+  BeamHyp(HEdge _edge,
+            HNode _node,
+            binvec _sig,
+            double _cs,
+            double _fs,
+            const vector<int> &_bp)
+    : edge(_edge), node(_node), sig(_sig),
       current_score(_cs),
       future_score(_fs),
       back_position(_bp) {}
@@ -81,6 +83,7 @@ struct BeamHyp {
     }
 
     HEdge edge;
+    HNode node;
     binvec sig;
     double current_score;
     double future_score;
@@ -102,7 +105,9 @@ public:
             future_(future),
             lower_bound_(lower_bound),
             groups_(groups),
-            current_group_(0) {}
+            current_group_(0),
+            beam_(groups->groups_size()),
+            beam_nodes_(hypergraph->nodes().size()) {}
 
     void insert(HNode node, HEdge edge, binvec bitmap, double val,
                 const vector<int> &back_position);
@@ -143,7 +148,7 @@ BeamChart *beam_search(
     const HypergraphPotentials<BinaryVectorPotential> &constraints,
     const Chart<LogViterbiPotential> &outside,
     double lower_bound,
-    const BeamGroups *groups);
+    const BeamGroups &groups);
 
 
 #endif  // HYPERGRAPH_BEAMSEARCH_H_

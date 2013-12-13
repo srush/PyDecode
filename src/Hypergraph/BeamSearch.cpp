@@ -178,23 +178,44 @@ void BeamChart::insert(HNode node,
     Beam &b = beam_[group];
     int beam_size = groups_->group_limit(group);
     int limit = min((int)b.size(), beam_size);
-    if (limit >= beam_size && val + future_val < b.back().total_score()) return;
+    if (limit >= beam_size &&
+        val + future_val < b[beam_size].total_score()) return;
 
     // Check overlap.
 
     //
-    // for (int i = 0; i < limit; ++i) {
-    //     pair<binvec, BeamScore> &cur = b[i];
-    //     if (cur.first == bitmap) {
-    //         if (val + future_val > cur.second.total_score()) {
-    //             cur.second = BeamScore(edge, val, future_val, bp);
-    //             return;
-    //         } else {
-    //             return;
-    //         }
-    //     }
+    //if (bitmap.any()) {
+        for (int i = 0; i < limit; ++i) {
+            if (b[i].node->id() == node->id() && b[i].sig == bitmap) {
+                if (val + future_val > b[i].total_score()) {
+                    b[i] = BeamHyp(edge, node, bitmap, val, future_val, bp);
+                    return;
+                } else {
+                    return;
+                }
+            }
+        }
+        //}
 
-    // }
+
+    for (int i = 0; i < limit; ++i) {
+        if (val + future_val >= b[i].total_score()) {
+            b.insert(b.begin() + i,
+                     BeamHyp(edge, node, bitmap, val, future_val, bp));
+            if (b.size() >= beam_size) {
+                b.resize(beam_size);
+            }
+            return;
+        }
+    }
+
+
+    if (b.size() < beam_size)  {
+        b.push_back(
+            BeamHyp(edge, node, bitmap, val, future_val, bp));
+    }
+
+
     //
     // int i = -1;
     // if () {
@@ -226,18 +247,6 @@ void BeamChart::insert(HNode node,
     //     }
     // }
 
-    for (int i = 0; i < limit; ++i) {
-        if (val + future_val >= b[i].total_score()) {
-            b.insert(b.begin() + i,
-                     BeamHyp(edge, bitmap, val, future_val, bp));
-            return;
-        }
-    }
-
-    if (b.size() < beam_size) {
-        b.push_back(
-            BeamHyp(edge, bitmap,val, future_val, bp));
-    }
 
 
     // BeamMap::iterator iter = chart_[node->id()].find(bitmap);
@@ -255,7 +264,7 @@ void BeamChart::finish(int group) {
     assert(group == current_group_);
     Beam &b = beam_[group];
     for (int i = 0; i < b.size(); ++i) {
-        BeamPointers &bp = beam_nodes_[b[i].edge->head_node()->id()];
+        BeamPointers &bp = beam_nodes_[b[i].node->id()];
         bp.push_back(&b[i]);
     }
     current_group_++;
