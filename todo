@@ -3,13 +3,10 @@ srush
 
 Create some utility classes
 
-- write beam search function.
-- faster checks.
+- delete memory (in hypergraph)
 
-- profile
-- delete memory
+- faster checks.
 - k-best
-- Make lazy weights
 
 
 minor

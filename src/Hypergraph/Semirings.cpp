@@ -12,31 +12,33 @@ RealPotential::ValType RealPotential::NEGATIVE_INFINITY = -INF/10;
 
 
 template<typename SemiringType>
-HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::times(const HypergraphPotentials<SemiringType> &other) const {
-    check(other);
+HypergraphPotentials<SemiringType> *HypergraphVectorPotentials<SemiringType>::times(const HypergraphPotentials<SemiringType> &other) const {
+    HypergraphPotentials<SemiringType>::check(other);
     vector<typename SemiringType::ValType> new_potentials(potentials_);
-    for (uint i = 0; i < other.potentials_.size(); ++i) {
+    int i = -1;
+    foreach (HEdge edge, this->hypergraph_->edges()) {
+        i++;
         new_potentials[i] = SemiringType::times(new_potentials[i],
-                                                other.potentials_[i]);
+                                                other[edge]);
     }
-    return new HypergraphPotentials<SemiringType>(
-        hypergraph_,
+    return new HypergraphVectorPotentials<SemiringType>(
+        this->hypergraph_,
         new_potentials,
-        SemiringType::times(bias_, other.bias_));
+        SemiringType::times(this->bias_, other.bias_));
 }
 
 template<typename SemiringType>
 HypergraphPotentials<SemiringType> *HypergraphPotentials<SemiringType>::project_potentials(
         const HypergraphProjection &projection) const {
-    vector<typename SemiringType::ValType> potentials(projection.new_graph->edges().size());
-    foreach (HEdge edge, projection.original_graph->edges()) {
+    vector<typename SemiringType::ValType> potentials(projection.new_graph()->edges().size());
+    foreach (HEdge edge, projection.big_graph()->edges()) {
         HEdge new_edge = projection.project(edge);
         if (new_edge != NULL && new_edge->id() >= 0) {
-            assert(new_edge->id() < projection.new_graph->edges().size());
+            assert(new_edge->id() < projection.new_graph()->edges().size());
             potentials[new_edge->id()] = score(edge);
         }
     }
-    return new HypergraphPotentials<SemiringType>(projection.new_graph, potentials, bias_);
+    return new HypergraphVectorPotentials<SemiringType>(projection.new_graph(), potentials, bias_);
 }
 
 HypergraphProjection *HypergraphProjection::project_hypergraph(
@@ -88,30 +90,31 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
     }
     new_graph->finish();
     return new HypergraphProjection(hypergraph, new_graph,
-                                    node_map, edge_map);
+                                    node_map, edge_map, true);
 }
 
-const HypergraphPotentials<LogViterbiPotential> *
-pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
-                         const vector<double> &vec) {
-    HypergraphPotentials<LogViterbiPotential> *potentials =
-            new HypergraphPotentials<LogViterbiPotential>(sparse_potentials.hypergraph());
-    foreach (HEdge edge, sparse_potentials.hypergraph()->edges()) {
-        SparseVector edge_constraints =
-                static_cast<SparseVector>(sparse_potentials.score(edge));
+void
+pairwise_dot(
+    const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
+    const vector<double> &vec,
+    HypergraphPotentials<LogViterbiPotential> *weights) {
+    int i = 0;
+    vector<double> &pots = weights->potentials();
+    foreach (SparseVector edge_constraints, sparse_potentials.potentials()) {
         foreach (SparsePair pair, edge_constraints) {
-            potentials->insert(edge, LogViterbiPotential::times((*potentials)[edge],
-                pair.second * vec[pair.first]));
+            pots[i] =
+                    LogViterbiPotential::times(pots[i],
+                                               pair.second * vec[pair.first]);
         }
+        ++i;
     }
-    SparseVector bias_constraints =
-            static_cast<SparseVector>(sparse_potentials.bias());
+    SparseVector bias_constraints = sparse_potentials.bias();
+    LogViterbiPotential::ValType &bias = weights->bias();
     foreach (SparsePair pair, bias_constraints) {
-        potentials->bias() =
-            LogViterbiPotential::times(potentials->bias(),
+        bias =
+            LogViterbiPotential::times(weights->bias(),
                                        LogViterbiPotential::ValType(pair.second * vec[pair.first]));
     }
-    return potentials;
 };
 
 bool valid_binary_vectors(const bitset<BITMAPSIZE> &lhs,

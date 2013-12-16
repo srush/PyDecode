@@ -101,8 +101,8 @@ class Marginals {
   }
 
   HypergraphPotentials<BoolPotential> *threshold(const V &threshold) const {
-    HypergraphPotentials<BoolPotential> *potentials =
-        new HypergraphPotentials<BoolPotential>(hypergraph_);
+    HypergraphVectorPotentials<BoolPotential> *potentials =
+        new HypergraphVectorPotentials<BoolPotential>(hypergraph_);
     foreach (HEdge edge, hypergraph_->edges()) {
       potentials->insert(edge, threshold < marginal(edge));
     }
@@ -162,8 +162,10 @@ class Marginals {
 
 HypergraphProjection *extend_hypergraph_by_count(
     Hypergraph *graph,
-    HypergraphPotentials<CountingPotential> potentials,
-    int limit);
+    const HypergraphPotentials<CountingPotential> &potentials,
+    int lower_limit,
+    int upper_limit,
+    int goal);
 
 
 

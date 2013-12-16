@@ -54,9 +54,10 @@ def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path
     fn : A function
       A function for subgradient descent.
     """
+
     def fn(x):
-        mod_weights = ph.pairwise_dot(potentials, x);
-        dual_weights = weight_potentials.times(mod_weights)
+        dual_weights = weight_potentials.clone()
+        ph.pairwise_dot(potentials, x, dual_weights)
         path = best_path_fn(graph, dual_weights)
         score = dual_weights.dot(path)
         vec = potentials.dot(path)

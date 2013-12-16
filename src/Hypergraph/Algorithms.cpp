@@ -12,6 +12,8 @@
 #define SPECIALIZE_ALGORITHMS_FOR_SEMI(X)\
   template class Chart<X>;\
   template class HypergraphPotentials<X>;\
+  template class HypergraphVectorPotentials<X>;\
+  template class HypergraphProjectedPotentials<X>;\
   template class Marginals<X>;\
   template Hyperpath *general_viterbi<X>(const Hypergraph *graph,const HypergraphPotentials<X> &potentials);\
   template Hyperpath *count_constrained_viterbi<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, const HypergraphPotentials<CountingPotential> &count_potentials, int limit);
@@ -19,6 +21,8 @@
 #define SPECIALIZE_FOR_SEMI_MIN(X)\
   template class Chart<X>;\
   template class HypergraphPotentials<X>;\
+  template class HypergraphVectorPotentials<X>;\
+  template class HypergraphProjectedPotentials<X>;\
   template Chart<X> *general_inside<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials);\
   template Chart<X> *general_outside<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, const Chart<X> &);
 
@@ -90,7 +94,7 @@ Hyperpath *general_viterbi(
     const Hypergraph *graph,
     const HypergraphPotentials<S> &potentials) {
 
-  potentials.check(*graph);
+    potentials.check(*graph);
   Chart<S> *chart = new Chart<S>(graph);
   vector<HEdge> back(graph->nodes().size(), NULL);
 
@@ -132,26 +136,6 @@ Hyperpath *general_viterbi(
   return new Hyperpath(graph, path);
 }
 
-
-struct EdgeGroup {
-    EdgeGroup(HEdge _edge, int back_left, int back_right)
-            : edge(_edge), back(2)
-    {
-        back[0] = back_left;
-        back[1] = back_right;
-    }
-    vector<int> back;
-    HEdge edge;
-};
-
-struct NodeCount {
-    NodeCount(int _count, HNode _node) {
-        count = _count;
-        node = _node;
-    }
-    int count;
-    HNode node;
-};
 
 template<typename StatSem>
 struct NodeScore {
@@ -285,10 +269,35 @@ Hyperpath *count_constrained_viterbi(
   return new Hyperpath(graph, path);
 }
 
+struct EdgeGroup {
+    EdgeGroup(HEdge _edge, int back_left, int back_right)
+            : edge(_edge), back(2)
+    {
+        back[0] = back_left;
+        back[1] = back_right;
+    }
+    vector<int> back;
+    HEdge edge;
+};
+
+struct NodeCount {
+    NodeCount(int _count, HNode _node) {
+        count = _count;
+        node = _node;
+    }
+    int count;
+    HNode node;
+};
+
+
 HypergraphProjection *extend_hypergraph_by_count(
     Hypergraph *hypergraph,
     const HypergraphPotentials<CountingPotential> &potentials,
-    int limit) {
+    int lower_limit,
+    int upper_limit,
+    int goal) {
+    int limit = upper_limit - lower_limit;
+    int modified_goal = goal - lower_limit;
 
     Hypergraph *new_graph = new Hypergraph();
     vector<vector<NodeCount > > new_nodes(hypergraph->nodes().size());
@@ -300,10 +309,11 @@ HypergraphProjection *extend_hypergraph_by_count(
         if (node->terminal()) {
             // The node is a terminal, so just add it.
             new_nodes[node->id()].push_back(
-                NodeCount(0, new_graph->add_terminal_node(node->label())));
+                NodeCount(0,
+                          new_graph->add_terminal_node(node->label())));
         } else {
             // Bucket edges.
-            vector<vector<EdgeGroup> > counts(limit);
+            vector<vector<EdgeGroup> > counts(limit + 1);
             foreach (HEdge edge, node->edges()) {
                 bool unary = edge->tail_nodes().size() == 1;
                 HNode left_node = edge->tail_nodes()[0];
@@ -311,32 +321,35 @@ HypergraphProjection *extend_hypergraph_by_count(
                 int score = potentials.score(edge);
                 for (int i = 0; i < new_nodes[left_node->id()].size(); ++i) {
                     int total = score + new_nodes[left_node->id()][i].count;
-                    if (total > limit) continue;
+                    if (total < lower_limit || total > upper_limit) continue;
                     if (unary) {
-                        counts[total].push_back(EdgeGroup(edge, i, 0));
+                        counts[total - lower_limit].push_back(EdgeGroup(edge, i, 0));
                     } else {
-
                         HNode right_node = edge->tail_nodes()[1];
                         for (int j = 0; j < new_nodes[right_node->id()].size(); ++j) {
                             int total = score + new_nodes[left_node->id()][i].count
                                     + new_nodes[right_node->id()][j].count;
-                            if (total > limit) continue;
-                            counts[total].push_back(EdgeGroup(edge, i, j));
+                            if (total < lower_limit || total > upper_limit) continue;
+                            counts[total - lower_limit].push_back(EdgeGroup(edge, i, j));
                         }
                     }
                 }
             }
 
             // Make new nodes.
-            for (int count = 0; count < limit; ++count) {
+            for (int count = 0; count <= limit; ++count) {
                 if (counts[count].size() == 0) continue;
+                if (hypergraph->root()->id() == node->id() &&
+                    count != modified_goal) continue;
+
                 new_nodes[node->id()].push_back(
-                    NodeCount(count,
+                    NodeCount(count + lower_limit,
                               new_graph->start_node(node->label())));
-                vector<HNode> tails;
+
                 foreach (EdgeGroup edge_group, counts[count]) {
                     HEdge edge = edge_group.edge;
-                    for (int i = 0; i < edge_group.back.size(); ++i) {
+                    vector<HNode> tails;
+                    for (int i = 0; i < edge->tail_nodes().size(); ++i) {
                         tails.push_back(new_nodes[edge->tail_nodes()[i]->id()]
                                         [edge_group.back[i]].node);
 
@@ -344,9 +357,10 @@ HypergraphProjection *extend_hypergraph_by_count(
                     HEdge new_edge = new_graph->add_edge(tails, edge->label());
                     reverse_edge_map[edge->id()].push_back(new_edge);
                 }
-                new_graph->end_node();
-                reverse_node_map[node->id()].push_back(
-                    new_nodes[node->id()].back().node);
+                if (new_graph->end_node()) {
+                    reverse_node_map[node->id()].push_back(
+                        new_nodes[node->id()].back().node);
+                }
             }
         }
     }
@@ -371,8 +385,8 @@ HypergraphProjection *extend_hypergraph_by_count(
             (*edge_map)[new_edge->id()] = edge;
         }
     }
-    return new HypergraphProjection(hypergraph, new_graph,
-                                    node_map, edge_map);
+    return new HypergraphProjection(new_graph, hypergraph,
+                                    node_map, edge_map, false);
 }
 
 SPECIALIZE_ALGORITHMS_FOR_SEMI(ViterbiPotential)

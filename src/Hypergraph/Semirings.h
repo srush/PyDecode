@@ -432,45 +432,22 @@ public:
 
 class HypergraphProjection;
 
+
+
 template<typename SemiringType>
 class HypergraphPotentials {
     typedef SemiringType S;
     typedef typename SemiringType::ValType V;
  public:
     HypergraphPotentials(const Hypergraph *hypergraph,
-                         const vector<V> &potentials,
                          V bias)
-    : hypergraph_(hypergraph),
-        potentials_(potentials),
-        bias_(bias) {
-            assert(potentials.size() == hypergraph->edges().size());
-    }
+            : hypergraph_(hypergraph),
+            bias_(bias) {}
 
-    HypergraphPotentials(const Hypergraph *hypergraph)
-        : hypergraph_(hypergraph),
-            potentials_(hypergraph->edges().size(), SemiringType::one()),
-            bias_(SemiringType::one()) {}
+    virtual V dot(const Hyperpath &path) const = 0;
 
-    V dot(const Hyperpath &path) const {
-        path.check(*hypergraph_);
-        V score = SemiringType::one();
-        foreach (HEdge edge, path.edges()) {
-            score = SemiringType::times(score, potentials_[edge->id()]);
-        }
-        return SemiringType::times(score, bias_);
-    }
-
-    V score(HEdge edge) const { return potentials_[edge->id()]; }
-    inline V operator[] (HEdge edge) const {
-        return potentials_[edge->id()];
-    }
-    // inline V& operator[] (HEdge edge) {
-    //  return potentials_[edge->id()];
-    // }
-
-    void insert(const HEdge& edge, const V& val) {
-        potentials_[edge->id()] = val;
-    }
+    virtual V score(HEdge edge) const = 0;
+    virtual inline V operator[] (HEdge edge) const = 0;
 
     const V &bias() const { return bias_; }
     V &bias() { return bias_; }
@@ -478,13 +455,16 @@ class HypergraphPotentials {
     HypergraphPotentials<S> *project_potentials(
         const HypergraphProjection &projection) const;
 
+    virtual vector<V> &potentials() = 0;
+    virtual const vector<V> &potentials() const = 0;
+
     /**
      * Pairwise "times" with another set of potentials.
      *
-     * @return New hypergraphpotentials.
+     * @return New hypergraph potentials.
      */
-    HypergraphPotentials<S> *times(
-            const HypergraphPotentials<S> &potentials) const;
+    virtual HypergraphPotentials<S> *times(
+            const HypergraphPotentials<S> &potentials) const = 0;
 
     void check(const Hypergraph &graph) const {
         if (!graph.same(*hypergraph_)) {
@@ -498,28 +478,112 @@ class HypergraphPotentials {
         }
     }
 
-    const Hypergraph *hypergraph() const { return hypergraph_; }
+    // Create a copy of the weights.
+    virtual HypergraphPotentials *clone() const = 0;
 
- protected:
+    // TODO: This should be private. Fix template issue.
+ public:
+
     const Hypergraph *hypergraph_;
-    vector<V> potentials_;
+    //vector<V> potentials_;
     V bias_;
 };
 
 
+template<typename SemiringType>
+class HypergraphVectorPotentials :
+public HypergraphPotentials<SemiringType> {
+    typedef SemiringType S;
+    typedef typename SemiringType::ValType V;
+
+ public:
+    HypergraphVectorPotentials(const Hypergraph *hypergraph,
+                               const vector<V> &potentials,
+                               V bias)
+            : HypergraphPotentials<SemiringType>(hypergraph, bias),
+            potentials_(potentials) {
+            assert(potentials.size() == hypergraph->edges().size());
+    }
+    vector<V> &potentials() { return potentials_; }
+    const vector<V> &potentials() const { return potentials_; }
+
+    HypergraphVectorPotentials(const Hypergraph *hypergraph)
+            : HypergraphPotentials<SemiringType>(hypergraph, SemiringType::one()),
+            potentials_(hypergraph->edges().size(), SemiringType::one()) {}
+
+    static HypergraphPotentials<SemiringType> *
+            make_potentials(const Hypergraph *hypergraph,
+                            const vector<V> &potentials,
+                            V bias) {
+        return new HypergraphVectorPotentials<SemiringType>(hypergraph, potentials, bias);
+    }
+
+    V dot(const Hyperpath &path) const {
+        path.check(*this->hypergraph_);
+        V score = SemiringType::one();
+        foreach (HEdge edge, path.edges()) {
+            score = SemiringType::times(score, potentials_[edge->id()]);
+        }
+        return SemiringType::times(score, this->bias_);
+    }
+
+    V score(HEdge edge) const { return potentials_[edge->id()]; }
+    inline V operator[] (HEdge edge) const {
+        return potentials_[edge->id()];
+    }
+
+    void insert(const HEdge& edge, const V& val) {
+        potentials_[edge->id()] = val;
+    }
+
+    HypergraphPotentials<S> *times(
+        const HypergraphPotentials<S> &potentials) const;
+
+    HypergraphPotentials<S> *clone() const {
+        return new HypergraphVectorPotentials(this->hypergraph_,
+                                              potentials_,
+                                              this->bias_);
+    }
+
+ protected:
+
+    /* const Hypergraph *hypergraph_; */
+    vector<V> potentials_;
+    /* V bias_; */
+
+};
+
 class HypergraphProjection {
  public:
     HypergraphProjection(const Hypergraph *original,
-                                             const Hypergraph *_new_graph,
-                                             const vector<HNode> *node_map,
-                                             const vector<HEdge> *edge_map)
-            : original_graph(original),
-            new_graph(_new_graph),
+                         const Hypergraph *_new_graph,
+                         const vector<HNode> *node_map,
+                         const vector<HEdge> *edge_map,
+                         bool bidirectional)
+            : big_graph_(original),
+            new_graph_(_new_graph),
             node_map_(node_map),
-            edge_map_(edge_map) {
-                assert(node_map->size() == original_graph->nodes().size());
-                assert(edge_map->size() == original_graph->edges().size());
+            edge_map_(edge_map),
+            bidirectional_(bidirectional) {
+                assert(node_map->size() == big_graph()->nodes().size());
+                assert(edge_map->size() == big_graph()->edges().size());
+
+
+                if (bidirectional) {
+                    node_reverse_map_.resize(new_graph_->nodes().size(), NULL);
+                    edge_reverse_map_.resize(new_graph_->edges().size(), NULL);
+                    foreach (HNode node, original->nodes()) {
+                        if ((*node_map_)[node->id()] == NULL) continue;
+                        node_reverse_map_[(*node_map_)[node->id()]->id()] = node;
+                    }
+                    foreach (HEdge edge, original->edges()) {
+                        if ((*edge_map_)[edge->id()] == NULL) continue;
+                        edge_reverse_map_[(*edge_map_)[edge->id()]->id()] = edge;
+                    }
+                }
+
 #ifndef NDEBUG
+
                 foreach (HNode node, *node_map) {
                     assert(node == NULL ||
                                  node->id() < (int)_new_graph->nodes().size());
@@ -536,9 +600,55 @@ class HypergraphProjection {
         delete edge_map_;
     }
 
+    static HypergraphProjection *compose_projections(
+        const HypergraphProjection *projection1, bool reverse1,
+        const HypergraphProjection *projection2) {
+        const Hypergraph *big_graph = projection1->big_graph();
+        if (reverse1) big_graph = projection1->new_graph();
+
+        vector<HEdge> *edge_map = new vector<HEdge>(big_graph->edges().size(), NULL);
+        vector<HNode> *node_map = new vector<HNode>(big_graph->nodes().size(), NULL);
+        foreach (HEdge edge, big_graph->edges()) {
+            HEdge proj;
+            if (reverse1) {
+                proj = projection1->unproject(edge);
+            } else {
+                proj = projection1->project(edge);
+            }
+            if (proj != NULL && proj->id() >= 0) {
+                (*edge_map)[edge->id()] = projection2->project(proj);
+            }
+        }
+        foreach (HNode node, big_graph->nodes()) {
+            HNode proj;
+            if (reverse1) {
+                proj = projection1->unproject(node);
+            } else {
+                proj = projection1->project(node);
+            }
+            if (proj != NULL && proj->id() >= 0) {
+                (*node_map)[node->id()] = projection2->project(proj);
+            }
+        }
+
+        return new HypergraphProjection(big_graph,
+                                        projection2->new_graph(),
+                                        node_map, edge_map, false);
+    }
+
+
     static HypergraphProjection *project_hypergraph(
             const Hypergraph *hypergraph,
             const HypergraphPotentials<BoolPotential> &edge_mask);
+
+    Hyperpath *project(const Hyperpath &original_path) const {
+        original_path.check(*big_graph());
+        vector<HEdge> edges;
+        foreach (HEdge edge, original_path.edges()) {
+            edges.push_back((*edge_map_)[edge->id()]);
+        }
+        return new Hyperpath(new_graph(), edges);
+    }
 
     HEdge project(HEdge original) const {
         return (*edge_map_)[original->id()];
@@ -548,19 +658,118 @@ class HypergraphProjection {
         return (*node_map_)[original->id()];
     }
 
-    const Hypergraph *original_graph;
-    const Hypergraph *new_graph;
+    HNode unproject(HNode original) const {
+        assert(bidirectional_);
+        return node_reverse_map_[original->id()];
+    }
+
+    HEdge unproject(HEdge original) const {
+        assert(bidirectional_);
+        return edge_reverse_map_[original->id()];
+    }
+
+    const Hypergraph *big_graph() const{
+        return big_graph_;
+    }
+    const Hypergraph *new_graph() const{
+        return new_graph_;
+    }
+
+    const Hypergraph *big_graph_;
+    const Hypergraph *new_graph_;
 
  private:
 
     // Owned.
     const vector<HNode> *node_map_;
     const vector<HEdge> *edge_map_;
+    vector<HNode> node_reverse_map_;
+    vector<HEdge> edge_reverse_map_;
+
+    bool bidirectional_;
 };
 
-const HypergraphPotentials<LogViterbiPotential> *
+template<typename SemiringType>
+class HypergraphProjectedPotentials :
+public HypergraphPotentials<SemiringType> {
+    typedef SemiringType S;
+    typedef typename SemiringType::ValType V;
+
+ public:
+    HypergraphProjectedPotentials(
+        HypergraphPotentials<S> *base_potentials,
+        const HypergraphProjection *projection)
+            : HypergraphPotentials<SemiringType>(
+                projection->big_graph(),
+                base_potentials->bias()),
+            base_potentials_(base_potentials),
+            projection_(projection) {
+                base_potentials->check(*projection->new_graph());
+                //assert(base_potentials->size() == this->hypergraph_->edges().size());
+            }
+
+    static HypergraphPotentials<SemiringType> *
+            make_potentials(HypergraphPotentials<S> *base_potentials,
+                            const HypergraphProjection *projection) {
+        return new HypergraphProjectedPotentials<SemiringType>(base_potentials, projection);
+    }
+
+    vector<V> &potentials() { return base_potentials_->potentials(); }
+    const vector<V> &potentials() const { return base_potentials_->potentials(); }
+
+    V dot(const Hyperpath &path) const {
+        path.check(*this->hypergraph_);
+        V base_score = SemiringType::one();
+        foreach (HEdge edge, path.edges()) {
+            base_score = SemiringType::times(base_score,
+                                             score(edge));
+        }
+        return SemiringType::times(base_score, this->bias_);
+    }
+
+    V score(HEdge edge) const {
+        HEdge new_edge = projection_->project(edge);
+        return base_potentials_->score(new_edge);
+    }
+    inline V operator[] (HEdge edge) const {
+        return score(edge);
+    }
+
+    HypergraphPotentials<S> *times(
+        const HypergraphPotentials<S> &other) const {
+        vector<typename SemiringType::ValType> new_potentials(projection_->new_graph()->edges().size());
+        int i = -1;
+        foreach (HEdge edge, projection_->new_graph()->edges()) {
+            i++;
+            new_potentials[i] = SemiringType::times(
+                base_potentials_->score(edge),
+                other.score(edge));
+        }
+        return new HypergraphProjectedPotentials<SemiringType>(
+            new HypergraphVectorPotentials<SemiringType>(
+                projection_->new_graph(),
+                new_potentials,
+                SemiringType::times(this->bias_, other.bias())),
+            projection_);
+
+    }
+
+    HypergraphPotentials<S> *clone() const {
+        return new HypergraphProjectedPotentials(
+            base_potentials_->clone(),
+            projection_);
+    }
+
+
+ protected:
+    HypergraphPotentials<S> *base_potentials_;
+    const HypergraphProjection *projection_;
+};
+
+void
 pairwise_dot(const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
-             const vector<double> &vec);
+             const vector<double> &vec,
+             HypergraphPotentials<LogViterbiPotential> *weights);
 
 typedef bitset<BITMAPSIZE> binvec;
 

@@ -41,8 +41,3 @@ cdef extern from "Hypergraph/Hypergraph.h":
         CHypergraphWeights(const CHypergraph *hypergraph,
                            const vector[double] weights,
                            double bias) except +
-
-    cdef cppclass CHypergraphProjection "HypergraphProjection":
-        const CHypergraph *new_graph
-        const CHyperedge *project(const CHyperedge *edge)
-        const CHypernode *project(const CHypernode *node)

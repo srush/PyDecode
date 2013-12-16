@@ -13,8 +13,8 @@ BeamChart *beam_search(
     const BeamGroups &groups) {
 
     // Check the inputs.
-    potentials.check(graph);
-    constraints.check(graph);
+    potentials.check(*graph);
+    constraints.check(*graph);
     groups.check(graph);
 
     typedef BinaryVectorPotential BVP;

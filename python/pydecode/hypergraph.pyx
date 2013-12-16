@@ -35,6 +35,9 @@ cdef class Hypergraph:
         self.node_labels = []
         self._cached_edges = None
 
+    def __dealloc__(self):
+        del self.thisptr
+
     cdef Hypergraph init(self, const CHypergraph *ptr,
                          node_labels=[], edge_labels=[]):
         self.thisptr = <CHypergraph *> ptr

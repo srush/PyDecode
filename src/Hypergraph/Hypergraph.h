@@ -119,6 +119,16 @@ class Hypergraph {
       temp_nodes_(0), temp_edges_(0),
       id_(ID++) {}
 
+    ~Hypergraph() {
+        foreach (HEdge edge, edges_) {
+            delete edge;
+        }
+        foreach (HNode node, nodes_) {
+            delete node;
+        }
+    }
+
+
   /**
    * Get the root of the hypergraph
    *
