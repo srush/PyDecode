@@ -12,7 +12,6 @@ include "hypergraph.pyx"
 include "beam.pyx"
 
 
-
 ############# This is the templated semiring part. ##############
 
 {% for S in semirings %}
@@ -29,7 +28,9 @@ cdef extern from "Hypergraph/Algorithms.h":
 
     CHyperpath *viterbi_{{S.type}}"general_viterbi<{{S.ctype}}>"(
         const CHypergraph *graph,
-        const CHypergraph{{S.type}}Potentials theta) except +
+        const CHypergraph{{S.type}}Potentials theta,
+        C{{S.type}}Chart * chart
+        ) except +
 
     CHyperpath *count_constrained_viterbi_{{S.type}} "count_constrained_viterbi<{{S.ctype}}>"(
         const CHypergraph *graph,
@@ -44,6 +45,7 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph *hypergraph()
 
     cdef cppclass C{{S.type}}Chart "Chart<{{S.ctype}}>":
+        C{{S.type}}Chart(const CHypergraph *graph)
         {{S.vtype}} get(const CHypernode *node)
         void insert(const CHypernode& node, const {{S.vtype}}& val)
 
@@ -93,7 +95,6 @@ cdef extern from "Hypergraph/Semirings.h" namespace "{{S.ctype}}":
     {{S.vtype}} {{S.type}}_normalize "{{S.ctype}}::normalize" ({{S.vtype}}&)
 
 
-
 cdef class {{S.type}}Potentials:
     r"""
     Potential vector :math:`\theta \in R^{|{\cal E}|}` associated with a hypergraph.
@@ -103,10 +104,13 @@ cdef class {{S.type}}Potentials:
     """
     cdef Hypergraph hypergraph
     cdef CHypergraph{{S.type}}Potentials *thisptr
+    cdef Projection projection
     cdef kind
 
     def __dealloc__(self):
         del self.thisptr
+        self.thisptr = NULL
+
 
     def __cinit__(self, Hypergraph graph):
         """
@@ -116,6 +120,7 @@ cdef class {{S.type}}Potentials:
         """
         self.hypergraph = graph
         self.kind = {{S.type}}
+        self.thisptr = NULL
 
     def times(self, {{S.type}}Potentials other):
         cdef CHypergraph{{S.type}}Potentials *new_potentials = \
@@ -126,19 +131,19 @@ cdef class {{S.type}}Potentials:
         return {{S.type}}Potentials(self.hypergraph).init(self.thisptr.clone())
 
     def project(self, Hypergraph graph, Projection projection):
-        cdef {{S.type}}Potentials new_potentials = {{S.type}}Potentials(graph)
         cdef CHypergraph{{S.type}}Potentials *ptr = \
             self.thisptr.project_potentials(deref(projection.thisptr))
-        return new_potentials.init(ptr)
+        return {{S.type}}Potentials(graph).init(ptr)
 
     def up_project(self, Hypergraph graph, Projection projection):
         cdef CHypergraph{{S.type}}Potentials *ptr = \
             cmake_projected_potentials_{{S.type}}(self.thisptr, projection.thisptr)
-        return {{S.type}}Potentials(graph).init(ptr)
+        return {{S.type}}Potentials(graph).init(ptr, projection)
 
     def show(self, Hypergraph graph):
         return "\n".join(["%20s : %s"%(graph.label(edge), self[edge])
            for edge in graph.edges])
+
 
     property kind:
         def __get__(self):
@@ -208,9 +213,9 @@ cdef class {{S.type}}Potentials:
                                       potentials, my_bias)
         return self
 
-
-    cdef init(self, CHypergraph{{S.type}}Potentials *ptr):
+    cdef init(self, CHypergraph{{S.type}}Potentials *ptr, Projection projection=None):
         self.thisptr = ptr
+        self.projection = projection
         return self
 
     def __getitem__(self, Edge edge not None):
@@ -301,21 +306,33 @@ cdef class _{{S.type}}Chart:
     cdef C{{S.type}}Chart *chart
     cdef kind
 
-    def __init__(self):
+    def __init__(self, Hypergraph graph=None):
         self.kind = {{S.type}}
+        self.chart = NULL
+        if graph is not None:
+            self.chart = new C{{S.type}}Chart(graph.thisptr)
 
     def __getitem__(self, Node node):
         return _{{S.ptype}}_from_cpp(self.chart.get(node.nodeptr))
 
     def __dealloc__(self):
         del self.chart
+        self.chart = NULL
 
 
 cdef class _{{S.type}}Marginals:
     cdef const C{{S.type}}Marginals *thisptr
+    cdef Hypergraph graph
 
-    cdef init(self, const C{{S.type}}Marginals *ptr):
+    def __init__(self):
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    cdef init(self, const C{{S.type}}Marginals *ptr, Hypergraph graph):
         self.thisptr = ptr
+        self.graph = graph
         return self
 
     def __getitem__(self, obj):
@@ -329,10 +346,10 @@ cdef class _{{S.type}}Marginals:
             raise HypergraphAccessException(
                 "Only nodes and edges have {{S.type}} marginal values." + \
                 "Passed %s."%obj)
+
     {% if S.viterbi %}
     def threshold(self, {{S.vtype}} semi):
-        return BoolPotentials(Hypergraph().init(self.thisptr.hypergraph())) \
-            .init(self.thisptr.threshold(semi))
+        return BoolPotentials(self.graph).init(self.thisptr.threshold(semi))
     {% endif %}
 
 class {{S.type}}:
@@ -361,10 +378,19 @@ class {{S.type}}:
     {% if S.viterbi %}
     @staticmethod
     def viterbi(Hypergraph graph,
-                {{S.type}}Potentials potentials):
+                {{S.type}}Potentials potentials,
+                _{{S.type}}Chart chart=None):
+        cdef C{{S.type}}Chart *used_chart
+        if chart is not None:
+            used_chart = chart.chart
+        else:
+            used_chart = new C{{S.type}}Chart(graph.thisptr)
         cdef CHyperpath *path = \
             viterbi_{{S.type}}(graph.thisptr,
-                               deref(potentials.thisptr))
+                               deref(potentials.thisptr),
+                               used_chart)
+        if chart is None:
+            del used_chart
         return Path().init(path, graph)
 
     @staticmethod
@@ -386,7 +412,7 @@ class {{S.type}}:
                           {{S.type}}Potentials potentials):
         cdef const C{{S.type}}Marginals *marginals = \
             {{S.type}}_compute(graph.thisptr, potentials.thisptr)
-        return _{{S.type}}Marginals().init(marginals)
+        return _{{S.type}}Marginals().init(marginals, graph)
 
 
     @staticmethod
@@ -394,14 +420,8 @@ class {{S.type}}:
                          {{S.type}}Potentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
-
-        bool_potentials = marginals.threshold(
-            threshold)
-        projection = Projection(graph, bool_potentials)
-        new_graph = projection.project(graph)
-        new_potential = potentials.project(new_graph, projection)
-        return new_graph, new_potential
-
+        bool_potentials = marginals.threshold(threshold)
+        return make_pruning_projections(graph, bool_potentials)
 
 {% endfor %}
 
@@ -459,7 +479,7 @@ def outside(Hypergraph graph, potentials, inside_chart):
     """
     return potentials.kind.outside(graph, potentials, inside_chart)
 
-def best_path(Hypergraph graph, potentials):
+def best_path(Hypergraph graph, potentials, chart=None):
     r"""
     best_path(Hypergraph graph, Potentials potentials):
 
@@ -480,7 +500,7 @@ def best_path(Hypergraph graph, potentials):
     path : :py:class:`Path`
       The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
     """
-    return potentials.kind.viterbi(graph, potentials)
+    return potentials.kind.viterbi(graph, potentials, chart)
 
 def prune_hypergraph(Hypergraph graph, potentials, thres):
     r"""
@@ -528,6 +548,7 @@ def compute_marginals(Hypergraph graph, potentials):
 class Potentials(LogViterbiPotentials):
     pass
 
+
 class Chart(_LogViterbiChart):
     r"""
     Chart :math:`S^{|{\cal V}|}` associated with a hypergraph (V, E) and semiring S.
@@ -557,8 +578,8 @@ cdef extern from "Hypergraph/Semirings.h":
     cdef cppclass CHypergraphProjection "HypergraphProjection":
         const CHyperedge *project(const CHyperedge *edge)
         const CHypernode *project(const CHypernode *node)
-        const CHypergraph *big_graph() const
-        const CHypergraph *new_graph() const
+        const CHypergraph *big_graph()
+        const CHypergraph *new_graph()
 
 
     void cpairwise_dot "pairwise_dot"(
@@ -671,19 +692,33 @@ def pairwise_dot(SparseVectorPotentials potentials, vec, LogViterbiPotentials we
 cdef class Projection:
     cdef const CHypergraphProjection *thisptr
     cdef Hypergraph small_graph
+    cdef Hypergraph big_graph
 
-    cdef Projection init(self, const CHypergraphProjection *thisptr, Hypergraph small_graph=None):
+    def __cinit__(self):
+        self.thisptr = NULL
+
+    cdef Projection init(self, const CHypergraphProjection *thisptr,
+                         Hypergraph small_graph = None):
         self.thisptr = thisptr
-        self.small_graph = small_graph
+        assert thisptr.big_graph().id() >= 0
+        assert thisptr.new_graph().id() >= 0
+        if small_graph == None:
+            self.small_graph = self.small_hypergraph()
+        else:
+            self.small_graph = small_graph
+        self.big_graph = self.big_hypergraph()
         return self
 
     def compose(self, Projection other, bool reverse):
         cdef CHypergraphProjection *newptr = \
             ccompose_projections(other.thisptr, reverse, self.thisptr)
-        return Projection().init(newptr, self.small_graph)
+        return Projection().init(newptr)
+
 
     def __dealloc__(self):
-        del self.thisptr
+        if self.thisptr is not NULL:
+            del self.thisptr
+            self.thisptr = NULL
 
     def __getitem__(self, obj):
         cdef const CHyperedge *edge
@@ -697,7 +732,6 @@ cdef class Projection:
             node = self.thisptr.project((<Node>obj).nodeptr)
             assert node.id() >= 0
             return self.small_graph.nodes[node.id()]
-
 
     def project(self, Hypergraph graph):
         cdef Hypergraph new_graph = Hypergraph()
@@ -726,18 +760,19 @@ cdef class Projection:
 
     def small_hypergraph(self):
         cdef const CHypergraph *graph = self.thisptr.new_graph()
-        return Hypergraph().init(graph, [], [])
+        return Hypergraph().init(graph)
 
     def big_hypergraph(self):
         cdef const CHypergraph *graph = self.thisptr.big_graph()
-        return Hypergraph().init(graph, [], [])
+        assert graph.id() >= 0
+        return Hypergraph().init(graph)
+
 
 def make_pruning_projections(Hypergraph graph, BoolPotentials filt):
     cdef const CHypergraphProjection *projection = \
         cproject_hypergraph(graph.thisptr,
                             deref(filt.thisptr))
-
-    return Projection(graph).init(projection)
+    return Projection().init(projection)
 
 def valid_binary_vectors(Bitset lhs, Bitset rhs):
     return cvalid_binary_vectors(lhs.data, rhs.data)
@@ -751,6 +786,7 @@ cdef extern from "Hypergraph/Algorithms.h":
         int upper_limit,
         int goal)
 
+
 def extend_hypergraph_by_count(Hypergraph graph,
                                CountingPotentials potentials,
                                int lower_limit,
@@ -762,4 +798,4 @@ def extend_hypergraph_by_count(Hypergraph graph,
                                     lower_limit,
                                     upper_limit,
                                     goal)
-    return Projection(graph).init(projection, graph)
+    return Projection().init(projection, graph)

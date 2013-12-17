@@ -1,6 +1,8 @@
 // Copyright [2013] Alexander Rush
 
 #include <typeinfo>
+#include <string>
+#include <vector>
 
 #include "Hypergraph/Hypergraph.h"
 

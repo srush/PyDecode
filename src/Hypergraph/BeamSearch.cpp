@@ -1,8 +1,14 @@
 // Copyright [2013] Alexander Rush
 
-#include "./common.h"
+
+
 #include "Hypergraph/BeamSearch.h"
 
+#include <algorithm>
+#include <queue>
+#include <utility>
+#include <vector>
+#include "./common.h"
 
 BeamChart *beam_search(
     const Hypergraph *graph,
@@ -35,10 +41,8 @@ BeamChart *beam_search(
 
     for (int group = 0; group < groups.groups_size(); ++group) {
         foreach (HNode node, groups.group_nodes(group)) {
-
             // 2) Enumerate over each edge (in topological order).
             foreach (HEdge edge, node->edges()) {
-
                 const binvec &sig = constraints.score(edge);
                 double score = potentials.score(edge);
 
@@ -85,7 +89,8 @@ BeamChart *beam_search(
 
                     // Check valid.
                     if (!VALID_BINARY_VECTORS(sig, p_left->sig) ||
-                        !VALID_BINARY_VECTORS(and_sig_right, p_left->sig)) continue;
+                        !VALID_BINARY_VECTORS(and_sig_right,
+                                                  p_left->sig)) continue;
 
                     // Construct sig and score.
                     const binvec mid_sig = BVP::times(sig, p_left->sig);
@@ -111,7 +116,8 @@ BeamChart *beam_search(
 
                         // Check if this signature is valid.
                         if (!valid_right[j]) continue;
-                        if (!VALID_BINARY_VECTORS(mid_sig, p_right->sig)) continue;
+                        if (!VALID_BINARY_VECTORS(mid_sig,
+                                                  p_right->sig)) continue;
 
                         // Construct scores and sig.
                         back_position[1] = j;
@@ -155,7 +161,6 @@ Hyperpath *BeamChart::get_path(int result) {
             HNode node = edge->tail_nodes()[i];
             to_examine.push(pair<HNode, int>(node,
                                              score->back_position[i]));
-
         }
     }
     sort(path.begin(), path.end(), IdComparator());
@@ -167,36 +172,28 @@ void BeamChart::insert(HNode node,
                        binvec bitmap,
                        double val,
                        const vector<int> &bp) {
-
     // Check that the node is not bounded out.
-
-
     double future_val = (*future_)[node];
     if (val + future_val < lower_bound_) return;
     int group = groups_->group(node);
     assert(current_group_ == group);
     Beam &b = beam_[group];
     int beam_size = groups_->group_limit(group);
-    int limit = min((int)b.size(), beam_size);
+    int limit = min(static_cast<int>(b.size()), beam_size);
     if (limit >= beam_size &&
         val + future_val < b[beam_size].total_score()) return;
 
     // Check overlap.
-
-    //
-    //if (bitmap.any()) {
-        for (int i = 0; i < limit; ++i) {
-            if (b[i].node->id() == node->id() && b[i].sig == bitmap) {
-                if (val + future_val > b[i].total_score()) {
-                    b[i] = BeamHyp(edge, node, bitmap, val, future_val, bp);
-                    return;
-                } else {
-                    return;
-                }
+    for (int i = 0; i < limit; ++i) {
+        if (b[i].node->id() == node->id() && b[i].sig == bitmap) {
+            if (val + future_val > b[i].total_score()) {
+                b[i] = BeamHyp(edge, node, bitmap, val, future_val, bp);
+                return;
+            } else {
+                return;
             }
         }
-        //}
-
+    }
 
     for (int i = 0; i < limit; ++i) {
         if (val + future_val >= b[i].total_score()) {
@@ -234,7 +231,7 @@ void BeamChart::insert(HNode node,
     //     if (cur == lower || cur == upper) {
     //         b.insert(b.begin() + cur,
     //                  pair<binvec, BeamScore>(bitmap,
-    //                                          BeamScore(edge, val, future_val, bp)));
+    //           BeamScore(edge, val, future_val, bp)));
     //         return;
     //     }
 
@@ -274,7 +271,7 @@ void BeamChart::finish(int group) {
 // Hyperpath *beam_search(
 //     const Hypergraph *graph,
 //     const HypergraphPotentials<LogViterbiPotential> &potentials,
-// 	//const HypergraphPotentials<SparseVectorPotential> &constraints,
+//const HypergraphPotentials<SparseVectorPotential> &constraints,
 //     const HypergraphPotentials<BinaryVectorPotential> &constraints,
 //     const Chart<LogViterbiPotential> &future) {
 //   potentials.check(graph);

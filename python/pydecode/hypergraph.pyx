@@ -4,8 +4,10 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
 
+cdef _hypergraph_registry_counts = {}
+
 cdef class Hypergraph:
-    r"""
+    r"""1
 
     Hypergraph consisting of a set of nodes :math:`{\cal V}`, hyperedges :math:`{\cal E}`, and a root node.
 
@@ -30,16 +32,30 @@ cdef class Hypergraph:
         """
         Create a new hypergraph.
         """
-        self.thisptr = new CHypergraph()
+        self.thisptr = NULL
         self.edge_labels = []
         self.node_labels = []
         self._cached_edges = None
 
     def __dealloc__(self):
-        del self.thisptr
+        if self.thisptr is not NULL:
+            _hypergraph_registry_counts[self.thisptr.id()] -= 1
+            #print "LOWERING", self.thisptr.id(), _hypergraph_registry_counts[self.thisptr.id()]
+            if _hypergraph_registry_counts[self.thisptr.id()] == 0:
+                #print "DEALLOCATING", self.thisptr.id()
+                del self.thisptr
+                self.thisptr = NULL
+
+
 
     cdef Hypergraph init(self, const CHypergraph *ptr,
                          node_labels=[], edge_labels=[]):
+        #assert ptr.id() in _hypergraph_registry[ptr.id()]
+        assert self.thisptr is NULL
+        if _hypergraph_registry_counts.get(ptr.id(), 0) > 0:
+            _hypergraph_registry_counts[ptr.id()] += 1
+        else:
+            _hypergraph_registry_counts[ptr.id()] = 1
         self.thisptr = <CHypergraph *> ptr
         self.edge_labels = edge_labels
         self.node_labels = node_labels
@@ -59,6 +75,9 @@ cdef class Hypergraph:
         ---------------------
         :py:class:`GraphBuilder`
         """
+        self.thisptr = new CHypergraph()
+        #_hypergraph_registry[self.thisptr.id()] = self
+        _hypergraph_registry_counts[self.thisptr.id()] = 1
         return GraphBuilder().init(self, self.thisptr)
 
     property nodes:

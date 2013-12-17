@@ -3,13 +3,14 @@
 #ifndef HYPERGRAPH_BEAMSEARCH_H_
 #define HYPERGRAPH_BEAMSEARCH_H_
 
+#include <list>
+#include <vector>
+
 #include "./common.h"
 
 #include "Hypergraph/Hypergraph.h"
 #include "Hypergraph/Semirings.h"
 #include "Hypergraph/Algorithms.h"
-
-#include <list>
 
 
 struct BeamGroups {
@@ -21,8 +22,7 @@ struct BeamGroups {
       groups_(groups),
       group_limit_(group_limit),
         num_groups_(num_groups),
-        group_nodes_(num_groups)
-    {
+        group_nodes_(num_groups) {
         if (hypergraph_->nodes().size() != groups.size()) {
             throw HypergraphException(
                 "Hypergraph does not match groups.");
@@ -93,7 +93,7 @@ struct BeamHyp {
 };
 
 class BeamChart {
-public:
+  public:
     typedef vector<BeamHyp> Beam;
     typedef vector<BeamHyp * > BeamPointers;
 
@@ -126,14 +126,13 @@ public:
 
     Hyperpath *get_path(int result);
 
-protected:
+  protected:
     const Hypergraph *hypergraph_;
 
     // The (upper bound) future score and a lower bound of total score.
     const Chart<LogViterbiPotential> *future_;
     double lower_bound_;
 
-    //vector<BeamMap> chart_;
     vector<Beam> beam_;
     vector<BeamPointers> beam_nodes_;
 

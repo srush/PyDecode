@@ -22,8 +22,8 @@ typedef vector<const Hyperedge *> HEdges;
 
 struct HypergraphException : public exception {
   string s;
-  HypergraphException(string ss) : s(ss) {}
-  ~HypergraphException() throw () {}
+  explicit HypergraphException(string ss) : s(ss) {}
+  ~HypergraphException() throw() {}
   const char* what() const throw() { return s.c_str(); }
 };
 
@@ -200,9 +200,9 @@ class Hypergraph {
    */
   bool same(const Hypergraph &other) const { return other.id_ == id_; }
 
+  int id() const { return id_; }
 
  private:
-
   // For construction.
   bool terminal_lock_;
 
@@ -276,7 +276,7 @@ class Hyperpath {
   bool equal(const Hyperpath &path) const {
     check(*path.graph_);
     if (edges_.size() != path.edges_.size()) return false;
-    for (int i = 0; i < edges_.size(); ++i) {
+    for (uint i = 0; i < edges_.size(); ++i) {
       if (edges_[i]->id() != path.edges_[i]->id()) {
         return false;
       }

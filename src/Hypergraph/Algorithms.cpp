@@ -5,9 +5,11 @@
 #include <cassert>
 #include <exception>
 #include <iostream>
+#include <queue>
+#include <utility>
+#include <vector>
 
 #include "Hypergraph/Algorithms.h"
-//#include "Hypergraph/Subgradient.h"
 
 #define SPECIALIZE_ALGORITHMS_FOR_SEMI(X)\
   template class Chart<X>;\
@@ -15,7 +17,7 @@
   template class HypergraphVectorPotentials<X>;\
   template class HypergraphProjectedPotentials<X>;\
   template class Marginals<X>;\
-  template Hyperpath *general_viterbi<X>(const Hypergraph *graph,const HypergraphPotentials<X> &potentials);\
+  template Hyperpath *general_viterbi<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, Chart<X> *chart); \
   template Hyperpath *count_constrained_viterbi<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, const HypergraphPotentials<CountingPotential> &count_potentials, int limit);
 
 #define SPECIALIZE_FOR_SEMI_MIN(X)\
@@ -66,7 +68,7 @@ general_outside(const Hypergraph *graph,
   inside_chart.check(graph);
   Chart<S> *chart = new Chart<S>(graph);
   const vector<HEdge> &edges = graph->edges();
-  chart->insert(graph->root(), S::one());//potentials.bias());
+  chart->insert(graph->root(), S::one());
 
   for (int i = edges.size() - 1; i >= 0; --i) {
     HEdge edge = edges[i];
@@ -92,48 +94,54 @@ general_outside(const Hypergraph *graph,
 template<typename S>
 Hyperpath *general_viterbi(
     const Hypergraph *graph,
-    const HypergraphPotentials<S> &potentials) {
+    const HypergraphPotentials<S> &potentials,
+    Chart<S> *chart) {
 
     potentials.check(*graph);
-  Chart<S> *chart = new Chart<S>(graph);
-  vector<HEdge> back(graph->nodes().size(), NULL);
+    chart->check(graph);
+    chart->clear();
 
-  foreach (HNode node, graph->nodes()) {
-    if (node->terminal()) {
-      chart->insert(node, S::one());
-    }
-  }
-  foreach (HEdge edge, graph->edges()) {
-    typename S::ValType score = potentials.score(edge);
-    foreach (HNode node, edge->tail_nodes()) {
-      score = S::times(score, (*chart)[node]);
-    }
-    if (score > (*chart)[edge->head_node()]) {
-      chart->insert(edge->head_node(), score);
-      back[edge->head_node()->id()] = edge;
-    }
-  }
+    vector<HEdge> back(graph->nodes().size(), NULL);
 
-  // Collect backpointers.
-  vector<HEdge> path;
-  queue<HNode> to_examine;
-  to_examine.push(graph->root());
-  while (!to_examine.empty()) {
-    HNode node = to_examine.front();
-    HEdge edge = back[node->id()];
-    to_examine.pop();
-    if (edge == NULL) {
-      assert(node->terminal());
-      continue;
+    foreach (HNode node, graph->nodes()) {
+        if (node->terminal()) {
+            chart->insert(node, S::one());
+        }
     }
-    path.push_back(edge);
-    foreach (HNode node, edge->tail_nodes()) {
-      to_examine.push(node);
+    foreach (HNode node, graph->nodes()) {
+        typename S::ValType best = (*chart)[node];
+        foreach (HEdge edge, node->edges()) {
+            typename S::ValType score = potentials.score(edge);
+            foreach (HNode tail, edge->tail_nodes()) {
+                score = S::times(score, (*chart)[tail]);
+            }
+            if (score > best) {
+                chart->insert(node, score);
+                back[node->id()] = edge;
+                best = score;
+            }
+        }
     }
-  }
-  sort(path.begin(), path.end(), IdComparator());
-  delete chart;
-  return new Hyperpath(graph, path);
+
+    // Collect backpointers.
+    vector<HEdge> path;
+    queue<HNode> to_examine;
+    to_examine.push(graph->root());
+    while (!to_examine.empty()) {
+        HNode node = to_examine.front();
+        HEdge edge = back[node->id()];
+        to_examine.pop();
+        if (edge == NULL) {
+            assert(node->terminal());
+            continue;
+        }
+        path.push_back(edge);
+        foreach (HNode node, edge->tail_nodes()) {
+            to_examine.push(node);
+        }
+    }
+    sort(path.begin(), path.end(), IdComparator());
+    return new Hyperpath(graph, path);
 }
 
 
@@ -146,14 +154,16 @@ struct NodeScore {
             back(0),
             score(StatSem::zero()) {}
 
-    NodeScore(int _count, HEdge _edge, typename StatSem::ValType _score)
+    NodeScore(int _count, HEdge _edge,
+              typename StatSem::ValType _score)
             :
             count(_count),
             edge(_edge),
             back(0),
             score(_score) {}
 
-    NodeScore(int _count, HEdge _edge, int i, int j, typename StatSem::ValType _score)
+    NodeScore(int _count, HEdge _edge, int i, int j,
+              typename StatSem::ValType _score)
             :
             count(_count),
             edge(_edge),
@@ -203,7 +213,8 @@ Hyperpath *count_constrained_viterbi(
             if (total > limit) continue;
             if (unary) {
                 if (total_score > counts[total].score) {
-                    counts[total] = NodeScore<S>(total, edge, i, -1, total_score);
+                    counts[total] =
+                            NodeScore<S>(total, edge, i, -1, total_score);
                 }
             } else {
                 HNode right_node = edge->tail_nodes()[1];
@@ -216,7 +227,12 @@ Hyperpath *count_constrained_viterbi(
 
                     if (total > limit) continue;
                     if (final_score > counts[total].score) {
-                        counts[total] = NodeScore<S>(total, edge, i, j, final_score);
+                        counts[total] =
+                                NodeScore<S>(total,
+                                             edge,
+                                             i,
+                                             j,
+                                             final_score);
                     }
                 }
             }
@@ -262,7 +278,6 @@ Hyperpath *count_constrained_viterbi(
           HNode node = edge->tail_nodes()[i];
           to_examine.push(pair<HNode, int>(node,
                                            score.back[i]));
-
       }
   }
   sort(path.begin(), path.end(), IdComparator());
@@ -271,13 +286,12 @@ Hyperpath *count_constrained_viterbi(
 
 struct EdgeGroup {
     EdgeGroup(HEdge _edge, int back_left, int back_right)
-            : edge(_edge), back(2)
-    {
+            : edge(_edge), back(2) {
         back[0] = back_left;
         back[1] = back_right;
     }
-    vector<int> back;
     HEdge edge;
+    vector<int> back;
 };
 
 struct NodeCount {
@@ -326,10 +340,13 @@ HypergraphProjection *extend_hypergraph_by_count(
                         counts[total - lower_limit].push_back(EdgeGroup(edge, i, 0));
                     } else {
                         HNode right_node = edge->tail_nodes()[1];
-                        for (int j = 0; j < new_nodes[right_node->id()].size(); ++j) {
-                            int total = score + new_nodes[left_node->id()][i].count
+                        int right_size = new_nodes[right_node->id()].size();
+                        for (int j = 0; j < right_size; ++j) {
+                            int total =
+                                    score + new_nodes[left_node->id()][i].count
                                     + new_nodes[right_node->id()][j].count;
-                            if (total < lower_limit || total > upper_limit) continue;
+                            if (total < lower_limit ||
+                                total > upper_limit) continue;
                             counts[total - lower_limit].push_back(EdgeGroup(edge, i, j));
                         }
                     }
@@ -352,7 +369,6 @@ HypergraphProjection *extend_hypergraph_by_count(
                     for (int i = 0; i < edge->tail_nodes().size(); ++i) {
                         tails.push_back(new_nodes[edge->tail_nodes()[i]->id()]
                                         [edge_group.back[i]].node);
-
                     }
                     HEdge new_edge = new_graph->add_edge(tails, edge->label());
                     reverse_edge_map[edge->id()].push_back(new_edge);

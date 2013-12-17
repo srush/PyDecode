@@ -54,11 +54,14 @@ def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path
     fn : A function
       A function for subgradient descent.
     """
-
-    def fn(x):
-        dual_weights = weight_potentials.clone()
-        ph.pairwise_dot(potentials, x, dual_weights)
-        path = best_path_fn(graph, dual_weights)
+    dual_weights = weight_potentials.clone()
+    chart = ph._LogViterbiChart(graph)
+    def fn(x, x_diff):
+        if x_diff is None:
+            ph.pairwise_dot(potentials, x, dual_weights)
+        else:
+            ph.pairwise_dot(potentials, x_diff, dual_weights)
+        path = best_path_fn(graph, dual_weights, chart)
         score = dual_weights.dot(path)
         vec = potentials.dot(path)
         subgrad = np.zeros(len(x))
@@ -104,10 +107,12 @@ def subgradient_descent(fn, x0, rate, max_iterations=100):
     extras = []
     x_best = x0
     f_x_best = 1e8
+    x_diff = None
+
 
     for t in range(max_iterations):
         x = xs[-1]
-        f_x, g, extra = fn(x)
+        f_x, g, extra = fn(x, x_diff)
 
         subgradients.append(g)
         f_x_s.append(f_x)
@@ -115,7 +120,8 @@ def subgradient_descent(fn, x0, rate, max_iterations=100):
             f_x_best = f_x
             x_best = x
 
-        x_plus = x - rate(t, f_x, f_x_best, g) * g
+        x_diff = -rate(t, f_x, f_x_best, g) * g
+        x_plus = x + x_diff
         xs.append(x_plus)
         extras.append(extra)
 
