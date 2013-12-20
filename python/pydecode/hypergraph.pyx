@@ -3,8 +3,11 @@ from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
+from wrap cimport *
+
 
 cdef _hypergraph_registry_counts = {}
+
 
 cdef class Hypergraph:
     r"""1
@@ -24,10 +27,6 @@ cdef class Hypergraph:
       The edge set :math:`{\cal E}`. In topological-order.
 
     """
-    cdef CHypergraph *thisptr
-    cdef edge_labels
-    cdef node_labels
-    cdef _cached_edges
     def __cinit__(Hypergraph self):
         """
         Create a new hypergraph.
@@ -49,7 +48,7 @@ cdef class Hypergraph:
 
 
     cdef Hypergraph init(self, const CHypergraph *ptr,
-                         node_labels=[], edge_labels=[]):
+                         node_labels, edge_labels):
         #assert ptr.id() in _hypergraph_registry[ptr.id()]
         assert self.thisptr is NULL
         if _hypergraph_registry_counts.get(ptr.id(), 0) > 0:
@@ -145,11 +144,6 @@ cdef class GraphBuilder:
         Add a node (and its hyperedges) to the hypergraph.
 
     """
-    cdef CHypergraph *thisptr
-    cdef Hypergraph graph
-    cdef edge_labels
-    cdef node_labels
-    cdef started
 
     def __init__(self):
         ""
@@ -269,10 +263,6 @@ cdef class Node:
         A piece of data associated with the edge.
 
     """
-    cdef const CHypernode *nodeptr
-    cdef CHypergraph *graphptr
-    cdef Hypergraph graph
-
 
     cdef Node init(self, const CHypernode *nodeptr,
                    Hypergraph graph):
@@ -330,8 +320,6 @@ cdef class Edge:
         A piece of data associated with the edge.
 
     """
-    cdef const CHyperedge *edgeptr
-    cdef Hypergraph graph
 
     def __cinit__(self):
         ""
@@ -395,8 +383,6 @@ cdef class Path:
     The edges :math:`e \in {\cal E}` with :math:`y(e) = 1`.
 
     """
-    cdef const CHyperpath *thisptr
-    cdef Hypergraph graph
 
     def __dealloc__(self):
         del self.thisptr

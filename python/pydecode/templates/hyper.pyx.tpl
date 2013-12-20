@@ -7,10 +7,12 @@ from libcpp.list cimport list
 from libcpp.pair cimport pair
 from libcpp cimport bool
 
-include "wrap.pxd"
-include "hypergraph.pyx"
-include "beam.pyx"
+from wrap cimport *
+from hypergraph import *
+from hypergraph cimport *
 
+
+include "beam.pyx"
 
 ############# This is the templated semiring part. ##############
 
@@ -760,12 +762,12 @@ cdef class Projection:
 
     def small_hypergraph(self):
         cdef const CHypergraph *graph = self.thisptr.new_graph()
-        return Hypergraph().init(graph)
+        return Hypergraph().init(graph, [], [])
 
     def big_hypergraph(self):
         cdef const CHypergraph *graph = self.thisptr.big_graph()
         assert graph.id() >= 0
-        return Hypergraph().init(graph)
+        return Hypergraph().init(graph, [], [])
 
 
 def make_pruning_projections(Hypergraph graph, BoolPotentials filt):

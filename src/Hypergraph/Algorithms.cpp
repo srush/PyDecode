@@ -310,6 +310,7 @@ HypergraphProjection *extend_hypergraph_by_count(
     int lower_limit,
     int upper_limit,
     int goal) {
+
     int limit = upper_limit - lower_limit;
     int modified_goal = goal - lower_limit;
 

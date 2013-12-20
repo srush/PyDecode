@@ -71,7 +71,8 @@ def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path
     return fn
 
 
-def subgradient_descent(fn, x0, rate, max_iterations=100):
+def subgradient_descent(fn, x0, rate, max_iterations=100, 
+                        primal_fn=lambda extra:None):
     r"""
     Runs subgradient descent on the objective function.
 
@@ -108,7 +109,7 @@ def subgradient_descent(fn, x0, rate, max_iterations=100):
     x_best = x0
     f_x_best = 1e8
     x_diff = None
-
+    primal_best = -1e8
 
     for t in range(max_iterations):
         x = xs[-1]
@@ -123,8 +124,11 @@ def subgradient_descent(fn, x0, rate, max_iterations=100):
         x_diff = -rate(t, f_x, f_x_best, g) * g
         x_plus = x + x_diff
         xs.append(x_plus)
+        primal = primal_fn(extra)
+        if primal > primal_best:
+            primal_best = primal
         extras.append(extra)
-
+        print "primal: %3.3f dual: %3.3f primal_best: %3.3f dual_best: %3.3f" %(primal, f_x, primal_best, f_x_best)
         if norm(g) == 0: break
     return xs, f_x_s, subgradients, extras
 

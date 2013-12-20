@@ -33,12 +33,3 @@ cdef extern from "Hypergraph/Hypergraph.h":
         vector[const CHyperedge *] edges()
         int has_edge(const CHyperedge *)
         bool equal(const CHyperpath path)
-
-    cdef cppclass CHypergraphWeights "HypergraphWeights<double>":
-        double dot(const CHyperpath &path) except +
-        double score(const CHyperedge *edge)
-        CHypergraphWeights *project_weights(
-            const CHypergraphProjection )
-        CHypergraphWeights(const CHypergraph *hypergraph,
-                           const vector[double] weights,
-                           double bias) except +
