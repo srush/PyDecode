@@ -3,7 +3,7 @@ from cython.operator cimport dereference as deref
 from libcpp cimport bool
 from libcpp.vector cimport vector
 
-from pydecode.hyper cimport *
+from pydecode.potentials cimport *
 
 cdef extern from "<bitset>" namespace "std":
     cdef cppclass cbitset "bitset<500>":

@@ -84,10 +84,10 @@ Weight potentials :math:`\{0,1\}^{{\cal E}}` with :math:`(+, *) = (\cap, \cup)`.
 
 env = Environment(loader=PackageLoader('pydecode', 'templates'))
 
-template = env.get_template('hyper.pyx.tpl')
-out = open("python/pydecode/hyper.pyx", "w")
+template = env.get_template('potentials.pyx.tpl')
+out = open("python/pydecode/potentials.pyx", "w")
 print >>out, template.render(vars)
 
-template = env.get_template('hyper.pxd.tpl')
-out = open("python/pydecode/hyper.pxd", "w")
+template = env.get_template('potentials.pxd.tpl')
+out = open("python/pydecode/potentials.pxd", "w")
 print >>out, template.render(vars)

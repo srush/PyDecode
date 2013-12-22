@@ -67,15 +67,15 @@ env.Alias("pytest", [pytests, pytests2])
 
 # Building the python library.
 
-env.Command(["python/pydecode/hyper.pyx",],
-            ["python/pydecode/templates/hyper.pyx.tpl",
-             "python/pydecode/templates/hyper.pxd.tpl",
+env.Command(["python/pydecode/potentials.pyx",],
+            ["python/pydecode/templates/potentials.pyx.tpl",
+             "python/pydecode/templates/potentials.pxd.tpl",
              "cython_jinja.py"],
             "python cython_jinja.py")
 
 py_lib = env.Command(["python/pydecode/hyper.so"],
             ["build/debug/src/libdecoding.a",
-             "python/pydecode/hyper.pyx",
+             "python/pydecode/potentials.pyx",
              "python/pydecode/hypergraph.pyx",
              "python/pydecode/beam.pyx"],
              #"python/pydecode/constraints.pyx",

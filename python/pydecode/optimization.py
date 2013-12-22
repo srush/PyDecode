@@ -55,7 +55,7 @@ def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path
       A function for subgradient descent.
     """
     dual_weights = weight_potentials.clone()
-    chart = ph._LogViterbiChart(graph)
+    chart = ph.LogViterbiChart(graph)
     def fn(x, x_diff):
         if x_diff is None:
             ph.pairwise_dot(potentials, x, dual_weights)
@@ -71,7 +71,7 @@ def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path
     return fn
 
 
-def subgradient_descent(fn, x0, rate, max_iterations=100, 
+def subgradient_descent(fn, x0, rate, max_iterations=100,
                         primal_fn=lambda extra:None):
     r"""
     Runs subgradient descent on the objective function.
@@ -125,6 +125,7 @@ def subgradient_descent(fn, x0, rate, max_iterations=100,
         x_plus = x + x_diff
         xs.append(x_plus)
         primal = primal_fn(extra)
+        if primal is None: primal = -1e8
         if primal > primal_best:
             primal_best = primal
         extras.append(extra)
