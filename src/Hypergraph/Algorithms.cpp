@@ -10,21 +10,16 @@
 #include <vector>
 
 #include "Hypergraph/Algorithms.h"
+#include "Hypergraph/Potentials.h"
 
 #define SPECIALIZE_ALGORITHMS_FOR_SEMI(X)\
   template class Chart<X>;\
-  template class HypergraphPotentials<X>;\
-  template class HypergraphVectorPotentials<X>;\
-  template class HypergraphProjectedPotentials<X>;\
   template class Marginals<X>;\
   template Hyperpath *general_viterbi<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, Chart<X> *chart); \
   template Hyperpath *count_constrained_viterbi<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, const HypergraphPotentials<CountingPotential> &count_potentials, int limit);
 
 #define SPECIALIZE_FOR_SEMI_MIN(X)\
   template class Chart<X>;\
-  template class HypergraphPotentials<X>;\
-  template class HypergraphVectorPotentials<X>;\
-  template class HypergraphProjectedPotentials<X>;\
   template Chart<X> *general_inside<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials);\
   template Chart<X> *general_outside<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, const Chart<X> &);
 

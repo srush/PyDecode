@@ -128,6 +128,82 @@ template<typename SemiringType>
     vector<V> potentials_;
 };
 
+template<typename SemiringType>
+  class HypergraphMapPotentials :
+  public HypergraphPotentials<SemiringType> {
+    typedef SemiringType S;
+    typedef typename SemiringType::ValType V;
+
+ public:
+   HypergraphMapPotentials(const Hypergraph *hypergraph,
+                           const map<int, int> &potential_map,
+                           const vector<V> &potentials,
+                           V bias)
+           : HypergraphPotentials<SemiringType>(hypergraph, bias),
+            potential_map_(potential_map),
+            potentials_(potentials) {
+                //assert(potentials.size() == hypergraph->edges().size());
+            }
+
+    vector<V> &potentials() { return potentials_; }
+    const vector<V> &potentials() const { return potentials_; }
+
+    explicit HypergraphMapPotentials(const Hypergraph *hypergraph)
+            : HypergraphPotentials<SemiringType>(hypergraph,
+                                                 SemiringType::one()) {}
+
+    static HypergraphPotentials<SemiringType> *
+            make_potentials(const Hypergraph *hypergraph,
+                            const map<int, int> &potentials_map,
+                            const vector<V> &potentials,
+                            V bias) {
+        return new HypergraphMapPotentials<SemiringType>(
+            hypergraph, potentials_map, potentials, bias);
+    }
+
+    V dot(const Hyperpath &path) const {
+        path.check(*this->hypergraph_);
+        V cur_score = SemiringType::one();
+        foreach (HEdge edge, path.edges()) {
+            cur_score = SemiringType::times(cur_score, score(edge));
+        }
+        return SemiringType::times(cur_score, this->bias_);
+    }
+
+    inline V score(HEdge edge) const {
+        map<int, int>::const_iterator iter =
+                potential_map_.find(edge->id());
+        if (iter == potential_map_.end()) {
+            return S::one();
+        } else {
+            return potentials_[iter->second];
+        }
+    }
+    inline V operator[] (HEdge edge) const {
+        return score(edge);
+    }
+
+    void insert(const HEdge& edge, const V& val) {
+        int i = potentials_.size();
+        potential_map_[edge->id()] = i;
+        potentials_.push_back(val);
+    }
+
+    HypergraphPotentials<S> *times(
+        const HypergraphPotentials<S> &potentials) const;
+
+    HypergraphPotentials<S> *clone() const {
+        return new HypergraphMapPotentials(this->hypergraph_,
+                                           potential_map_,
+                                           potentials_,
+                                           this->bias_);
+    }
+
+ protected:
+    map<int, int> potential_map_;
+    vector<V> potentials_;
+};
+
 class HypergraphProjection {
  public:
     HypergraphProjection(const Hypergraph *original,

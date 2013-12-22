@@ -2,6 +2,13 @@
 
 #include "Hypergraph/Potentials.h"
 
+#define SPECIALIZE_HYPER_FOR_SEMI(X)\
+    template class HypergraphPotentials<X>;\
+    template class HypergraphMapPotentials<X>;\
+    template class HypergraphProjectedPotentials<X>;\
+    template class HypergraphVectorPotentials<X>;
+
+
 template<typename SemiringType>
 HypergraphPotentials<SemiringType> *
 HypergraphVectorPotentials<SemiringType>::times(
@@ -89,15 +96,32 @@ HypergraphProjection *HypergraphProjection::project_hypergraph(
                                     node_map, edge_map, true);
 }
 
-void
-pairwise_dot(
+template<typename SemiringType>
+HypergraphPotentials<SemiringType> *
+HypergraphMapPotentials<SemiringType>::times(
+    const HypergraphPotentials<SemiringType> &other) const {
+    HypergraphPotentials<SemiringType>::check(other);
+    vector<typename SemiringType::ValType> new_potentials(potentials_);
+    int i = -1;
+    foreach (HEdge edge, this->hypergraph_->edges()) {
+        i++;
+        new_potentials[i] = SemiringType::times(new_potentials[i],
+                                                other[edge]);
+    }
+    return new HypergraphVectorPotentials<SemiringType>(
+        this->hypergraph_,
+        new_potentials,
+        SemiringType::times(this->bias_, other.bias_));
+}
+
+void pairwise_dot(
     const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
     const vector<double> &vec,
     HypergraphPotentials<LogViterbiPotential> *weights) {
     int i = 0;
     vector<double> &pots = weights->potentials();
-    foreach (SparseVector edge_constraints, sparse_potentials.potentials()) {
-        foreach (SparsePair pair, edge_constraints) {
+    foreach (SparseVector &edge_constraints, sparse_potentials.potentials()) {
+        foreach (SparsePair &pair, edge_constraints) {
             pots[i] =
                     LogViterbiPotential::times(pots[i],
                                                pair.second * vec[pair.first]);
@@ -106,10 +130,19 @@ pairwise_dot(
     }
     SparseVector bias_constraints = sparse_potentials.bias();
     LogViterbiPotential::ValType &bias = weights->bias();
-    foreach (SparsePair pair, bias_constraints) {
-        bias =
-            LogViterbiPotential::times(
-                weights->bias(),
-                LogViterbiPotential::ValType(pair.second * vec[pair.first]));
+    foreach (SparsePair &pair, bias_constraints) {
+        bias = LogViterbiPotential::times(
+            weights->bias(),
+            LogViterbiPotential::ValType(pair.second * vec[pair.first]));
     }
 };
+
+SPECIALIZE_HYPER_FOR_SEMI(ViterbiPotential)
+SPECIALIZE_HYPER_FOR_SEMI(LogViterbiPotential)
+SPECIALIZE_HYPER_FOR_SEMI(InsidePotential)
+SPECIALIZE_HYPER_FOR_SEMI(BoolPotential)
+SPECIALIZE_HYPER_FOR_SEMI(SparseVectorPotential)
+SPECIALIZE_HYPER_FOR_SEMI(MinSparseVectorPotential)
+SPECIALIZE_HYPER_FOR_SEMI(MaxSparseVectorPotential)
+SPECIALIZE_HYPER_FOR_SEMI(BinaryVectorPotential)
+SPECIALIZE_HYPER_FOR_SEMI(CountingPotential)

@@ -10,6 +10,7 @@
 
 #include "Hypergraph/Hypergraph.h"
 #include "Hypergraph/Semirings.h"
+#include "Hypergraph/Potentials.h"
 
 // General Code.
 

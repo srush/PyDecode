@@ -69,14 +69,16 @@ env.Alias("pytest", [pytests, pytests2])
 
 env.Command(["python/pydecode/hyper.pyx",],
             ["python/pydecode/templates/hyper.pyx.tpl",
+             "python/pydecode/templates/hyper.pxd.tpl",
              "cython_jinja.py"],
             "python cython_jinja.py")
 
 py_lib = env.Command(["python/pydecode/hyper.so"],
             ["build/debug/src/libdecoding.a",
              "python/pydecode/hyper.pyx",
-             "python/pydecode/hypergraph.pyx"],
+             "python/pydecode/hypergraph.pyx",
+             "python/pydecode/beam.pyx"],
              #"python/pydecode/constraints.pyx",
              #"python/pydecode/algorithms.pyx"],
-            "python setup.py config; python setup.py build_ext --inplace --verbose")
+            "python setup.py build_ext --inplace --verbose")
 env.Alias("pylib", [py_lib])
