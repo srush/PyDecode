@@ -141,7 +141,7 @@ void non_zero_weights(const Hypergraph *graph,
                       const HypergraphPotentials<LogViterbiPotential> &weights,
                       HypergraphPotentials<BoolPotential> *updates) {
     foreach (HEdge edge, graph->edges()) {
-        (*updates)[edge] = weights[edge] != 0.0;
+        updates->insert(edge, weights[edge] != 0.0);
     }
 }
 
