@@ -139,7 +139,7 @@ void pairwise_dot(
 
 void non_zero_weights(const Hypergraph *graph,
                       const HypergraphPotentials<LogViterbiPotential> &weights,
-                      HypergraphPotentials<BoolPotential> *updates) {
+                      HypergraphVectorPotentials<BoolPotential> *updates) {
     foreach (HEdge edge, graph->edges()) {
         updates->insert(edge, weights[edge] != 0.0);
     }
