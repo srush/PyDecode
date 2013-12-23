@@ -314,6 +314,8 @@ class Viterbi:
                 ViterbiPotentials potentials,
                 ViterbiChart chart=None):
         cdef CViterbiChart *used_chart
+        cdef vector[const CHyperedge *] *used_back = \
+            new vector[const CHyperedge *]()
         if chart is not None:
             used_chart = chart.chart
         else:
@@ -321,9 +323,11 @@ class Viterbi:
         cdef CHyperpath *path = \
             viterbi_Viterbi(graph.thisptr,
                                deref(potentials.thisptr),
-                               used_chart)
+                               used_chart,
+                               used_back)
         if chart is None:
             del used_chart
+        del used_back
         return Path().init(path, graph)
 
     @staticmethod
@@ -645,6 +649,8 @@ class LogViterbi:
                 LogViterbiPotentials potentials,
                 LogViterbiChart chart=None):
         cdef CLogViterbiChart *used_chart
+        cdef vector[const CHyperedge *] *used_back = \
+            new vector[const CHyperedge *]()
         if chart is not None:
             used_chart = chart.chart
         else:
@@ -652,9 +658,11 @@ class LogViterbi:
         cdef CHyperpath *path = \
             viterbi_LogViterbi(graph.thisptr,
                                deref(potentials.thisptr),
-                               used_chart)
+                               used_chart,
+                               used_back)
         if chart is None:
             del used_chart
+        del used_back
         return Path().init(path, graph)
 
     @staticmethod
@@ -976,6 +984,8 @@ class Inside:
                 InsidePotentials potentials,
                 InsideChart chart=None):
         cdef CInsideChart *used_chart
+        cdef vector[const CHyperedge *] *used_back = \
+            new vector[const CHyperedge *]()
         if chart is not None:
             used_chart = chart.chart
         else:
@@ -983,9 +993,11 @@ class Inside:
         cdef CHyperpath *path = \
             viterbi_Inside(graph.thisptr,
                                deref(potentials.thisptr),
-                               used_chart)
+                               used_chart,
+                               used_back)
         if chart is None:
             del used_chart
+        del used_back
         return Path().init(path, graph)
 
     @staticmethod
@@ -1307,6 +1319,8 @@ class Bool:
                 BoolPotentials potentials,
                 BoolChart chart=None):
         cdef CBoolChart *used_chart
+        cdef vector[const CHyperedge *] *used_back = \
+            new vector[const CHyperedge *]()
         if chart is not None:
             used_chart = chart.chart
         else:
@@ -1314,9 +1328,11 @@ class Bool:
         cdef CHyperpath *path = \
             viterbi_Bool(graph.thisptr,
                                deref(potentials.thisptr),
-                               used_chart)
+                               used_chart,
+                               used_back)
         if chart is None:
             del used_chart
+        del used_back
         return Path().init(path, graph)
 
     @staticmethod

@@ -137,6 +137,14 @@ void pairwise_dot(
     }
 };
 
+void non_zero_weights(const Hypergraph *graph,
+                      const HypergraphPotentials<LogViterbiPotential> &weights,
+                      HypergraphPotentials<BoolPotential> *updates) {
+    foreach (HEdge edge, graph->edges()) {
+        (*updates)[edge] = weights[edge] != 0.0;
+    }
+}
+
 SPECIALIZE_HYPER_FOR_SEMI(ViterbiPotential)
 SPECIALIZE_HYPER_FOR_SEMI(LogViterbiPotential)
 SPECIALIZE_HYPER_FOR_SEMI(InsidePotential)
@@ -146,3 +154,4 @@ SPECIALIZE_HYPER_FOR_SEMI(MinSparseVectorPotential)
 SPECIALIZE_HYPER_FOR_SEMI(MaxSparseVectorPotential)
 SPECIALIZE_HYPER_FOR_SEMI(BinaryVectorPotential)
 SPECIALIZE_HYPER_FOR_SEMI(CountingPotential)
+SPECIALIZE_HYPER_FOR_SEMI(SetPotential)

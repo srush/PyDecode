@@ -40,7 +40,8 @@ cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_{{S.type}}"general_viterbi<{{S.ctype}}>"(
         const CHypergraph *graph,
         const CHypergraph{{S.type}}Potentials theta,
-        C{{S.type}}Chart * chart
+        C{{S.type}}Chart * chart,
+        vector[const CHyperedge *] *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_{{S.type}} "count_constrained_viterbi<{{S.ctype}}>"(

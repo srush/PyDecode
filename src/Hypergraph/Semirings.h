@@ -177,6 +177,32 @@ class BoolPotential {
     static inline ValType randValue() { return dRand(0.0, 1.0) > .5; }
 };
 
+class SetPotential {
+  public:
+    typedef set<int> ValType;
+
+    static inline ValType add(const ValType& lhs, const ValType &rhs) {
+        set<int> intersection;
+        set_intersection(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), inserter(intersection, intersection.begin()));
+        return intersection;
+    }
+    static inline ValType times(const ValType& lhs, const ValType &rhs) {
+        set<int> union_;
+        set_union(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), inserter(union_, union_.begin()));
+        return union_;
+    }
+
+
+    static inline ValType &normalize(ValType &val) {
+        return val;
+    }
+
+    static inline ValType one() { return set<int>(); }
+    static inline ValType zero() { return set<int>(); }
+
+    //static inline ValType randValue() { return dRand(0.0, 1.0) > .5; }
+};
+
 class CountingPotential {
   public:
     typedef int ValType;

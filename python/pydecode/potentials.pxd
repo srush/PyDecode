@@ -40,7 +40,8 @@ cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_Viterbi"general_viterbi<ViterbiPotential>"(
         const CHypergraph *graph,
         const CHypergraphViterbiPotentials theta,
-        CViterbiChart * chart
+        CViterbiChart * chart,
+        vector[const CHyperedge *] *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_Viterbi "count_constrained_viterbi<ViterbiPotential>"(
@@ -147,7 +148,8 @@ cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_LogViterbi"general_viterbi<LogViterbiPotential>"(
         const CHypergraph *graph,
         const CHypergraphLogViterbiPotentials theta,
-        CLogViterbiChart * chart
+        CLogViterbiChart * chart,
+        vector[const CHyperedge *] *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_LogViterbi "count_constrained_viterbi<LogViterbiPotential>"(
@@ -254,7 +256,8 @@ cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_Inside"general_viterbi<InsidePotential>"(
         const CHypergraph *graph,
         const CHypergraphInsidePotentials theta,
-        CInsideChart * chart
+        CInsideChart * chart,
+        vector[const CHyperedge *] *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_Inside "count_constrained_viterbi<InsidePotential>"(
@@ -361,7 +364,8 @@ cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_Bool"general_viterbi<BoolPotential>"(
         const CHypergraph *graph,
         const CHypergraphBoolPotentials theta,
-        CBoolChart * chart
+        CBoolChart * chart,
+        vector[const CHyperedge *] *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_Bool "count_constrained_viterbi<BoolPotential>"(
@@ -468,7 +472,8 @@ cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_SparseVector"general_viterbi<SparseVectorPotential>"(
         const CHypergraph *graph,
         const CHypergraphSparseVectorPotentials theta,
-        CSparseVectorChart * chart
+        CSparseVectorChart * chart,
+        vector[const CHyperedge *] *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_SparseVector "count_constrained_viterbi<SparseVectorPotential>"(
@@ -575,7 +580,8 @@ cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_MinSparseVector"general_viterbi<MinSparseVectorPotential>"(
         const CHypergraph *graph,
         const CHypergraphMinSparseVectorPotentials theta,
-        CMinSparseVectorChart * chart
+        CMinSparseVectorChart * chart,
+        vector[const CHyperedge *] *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_MinSparseVector "count_constrained_viterbi<MinSparseVectorPotential>"(
@@ -682,7 +688,8 @@ cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_MaxSparseVector"general_viterbi<MaxSparseVectorPotential>"(
         const CHypergraph *graph,
         const CHypergraphMaxSparseVectorPotentials theta,
-        CMaxSparseVectorChart * chart
+        CMaxSparseVectorChart * chart,
+        vector[const CHyperedge *] *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_MaxSparseVector "count_constrained_viterbi<MaxSparseVectorPotential>"(
@@ -789,7 +796,8 @@ cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_BinaryVector"general_viterbi<BinaryVectorPotential>"(
         const CHypergraph *graph,
         const CHypergraphBinaryVectorPotentials theta,
-        CBinaryVectorChart * chart
+        CBinaryVectorChart * chart,
+        vector[const CHyperedge *] *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_BinaryVector "count_constrained_viterbi<BinaryVectorPotential>"(
@@ -896,7 +904,8 @@ cdef extern from "Hypergraph/Algorithms.h":
     CHyperpath *viterbi_Counting"general_viterbi<CountingPotential>"(
         const CHypergraph *graph,
         const CHypergraphCountingPotentials theta,
-        CCountingChart * chart
+        CCountingChart * chart,
+        vector[const CHyperedge *] *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_Counting "count_constrained_viterbi<CountingPotential>"(

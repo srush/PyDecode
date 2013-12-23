@@ -72,7 +72,12 @@ template<typename SemiringType>
 Hyperpath *general_viterbi(
     const Hypergraph *graph,
     const HypergraphPotentials<SemiringType> &potentials,
-    Chart<SemiringType> *chart);
+    Chart<SemiringType> *chart,
+    vector<HEdge> *back);
+
+Hyperpath *construct_path(
+    const Hypergraph *graph,
+    const vector<HEdge> &back);
 
 template<typename SemiringType>
 Hyperpath *count_constrained_viterbi(
@@ -177,5 +182,11 @@ HypergraphProjection *extend_hypergraph_by_count(
     int goal);
 
 
+Chart<SetPotential> *edge_domination(const Hypergraph &graph);
+Chart<SetPotential> *node_domination(const Hypergraph &graph);
+vector<set<int> > *children_nodes(const Hypergraph &graph);
+
+template<class Set1, class Set2>
+bool is_disjoint(const Set1 &set1, const Set2 &set2);
 
 #endif  // HYPERGRAPH_ALGORITHMS_H_

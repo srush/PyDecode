@@ -1,5 +1,6 @@
 from distutils.core import setup
 from distutils.extension import Extension
+import os.path
 
 try:
     from Cython.Distutils import build_ext
@@ -23,7 +24,7 @@ if use_cython:
                    "src/Hypergraph/Hypergraph.cpp",
                    ],
                   language='c++',
-                  extra_compile_args=["-O0"],#"-ggdb"], #'-O2',
+                  #extra_compile_args=["-O0"],#"-ggdb"], #'-O2',
                   include_dirs=[r'src/', "."],
                   ),
         Extension("pydecode.potentials",
@@ -32,20 +33,20 @@ if use_cython:
                    "src/Hypergraph/Semirings.cpp",
                    "src/Hypergraph/Potentials.cpp",
                    ],
-                  extra_objects=['python/pydecode/hypergraph.so'],
+                  extra_objects=[os.path.abspath('python/pydecode/hypergraph.so')],
                   language='c++',
-                  extra_compile_args=["-O0"],#"-ggdb"], #'-O2',
+                  #extra_compile_args=["-O0"],#"-ggdb"], #'-O2',
                   include_dirs=[r'src/', "."],
                   ),
         Extension("pydecode.beam",
                   ["python/pydecode/beam.pyx",
                    "src/Hypergraph/BeamSearch.cpp",
                    ],
-                  extra_objects=['python/pydecode/potentials.so',
-                                 'python/pydecode/hypergraph.so'
+                  extra_objects=[os.path.abspath('python/pydecode/potentials.so'),
+                                 os.path.abspath('python/pydecode/hypergraph.so')
                                  ],
                   language='c++',
-                  extra_compile_args=["-O0"],#"-ggdb"], #'-O2',
+                  #extra_compile_args=["-O0"],#"-ggdb"], #'-O2',
                   include_dirs=[r'src/', "."],
                   )
         ]

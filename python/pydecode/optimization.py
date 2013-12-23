@@ -129,7 +129,8 @@ def subgradient_descent(fn, x0, rate, max_iterations=100,
         if primal > primal_best:
             primal_best = primal
         extras.append(extra)
-        print "primal: %3.3f dual: %3.3f primal_best: %3.3f dual_best: %3.3f" %(primal, f_x, primal_best, f_x_best)
+
+        #print "primal: %3.3f dual: %3.3f primal_best: %3.3f dual_best: %3.3f" %(primal, f_x, primal_best, f_x_best)
         if norm(g) == 0: break
     return xs, f_x_s, subgradients, extras
 

@@ -328,6 +328,8 @@ class {{S.type}}:
                 {{S.type}}Potentials potentials,
                 {{S.type}}Chart chart=None):
         cdef C{{S.type}}Chart *used_chart
+        cdef vector[const CHyperedge *] *used_back = \
+            new vector[const CHyperedge *]()
         if chart is not None:
             used_chart = chart.chart
         else:
@@ -335,9 +337,11 @@ class {{S.type}}:
         cdef CHyperpath *path = \
             viterbi_{{S.type}}(graph.thisptr,
                                deref(potentials.thisptr),
-                               used_chart)
+                               used_chart,
+                               used_back)
         if chart is None:
             del used_chart
+        del used_back
         return Path().init(path, graph)
 
     @staticmethod

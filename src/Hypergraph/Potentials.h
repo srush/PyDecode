@@ -433,4 +433,9 @@ pairwise_dot(
     const vector<double> &vec,
     HypergraphPotentials<LogViterbiPotential> *weights);
 
+void non_zero_weights(const Hypergraph *graph,
+                      const HypergraphPotentials<LogViterbiPotential> &weights,
+                      HypergraphPotentials<BoolPotential> *updates);
+
+
 #endif  // HYPERGRAPH_POTENTIALS_H_
