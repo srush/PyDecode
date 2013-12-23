@@ -21,10 +21,12 @@ class HypergraphPotentials {
             : hypergraph_(hypergraph),
             bias_(bias) {}
 
+    virtual ~HypergraphPotentials() {}
+
     virtual V dot(const Hyperpath &path) const = 0;
 
     virtual V score(HEdge edge) const = 0;
-    virtual inline V operator[] (HEdge edge) const = 0;
+    virtual V operator[] (HEdge edge) const = 0;
 
     const V &bias() const { return bias_; }
     V &bias() { return bias_; }
@@ -433,9 +435,10 @@ pairwise_dot(
     const vector<double> &vec,
     HypergraphPotentials<LogViterbiPotential> *weights);
 
-void non_zero_weights(const Hypergraph *graph,
-                      const HypergraphPotentials<LogViterbiPotential> &weights,
-                      HypergraphVectorPotentials<BoolPotential> *updates);
+void non_zero_weights(
+    const Hypergraph *graph,
+    const HypergraphPotentials<LogViterbiPotential> &weights,
+    HypergraphVectorPotentials<BoolPotential> *updates);
 
 
 #endif  // HYPERGRAPH_POTENTIALS_H_

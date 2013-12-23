@@ -308,6 +308,7 @@ class Viterbi:
                                              deref(inside_chart.chart))
         return out_chart
 
+
     
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -642,6 +643,7 @@ class LogViterbi:
                                              deref(potentials.thisptr),
                                              deref(inside_chart.chart))
         return out_chart
+
 
     
     @staticmethod
@@ -978,6 +980,7 @@ class Inside:
                                              deref(inside_chart.chart))
         return out_chart
 
+
     
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1313,6 +1316,7 @@ class Bool:
                                              deref(inside_chart.chart))
         return out_chart
 
+
     
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1645,6 +1649,7 @@ class SparseVector:
                                              deref(inside_chart.chart))
         return out_chart
 
+
     
 
     @staticmethod
@@ -1942,6 +1947,7 @@ class MinSparseVector:
                                              deref(potentials.thisptr),
                                              deref(inside_chart.chart))
         return out_chart
+
 
     
 
@@ -2241,6 +2247,7 @@ class MaxSparseVector:
                                              deref(inside_chart.chart))
         return out_chart
 
+
     
 
     @staticmethod
@@ -2539,6 +2546,7 @@ class BinaryVector:
                                              deref(inside_chart.chart))
         return out_chart
 
+
     
 
     @staticmethod
@@ -2836,6 +2844,7 @@ class Counting:
                                              deref(potentials.thisptr),
                                              deref(inside_chart.chart))
         return out_chart
+
 
     
 

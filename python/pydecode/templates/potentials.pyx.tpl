@@ -322,6 +322,7 @@ class {{S.type}}:
                                              deref(inside_chart.chart))
         return out_chart
 
+
     {% if S.viterbi %}
     @staticmethod
     def viterbi(Hypergraph graph,
