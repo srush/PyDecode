@@ -61,6 +61,7 @@ def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path
             ph.pairwise_dot(potentials, x, dual_weights)
         else:
             ph.pairwise_dot(potentials, x_diff, dual_weights)
+
         path = best_path_fn(graph, dual_weights, chart)
         score = dual_weights.dot(path)
         vec = potentials.dot(path)
@@ -72,7 +73,7 @@ def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path
 
 
 def subgradient_descent(fn, x0, rate, max_iterations=100,
-                        primal_fn=lambda extra:None):
+                        primal_fn=lambda r, extra:None):
     r"""
     Runs subgradient descent on the objective function.
 
@@ -124,15 +125,15 @@ def subgradient_descent(fn, x0, rate, max_iterations=100,
         x_diff = -rate(t, f_x, f_x_best, g) * g
         x_plus = x + x_diff
         xs.append(x_plus)
-        primal = primal_fn(extra)
+        primal = primal_fn(t, extra)
         if primal is None: primal = -1e8
         if primal > primal_best:
             primal_best = primal
         extras.append(extra)
 
-        #print "primal: %3.3f dual: %3.3f primal_best: %3.3f dual_best: %3.3f" %(primal, f_x, primal_best, f_x_best)
+        print "primal: %3.3f dual: %3.3f primal_best: %3.3f dual_best: %3.3f" %(primal, f_x, primal_best, f_x_best)
         if norm(g) == 0: break
-    return xs, f_x_s, subgradients, extras
+    return xs, f_x_s, subgradients, extras, primal_best
 
 
 def polyak(t, f_x, f_x_best, g):

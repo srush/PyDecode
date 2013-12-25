@@ -430,6 +430,10 @@ cdef class Path:
         def __get__(self):
             return convert_edges(self.thisptr.edges(), self.graph)
 
+    property nodes:
+        def __get__(self):
+            return convert_nodes(self.thisptr.nodes(), self.graph)
+
 class HypergraphAccessException(Exception):
     def __init__(self, value):
         self.value = value

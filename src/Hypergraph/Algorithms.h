@@ -134,9 +134,12 @@ class Marginals {
     // Get max-marginal for edge or node.
     V marginal(HEdge edge) const {
         V score = (*out_chart_)[edge->head_node()];
+
         score = SemiringType::times(score, potentials_->score(edge));
+
         foreach (HNode node, edge->tail_nodes()) {
             score = SemiringType::times(score, (*in_chart_)[node]);
+
         }
         return score;
     }

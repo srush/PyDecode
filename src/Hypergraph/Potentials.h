@@ -429,8 +429,7 @@ template<typename SemiringType>
     const HypergraphProjection *projection_;
 };
 
-void
-pairwise_dot(
+void pairwise_dot(
     const HypergraphPotentials<SparseVectorPotential> &sparse_potentials,
     const vector<double> &vec,
     HypergraphPotentials<LogViterbiPotential> *weights);

@@ -88,14 +88,14 @@ general_outside(const Hypergraph *graph,
   inside_chart.check(graph);
   Chart<S> *chart = new Chart<S>(graph);
   const vector<HEdge> &edges = graph->edges();
-  chart->insert(graph->root(), S::one());
+  chart->insert(graph->root(), potentials.bias());
 
   for (int i = edges.size() - 1; i >= 0; --i) {
     HEdge edge = edges[i];
     typename S::ValType head_score = (*chart)[edge->head_node()];
-    if (edge->head_node()->id() == graph->root()->id()) {
-        head_score = potentials.bias();
-    }
+    // if (edge->head_node()->id() == graph->root()->id()) {
+    //     head_score = potentials.bias();
+    // }
     foreach (HNode node, edge->tail_nodes()) {
       typename S::ValType other_score = S::one();
       foreach (HNode other_node, edge->tail_nodes()) {
@@ -163,7 +163,6 @@ Hyperpath *general_viterbi_update(
     chart->clear();
     back->clear();
     back->resize(graph->nodes().size(), NULL);
-
 
     set<int> updated;
 

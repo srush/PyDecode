@@ -526,7 +526,7 @@ outside_values = outside
 ####### Methods that use specific potential ########
 
 def pairwise_dot(SparseVectorPotentials potentials, vec, LogViterbiPotentials weights):
-    cdef vector[double] rvec
+    cdef vector[double] rvec = vector[double]()
     for i in vec:
         rvec.push_back(<double>i)
     cpairwise_dot(deref(potentials.thisptr), rvec, weights.thisptr)
@@ -569,8 +569,10 @@ cdef class Projection:
             return self.small_graph.edges[edge.id()]
         if isinstance(obj, Node):
             node = self.thisptr.project((<Node>obj).nodeptr)
-            assert node.id() >= 0
-            return self.small_graph.nodes[node.id()]
+            if node != NULL and node.id() >= 0:
+                return self.small_graph.nodes[node.id()]
+            else:
+                return None
 
     def project(self, Hypergraph graph):
         cdef Hypergraph new_graph = Hypergraph()
@@ -591,8 +593,8 @@ cdef class Projection:
         cdef const CHyperedge *edge
         for i in range(old_edges.size()):
             edge = projection.project(old_edges[i])
-            if edge != NULL and edge.id() >= 0:
-                edge_labels[edge.id()] = graph.edge_labels[i]
+            # if edge != NULL and edge.id() >= 0:
+            #     edge_labels[edge.id()] = graph.edge_labels[i]
 
         new_graph.init(projection.new_graph(), node_labels, edge_labels)
         return new_graph
