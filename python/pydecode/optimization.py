@@ -33,11 +33,12 @@ def best_constrained_path(graph, potentials, constraints):
     return extras[-1]
 
 class SubgradientRoundResult:
-    def __init__(self, dual, subgrad, extra, prune):
+    def __init__(self, dual, subgrad, extra, prune, constraints):
         self.dual = dual
         self.subgrad = subgrad
         self.extra = extra
         self.prune = prune
+        self.constraints= constraints
 
 class SubgradientRoundStatus:
     def __init__(self, dual, primal, x, x_diff,
@@ -55,7 +56,7 @@ class SubgradientHistory:
         self.best_primal = -1e8
         self.best_dual = 1e8
         self.history = []
-        self.last_prune = 25
+        self.last_prune = 45
         self.success = False
 
     def gap(self):
@@ -117,8 +118,11 @@ class SubgradientGenerator:
 
         for i, j in vec:
             subgrad[i] = j
+
         return SubgradientRoundResult(
-            dual=score, subgrad=subgrad, extra=path, prune=prune)
+            dual=score, subgrad=subgrad,
+            extra=path, prune=prune,
+            constraints=vec)
 
 
 def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path):
