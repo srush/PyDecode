@@ -32,6 +32,47 @@ def best_constrained_path(graph, potentials, constraints):
         subgradient_descent(_subgradient(graph, potentials, constraints.potentials), [0] * constraints.size, polyak)
     return extras[-1]
 
+class SubgradientRoundResult:
+    def __init__(self, dual, subgrad, extra):
+        self.dual = dual
+        self.subgrad = subgrad
+        self.extra = extra
+
+class SubgradientRoundStatus:
+    def __init__(self, dual, primal, x, x_diff,
+                 updated, result, round):
+        self.dual = dual
+        self.primal = primal
+        self.x = x
+        self.x_diff = x_diff
+        self.updated = updated
+        self.result = result
+        self.round = round
+
+class SubgradientHistory:
+    def __init__(self):
+        self.best_primal = -1e8
+        self.best_dual = 1e8
+        self.history = []
+
+    def status(self):
+        return self.history[-1]
+
+    def update(self, status):
+        self.history.append(status)
+        if status.primal is not None and \
+                status.primal > self.best_primal:
+            self.best_primal = status.primal
+        if status.dual is not None and \
+                status.dual < self.best_dual:
+            self.best_dual = status.dual
+
+    def show(self):
+        status = self.status()
+        print "%d %4.3f %4.3f %4.3f %4.3f %4.3f" \
+            % (status.round, status.dual, status.primal,
+               self.best_primal, self.best_dual,
+               abs(self.best_primal - self.best_dual))
 
 def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path):
     r"""
@@ -56,20 +97,41 @@ def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path
     """
     dual_weights = weight_potentials.clone()
     chart = ph.LogViterbiChart(graph)
-    def fn(x, x_diff):
-        if x_diff is None:
-            ph.pairwise_dot(potentials, x, dual_weights)
+    node_updates = ph.NodeUpdates(graph, potentials)
+    dynamic_viterbi = ph.LogViterbiDynamicViterbi(graph)
+    dynamic = False
+    def fn(status):
+        if status.x_diff is None:
+            ph.pairwise_dot(potentials, status.x, dual_weights)
+            if dynamic:
+                dynamic_viterbi.initialize(dual_weights)
         else:
-            ph.pairwise_dot(potentials, x_diff, dual_weights)
+            ph.pairwise_dot(potentials, status.x_diff, dual_weights)
 
-        path = best_path_fn(graph, dual_weights, chart)
+            if dynamic:
+                updates = set([i for i, x in enumerate(status.x_diff)
+                               if x != 0.0])
+                up = node_updates.update(updates)
+                print "num nodes updated", len(up), len(graph.nodes)
+                dynamic_viterbi.update(dual_weights, up)
+        if dynamic:
+            path = dynamic_viterbi.path
+        else:
+            path = best_path_fn(graph, dual_weights, chart)
+
+        #score = dual_weights.dot(path)
         score = dual_weights.dot(path)
+        #print "score1: %f score2: %f"%(score, score2)
+        #assert score == score2
         vec = potentials.dot(path)
-        subgrad = np.zeros(len(x))
+        subgrad = np.zeros(len(status.x))
         for i, j in vec:
             subgrad[i] = j
-        return score, subgrad, path
+        return SubgradientRoundResult(
+            dual=score, subgrad=subgrad, extra=path)
     return fn
+
+
 
 
 def subgradient_descent(fn, x0, rate, max_iterations=100,
@@ -103,37 +165,36 @@ def subgradient_descent(fn, x0, rate, max_iterations=100,
     xs, ys, subgradients : lists
       intermediate values for xs, ys, gs
     """
-    subgradients = []
-    f_x_s = []
-    xs = [x0]
-    extras = []
-    x_best = x0
-    f_x_best = 1e8
-    x_diff = None
-    primal_best = -1e8
-
+    history = SubgradientHistory()
+    status = SubgradientRoundStatus(x=x0,
+                                    x_diff=None,
+                                    dual=1e8,
+                                    updated=None,
+                                    primal=-1e8,
+                                    round=0,
+                                    result= None)
+    history.update(status)
     for t in range(max_iterations):
-        x = xs[-1]
-        f_x, g, extra = fn(x, x_diff)
 
-        subgradients.append(g)
-        f_x_s.append(f_x)
-        if f_x < f_x_best:
-            f_x_best = f_x
-            x_best = x
+        result = fn(status)
 
-        x_diff = -rate(t, f_x, f_x_best, g) * g
-        x_plus = x + x_diff
-        xs.append(x_plus)
-        primal = primal_fn(t, extra)
-        if primal is None: primal = -1e8
-        if primal > primal_best:
-            primal_best = primal
-        extras.append(extra)
+        x_diff = -rate(history) * result.subgrad
+        updates = x_diff != 0
+        x_plus = status.x + x_diff
 
-        print "primal: %3.3f dual: %3.3f primal_best: %3.3f dual_best: %3.3f" %(primal, f_x, primal_best, f_x_best)
-        if norm(g) == 0: break
-    return xs, f_x_s, subgradients, extras, primal_best
+        primal = primal_fn(status, result)
+        status = \
+            SubgradientRoundStatus(x=x_plus,
+                                   x_diff=x_diff,
+                                   dual=result.dual,
+                                   round=t,
+                                   updated=updates,
+                                   primal=primal,
+                                   result=result)
+        history.update(status)
+        history.show()
+        if norm(result.subgrad) == 0: break
+    return history
 
 
 def polyak(t, f_x, f_x_best, g):

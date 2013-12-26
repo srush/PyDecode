@@ -4,9 +4,11 @@ from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.list cimport list
+from libcpp.set cimport set
 cimport libcpp.map as c_map
 from libcpp.pair cimport pair
 from libcpp cimport bool
+
 
 from wrap cimport *
 from hypergraph cimport *
@@ -20,6 +22,18 @@ cdef extern from "<bitset>" namespace "std":
 cdef class Bitset:
     cdef cbitset data
     cdef init(self, cbitset data)
+
+cdef extern from "Hypergraph/Algorithms.h":
+    cdef cppclass CBackPointers "BackPointers":
+        CBackPointers(CHypergraph *graph)
+        const CHyperedge *get(const CHypernode *node)
+        CHyperpath *construct_path()
+
+cdef class BackPointers:
+     cdef const CBackPointers *thisptr
+     cdef Hypergraph graph
+     cdef BackPointers init(self, const CBackPointers *ptr,
+                            Hypergraph graph)
 
 ############# This is the templated semiring part. ##############
 
@@ -37,11 +51,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraph{{S.type}}Potentials theta,
         C{{S.type}}Chart inside_chart) except +
 
-    CHyperpath *viterbi_{{S.type}}"general_viterbi<{{S.ctype}}>"(
+    void viterbi_{{S.type}}"general_viterbi<{{S.ctype}}>"(
         const CHypergraph *graph,
         const CHypergraph{{S.type}}Potentials theta,
         C{{S.type}}Chart * chart,
-        vector[const CHyperedge *] *back
+        CBackPointers *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_{{S.type}} "count_constrained_viterbi<{{S.ctype}}>"(
@@ -60,6 +74,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         C{{S.type}}Chart(const CHypergraph *graph)
         {{S.vtype}} get(const CHypernode *node)
         void insert(const CHypernode& node, const {{S.vtype}}& val)
+
+    cdef cppclass C{{S.type}}DynamicViterbi "DynamicViterbi<{{S.ctype}}>":
+        C{{S.type}}DynamicViterbi(const CHypergraph *graph)
+        void initialize(const CHypergraph{{S.type}}Potentials theta)
+        void update(const CHypergraph{{S.type}}Potentials theta,
+                    set[int] *update)
+        const CBackPointers *back_pointers()
 
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<{{S.ctype}}>":
@@ -131,7 +152,13 @@ cdef class {{S.type}}Chart:
     cdef C{{S.type}}Chart *chart
     cdef kind
 
+
+
 {% endfor %}
+
+cdef class LogViterbiDynamicViterbi:
+    cdef CLogViterbiDynamicViterbi *thisptr
+    cdef Hypergraph graph
 
 #
 
@@ -182,3 +209,16 @@ cdef extern from "Hypergraph/Algorithms.h":
         int lower_limit,
         int upper_limit,
         int goal)
+
+    vector[set[int] ] *children_sparse(
+        const CHypergraph *graph,
+        const CHypergraphSparseVectorPotentials &potentials)
+
+    set[int] *updated_nodes(
+        const CHypergraph *graph,
+        const vector[set[int] ] &children,
+        const set[int] &updated)
+
+cdef class NodeUpdates:
+    cdef Hypergraph graph
+    cdef vector[set[int] ] *children

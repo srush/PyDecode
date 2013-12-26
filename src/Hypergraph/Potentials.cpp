@@ -122,9 +122,12 @@ void pairwise_dot(
     vector<double> &pots = weights->potentials();
     foreach (SparseVector &edge_constraints, sparse_potentials.potentials()) {
         foreach (SparsePair &pair, edge_constraints) {
-            pots[i] =
-                    LogViterbiPotential::times(pots[i],
-                                               pair.second * vec[pair.first]);
+            if (vec[pair.first] != 0 && pair.second != 0) {
+                pots[i] =
+                        LogViterbiPotential::times(pots[i],
+                                                   pair.second * vec[pair.first]);
+
+            }
         }
         ++i;
     }

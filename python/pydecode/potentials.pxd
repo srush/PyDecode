@@ -4,9 +4,11 @@ from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.list cimport list
+from libcpp.set cimport set
 cimport libcpp.map as c_map
 from libcpp.pair cimport pair
 from libcpp cimport bool
+
 
 from wrap cimport *
 from hypergraph cimport *
@@ -20,6 +22,18 @@ cdef extern from "<bitset>" namespace "std":
 cdef class Bitset:
     cdef cbitset data
     cdef init(self, cbitset data)
+
+cdef extern from "Hypergraph/Algorithms.h":
+    cdef cppclass CBackPointers "BackPointers":
+        CBackPointers(CHypergraph *graph)
+        const CHyperedge *get(const CHypernode *node)
+        CHyperpath *construct_path()
+
+cdef class BackPointers:
+     cdef const CBackPointers *thisptr
+     cdef Hypergraph graph
+     cdef BackPointers init(self, const CBackPointers *ptr,
+                            Hypergraph graph)
 
 ############# This is the templated semiring part. ##############
 
@@ -37,11 +51,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphViterbiPotentials theta,
         CViterbiChart inside_chart) except +
 
-    CHyperpath *viterbi_Viterbi"general_viterbi<ViterbiPotential>"(
+    void viterbi_Viterbi"general_viterbi<ViterbiPotential>"(
         const CHypergraph *graph,
         const CHypergraphViterbiPotentials theta,
         CViterbiChart * chart,
-        vector[const CHyperedge *] *back
+        CBackPointers *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_Viterbi "count_constrained_viterbi<ViterbiPotential>"(
@@ -60,6 +74,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         CViterbiChart(const CHypergraph *graph)
         double get(const CHypernode *node)
         void insert(const CHypernode& node, const double& val)
+
+    cdef cppclass CViterbiDynamicViterbi "DynamicViterbi<ViterbiPotential>":
+        CViterbiDynamicViterbi(const CHypergraph *graph)
+        void initialize(const CHypergraphViterbiPotentials theta)
+        void update(const CHypergraphViterbiPotentials theta,
+                    set[int] *update)
+        const CBackPointers *back_pointers()
 
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<ViterbiPotential>":
@@ -133,6 +154,8 @@ cdef class ViterbiChart:
 
 
 
+
+
 # Type identifiers.
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -145,11 +168,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphLogViterbiPotentials theta,
         CLogViterbiChart inside_chart) except +
 
-    CHyperpath *viterbi_LogViterbi"general_viterbi<LogViterbiPotential>"(
+    void viterbi_LogViterbi"general_viterbi<LogViterbiPotential>"(
         const CHypergraph *graph,
         const CHypergraphLogViterbiPotentials theta,
         CLogViterbiChart * chart,
-        vector[const CHyperedge *] *back
+        CBackPointers *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_LogViterbi "count_constrained_viterbi<LogViterbiPotential>"(
@@ -168,6 +191,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         CLogViterbiChart(const CHypergraph *graph)
         double get(const CHypernode *node)
         void insert(const CHypernode& node, const double& val)
+
+    cdef cppclass CLogViterbiDynamicViterbi "DynamicViterbi<LogViterbiPotential>":
+        CLogViterbiDynamicViterbi(const CHypergraph *graph)
+        void initialize(const CHypergraphLogViterbiPotentials theta)
+        void update(const CHypergraphLogViterbiPotentials theta,
+                    set[int] *update)
+        const CBackPointers *back_pointers()
 
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<LogViterbiPotential>":
@@ -241,6 +271,8 @@ cdef class LogViterbiChart:
 
 
 
+
+
 # Type identifiers.
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -253,11 +285,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphInsidePotentials theta,
         CInsideChart inside_chart) except +
 
-    CHyperpath *viterbi_Inside"general_viterbi<InsidePotential>"(
+    void viterbi_Inside"general_viterbi<InsidePotential>"(
         const CHypergraph *graph,
         const CHypergraphInsidePotentials theta,
         CInsideChart * chart,
-        vector[const CHyperedge *] *back
+        CBackPointers *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_Inside "count_constrained_viterbi<InsidePotential>"(
@@ -276,6 +308,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         CInsideChart(const CHypergraph *graph)
         double get(const CHypernode *node)
         void insert(const CHypernode& node, const double& val)
+
+    cdef cppclass CInsideDynamicViterbi "DynamicViterbi<InsidePotential>":
+        CInsideDynamicViterbi(const CHypergraph *graph)
+        void initialize(const CHypergraphInsidePotentials theta)
+        void update(const CHypergraphInsidePotentials theta,
+                    set[int] *update)
+        const CBackPointers *back_pointers()
 
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<InsidePotential>":
@@ -349,6 +388,8 @@ cdef class InsideChart:
 
 
 
+
+
 # Type identifiers.
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -361,11 +402,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphBoolPotentials theta,
         CBoolChart inside_chart) except +
 
-    CHyperpath *viterbi_Bool"general_viterbi<BoolPotential>"(
+    void viterbi_Bool"general_viterbi<BoolPotential>"(
         const CHypergraph *graph,
         const CHypergraphBoolPotentials theta,
         CBoolChart * chart,
-        vector[const CHyperedge *] *back
+        CBackPointers *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_Bool "count_constrained_viterbi<BoolPotential>"(
@@ -384,6 +425,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         CBoolChart(const CHypergraph *graph)
         bool get(const CHypernode *node)
         void insert(const CHypernode& node, const bool& val)
+
+    cdef cppclass CBoolDynamicViterbi "DynamicViterbi<BoolPotential>":
+        CBoolDynamicViterbi(const CHypergraph *graph)
+        void initialize(const CHypergraphBoolPotentials theta)
+        void update(const CHypergraphBoolPotentials theta,
+                    set[int] *update)
+        const CBackPointers *back_pointers()
 
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<BoolPotential>":
@@ -457,6 +505,8 @@ cdef class BoolChart:
 
 
 
+
+
 # Type identifiers.
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -469,11 +519,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphSparseVectorPotentials theta,
         CSparseVectorChart inside_chart) except +
 
-    CHyperpath *viterbi_SparseVector"general_viterbi<SparseVectorPotential>"(
+    void viterbi_SparseVector"general_viterbi<SparseVectorPotential>"(
         const CHypergraph *graph,
         const CHypergraphSparseVectorPotentials theta,
         CSparseVectorChart * chart,
-        vector[const CHyperedge *] *back
+        CBackPointers *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_SparseVector "count_constrained_viterbi<SparseVectorPotential>"(
@@ -492,6 +542,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         CSparseVectorChart(const CHypergraph *graph)
         vector[pair[int, int]] get(const CHypernode *node)
         void insert(const CHypernode& node, const vector[pair[int, int]]& val)
+
+    cdef cppclass CSparseVectorDynamicViterbi "DynamicViterbi<SparseVectorPotential>":
+        CSparseVectorDynamicViterbi(const CHypergraph *graph)
+        void initialize(const CHypergraphSparseVectorPotentials theta)
+        void update(const CHypergraphSparseVectorPotentials theta,
+                    set[int] *update)
+        const CBackPointers *back_pointers()
 
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<SparseVectorPotential>":
@@ -565,6 +622,8 @@ cdef class SparseVectorChart:
 
 
 
+
+
 # Type identifiers.
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -577,11 +636,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphMinSparseVectorPotentials theta,
         CMinSparseVectorChart inside_chart) except +
 
-    CHyperpath *viterbi_MinSparseVector"general_viterbi<MinSparseVectorPotential>"(
+    void viterbi_MinSparseVector"general_viterbi<MinSparseVectorPotential>"(
         const CHypergraph *graph,
         const CHypergraphMinSparseVectorPotentials theta,
         CMinSparseVectorChart * chart,
-        vector[const CHyperedge *] *back
+        CBackPointers *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_MinSparseVector "count_constrained_viterbi<MinSparseVectorPotential>"(
@@ -600,6 +659,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         CMinSparseVectorChart(const CHypergraph *graph)
         vector[pair[int, int]] get(const CHypernode *node)
         void insert(const CHypernode& node, const vector[pair[int, int]]& val)
+
+    cdef cppclass CMinSparseVectorDynamicViterbi "DynamicViterbi<MinSparseVectorPotential>":
+        CMinSparseVectorDynamicViterbi(const CHypergraph *graph)
+        void initialize(const CHypergraphMinSparseVectorPotentials theta)
+        void update(const CHypergraphMinSparseVectorPotentials theta,
+                    set[int] *update)
+        const CBackPointers *back_pointers()
 
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<MinSparseVectorPotential>":
@@ -673,6 +739,8 @@ cdef class MinSparseVectorChart:
 
 
 
+
+
 # Type identifiers.
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -685,11 +753,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphMaxSparseVectorPotentials theta,
         CMaxSparseVectorChart inside_chart) except +
 
-    CHyperpath *viterbi_MaxSparseVector"general_viterbi<MaxSparseVectorPotential>"(
+    void viterbi_MaxSparseVector"general_viterbi<MaxSparseVectorPotential>"(
         const CHypergraph *graph,
         const CHypergraphMaxSparseVectorPotentials theta,
         CMaxSparseVectorChart * chart,
-        vector[const CHyperedge *] *back
+        CBackPointers *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_MaxSparseVector "count_constrained_viterbi<MaxSparseVectorPotential>"(
@@ -708,6 +776,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         CMaxSparseVectorChart(const CHypergraph *graph)
         vector[pair[int, int]] get(const CHypernode *node)
         void insert(const CHypernode& node, const vector[pair[int, int]]& val)
+
+    cdef cppclass CMaxSparseVectorDynamicViterbi "DynamicViterbi<MaxSparseVectorPotential>":
+        CMaxSparseVectorDynamicViterbi(const CHypergraph *graph)
+        void initialize(const CHypergraphMaxSparseVectorPotentials theta)
+        void update(const CHypergraphMaxSparseVectorPotentials theta,
+                    set[int] *update)
+        const CBackPointers *back_pointers()
 
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<MaxSparseVectorPotential>":
@@ -781,6 +856,8 @@ cdef class MaxSparseVectorChart:
 
 
 
+
+
 # Type identifiers.
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -793,11 +870,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphBinaryVectorPotentials theta,
         CBinaryVectorChart inside_chart) except +
 
-    CHyperpath *viterbi_BinaryVector"general_viterbi<BinaryVectorPotential>"(
+    void viterbi_BinaryVector"general_viterbi<BinaryVectorPotential>"(
         const CHypergraph *graph,
         const CHypergraphBinaryVectorPotentials theta,
         CBinaryVectorChart * chart,
-        vector[const CHyperedge *] *back
+        CBackPointers *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_BinaryVector "count_constrained_viterbi<BinaryVectorPotential>"(
@@ -816,6 +893,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         CBinaryVectorChart(const CHypergraph *graph)
         cbitset get(const CHypernode *node)
         void insert(const CHypernode& node, const cbitset& val)
+
+    cdef cppclass CBinaryVectorDynamicViterbi "DynamicViterbi<BinaryVectorPotential>":
+        CBinaryVectorDynamicViterbi(const CHypergraph *graph)
+        void initialize(const CHypergraphBinaryVectorPotentials theta)
+        void update(const CHypergraphBinaryVectorPotentials theta,
+                    set[int] *update)
+        const CBackPointers *back_pointers()
 
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<BinaryVectorPotential>":
@@ -889,6 +973,8 @@ cdef class BinaryVectorChart:
 
 
 
+
+
 # Type identifiers.
 
 cdef extern from "Hypergraph/Algorithms.h":
@@ -901,11 +987,11 @@ cdef extern from "Hypergraph/Algorithms.h":
         const CHypergraphCountingPotentials theta,
         CCountingChart inside_chart) except +
 
-    CHyperpath *viterbi_Counting"general_viterbi<CountingPotential>"(
+    void viterbi_Counting"general_viterbi<CountingPotential>"(
         const CHypergraph *graph,
         const CHypergraphCountingPotentials theta,
         CCountingChart * chart,
-        vector[const CHyperedge *] *back
+        CBackPointers *back
         ) except +
 
     CHyperpath *count_constrained_viterbi_Counting "count_constrained_viterbi<CountingPotential>"(
@@ -924,6 +1010,13 @@ cdef extern from "Hypergraph/Algorithms.h":
         CCountingChart(const CHypergraph *graph)
         int get(const CHypernode *node)
         void insert(const CHypernode& node, const int& val)
+
+    cdef cppclass CCountingDynamicViterbi "DynamicViterbi<CountingPotential>":
+        CCountingDynamicViterbi(const CHypergraph *graph)
+        void initialize(const CHypergraphCountingPotentials theta)
+        void update(const CHypergraphCountingPotentials theta,
+                    set[int] *update)
+        const CBackPointers *back_pointers()
 
 
 cdef extern from "Hypergraph/Algorithms.h" namespace "Marginals<CountingPotential>":
@@ -997,6 +1090,12 @@ cdef class CountingChart:
 
 
 
+
+
+cdef class LogViterbiDynamicViterbi:
+    cdef CLogViterbiDynamicViterbi *thisptr
+    cdef Hypergraph graph
+
 #
 
 cdef class Projection:
@@ -1046,3 +1145,16 @@ cdef extern from "Hypergraph/Algorithms.h":
         int lower_limit,
         int upper_limit,
         int goal)
+
+    vector[set[int] ] *children_sparse(
+        const CHypergraph *graph,
+        const CHypergraphSparseVectorPotentials &potentials)
+
+    set[int] *updated_nodes(
+        const CHypergraph *graph,
+        const vector[set[int] ] &children,
+        const set[int] &updated)
+
+cdef class NodeUpdates:
+    cdef Hypergraph graph
+    cdef vector[set[int] ] *children

@@ -29,8 +29,8 @@ if use_cython:
                   ),
         Extension("pydecode.potentials",
                   ["python/pydecode/potentials.pyx",
-                   "src/Hypergraph/Algorithms.cpp",
                    "src/Hypergraph/Semirings.cpp",
+                   "src/Hypergraph/Algorithms.cpp",
                    "src/Hypergraph/Potentials.cpp",
                    ],
                   extra_objects=[os.path.abspath('python/pydecode/hypergraph.so')],
@@ -38,6 +38,7 @@ if use_cython:
                   #extra_compile_args=["-O0"],#"-ggdb"], #'-O2',
                   include_dirs=[r'src/', "."],
                   ),
+
         Extension("pydecode.beam",
                   ["python/pydecode/beam.pyx",
                    "src/Hypergraph/BeamSearch.cpp",

@@ -245,14 +245,14 @@ class Hyperpath {
       if (last_edge != NULL && last_edge->id() >= edge->id()) {
         throw HypergraphException("Hyperpath is not in order.");
       }
-      for (HNode node, edge->tail_nodes()) {
+      foreach (HNode node, edge->tail_nodes()) {
           nodes_.push_back(node);
-          node_set_.insert(node->id());
+          nodes_set_.insert(node->id());
       }
       last_edge = edge;
     }
     nodes_.push_back(graph->root());
-    node_set_.insert(graph->root()->id());
+    nodes_set_.insert(graph->root()->id());
   }
 
   /**
@@ -303,7 +303,7 @@ class Hyperpath {
   set<int> edges_set_;
   const vector<HEdge> edges_;
   set<int> nodes_set_;
-  const vector<HNode> nodes_;
+  vector<HNode> nodes_;
 };
 
 

@@ -12,7 +12,11 @@
 #include "Hypergraph/Semirings.h"
 #include "Hypergraph/Potentials.h"
 
-// General Code.
+
+
+
+// Compute tail node set for each hypergraph node.
+vector<set<int> > *children_nodes(const Hypergraph &graph);
 
 struct IdComparator {
     bool operator()(HEdge edge1, HEdge edge2) const {
@@ -20,6 +24,7 @@ struct IdComparator {
     }
 };
 
+// General Code.
 /**
  * A dynamic programming chart for SemiringType.
  * A templated vector over hypergraph nodes.
@@ -30,11 +35,19 @@ class Chart {
     typedef typename SemiringType::ValType V;
 
   public:
-    Chart<S>(const Hypergraph *hypergraph)
-            : hypergraph_(hypergraph),
-            chart_(hypergraph->nodes().size(), S::zero()) {}
+    Chart<S>(const Hypergraph *graph)
+            : graph_(graph),
+            chart_(graph->nodes().size(), S::zero()) {}
 
     void clear() { fill(chart_.begin(), chart_.end(), S::zero()); }
+
+    void initialize_inside() {
+        foreach (HNode node, graph_->nodes()) {
+            if (node->terminal()) {
+                insert(node, S::one());
+            }
+        }
+    }
 
     // V& operator[] (HNode node) { return chart_[node->id()]; }
     inline V operator[] (HNode node) const { return chart_[node->id()]; }
@@ -44,18 +57,52 @@ class Chart {
         chart_[node->id()] = val;
     }
 
+    inline V compute_edge_score(HEdge edge, const V &start) {
+        V score = start;
+        foreach (HNode tail, edge->tail_nodes()) {
+            score = S::times(score, chart_[tail->id()]);
+        }
+        return score;
+    }
 
     void check(const Hypergraph *hypergraph) const {
-        if (!hypergraph->same(*hypergraph_)) {
+        if (!hypergraph->same(*graph_)) {
             throw HypergraphException("Hypergraph does not match chart.");
         }
     }
 
   protected:
-    const Hypergraph *hypergraph_;
+    const Hypergraph *graph_;
     vector<V> chart_;
 };
 
+class BackPointers {
+  public:
+    BackPointers(const Hypergraph *graph)
+            : graph_(graph),
+        chart_(graph_->nodes().size(), NULL) {}
+
+    inline HEdge operator[] (HNode node) const {
+        return chart_[node->id()];
+    }
+
+    HEdge get(HNode node) const { return chart_[node->id()]; }
+    inline void insert(HNode node, HEdge val) {
+        chart_[node->id()] = val;
+    }
+
+    void check(const Hypergraph *hypergraph) const {
+        if (!hypergraph->same(*graph_)) {
+            throw HypergraphException("Hypergraph does not match backpointers.");
+        }
+    }
+
+    Hyperpath *construct_path() const;
+
+  protected:
+    const Hypergraph *graph_;
+    vector<HEdge> chart_;
+};
 
 template<typename SemiringType>
 Chart<SemiringType> *general_inside(
@@ -69,15 +116,12 @@ Chart<SemiringType> *general_outside(
     const Chart<SemiringType> &inside_chart);
 
 template<typename SemiringType>
-Hyperpath *general_viterbi(
+void general_viterbi(
     const Hypergraph *graph,
     const HypergraphPotentials<SemiringType> &potentials,
     Chart<SemiringType> *chart,
-    vector<HEdge> *back);
+    BackPointers *back);
 
-Hyperpath *construct_path(
-    const Hypergraph *graph,
-    const vector<HEdge> &back);
 
 template<typename SemiringType>
 Hyperpath *count_constrained_viterbi(
@@ -176,6 +220,48 @@ class Marginals {
     const Chart<SemiringType> *out_chart_;
 };
 
+template<typename S>
+class DynamicViterbi {
+  public:
+    DynamicViterbi<S>(Hypergraph *graph)
+            : graph_(graph),
+            last_chart_(NULL),
+            last_bp_(NULL),
+            children_sets_(children_nodes(*graph)) {}
+
+    void initialize(
+        const HypergraphPotentials<S> &potentials) {
+        chart_ = new Chart<S>(graph_);
+        bp_ = new BackPointers(graph_);
+        general_viterbi<S>(graph_, potentials, chart_, bp_);
+        update_pointers();
+    }
+
+    void update(
+        const HypergraphPotentials<S> &updated_potentials,
+        set<int> *updated);
+
+    const BackPointers *back_pointers() const {
+        last_bp_->check(graph_);
+        return last_bp_;
+    }
+
+  private:
+    void update_pointers() {
+        delete last_chart_;
+        delete last_bp_;
+        last_chart_ = chart_;
+        last_bp_ = bp_;
+    }
+
+    const Hypergraph *graph_;
+    const Chart<S> *last_chart_;
+    const BackPointers *last_bp_;
+    Chart<S> *chart_;
+    BackPointers *bp_;
+    const vector<set<int> > *children_sets_;
+};
+
 
 HypergraphProjection *extend_hypergraph_by_count(
     Hypergraph *graph,
@@ -187,9 +273,19 @@ HypergraphProjection *extend_hypergraph_by_count(
 
 Chart<SetPotential> *edge_domination(const Hypergraph &graph);
 Chart<SetPotential> *node_domination(const Hypergraph &graph);
-vector<set<int> > *children_nodes(const Hypergraph &graph);
 
 template<class Set1, class Set2>
 bool is_disjoint(const Set1 &set1, const Set2 &set2);
+
+
+vector<set<int> > *children_sparse(
+    const Hypergraph *graph,
+    const HypergraphPotentials<SparseVectorPotential> &potentials);
+
+set<int> *updated_nodes(
+    const Hypergraph *graph,
+    const vector<set<int> > &children,
+    const set<int> &updated);
+
 
 #endif  // HYPERGRAPH_ALGORITHMS_H_

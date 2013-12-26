@@ -329,21 +329,20 @@ class {{S.type}}:
                 {{S.type}}Potentials potentials,
                 {{S.type}}Chart chart=None):
         cdef C{{S.type}}Chart *used_chart
-        cdef vector[const CHyperedge *] *used_back = \
-            new vector[const CHyperedge *]()
+        cdef CBackPointers *used_back = \
+            new CBackPointers(graph.thisptr)
         if chart is not None:
             used_chart = chart.chart
         else:
             used_chart = new C{{S.type}}Chart(graph.thisptr)
-        cdef CHyperpath *path = \
-            viterbi_{{S.type}}(graph.thisptr,
-                               deref(potentials.thisptr),
-                               used_chart,
-                               used_back)
+        viterbi_{{S.type}}(graph.thisptr,
+                           deref(potentials.thisptr),
+                           used_chart,
+                           used_back)
+        bp = BackPointers().init(used_back, graph)
         if chart is None:
             del used_chart
-        del used_back
-        return Path().init(path, graph)
+        return bp
 
     @staticmethod
     def count_constrained_viterbi(Hypergraph graph,
@@ -375,155 +374,29 @@ class {{S.type}}:
         bool_potentials = marginals.threshold(threshold)
         return make_pruning_projections(graph, bool_potentials)
 
+
 {% endfor %}
 
-def inside(Hypergraph graph, potentials):
-    r"""
-    inside(Hypergraph graph, Potentials potentials):
-
-    Compute inside chart values for the given potentials.
-
-    Parameters
-    ----------
-
-    graph : :py:class:`Hypergraph`
-      The hypergraph :math:`({\cal V}, {\cal E})` to search.
-
-    potentials : :py:class:`Potentials`
-      The potentials :math:`\theta` to use for inside computations.
-
-    Returns
-    -------
-
-    chart : :py:class:`Chart`
-       The inside chart. Type depends on potentials type, i.e. for inside potentials this
-       will be the probability paths reaching this node.
-    """
-    return potentials.kind.inside(graph, potentials)
-
-def outside(Hypergraph graph, potentials, inside_chart):
-    r"""
-    outside(Hypergraph graph, Potentials potentials, Chart inside_chart)
-
-    Compute the outside scores for the hypergraph.
-
-    Parameters
-    -----------
-
-    graph : :py:class:`Hypergraph`
-       The hypergraph to search.
-
-    potentials : :py:class:`Potentials`
-       The potentials :math:`\theta` to use for outside computations.
-
-    inside_chart : :py:class:`Chart`
-       The associated inside chart. Compute by calling
-       :py:function:`inside`.  Must be the same type as potentials.
-
-    Returns
-    ---------
-
-    chart : :py:class:`Chart`
-       The outside chart. Type depends on potentials type, i.e. for
-       inside potentials this will be the probability paths reaching
-       this node.
-
-    """
-    return potentials.kind.outside(graph, potentials, inside_chart)
-
-def best_path(Hypergraph graph, potentials, chart=None):
-    r"""
-    best_path(Hypergraph graph, Potentials potentials):
-
-    Find the highest-scoring path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`
-    in the hypergraph.
-
-    Parameters
-    ----------
-
-    graph : :py:class:`Hypergraph`
-      The hypergraph :math:`({\cal V}, {\cal E})` to search.
-
-    potentials : :py:class:`Potentials`
-      The potentials :math:`\theta` of the hypergraph.
-
-    Returns
-    -------
-    path : :py:class:`Path`
-      The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
-    """
-    return potentials.kind.viterbi(graph, potentials, chart)
-
-def prune_hypergraph(Hypergraph graph, potentials, thres):
-    r"""
-    prune_hypergraph(Hypergraph graph, potentials, thres)
-
-    Prune hyperedges with low max-marginal score from the hypergraph.
-
-    Parameters
-    -----------
-
-    graph : :py:class:`Hypergraph`
-       The hypergraph to search.
-
-    potentials : :py:class:`Potentials`
-       The potentials of the hypergraph.
-
-    Returns
-    --------
-    (hypergraph, potentials) : :py:class:`Hypergraph`, :py:class:`Potentials`
-       The new hypergraphs and potentials.
-    """
-    return potentials.kind.prune_hypergraph(graph, potentials, thres)
-
-def compute_marginals(Hypergraph graph, potentials):
-    r"""
-    compute_marginals(Hypergraph graph, Potentials potentials):
-
-    Compute marginals for hypergraph and potentials.
-
-    Parameters
-    -----------
-    graph : :py:class:`Hypergraph`
-       The hypergraph to search.
-
-    potentials : :py:class:`Potentials`
-       The potentials of the hypergraph.
-
-    Returns
-    --------
-    marginals : :py:class:`Marginals`
-       The node and edge marginals associated with these potentials.
-    """
-    return potentials.kind.compute_marginals(graph, potentials)
-
-class Potentials(LogViterbiPotentials):
-    pass
-
-
-class Chart(LogViterbiChart):
-    r"""
-    Chart :math:`S^{|{\cal V}|}` associated with a hypergraph (V, E) and semiring S.
-
-    Acts as a vector::
-       >> print chart[node]
-    """
-    pass
-
-class Marginals(_LogViterbiMarginals):
-    r"""
-    Marginal values :math:`S^{|{\cal E} \times {\cal V}|}` associated with a hypergraph ({\cal V}, {\cal E}) and semiring S.
-
-    Acts as a dictionary::
-       >> print marginals[edge]
-       >> print marginals[node]
-    """
-    pass
-
-inside_values = inside
-outside_values = outside
-
 ####### Methods that use specific potential ########
+
+cdef class LogViterbiDynamicViterbi:
+    def __cinit__(self, Hypergraph graph):
+        self.graph = graph
+
+    def initialize(self, LogViterbiPotentials pots):
+        self.thisptr = new CLogViterbiDynamicViterbi(self.graph.thisptr)
+        self.thisptr.initialize(deref(pots.thisptr))
+        return self.path
+
+    def update(self, LogViterbiPotentials pots, set[int] updated):
+        self.thisptr.update(deref(pots.thisptr), &updated)
+        return self.path
+
+    property path:
+        def __get__(self):
+            cdef BackPointers bp = BackPointers()
+            bp.init(self.thisptr.back_pointers(), self.graph)
+            return bp.path
 
 def pairwise_dot(SparseVectorPotentials potentials, vec, LogViterbiPotentials weights):
     cdef vector[double] rvec = vector[double]()
@@ -618,6 +491,176 @@ def make_pruning_projections(Hypergraph graph, BoolPotentials filt):
 def valid_binary_vectors(Bitset lhs, Bitset rhs):
     return cvalid_binary_vectors(lhs.data, rhs.data)
 
+class Potentials(LogViterbiPotentials):
+    pass
+
+################
+
+
+cdef class BackPointers:
+    cdef BackPointers init(self, CBackPointers *ptr,
+                           Hypergraph graph):
+        self.thisptr = ptr
+        self.graph = graph
+        return self
+
+    property path:
+        def __get__(self):
+            cdef CHyperpath *path = self.thisptr.construct_path()
+            return Path().init(path, self.graph)
+
+    def __getitem__(self, Node node):
+        return Edge().init(self.thisptr.get(node.nodeptr), self.graph)
+
+    # def __dealloc__(self):
+    #     del self.thisptr
+    #     self.thisptr = NULL
+
+def inside(Hypergraph graph, potentials):
+    r"""
+    inside(Hypergraph graph, Potentials potentials):
+
+    Compute inside chart values for the given potentials.
+
+    Parameters
+    ----------
+
+    graph : :py:class:`Hypergraph`
+      The hypergraph :math:`({\cal V}, {\cal E})` to search.
+
+    potentials : :py:class:`Potentials`
+      The potentials :math:`\theta` to use for inside computations.
+
+    Returns
+    -------
+
+    chart : :py:class:`Chart`
+       The inside chart. Type depends on potentials type, i.e. for inside potentials this
+       will be the probability paths reaching this node.
+    """
+    return potentials.kind.inside(graph, potentials)
+
+def outside(Hypergraph graph, potentials, inside_chart):
+    r"""
+    outside(Hypergraph graph, Potentials potentials, Chart inside_chart)
+
+    Compute the outside scores for the hypergraph.
+
+    Parameters
+    -----------
+
+    graph : :py:class:`Hypergraph`
+       The hypergraph to search.
+
+    potentials : :py:class:`Potentials`
+       The potentials :math:`\theta` to use for outside computations.
+
+    inside_chart : :py:class:`Chart`
+       The associated inside chart. Compute by calling
+       :py:function:`inside`.  Must be the same type as potentials.
+
+    Returns
+    ---------
+
+    chart : :py:class:`Chart`
+       The outside chart. Type depends on potentials type, i.e. for
+       inside potentials this will be the probability paths reaching
+       this node.
+
+    """
+    return potentials.kind.outside(graph, potentials, inside_chart)
+
+def best_path(Hypergraph graph, potentials, chart=None):
+    r"""
+    best_path(Hypergraph graph, Potentials potentials):
+
+    Find the highest-scoring path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`
+    in the hypergraph.
+
+    Parameters
+    ----------
+
+    graph : :py:class:`Hypergraph`
+      The hypergraph :math:`({\cal V}, {\cal E})` to search.
+
+    potentials : :py:class:`Potentials`
+      The potentials :math:`\theta` of the hypergraph.
+
+    Returns
+    -------
+    path : :py:class:`Path`
+      The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
+    """
+    bp = potentials.kind.viterbi(graph, potentials, chart)
+    return bp.path
+
+def prune_hypergraph(Hypergraph graph, potentials, thres):
+    r"""
+    prune_hypergraph(Hypergraph graph, potentials, thres)
+
+    Prune hyperedges with low max-marginal score from the hypergraph.
+
+    Parameters
+    -----------
+
+    graph : :py:class:`Hypergraph`
+       The hypergraph to search.
+
+    potentials : :py:class:`Potentials`
+       The potentials of the hypergraph.
+
+    Returns
+    --------
+    (hypergraph, potentials) : :py:class:`Hypergraph`, :py:class:`Potentials`
+       The new hypergraphs and potentials.
+    """
+    return potentials.kind.prune_hypergraph(graph, potentials, thres)
+
+def compute_marginals(Hypergraph graph, potentials):
+    r"""
+    compute_marginals(Hypergraph graph, Potentials potentials):
+
+    Compute marginals for hypergraph and potentials.
+
+    Parameters
+    -----------
+    graph : :py:class:`Hypergraph`
+       The hypergraph to search.
+
+    potentials : :py:class:`Potentials`
+       The potentials of the hypergraph.
+
+    Returns
+    --------
+    marginals : :py:class:`Marginals`
+       The node and edge marginals associated with these potentials.
+    """
+    return potentials.kind.compute_marginals(graph, potentials)
+
+
+
+class Chart(LogViterbiChart):
+    r"""
+    Chart :math:`S^{|{\cal V}|}` associated with a hypergraph (V, E) and semiring S.
+
+    Acts as a vector::
+       >> print chart[node]
+    """
+    pass
+
+class Marginals(_LogViterbiMarginals):
+    r"""
+    Marginal values :math:`S^{|{\cal E} \times {\cal V}|}` associated with a hypergraph ({\cal V}, {\cal E}) and semiring S.
+
+    Acts as a dictionary::
+       >> print marginals[edge]
+       >> print marginals[node]
+    """
+    pass
+
+inside_values = inside
+outside_values = outside
+
 
 def extend_hypergraph_by_count(Hypergraph graph,
                                CountingPotentials potentials,
@@ -631,3 +674,20 @@ def extend_hypergraph_by_count(Hypergraph graph,
                                     upper_limit,
                                     goal)
     return Projection().init(projection, graph)
+
+
+
+cdef class NodeUpdates:
+    def __cinit__(self, Hypergraph graph,
+                  SparseVectorPotentials potentials):
+        self.graph = graph
+        self.children = \
+            children_sparse(graph.thisptr,
+                            deref(potentials.thisptr))
+
+    def update(self, set[int] updates):
+        cdef set[int] *up = \
+            updated_nodes(self.graph.thisptr,
+                          deref(self.children),
+                          updates)
+        return deref(up)

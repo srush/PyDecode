@@ -15,7 +15,7 @@
 #define SPECIALIZE_ALGORITHMS_FOR_SEMI(X)\
   template class Chart<X>;\
   template class Marginals<X>;\
-  template Hyperpath *general_viterbi<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, Chart<X> *chart, vector<HEdge> *back); \
+  template void general_viterbi<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, Chart<X> *chart, BackPointers *back); \
   template Hyperpath *count_constrained_viterbi<X>(const Hypergraph *graph, const HypergraphPotentials<X> &potentials, const HypergraphPotentials<CountingPotential> &count_potentials, int limit);
 
 #define SPECIALIZE_FOR_SEMI_MIN(X)\
@@ -50,6 +50,8 @@ bool is_disjoint(const Set1 &set1, const Set2 &set2)
 }
 
 
+
+
 // General code.
 
 template<typename S>
@@ -58,19 +60,14 @@ general_inside(const Hypergraph *graph,
                const HypergraphPotentials<S> &potentials) {
   potentials.check(*graph);
 
+
   // Run Viterbi Hypergraph algorithm.
   Chart<S> *chart = new Chart<S>(graph);
+  chart->initialize_inside();
 
-  foreach (HNode node, graph->nodes()) {
-    if (node->terminal()) {
-      chart->insert(node, S::one());
-    }
-  }
   foreach (HEdge edge, graph->edges()) {
-    typename S::ValType score = potentials.score(edge);
-    foreach (HNode node, edge->tail_nodes()) {
-      score = S::times(score, (*chart)[node]);
-    }
+    typename S::ValType score =
+            chart->compute_edge_score(edge, potentials.score(edge));
     chart->insert(edge->head_node(),
                   S::add((*chart)[edge->head_node()], score));
   }
@@ -112,100 +109,82 @@ general_outside(const Hypergraph *graph,
 }
 
 template<typename S>
-Hyperpath *general_viterbi(
+void general_viterbi(
     const Hypergraph *graph,
     const HypergraphPotentials<S> &potentials,
     Chart<S> *chart,
-    vector<HEdge> *back) {
+    BackPointers *back) {
 
     potentials.check(*graph);
     chart->check(graph);
+    back->check(graph);
     chart->clear();
-    back->clear();
-    back->resize(graph->nodes().size(), NULL);
 
-    foreach (HNode node, graph->nodes()) {
-        if (node->terminal()) {
-            chart->insert(node, S::one());
-        }
-    }
+    chart->initialize_inside();
     foreach (HNode node, graph->nodes()) {
         typename S::ValType best = (*chart)[node];
         foreach (HEdge edge, node->edges()) {
-            typename S::ValType score = potentials.score(edge);
-            foreach (HNode tail, edge->tail_nodes()) {
-                score = S::times(score, (*chart)[tail]);
-            }
+            typename S::ValType score =
+                    chart->compute_edge_score(edge,
+                                              potentials.score(edge));
             if (score > best) {
                 chart->insert(node, score);
-                (*back)[node->id()] = edge;
+                back->insert(node, edge);
                 best = score;
             }
         }
     }
-    return construct_path(graph, *back);
 }
 
 template<typename S>
-Hyperpath *general_viterbi_update(
-    const Hypergraph *graph,
+void DynamicViterbi<S>::update(
     const HypergraphPotentials<S> &potentials,
-    const vector<set<int> > &children,
-    const vector<bool> &updated_nodes,
-    const Chart<S> &old_chart,
-    const vector<HEdge> &old_back,
-    Chart<S> *chart,
-    vector<HEdge> *back) {
+    set<int> *updated) {
 
-    potentials.check(*graph);
-    //Chart<S> *chart = new Chart<S>(*graph);
-    chart->check(graph);
-    chart->clear();
-    back->clear();
-    back->resize(graph->nodes().size(), NULL);
+    potentials.check(*graph_);
+    chart_ = new Chart<S>(graph_);
+    bp_ = new BackPointers(graph_);
+    chart_->initialize_inside();
 
-    set<int> updated;
-
-    foreach (HNode node, graph->nodes()) {
-        if (!updated_nodes[node->id()] &&
-            is_disjoint<set<int>, set<int> >(
-                children[node->id()],
-                updated)) {
-            chart->insert(node, (old_chart)[node]);
-            (*back)[node->id()] = (old_back)[node->id()];
+    foreach (HNode node, graph_->nodes()) {
+        // If the node does not need to be updated,
+        // use last weights.
+        if (is_disjoint<set<int>, set<int> >(
+                (*children_sets_)[node->id()],
+                *updated)) {
+            chart_->insert(node, (*last_chart_)[node]);
+            bp_->insert(node, (*last_bp_)[node]);
             continue;
         }
 
-        typename S::ValType best = (*chart)[node];
+        typename S::ValType best = (*chart_)[node];
         foreach (HEdge edge, node->edges()) {
-            typename S::ValType score = potentials.score(edge);
-            foreach (HNode tail, edge->tail_nodes()) {
-                score = S::times(score, (*chart)[tail]);
-            }
+            typename S::ValType score =
+                    chart_->compute_edge_score(edge,
+                                               potentials.score(edge));
             if (score > best) {
-                chart->insert(node, score);
-                (*back)[node->id()] = edge;
+                chart_->insert(node, score);
+                bp_->insert(node, edge);
                 best = score;
             }
         }
-        if ((*back)[node->id()] != (old_back)[node->id()] ||
-            (*chart)[node] != (old_chart)[node]) {
-            updated.insert(node->id());
+        if ((*bp_)[node] != (*last_bp_)[node] ||
+            (*chart_)[node] != (*last_chart_)[node]) {
+            updated->insert(node->id());
         }
     }
-    return construct_path(graph, *back);
+    update_pointers();
 }
 
 
-Hyperpath *construct_path(const Hypergraph *graph,
-                          const vector<HEdge> &back) {
+Hyperpath *BackPointers::construct_path() const {
     // Collect backpointers.
     vector<HEdge> path;
     queue<HNode> to_examine;
-    to_examine.push(graph->root());
+    to_examine.push(graph_->root());
     while (!to_examine.empty()) {
         HNode node = to_examine.front();
-        HEdge edge = back[node->id()];
+        HEdge edge = chart_[node->id()];
         to_examine.pop();
         if (edge == NULL) {
             assert(node->terminal());
@@ -217,7 +196,7 @@ Hyperpath *construct_path(const Hypergraph *graph,
         }
     }
     sort(path.begin(), path.end(), IdComparator());
-    return new Hyperpath(graph, path);
+    return new Hyperpath(graph_, path);
 }
 
 template<typename StatSem>
@@ -511,14 +490,46 @@ Chart<SetPotential> *node_domination(const Hypergraph &graph) {
     return chart;
 }
 
+vector<set<int> > *children_sparse(
+    const Hypergraph *graph,
+    const HypergraphPotentials<SparseVectorPotential> &potentials) {
+    vector<set<int> > *children = new vector<set<int> >(graph->nodes().size());
+    foreach (HNode node, graph->nodes()) {
+        set<int> &vec = (*children)[node->id()];
+        foreach (HEdge edge, node->edges()) {
+            const SparseVector &v = potentials.score(edge);
+            foreach (const SparsePair &pair, v) {
+                vec.insert(pair.first);
+            }
+        }
+    }
+    return children;
+}
+
+set<int> *updated_nodes(
+    const Hypergraph *graph,
+    const vector<set<int> > &children,
+    const set<int> &updated) {
+    set<int> *updated_nodes = new set<int>();
+    foreach (HNode node, graph->nodes()) {
+        if (!is_disjoint<set<int>, set<int> >(updated,
+                                             children[node->id()])) {
+            updated_nodes->insert(node->id());
+        }
+    }
+    return updated_nodes;
+}
+
 vector<set<int> > *children_nodes(const Hypergraph &graph) {
-    vector<set<int> > *children = new vector<set<int> >();
+    vector<set<int> > *children =
+            new vector<set<int> >(graph.nodes().size());
     foreach (HNode node, graph.nodes()) {
         foreach (HEdge edge, node->edges()) {
             foreach (HNode tail, edge->tail_nodes()) {
                 (*children)[node->id()].insert(tail->id());
             }
         }
+        (*children)[node->id()].insert(node->id());
     }
     return children;
 }
@@ -540,6 +551,6 @@ SPECIALIZE_FOR_SEMI_MIN(MinSparseVectorPotential)
 SPECIALIZE_FOR_SEMI_MIN(MaxSparseVectorPotential)
 SPECIALIZE_FOR_SEMI_MIN(BinaryVectorPotential)
 
-
+template class DynamicViterbi<LogViterbiPotential>;
 
 // End General code.
