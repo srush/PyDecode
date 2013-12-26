@@ -2904,21 +2904,35 @@ cdef class Projection:
         self.thisptr = NULL
 
     cdef Projection init(self, const CHypergraphProjection *thisptr,
-                         Hypergraph small_graph):
+                         Hypergraph small_graph, Hypergraph big_graph):
         self.thisptr = thisptr
         assert thisptr.big_graph().id() >= 0
         assert thisptr.new_graph().id() >= 0
         if small_graph == None:
-            self.small_graph = self.small_hypergraph()
+            self.big_graph = big_graph
+            self.small_graph = self._small_hypergraph()
         else:
             self.small_graph = small_graph
-        self.big_graph = self.big_hypergraph()
+            self.big_graph = self._big_hypergraph()
+
         return self
 
     def compose(self, Projection other, bool reverse):
         cdef CHypergraphProjection *newptr = \
             ccompose_projections(other.thisptr, reverse, self.thisptr)
-        return Projection().init(newptr, None)
+        if reverse:
+            return Projection().init(newptr, None, self.small_graph)
+        else:
+            return Projection().init(newptr, None, self.big_graph)
+
+    property small_hypergraph:
+        def __get__(self):
+            return self.small_graph
+
+    property big_hypergraph:
+        def __get__(self):
+            return self.big_graph
+
 
 
     def __dealloc__(self):
@@ -2941,46 +2955,51 @@ cdef class Projection:
             else:
                 return None
 
-    def project(self, Hypergraph graph):
-        cdef Hypergraph new_graph = Hypergraph()
+    def _small_hypergraph(self):
         cdef const CHypergraphProjection *projection = self.thisptr
 
         # Map nodes.
         node_labels = [None] * projection.new_graph().nodes().size()
-        cdef vector[const CHypernode*] old_nodes = graph.thisptr.nodes()
+        cdef vector[const CHypernode*] old_nodes = self.big_graph.thisptr.nodes()
         cdef const CHypernode *node
         for i in range(old_nodes.size()):
-            node = projection.project(old_nodes[i])
+            node = self.thisptr.project(old_nodes[i])
             if node != NULL and node.id() >= 0:
-                node_labels[node.id()] = graph.node_labels[i]
-
-        # Map edges.
+                node_labels[node.id()] = self.big_graph.node_labels[i]
         edge_labels = [None] * projection.new_graph().edges().size()
-        cdef vector[const CHyperedge *] old_edges = graph.thisptr.edges()
-        cdef const CHyperedge *edge
-        for i in range(old_edges.size()):
-            edge = projection.project(old_edges[i])
-            # if edge != NULL and edge.id() >= 0:
-            #     edge_labels[edge.id()] = graph.edge_labels[i]
+        return Hypergraph().init(projection.new_graph(), node_labels, edge_labels)
 
-        new_graph.init(projection.new_graph(), node_labels, edge_labels)
-        return new_graph
+    #     # Map edges.
+    #     edge_labels = [None] * projection.new_graph().edges().size()
+    #     cdef vector[const CHyperedge *] old_edges = graph.thisptr.edges()
+    #     cdef const CHyperedge *edge
+    #     for i in range(old_edges.size()):
+    #         edge = projection.project(old_edges[i])
+    #         # if edge != NULL and edge.id() >= 0:
+    #         #     edge_labels[edge.id()] = graph.edge_labels[i]
 
-    def small_hypergraph(self):
-        cdef const CHypergraph *graph = self.thisptr.new_graph()
-        return Hypergraph().init(graph, [], [])
 
-    def big_hypergraph(self):
+    # def small_hypergraph(self):
+    #     cdef const CHypergraph *graph = self.thisptr.new_graph()
+    #     return Hypergraph().init(graph, [], [])
+
+    def _big_hypergraph(self):
         cdef const CHypergraph *graph = self.thisptr.big_graph()
         assert graph.id() >= 0
-        return Hypergraph().init(graph, [], [])
+        node_labels = [None] * graph.nodes().size()
+        cdef const CHypernode *node
+        for i in range(graph.nodes().size()):
+            node = self.thisptr.project(graph.nodes()[i])
+            if node != NULL and node.id() >= 0:
+                node_labels[i] = self.small_graph.node_labels[node.id()]
+        return Hypergraph().init(graph, node_labels, [])
 
 
 def make_pruning_projections(Hypergraph graph, BoolPotentials filt):
     cdef const CHypergraphProjection *projection = \
         cproject_hypergraph(graph.thisptr,
                             deref(filt.thisptr))
-    return Projection().init(projection, None)
+    return Projection().init(projection, None, graph)
 
 def valid_binary_vectors(Bitset lhs, Bitset rhs):
     return cvalid_binary_vectors(lhs.data, rhs.data)
@@ -3167,7 +3186,8 @@ def extend_hypergraph_by_count(Hypergraph graph,
                                     lower_limit,
                                     upper_limit,
                                     goal)
-    return Projection().init(projection, graph)
+
+    return Projection().init(projection, graph, None)
 
 
 

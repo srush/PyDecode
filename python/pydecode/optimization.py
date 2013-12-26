@@ -33,10 +33,11 @@ def best_constrained_path(graph, potentials, constraints):
     return extras[-1]
 
 class SubgradientRoundResult:
-    def __init__(self, dual, subgrad, extra):
+    def __init__(self, dual, subgrad, extra, prune):
         self.dual = dual
         self.subgrad = subgrad
         self.extra = extra
+        self.prune = prune
 
 class SubgradientRoundStatus:
     def __init__(self, dual, primal, x, x_diff,
@@ -54,11 +55,19 @@ class SubgradientHistory:
         self.best_primal = -1e8
         self.best_dual = 1e8
         self.history = []
+        self.last_prune = 25
+        self.success = False
+
+    def gap(self):
+        return abs(self.best_primal - self.best_dual)
+
 
     def status(self):
         return self.history[-1]
 
     def update(self, status):
+        if status.result is not None and status.result.prune is not None:
+            self.last_prune = status.result.prune
         self.history.append(status)
         if status.primal is not None and \
                 status.primal > self.best_primal:
@@ -71,8 +80,46 @@ class SubgradientHistory:
         status = self.status()
         print "%d %4.3f %4.3f %4.3f %4.3f %4.3f" \
             % (status.round, status.dual, status.primal,
-               self.best_primal, self.best_dual,
-               abs(self.best_primal - self.best_dual))
+               self.best_primal, self.best_dual, self.gap())
+
+class SubgradientGenerator:
+    def __init__(self, graph, weight_potentials, potentials):
+        self.dual_weights = weight_potentials.clone()
+        self.chart = ph.LogViterbiChart(graph)
+        self.current_graph = graph
+        self.use_prune = True
+        self.potentials = potentials
+        self.weight_potentials = weight_potentials
+
+
+    def __call__(self, history):
+        status = history.status()
+        if status.x_diff is None:
+            ph.pairwise_dot(self.potentials, status.x, self.dual_weights)
+        else:
+            ph.pairwise_dot(self.potentials, status.x_diff, self.dual_weights)
+
+        path = ph.best_path(self.current_graph,
+                            self.dual_weights)
+
+        score = self.dual_weights.dot(path)
+        vec = self.potentials.dot(path)
+        subgrad = np.zeros(len(status.x))
+        prune = None
+        if self.use_prune and history.gap() < history.last_prune - 5:
+            pruning = ph.prune_hypergraph(self.current_graph,
+                                          self.dual_weights,
+                                          history.best_primal)
+            self.dual_weights = self.dual_weights.project(self.current_graph, pruning)
+            self.potentials = self.potentials.project(self.current_graph, pruning)
+            self.current_graph = pruning.small_hypergraph
+            prune = history.gap()
+
+        for i, j in vec:
+            subgrad[i] = j
+        return SubgradientRoundResult(
+            dual=score, subgrad=subgrad, extra=path, prune=prune)
+
 
 def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path):
     r"""
@@ -95,47 +142,13 @@ def _subgradient(graph, weight_potentials, potentials, best_path_fn=ph.best_path
     fn : A function
       A function for subgradient descent.
     """
-    dual_weights = weight_potentials.clone()
-    chart = ph.LogViterbiChart(graph)
-    node_updates = ph.NodeUpdates(graph, potentials)
-    dynamic_viterbi = ph.LogViterbiDynamicViterbi(graph)
-    dynamic = False
-    def fn(status):
-        if status.x_diff is None:
-            ph.pairwise_dot(potentials, status.x, dual_weights)
-            if dynamic:
-                dynamic_viterbi.initialize(dual_weights)
-        else:
-            ph.pairwise_dot(potentials, status.x_diff, dual_weights)
-
-            if dynamic:
-                updates = set([i for i, x in enumerate(status.x_diff)
-                               if x != 0.0])
-                up = node_updates.update(updates)
-                print "num nodes updated", len(up), len(graph.nodes)
-                dynamic_viterbi.update(dual_weights, up)
-        if dynamic:
-            path = dynamic_viterbi.path
-        else:
-            path = best_path_fn(graph, dual_weights, chart)
-
-        #score = dual_weights.dot(path)
-        score = dual_weights.dot(path)
-        #print "score1: %f score2: %f"%(score, score2)
-        #assert score == score2
-        vec = potentials.dot(path)
-        subgrad = np.zeros(len(status.x))
-        for i, j in vec:
-            subgrad[i] = j
-        return SubgradientRoundResult(
-            dual=score, subgrad=subgrad, extra=path)
-    return fn
+    return SubgradientGenerator(graph, weight_potentials, potentials)
 
 
 
 
 def subgradient_descent(fn, x0, rate, max_iterations=100,
-                        primal_fn=lambda r, extra:None):
+                        primal_fn=lambda r,extra:None, primal_start=-1e8, ):
     r"""
     Runs subgradient descent on the objective function.
 
@@ -170,13 +183,13 @@ def subgradient_descent(fn, x0, rate, max_iterations=100,
                                     x_diff=None,
                                     dual=1e8,
                                     updated=None,
-                                    primal=-1e8,
+                                    primal=primal_start,
                                     round=0,
                                     result= None)
     history.update(status)
     for t in range(max_iterations):
 
-        result = fn(status)
+        result = fn(history)
 
         x_diff = -rate(history) * result.subgrad
         updates = x_diff != 0
@@ -193,7 +206,9 @@ def subgradient_descent(fn, x0, rate, max_iterations=100,
                                    result=result)
         history.update(status)
         history.show()
-        if norm(result.subgrad) == 0: break
+        if norm(result.subgrad) == 0:
+            history.success = True
+            break
     return history
 
 

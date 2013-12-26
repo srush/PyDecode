@@ -1104,7 +1104,7 @@ cdef class Projection:
     cdef Hypergraph big_graph
 
     cdef Projection init(self, const CHypergraphProjection *thisptr,
-                         Hypergraph small_graph)
+                         Hypergraph small_graph, Hypergraph big_graph)
 
 
 

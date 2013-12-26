@@ -145,17 +145,19 @@ void DynamicViterbi<S>::update(
     chart_ = new Chart<S>(graph_);
     bp_ = new BackPointers(graph_);
     chart_->initialize_inside();
-
+    //int count = 0;
     foreach (HNode node, graph_->nodes()) {
         // If the node does not need to be updated,
         // use last weights.
         if (is_disjoint<set<int>, set<int> >(
                 (*children_sets_)[node->id()],
                 *updated)) {
+            //count += 1;
             chart_->insert(node, (*last_chart_)[node]);
             bp_->insert(node, (*last_bp_)[node]);
             continue;
         }
+
 
         typename S::ValType best = (*chart_)[node];
         foreach (HEdge edge, node->edges()) {
@@ -173,6 +175,8 @@ void DynamicViterbi<S>::update(
             updated->insert(node->id());
         }
     }
+    //cout << count << endl;
+
     update_pointers();
 }
 
