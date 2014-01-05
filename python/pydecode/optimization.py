@@ -42,7 +42,7 @@ class SubgradientRoundResult:
 
 class SubgradientRoundStatus:
     def __init__(self, dual, primal, x, x_diff,
-                 updated, result, round):
+                 updated, result, round, rate):
         self.dual = dual
         self.primal = primal
         self.x = x
@@ -50,6 +50,7 @@ class SubgradientRoundStatus:
         self.updated = updated
         self.result = result
         self.round = round
+        self.rate = rate
 
 class SubgradientHistory:
     def __init__(self):
@@ -76,12 +77,13 @@ class SubgradientHistory:
         if status.dual is not None and \
                 status.dual < self.best_dual:
             self.best_dual = status.dual
+        assert self.best_primal < self.best_dual, "%f %f"%(self.best_primal, self.best_dual)
 
     def show(self):
         status = self.status()
-        print "%d %4.3f %4.3f %4.3f %4.3f %4.3f" \
+        print "SUBGRAD %d %4.3f %4.3f %4.3f %4.3f %4.3f  %4.3f" \
             % (status.round, status.dual, status.primal,
-               self.best_primal, self.best_dual, self.gap())
+               self.best_primal, self.best_dual, self.gap(), status.rate)
 
 class SubgradientGenerator:
     def __init__(self, graph, weight_potentials, potentials):
@@ -108,12 +110,16 @@ class SubgradientGenerator:
         subgrad = np.zeros(len(status.x))
         prune = None
         if self.use_prune and history.gap() < history.last_prune - 5:
+            print "pruning "
             pruning = ph.prune_hypergraph(self.current_graph,
                                           self.dual_weights,
                                           history.best_primal)
-            self.dual_weights = self.dual_weights.project(self.current_graph, pruning)
+            self.dual_weights = self.dual_weights.project(self.current_graph,
+                                                          pruning)
             self.potentials = self.potentials.project(self.current_graph, pruning)
+            print "OLD SIZE", len(self.current_graph.nodes)
             self.current_graph = pruning.small_hypergraph
+            print "NEW SIZE", len(self.current_graph.nodes)
             prune = history.gap()
 
         for i, j in vec:
@@ -189,13 +195,15 @@ def subgradient_descent(fn, x0, rate, max_iterations=100,
                                     updated=None,
                                     primal=primal_start,
                                     round=0,
-                                    result= None)
+                                    result=None,
+                                    rate=0)
     history.update(status)
     for t in range(max_iterations):
 
         result = fn(history)
 
-        x_diff = -rate(history) * result.subgrad
+        round_rate = rate(history, result)
+        x_diff = -round_rate * result.subgrad
         updates = x_diff != 0
         x_plus = status.x + x_diff
 
@@ -207,7 +215,9 @@ def subgradient_descent(fn, x0, rate, max_iterations=100,
                                    round=t,
                                    updated=updates,
                                    primal=primal,
-                                   result=result)
+                                   result=result,
+                                   rate=round_rate)
+
         history.update(status)
         history.show()
         if norm(result.subgrad) == 0:

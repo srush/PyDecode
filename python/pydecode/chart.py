@@ -7,7 +7,7 @@ class ChartBuilder:
     """
 
     def __init__(self, score_fn=lambda a: a,
-                 semiring=ph._LogViterbiW,
+                 semiring=None,
                  build_hypergraph=False,
                  debug=False,
                  strict=True):
