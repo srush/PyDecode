@@ -90,10 +90,9 @@ class SubgradientGenerator:
         self.dual_weights = weight_potentials.clone()
         self.chart = ph.LogViterbiChart(graph)
         self.current_graph = graph
-        self.use_prune = True
+        self.pruning_function = None
         self.potentials = potentials
         self.weight_potentials = weight_potentials
-
 
     def __call__(self, history):
         status = history.status()
@@ -109,18 +108,29 @@ class SubgradientGenerator:
         vec = self.potentials.dot(path)
         subgrad = np.zeros(len(status.x))
         prune = None
-        if self.use_prune and history.gap() < history.last_prune - 5:
-            print "pruning "
-            pruning = ph.prune_hypergraph(self.current_graph,
-                                          self.dual_weights,
-                                          history.best_primal)
-            self.dual_weights = self.dual_weights.project(self.current_graph,
-                                                          pruning)
-            self.potentials = self.potentials.project(self.current_graph, pruning)
-            print "OLD SIZE", len(self.current_graph.nodes)
-            self.current_graph = pruning.small_hypergraph
-            print "NEW SIZE", len(self.current_graph.nodes)
-            prune = history.gap()
+
+        # Call prune function
+        #if self.use_prune and history.gap() < history.last_prune - 5:
+        if self.pruning_function is not None:
+            #print "pruning "
+            pruning = \
+                self.pruning_function(self.current_graph,
+                                      self.dual_weights,
+                                      self.potentials,
+                                      history)
+
+            # pruning = ph.prune_hypergraph(self.current_graph,
+            #                               self.dual_weights,
+            #                               history.best_primal)
+
+            if pruning is not None:
+                graph, dual_weights, potentials = pruning
+                self.dual_weights = dual_weights
+                self.potentials = potentials
+                print "OLD SIZE", len(self.current_graph.nodes)
+                self.current_graph = graph
+                print "NEW SIZE", len(self.current_graph.nodes)
+                prune = history.gap()
 
         for i, j in vec:
             subgrad[i] = j
