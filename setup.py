@@ -57,21 +57,24 @@ if use_cython:
     cmdclass = {'build_ext': build_ext}
 
 else:
-    ext_modules = [Extension("pydecode.hyper",
-                             ["python/pydecode/hyper.cpp",
+    ext_modules = [Extension("pydecode.hypergraph",
+                             ["python/pydecode/hypergraph.cpp",
                               "src/Hypergraph/Hypergraph.cpp",
-                              "src/Hypergraph/Algorithms.cpp",
-                              "src/Hypergraph/Semirings.cpp",
-                              "src/Hypergraph/BeamSearch.cpp",
-                              "src/Hypergraph/Potentials.cpp",
-                              #"src/Hypergraph/Constraints.cpp",
-                              #"src/Hypergraph/Subgradient.cpp"
                               ],
                              language='c++',
                              include_dirs=[r'src/', "."],
-                             #extra_objects=['build/debug/src/libdecoding.a'],
-                             #libraries=['decoding'])
-                   )]
+                   ),
+                   Extension("pydecode.potentials",
+                             ["python/pydecode/potentials.cpp",
+                              "src/Hypergraph/Semirings.cpp",
+                              "src/Hypergraph/Algorithms.cpp",
+                              "src/Hypergraph/Potentials.cpp",
+                              ],
+                             language='c++',
+                             include_dirs=[r'src/', "."],
+                             extra_objects=[os.path.abspath('python/pydecode/hypergraph.so')]
+                   ),
+                   ]
 
 setup(
   name = 'pydecode',
