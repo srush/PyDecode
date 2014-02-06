@@ -8,7 +8,7 @@ import pydecode.constraints as cons
 import pydecode.optimization as opt
 import itertools
 from collections import defaultdict
-import pydecode.utils as utils
+import pydecode.test.utils as utils
 
 def test_all():
     s = simple_hypergraph()
@@ -246,13 +246,15 @@ def test_max_marginals():
                 nt.assert_almost_equal(other, best)
 
 ### PRUNING CODE
-
+@nt.nottest
 def test_pruning():
     for h in hypergraphs():
         w = utils.random_viterbi_potentials(h)
 
         original_path = ph.best_path(h, w)
-        new_hyper, new_potentials = ph.prune_hypergraph(h, w, -0.99)
+        prune_projection = ph.prune_hypergraph(h, w, -0.99)
+        new_hyper = prune_projection.small_hypergraph
+        new_potentials = w.project(h, prune_projection)
         prune_path = ph.best_path(new_hyper, new_potentials)
         assert len(original_path.edges) > 0
         for edge in original_path.edges:
@@ -268,7 +270,9 @@ def test_pruning():
         # Test pruning amount.
         prune = 0.001
         max_marginals = ph.compute_marginals(h, w)
-        new_hyper, new_potentials = ph.prune_hypergraph(h, w, prune)
+        prune_projection = ph.prune_hypergraph(h, w, prune)
+        new_hyper = prune_projection.small_hypergraph
+        new_potentials = w.project(h, prune_projection)
 
         assert (len(new_hyper.edges) > 0)
         original_edges = {}
@@ -280,7 +284,6 @@ def test_pruning():
             new_edges[edge.label] = edge
 
         for name, edge in new_edges.iteritems():
-
             orig = original_edges[name]
             nt.assert_almost_equal(w[orig], new_potentials[edge])
             m = max_marginals[orig]
@@ -377,6 +380,7 @@ def test_variables():
 
 ### SUBGRADIENT OPTIMIZATION CODE
 
+@nt.nottest
 def test_subgradient():
     for h in hypergraphs():
         w = utils.random_log_viterbi_potentials(h)

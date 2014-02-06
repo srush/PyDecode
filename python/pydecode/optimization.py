@@ -181,7 +181,8 @@ def subgradient_descent(fn, x0, rate, max_iterations=100,
     fn : function
       Takes an argument :math:`x \in {\cal X}`.
 
-      Returns a tuple :math:`(f(x), g(x)) \in {\cal R} \times {\cal X}`, consisting of the objective score and a subgradient vector.
+      Returns a tuple :math:`(f(x), g(x)) \in {\cal R} \times {\cal
+      X}`, consisting of the objective score and a subgradient vector.
 
     x0 : array
       The initial parameter values :math:`x0 \in {\cal X}`.
@@ -234,6 +235,7 @@ def subgradient_descent(fn, x0, rate, max_iterations=100,
             history.success = True
             break
     return history
+
 
 
 def polyak(t, f_x, f_x_best, g):
