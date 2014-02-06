@@ -9,6 +9,7 @@ import pydecode.optimization as opt
 import itertools
 from collections import defaultdict
 import pydecode.test.utils as utils
+import pydecode.io
 
 def test_all():
     s = simple_hypergraph()
@@ -446,8 +447,8 @@ def test_semirings():
 
 def test_serialization():
     for hypergraph in hypergraphs():
-        s = utils.hypergraph_to_json(hypergraph)
-        hyper2 = utils.json_to_hypergraph(s)
+        s = pydecode.io.hypergraph_to_json(hypergraph)
+        hyper2 = pydecode.io.json_to_hypergraph(s)
         nt.assert_equal(len(hypergraph.edges), len(hyper2.edges))
         nt.assert_equal(len(hypergraph.nodes), len(hyper2.nodes))
 ## CONSTRUCTION CODE

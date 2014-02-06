@@ -1,4 +1,11 @@
 #cython: embedsignature=True
+
+
+##
+## DO NOT MODIFY THIS GENERATED FILE.
+##
+
+
 from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -182,14 +189,43 @@ cdef class ViterbiPotentials:
         #return _ViterbiW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _ViterbiW:
+
+
+    cdef _ViterbiW init(self, double val):
+        self.thisval = val
+        return self
+
     @staticmethod
-    def one():
+    def from_value(double val):
+        created = _ViterbiW()
+        created.thisval = _ViterbiW_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _ViterbiW_from_cpp(Viterbi_zero())
+
+    @staticmethod
+    def one_raw():
         return _ViterbiW_from_cpp(Viterbi_one())
 
     @staticmethod
     def zero():
-        return _ViterbiW_from_cpp(Viterbi_zero())
+        return _ViterbiW().init(Viterbi_zero())
 
+    @staticmethod
+    def one():
+        return _ViterbiW().init(Viterbi_one())
+
+    def __add__(_ViterbiW self, _ViterbiW other):
+        return _ViterbiW().init(Viterbi_add(self.thisval, other.thisval))
+
+    def __mul__(_ViterbiW self, _ViterbiW other):
+        return _ViterbiW().init(Viterbi_times(self.thisval, other.thisval))
+
+    property value:
+        def __get__(self):
+            return _ViterbiW_from_cpp(self.thisval)
 
 cdef double _ViterbiW_to_cpp(double val):
     
@@ -518,14 +554,43 @@ cdef class LogViterbiPotentials:
         #return _LogViterbiW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _LogViterbiW:
+
+
+    cdef _LogViterbiW init(self, double val):
+        self.thisval = val
+        return self
+
     @staticmethod
-    def one():
+    def from_value(double val):
+        created = _LogViterbiW()
+        created.thisval = _LogViterbiW_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _LogViterbiW_from_cpp(LogViterbi_zero())
+
+    @staticmethod
+    def one_raw():
         return _LogViterbiW_from_cpp(LogViterbi_one())
 
     @staticmethod
     def zero():
-        return _LogViterbiW_from_cpp(LogViterbi_zero())
+        return _LogViterbiW().init(LogViterbi_zero())
 
+    @staticmethod
+    def one():
+        return _LogViterbiW().init(LogViterbi_one())
+
+    def __add__(_LogViterbiW self, _LogViterbiW other):
+        return _LogViterbiW().init(LogViterbi_add(self.thisval, other.thisval))
+
+    def __mul__(_LogViterbiW self, _LogViterbiW other):
+        return _LogViterbiW().init(LogViterbi_times(self.thisval, other.thisval))
+
+    property value:
+        def __get__(self):
+            return _LogViterbiW_from_cpp(self.thisval)
 
 cdef double _LogViterbiW_to_cpp(double val):
     
@@ -854,14 +919,43 @@ cdef class InsidePotentials:
         #return _InsideW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _InsideW:
+
+
+    cdef _InsideW init(self, double val):
+        self.thisval = val
+        return self
+
     @staticmethod
-    def one():
+    def from_value(double val):
+        created = _InsideW()
+        created.thisval = _InsideW_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _InsideW_from_cpp(Inside_zero())
+
+    @staticmethod
+    def one_raw():
         return _InsideW_from_cpp(Inside_one())
 
     @staticmethod
     def zero():
-        return _InsideW_from_cpp(Inside_zero())
+        return _InsideW().init(Inside_zero())
 
+    @staticmethod
+    def one():
+        return _InsideW().init(Inside_one())
+
+    def __add__(_InsideW self, _InsideW other):
+        return _InsideW().init(Inside_add(self.thisval, other.thisval))
+
+    def __mul__(_InsideW self, _InsideW other):
+        return _InsideW().init(Inside_times(self.thisval, other.thisval))
+
+    property value:
+        def __get__(self):
+            return _InsideW_from_cpp(self.thisval)
 
 cdef double _InsideW_to_cpp(double val):
     
@@ -1190,14 +1284,43 @@ cdef class BoolPotentials:
         #return _BoolW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _BoolW:
+
+
+    cdef _BoolW init(self, bool val):
+        self.thisval = val
+        return self
+
     @staticmethod
-    def one():
+    def from_value(bool val):
+        created = _BoolW()
+        created.thisval = _BoolW_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _BoolW_from_cpp(Bool_zero())
+
+    @staticmethod
+    def one_raw():
         return _BoolW_from_cpp(Bool_one())
 
     @staticmethod
     def zero():
-        return _BoolW_from_cpp(Bool_zero())
+        return _BoolW().init(Bool_zero())
 
+    @staticmethod
+    def one():
+        return _BoolW().init(Bool_one())
+
+    def __add__(_BoolW self, _BoolW other):
+        return _BoolW().init(Bool_add(self.thisval, other.thisval))
+
+    def __mul__(_BoolW self, _BoolW other):
+        return _BoolW().init(Bool_times(self.thisval, other.thisval))
+
+    property value:
+        def __get__(self):
+            return _BoolW_from_cpp(self.thisval)
 
 cdef bool _BoolW_to_cpp(bool val):
     
@@ -1526,14 +1649,43 @@ cdef class SparseVectorPotentials:
         #return _SparseVectorW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _SparseVectorW:
+
+
+    cdef _SparseVectorW init(self, vector[pair[int, int]] val):
+        self.thisval = val
+        return self
+
     @staticmethod
-    def one():
+    def from_value(vector[pair[int, int]] val):
+        created = _SparseVectorW()
+        created.thisval = _SparseVectorW_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _SparseVectorW_from_cpp(SparseVector_zero())
+
+    @staticmethod
+    def one_raw():
         return _SparseVectorW_from_cpp(SparseVector_one())
 
     @staticmethod
     def zero():
-        return _SparseVectorW_from_cpp(SparseVector_zero())
+        return _SparseVectorW().init(SparseVector_zero())
 
+    @staticmethod
+    def one():
+        return _SparseVectorW().init(SparseVector_one())
+
+    def __add__(_SparseVectorW self, _SparseVectorW other):
+        return _SparseVectorW().init(SparseVector_add(self.thisval, other.thisval))
+
+    def __mul__(_SparseVectorW self, _SparseVectorW other):
+        return _SparseVectorW().init(SparseVector_times(self.thisval, other.thisval))
+
+    property value:
+        def __get__(self):
+            return _SparseVectorW_from_cpp(self.thisval)
 
 cdef vector[pair[int, int]] _SparseVectorW_to_cpp(vector[pair[int, int]] val):
     
@@ -1826,14 +1978,43 @@ cdef class MinSparseVectorPotentials:
         #return _MinSparseVectorW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _MinSparseVectorW:
+
+
+    cdef _MinSparseVectorW init(self, vector[pair[int, int]] val):
+        self.thisval = val
+        return self
+
     @staticmethod
-    def one():
+    def from_value(vector[pair[int, int]] val):
+        created = _MinSparseVectorW()
+        created.thisval = _MinSparseVectorW_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _MinSparseVectorW_from_cpp(MinSparseVector_zero())
+
+    @staticmethod
+    def one_raw():
         return _MinSparseVectorW_from_cpp(MinSparseVector_one())
 
     @staticmethod
     def zero():
-        return _MinSparseVectorW_from_cpp(MinSparseVector_zero())
+        return _MinSparseVectorW().init(MinSparseVector_zero())
 
+    @staticmethod
+    def one():
+        return _MinSparseVectorW().init(MinSparseVector_one())
+
+    def __add__(_MinSparseVectorW self, _MinSparseVectorW other):
+        return _MinSparseVectorW().init(MinSparseVector_add(self.thisval, other.thisval))
+
+    def __mul__(_MinSparseVectorW self, _MinSparseVectorW other):
+        return _MinSparseVectorW().init(MinSparseVector_times(self.thisval, other.thisval))
+
+    property value:
+        def __get__(self):
+            return _MinSparseVectorW_from_cpp(self.thisval)
 
 cdef vector[pair[int, int]] _MinSparseVectorW_to_cpp(vector[pair[int, int]] val):
     
@@ -2126,14 +2307,43 @@ cdef class MaxSparseVectorPotentials:
         #return _MaxSparseVectorW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _MaxSparseVectorW:
+
+
+    cdef _MaxSparseVectorW init(self, vector[pair[int, int]] val):
+        self.thisval = val
+        return self
+
     @staticmethod
-    def one():
+    def from_value(vector[pair[int, int]] val):
+        created = _MaxSparseVectorW()
+        created.thisval = _MaxSparseVectorW_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _MaxSparseVectorW_from_cpp(MaxSparseVector_zero())
+
+    @staticmethod
+    def one_raw():
         return _MaxSparseVectorW_from_cpp(MaxSparseVector_one())
 
     @staticmethod
     def zero():
-        return _MaxSparseVectorW_from_cpp(MaxSparseVector_zero())
+        return _MaxSparseVectorW().init(MaxSparseVector_zero())
 
+    @staticmethod
+    def one():
+        return _MaxSparseVectorW().init(MaxSparseVector_one())
+
+    def __add__(_MaxSparseVectorW self, _MaxSparseVectorW other):
+        return _MaxSparseVectorW().init(MaxSparseVector_add(self.thisval, other.thisval))
+
+    def __mul__(_MaxSparseVectorW self, _MaxSparseVectorW other):
+        return _MaxSparseVectorW().init(MaxSparseVector_times(self.thisval, other.thisval))
+
+    property value:
+        def __get__(self):
+            return _MaxSparseVectorW_from_cpp(self.thisval)
 
 cdef vector[pair[int, int]] _MaxSparseVectorW_to_cpp(vector[pair[int, int]] val):
     
@@ -2426,14 +2636,43 @@ cdef class BinaryVectorPotentials:
         #return _BinaryVectorW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _BinaryVectorW:
+
+
+    cdef _BinaryVectorW init(self, cbitset val):
+        self.thisval = val
+        return self
+
     @staticmethod
-    def one():
+    def from_value(Bitset val):
+        created = _BinaryVectorW()
+        created.thisval = _BinaryVectorW_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _BinaryVectorW_from_cpp(BinaryVector_zero())
+
+    @staticmethod
+    def one_raw():
         return _BinaryVectorW_from_cpp(BinaryVector_one())
 
     @staticmethod
     def zero():
-        return _BinaryVectorW_from_cpp(BinaryVector_zero())
+        return _BinaryVectorW().init(BinaryVector_zero())
 
+    @staticmethod
+    def one():
+        return _BinaryVectorW().init(BinaryVector_one())
+
+    def __add__(_BinaryVectorW self, _BinaryVectorW other):
+        return _BinaryVectorW().init(BinaryVector_add(self.thisval, other.thisval))
+
+    def __mul__(_BinaryVectorW self, _BinaryVectorW other):
+        return _BinaryVectorW().init(BinaryVector_times(self.thisval, other.thisval))
+
+    property value:
+        def __get__(self):
+            return _BinaryVectorW_from_cpp(self.thisval)
 
 cdef cbitset _BinaryVectorW_to_cpp(Bitset val):
     
@@ -2726,14 +2965,43 @@ cdef class CountingPotentials:
         #return _CountingW().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _CountingW:
+
+
+    cdef _CountingW init(self, int val):
+        self.thisval = val
+        return self
+
     @staticmethod
-    def one():
+    def from_value(int val):
+        created = _CountingW()
+        created.thisval = _CountingW_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _CountingW_from_cpp(Counting_zero())
+
+    @staticmethod
+    def one_raw():
         return _CountingW_from_cpp(Counting_one())
 
     @staticmethod
     def zero():
-        return _CountingW_from_cpp(Counting_zero())
+        return _CountingW().init(Counting_zero())
 
+    @staticmethod
+    def one():
+        return _CountingW().init(Counting_one())
+
+    def __add__(_CountingW self, _CountingW other):
+        return _CountingW().init(Counting_add(self.thisval, other.thisval))
+
+    def __mul__(_CountingW self, _CountingW other):
+        return _CountingW().init(Counting_times(self.thisval, other.thisval))
+
+    property value:
+        def __get__(self):
+            return _CountingW_from_cpp(self.thisval)
 
 cdef int _CountingW_to_cpp(int val):
     

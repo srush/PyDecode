@@ -152,7 +152,9 @@ cdef class {{S.type}}Chart:
     cdef C{{S.type}}Chart *chart
     cdef kind
 
-
+cdef class _{{S.ptype}}:
+    cdef {{S.vtype}} thisval
+    cdef _{{S.ptype}} init(self, {{S.vtype}} val)
 
 {% endfor %}
 
@@ -189,7 +191,6 @@ cdef extern from "Hypergraph/Potentials.h":
 cdef extern from "Hypergraph/Semirings.h":
     bool cvalid_binary_vectors "valid_binary_vectors" (cbitset lhs,
                                                        cbitset rhs)
-
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphProjection":
     CHypergraphProjection *cproject_hypergraph "HypergraphProjection::project_hypergraph"(

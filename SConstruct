@@ -55,7 +55,7 @@ env.AlwaysBuild(docs)
 env.Alias("docs", [notebooks, doxygen, docs])
 
 # Run the python tests.
-pytests = env.Command("ignore_test", [], "nosetests python/pydecode")
+pytests = env.Command("ignore_test", [], "nosetests python/pydecode/test/")
 env.AlwaysBuild(pytests)
 
 pytests2 = env.Command("ignore_test2", [], "py.test notebooks")

@@ -14,9 +14,11 @@ from IPython.nbformat.current import reads
 # and
 # https://gist.github.com/2621679 by minrk
 
+tests = ["parsing", "hypergraphs", "decipher", "Fibonacci", "BuildingHypergraph"  ]
+
 def pytest_collect_file(path, parent):
     print path
-    if path.ext == ".ipynb":
+    if path.ext == ".ipynb" and any([t in str(path) for t in tests]):
         return IPyNbFile(path, parent)
 
 class IPyNbFile(pytest.File):

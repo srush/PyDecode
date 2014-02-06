@@ -1,4 +1,11 @@
 #cython: embedsignature=True
+
+
+##
+## DO NOT MODIFY THIS GENERATED FILE.
+##
+
+
 from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -182,14 +189,43 @@ cdef class {{S.type}}Potentials:
         #return _{{S.ptype}}().init(self.thisptr.dot(deref(path.thisptr))).value
 
 cdef class _{{S.ptype}}:
+
+
+    cdef _{{S.ptype}} init(self, {{S.vtype}} val):
+        self.thisval = val
+        return self
+
     @staticmethod
-    def one():
+    def from_value({{S.intype}} val):
+        created = _{{S.ptype}}()
+        created.thisval = _{{S.ptype}}_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _{{S.ptype}}_from_cpp({{S.type}}_zero())
+
+    @staticmethod
+    def one_raw():
         return _{{S.ptype}}_from_cpp({{S.type}}_one())
 
     @staticmethod
     def zero():
-        return _{{S.ptype}}_from_cpp({{S.type}}_zero())
+        return _{{S.ptype}}().init({{S.type}}_zero())
 
+    @staticmethod
+    def one():
+        return _{{S.ptype}}().init({{S.type}}_one())
+
+    def __add__(_{{S.ptype}} self, _{{S.ptype}} other):
+        return _{{S.ptype}}().init({{S.type}}_add(self.thisval, other.thisval))
+
+    def __mul__(_{{S.ptype}} self, _{{S.ptype}} other):
+        return _{{S.ptype}}().init({{S.type}}_times(self.thisval, other.thisval))
+
+    property value:
+        def __get__(self):
+            return _{{S.ptype}}_from_cpp(self.thisval)
 
 cdef {{S.vtype}} _{{S.ptype}}_to_cpp({{S.intype}} val):
     {% if 'to_cpp' in S %}

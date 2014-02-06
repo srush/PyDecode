@@ -152,7 +152,9 @@ cdef class ViterbiChart:
     cdef CViterbiChart *chart
     cdef kind
 
-
+cdef class _ViterbiW:
+    cdef double thisval
+    cdef _ViterbiW init(self, double val)
 
 
 
@@ -269,7 +271,9 @@ cdef class LogViterbiChart:
     cdef CLogViterbiChart *chart
     cdef kind
 
-
+cdef class _LogViterbiW:
+    cdef double thisval
+    cdef _LogViterbiW init(self, double val)
 
 
 
@@ -386,7 +390,9 @@ cdef class InsideChart:
     cdef CInsideChart *chart
     cdef kind
 
-
+cdef class _InsideW:
+    cdef double thisval
+    cdef _InsideW init(self, double val)
 
 
 
@@ -503,7 +509,9 @@ cdef class BoolChart:
     cdef CBoolChart *chart
     cdef kind
 
-
+cdef class _BoolW:
+    cdef bool thisval
+    cdef _BoolW init(self, bool val)
 
 
 
@@ -620,7 +628,9 @@ cdef class SparseVectorChart:
     cdef CSparseVectorChart *chart
     cdef kind
 
-
+cdef class _SparseVectorW:
+    cdef vector[pair[int, int]] thisval
+    cdef _SparseVectorW init(self, vector[pair[int, int]] val)
 
 
 
@@ -737,7 +747,9 @@ cdef class MinSparseVectorChart:
     cdef CMinSparseVectorChart *chart
     cdef kind
 
-
+cdef class _MinSparseVectorW:
+    cdef vector[pair[int, int]] thisval
+    cdef _MinSparseVectorW init(self, vector[pair[int, int]] val)
 
 
 
@@ -854,7 +866,9 @@ cdef class MaxSparseVectorChart:
     cdef CMaxSparseVectorChart *chart
     cdef kind
 
-
+cdef class _MaxSparseVectorW:
+    cdef vector[pair[int, int]] thisval
+    cdef _MaxSparseVectorW init(self, vector[pair[int, int]] val)
 
 
 
@@ -971,7 +985,9 @@ cdef class BinaryVectorChart:
     cdef CBinaryVectorChart *chart
     cdef kind
 
-
+cdef class _BinaryVectorW:
+    cdef cbitset thisval
+    cdef _BinaryVectorW init(self, cbitset val)
 
 
 
@@ -1088,7 +1104,9 @@ cdef class CountingChart:
     cdef CCountingChart *chart
     cdef kind
 
-
+cdef class _CountingW:
+    cdef int thisval
+    cdef _CountingW init(self, int val)
 
 
 
@@ -1125,7 +1143,6 @@ cdef extern from "Hypergraph/Potentials.h":
 cdef extern from "Hypergraph/Semirings.h":
     bool cvalid_binary_vectors "valid_binary_vectors" (cbitset lhs,
                                                        cbitset rhs)
-
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphProjection":
     CHypergraphProjection *cproject_hypergraph "HypergraphProjection::project_hypergraph"(

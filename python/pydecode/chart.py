@@ -54,6 +54,7 @@ class ChartBuilder:
         else:
             return self._chart[self._last].value
 
+
     def value(self, label):
         """
         Get the semiring value of the label.
@@ -68,7 +69,7 @@ class ChartBuilder:
         return self.sr(label)
 
     def sr(self, label):
-        return self._semiring(self._scorer(label))
+        return self._semiring.from_value(self._scorer(label))
 
     def init(self, label):
         """
@@ -140,46 +141,20 @@ class ChartBuilder:
             print key, self._chart[key]
 
 
-"""
-THIS CLASS IS DEPRECATED. CODE MOVED TO C++.
-"""
-
 
 INF = 1e8
 
-class SemiRing(object):
-    """
-    A semiring operation.
-
-    Implements + and *
-
-    """
-    def __add__(self, other):
-        raise NotImplementedError()
-
-    def __mul__(self, other):
-        raise NotImplementedError()
-
-    @classmethod
-    def one(cls):
-        raise NotImplementedError()
-
-    @classmethod
-    def zero(cls):
-        raise NotImplementedError()
-
-    @classmethod
-    def make(cls, v):
-        raise NotImplementedError()
-
-
-class HypergraphSemiRing(SemiRing):
+class HypergraphSemiRing:
     def __init__(self, name=None,
                  edge_list=[], node_list=[], is_zero=False):
         self.edge_list = edge_list
         self.node_list = node_list
         self.name = name
         self._is_zero = is_zero
+
+    @staticmethod
+    def from_value(name):
+        return HypergraphSemiRing(name)
 
     def __repr__(self):
         return "%s %s %s %s" % (self.edge_list,
@@ -213,7 +188,3 @@ class HypergraphSemiRing(SemiRing):
     @classmethod
     def zero(cls):
         return HypergraphSemiRing(is_zero=True)
-
-    @classmethod
-    def make(cls, name):
-        return HypergraphSemiRing(name=name)
