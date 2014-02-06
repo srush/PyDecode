@@ -116,7 +116,7 @@ class HypergraphFormatter:
                         self.hyperedge_attrs(edge))
         return graph
 
-    def to_image(self, filename):
+    def to_image(self, filename, layout="dot"):
         """
         Write out to an image.
 
@@ -132,11 +132,11 @@ d        ------------
 
         NetworkX Graph
         """
-        agraph = self.to_graphviz()
+        agraph = self.to_graphviz(layout)
         agraph.write("/tmp/tmp.dot")
         agraph.draw(filename)
 
-    def to_graphviz(self):
+    def to_graphviz(self, layout="dot"):
         subgraphs = {}
         G = self.to_networkx()
         agraph = nx.drawing.to_agraph(G)
@@ -158,7 +158,7 @@ d        ------------
             subgraph.graph_attr.update(self.subgraph_format(sub))
         agraph.graph_attr.update(self.graph_attrs())
 
-        agraph.layout("dot")
+        agraph.layout(layout)
         return agraph
 
     def to_ipython(self):

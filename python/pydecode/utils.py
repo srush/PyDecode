@@ -65,8 +65,8 @@ def random_path(graph):
         edges = []
         if node.edges:
             edge = random.sample(node.edges, 1)
-            edges.append(edge)
-            for t in edge.tail:
+            edges.append(edge[0])
+            for t in edge[0].tail:
                 edges += random_path_edges(t)
         return edges
     edges = random_path_edges(graph.root)
