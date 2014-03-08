@@ -513,7 +513,7 @@ cdef class HypergraphMap:
                                     other.domain_graph,
                                     self.range_graph)
 
-    def invert(self, HypergraphMap other):
+    def invert(self):
         """
         TODO: fill in
         """
@@ -552,9 +552,6 @@ cdef class HypergraphMap:
                 return self.range_graph.nodes[node.id()]
             else:
                 return None
-
-        if isinstance(obj, Hypergraph):
-            return self.range_hypergraph
 
         if isinstance(obj, Hypergraph):
             return self.range_hypergraph

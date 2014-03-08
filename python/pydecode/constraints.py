@@ -1,6 +1,18 @@
 import pydecode.hyper as ph
 from collections import defaultdict
 
+class WeightedConstrainedGraph:
+    def __init__(self, graph, weight, constraint):
+        self.graph = graph
+        self.weight = weight
+        self.constraint = constraint
+
+    def project(self, range_hypergraph, projection):
+        return WeightedConstrainedGraph(range_hypergraph,
+                                        projection[self.weight],
+                                        projection[self.constraint])
+
+
 
 class Constraint:
     def __init__(self, name, variables, coeffs, bias):

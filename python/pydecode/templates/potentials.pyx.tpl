@@ -627,7 +627,7 @@ def extend_hypergraph_by_count(Hypergraph graph,
                                     upper_limit,
                                     goal)
 
-    return HypergraphMap().init(projection, graph, None)
+    return HypergraphMap().init(projection, None, graph)
 
 
 # def valid_binary_vectors(Bitset lhs, Bitset rhs):
