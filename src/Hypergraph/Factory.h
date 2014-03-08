@@ -15,7 +15,8 @@
     static RandomSemiringRegistry<NAME> registry
 
 #define BASE_SEMIRING_REGISTRY_DEFINITION(NAME) \
-    RandomSemiringRegistry<NAME> NAME::registry = RandomSemiringRegistry<NAME>(#NAME)
+    RandomSemiringRegistry<NAME> NAME::registry = \
+             RandomSemiringRegistry<NAME>(#NAME)
 
 #define BASE_SEMIRING_REGISTRY_REDEFINE(NAME) \
     NAME::registry = RandomSemiringRegistry<NAME>(#NAME)
@@ -24,7 +25,8 @@
     static StaticSemiringRegistry<NAME> registry
 
 #define STATIC_SEMIRING_REGISTRY_DEFINITION(NAME) \
-    StaticSemiringRegistry<NAME> NAME::registry = StaticSemiringRegistry<NAME>(#NAME)
+    StaticSemiringRegistry<NAME> NAME::registry = \
+            StaticSemiringRegistry<NAME>(#NAME)
 
 #define STATIC_SEMIRING_REGISTRY_REDEFINE(NAME) \
     NAME::registry = StaticSemiringRegistry<NAME>(#NAME)

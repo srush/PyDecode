@@ -80,5 +80,5 @@ py_lib = env.Command(["python/pydecode/hyper.so"],
              "python/pydecode/beam.pyx"],
              #"python/pydecode/constraints.pyx",
              #"python/pydecode/algorithms.pyx"],
-            "python setup.py build_ext --inplace --verbose")
+            "CC=g++ python setup.py build_ext --inplace --verbose ")
 env.Alias("pylib", [py_lib])

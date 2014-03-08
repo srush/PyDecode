@@ -5,7 +5,6 @@ from libcpp.vector cimport vector
 from pydecode.potentials cimport *
 
 cdef class BeamChart:
-
     cdef init(self, CBeamChart *chart, Hypergraph graph):
         self.thisptr = chart
         self.graph = graph
@@ -16,7 +15,8 @@ cdef class BeamChart:
                            self.graph)
 
     def __getitem__(self, Node node):
-        cdef vector[CBeamHyp *] beam = self.thisptr.get_beam(node.nodeptr)
+        cdef vector[CBeamHyp *] beam = \
+            self.thisptr.get_beam(node.nodeptr)
         data = []
         i = 0
         for p in beam:
@@ -24,6 +24,7 @@ cdef class BeamChart:
                          p.current_score,
                          p.future_score))
         return data
+
 
 def beam_search(Hypergraph graph,
                 LogViterbiPotentials potentials,
@@ -52,6 +53,5 @@ def beam_search(Hypergraph graph,
                      deref(constraints.thisptr),
                      deref(outside.chart),
                      lower_bound,
-                     deref(beam_groups)
-)
+                     deref(beam_groups))
     return BeamChart().init(chart, graph)

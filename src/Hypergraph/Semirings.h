@@ -7,6 +7,7 @@
 #include <bitset>
 #include <utility>
 #include <vector>
+#include <set>
 
 #include "Hypergraph/Factory.h"
 #include "Hypergraph/Hypergraph.h"
@@ -183,15 +184,17 @@ class SetPotential {
 
     static inline ValType add(const ValType& lhs, const ValType &rhs) {
         set<int> intersection;
-        set_intersection(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), inserter(intersection, intersection.begin()));
+        set_intersection(lhs.begin(), lhs.end(), rhs.begin(),
+                         rhs.end(),
+                         inserter(intersection, intersection.begin()));
         return intersection;
     }
     static inline ValType times(const ValType& lhs, const ValType &rhs) {
         set<int> union_;
-        set_union(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), inserter(union_, union_.begin()));
+        set_union(lhs.begin(), lhs.end(), rhs.begin(),
+                  rhs.end(), inserter(union_, union_.begin()));
         return union_;
     }
-
 
     static inline ValType &normalize(ValType &val) {
         return val;
@@ -199,8 +202,6 @@ class SetPotential {
 
     static inline ValType one() { return set<int>(); }
     static inline ValType zero() { return set<int>(); }
-
-    //static inline ValType randValue() { return dRand(0.0, 1.0) > .5; }
 };
 
 class CountingPotential {
@@ -225,7 +226,7 @@ class CountingPotential {
         return CountingPotential::normalize(lhs);
     }
 
-    static inline ValType &normalize(ValType &val) {
+    static inline const ValType &normalize(ValType &val) {
         return val = val < 0 ? 0 : val;
     }
 
@@ -381,68 +382,6 @@ class MaxSparseVectorPotential : public SparseVectorPotential {
         if (SparseVectorPotential::is_zero(lhs)) return rhs;
         if (SparseVectorPotential::is_zero(rhs)) return lhs;
         return combine_sparse_vectors(lhs, rhs, MaxOperator());
-    }
-};
-
-/**
- * Tree. *Experimental*
- *
- * +: No action
- * *: NULL if either is NULL. Otherwise create a new node with rhs and lhs as tails
- * 0: Empty Vector
- * 1: Empty Vector
- */
-class TreePotential {
-  public:
-    typedef Hypernode* ValType;
-
-    static inline ValType add(ValType lhs, const ValType& rhs) {
-        return lhs;
-    }
-    static ValType times(ValType lhs, const ValType& rhs) {
-        if (rhs == NULL || lhs == NULL) {
-            lhs = NULL;
-        } else {
-            vector<HNode> tails;
-            tails.push_back(lhs);
-            tails.push_back(rhs);
-            Hypernode *node = new Hypernode("");
-            Hyperedge *edge = new Hyperedge("", node, tails);
-            node->add_edge(edge);
-            lhs = node;
-        }
-        return lhs;
-    }
-
-    static inline ValType safe_add(ValType lhs, const ValType& rhs) {
-        return lhs;
-    }
-    static ValType safe_times(ValType lhs, const ValType& rhs) {
-        if (rhs == NULL || lhs == NULL) {
-            lhs = NULL;
-        } else {
-            vector<HNode> tails;
-            tails.push_back(lhs);
-            tails.push_back(rhs);
-            Hypernode *node = new Hypernode("");
-            Hyperedge *edge = new Hyperedge("", node, tails);
-            node->add_edge(edge);
-            lhs = node;
-        }
-        return lhs;
-    }
-
-    static inline ValType one() { return new Hypernode(""); }
-    static inline ValType zero() { return NULL; }
-
-    static inline ValType &normalize(ValType &val) {
-        // Is this necessary?
-        return val;
-    }
-
-    static inline ValType randValue() {
-        // Figure this one out.
-        return TreePotential::one();
     }
 };
 

@@ -8,11 +8,64 @@ from wrap cimport *
 
 cdef _hypergraph_registry_counts = {}
 
+cdef class Labeling:
+    def __init__(self, Hypergraph graph,
+                 node_labels=None, edge_labels=None):
+        self.edge_labels = edge_labels
+        self.node_labels = node_labels
+
+    def __getitem__(self, obj):
+        if isinstance(obj, Edge):
+            if self.edge_labels is None:
+                raise HypergraphAccessException(
+                    "There is no edge labeling.")
+            return self.edge_labels[obj.id]
+
+        if isinstance(obj, Node):
+            if self.node_labels is None:
+                raise HypergraphAccessException(
+                    "There is no node labeling.")
+            return self.node_labels[obj.id]
+
+cdef class _LazyEdges:
+    def __init__(self, graph):
+        self._graph = graph
+
+    cdef init(self, vector[const CHyperedge *] edges):
+        self._edges = edges
+        return self
+
+    def __getitem__(self, item):
+        return Edge().init(self._edges[item], self._graph)
+
+    def __iter__(self):
+        return (Edge().init(edge, self._graph) for edge in self._edges)
+
+    def __len__(self):
+        return self._edges.size()
+
+cdef class _LazyNodes:
+    def __init__(self, graph):
+        self._graph = graph
+
+    cdef init(self, vector[const CHypernode *] nodes):
+        self._nodes = nodes
+        return self
+
+    def __getitem__(self, item):
+        return Node().init(self._nodes[item], self._graph)
+
+    def __iter__(self):
+        return (Node().init(node, self._graph) for node in self._nodes)
+
+    def __len__(self):
+        return self._nodes.size()
 
 cdef class Hypergraph:
-    r"""1
+    r"""
 
-    Hypergraph consisting of a set of nodes :math:`{\cal V}`, hyperedges :math:`{\cal E}`, and a root node.
+    Hypergraph consisting of a set of nodes :math:`{\cal V}`,
+    hyperedges :math:`{\cal E}`, and a root node.
 
     Attributes
     -----------
@@ -32,23 +85,18 @@ cdef class Hypergraph:
         Create a new hypergraph.
         """
         self.thisptr = NULL
-        self.edge_labels = []
-        self.node_labels = []
+        self.labeling = None
         self._cached_edges = None
 
     def __dealloc__(self):
         if self.thisptr is not NULL:
             _hypergraph_registry_counts[self.thisptr.id()] -= 1
-            #print "LOWERING", self.thisptr.id(), _hypergraph_registry_counts[self.thisptr.id()]
             if _hypergraph_registry_counts[self.thisptr.id()] == 0:
-                #print "DEALLOCATING", self.thisptr.id()
                 del self.thisptr
                 self.thisptr = NULL
 
-
-
     cdef Hypergraph init(self, const CHypergraph *ptr,
-                         node_labels, edge_labels):
+                         Labeling labeling):
         #assert ptr.id() in _hypergraph_registry[ptr.id()]
         assert self.thisptr is NULL
         if _hypergraph_registry_counts.get(ptr.id(), 0) > 0:
@@ -56,8 +104,7 @@ cdef class Hypergraph:
         else:
             _hypergraph_registry_counts[ptr.id()] = 1
         self.thisptr = <CHypergraph *> ptr
-        self.edge_labels = edge_labels
-        self.node_labels = node_labels
+        self.labeling = labeling
         return self
 
     def builder(self):
@@ -81,7 +128,7 @@ cdef class Hypergraph:
 
     property nodes:
         def __get__(self):
-            return convert_nodes(self.thisptr.nodes(), self)
+            return _LazyNodes(self).init(self.thisptr.nodes())
 
     property root:
         def __get__(self):
@@ -89,43 +136,17 @@ cdef class Hypergraph:
 
     property edges:
         def __get__(self):
-            if not self._cached_edges:
-                self._cached_edges = convert_edges(self.thisptr.edges(), self)
-            return self._cached_edges
-
-    property edges_size:
-        def __get__(self):
-            return self.thisptr.edges().size()
-
-    def label(self, Edge edge):
-        """
-        label(edge)
-
-        Deprecated.
-
-        The label associated with a hyperedge `edge`.
-        """
-        return self.edge_labels[edge.id]
-
-    def node_label(self, Node node):
-        """
-        node_label(node)
-
-        Deprecated.
-
-        The label associated with a node `node`.
-        """
-        return self.node_labels[node.id]
+            return _LazyEdges(self).init(self.thisptr.edges())
 
     def __str__(self):
-        s = "Hypergraph: Edges: %s Nodes: %s"%(len(self.edges),
-                                               len(self.nodes)) + "\n"
-        s += "Root %s"%(self.root.id) + "\n"
+        s = "Hypergraph: Edges: %s Nodes: %s" % (len(self.edges),
+                                                 len(self.nodes)) + "\n"
+        s += "Root %s" % (self.root.id) + "\n"
         for edge in self.edges:
-            s += " %s %s \n"%(edge.id, self.label(edge))
-            s += "\t%d -> "%(edge.head.id)
+            s += " %s %s \n" % (edge.id, self.label(edge))
+            s += "\t%d -> " % (edge.head.id)
             for node in edge.tail:
-                s += " %d "%(node.id)
+                s += " %d " % (node.id)
             s += "\n"
         return s
 
@@ -148,7 +169,6 @@ cdef class GraphBuilder:
     def __init__(self):
         ""
         pass
-
 
     cdef GraphBuilder init(self, Hypergraph hyper, CHypergraph *ptr):
         self.thisptr = ptr
@@ -173,23 +193,25 @@ cdef class GraphBuilder:
         # Automatically called when exiting with block.
         # """
         if exception:
-           return False
+            return False
         self.started = False
         self.thisptr.finish()
-        self.graph.edge_labels = [None] * self.thisptr.edges().size()
-        self.graph.node_labels = [None] * self.thisptr.nodes().size()
+        final_edge_labels = [None] * self.thisptr.edges().size()
+        final_node_labels = [None] * self.thisptr.nodes().size()
 
         for node, t in self.node_labels:
             if not node._removed():
-                self.graph.node_labels[node.id] = t
+                final_node_labels[node.id] = t
 
         for edge, t in self.edge_labels:
             if not edge._removed():
-                self.graph.edge_labels[edge.id] = t
+                final_edge_labels[edge.id] = t
+        self.graph.labeling = Labeling(self.graph, final_node_labels,
+                                       final_edge_labels)
 
-    def add_node(self, edges=[], label=""):
+    def add_node(self, edges=[], label=None):
         """
-        add_node(edges=[], label="")
+        add_node(edges=[], label=None)
 
         Add a node to the hypergraph.
 
@@ -214,22 +236,20 @@ cdef class GraphBuilder:
             raise HypergraphConstructionException(
                 "Must constuct graph in 'with' block.")
 
-
         cdef const CHypernode *nodeptr
         cdef vector[const CHypernode *] tail_node_ptrs
         cdef const CHyperedge *edgeptr
         if edges == []:
-            nodeptr = self.thisptr.add_terminal_node("")
+            nodeptr = self.thisptr.add_terminal_node()
         else:
-            nodeptr = self.thisptr.start_node("")
+            nodeptr = self.thisptr.start_node()
             for edge_cons in edges:
                 try:
                     tail_nodes, t = edge_cons
                 except:
                     raise HypergraphConstructionException(
-                        "Edges must be pairs of the form (tail_nodes, label)." + \
-                        "Received %s"%(edge_cons)
-                        )
+                        "Edges must be pairs of the form (tail_nodes, label)."
+                        + "Received %s" % (edge_cons))
                 if len(tail_nodes) == 0:
                     raise HypergraphConstructionException(
                         "An edge must have at least one tail node.")
@@ -237,7 +257,7 @@ cdef class GraphBuilder:
                 tail_node_ptrs.clear()
                 for tail_node in tail_nodes:
                     tail_node_ptrs.push_back((<Node> tail_node).nodeptr)
-                edgeptr = self.thisptr.add_edge(tail_node_ptrs, "")
+                edgeptr = self.thisptr.add_edge(tail_node_ptrs)
                 self.edge_labels.append((Edge().init(edgeptr, self.graph), t))
             self.thisptr.end_node()
         cdef Node node = Node().init(nodeptr, self.graph)
@@ -270,11 +290,14 @@ cdef class Node:
         self.graph = graph
         return self
 
+    def __dealloc__(self):
+        pass
+
     def __hash__(self):
         return self.id
 
     def __repr__(self):
-        return "NODE:%d"%(self.nodeptr.id())
+        return "NODE:%d" % (self.nodeptr.id())
 
     property id:
         def __get__(self):
@@ -291,10 +314,10 @@ cdef class Node:
 
     property label:
         def __get__(self):
-            return self.graph.node_label(self)
+            return self.graph.labeling[self]
 
     def __str__(self):
-        return self.nodeptr.label()
+        return str(self.nodeptr.id())
 
     def __cinit__(self):
         ""
@@ -328,16 +351,16 @@ cdef class Edge:
     def __hash__(self):
         return self.id
 
+    def __dealloc__(self):
+        pass
+
     cdef Edge init(self, const CHyperedge *ptr, Hypergraph graph):
         self.edgeptr = ptr
         self.graph = graph
         return self
 
-    def __str__(self):
-        return self.edgeptr.label()
-
     def __repr__(self):
-        return "EDGE:%d"%(self.edgeptr.id())
+        return "EDGE:%d" % (self.edgeptr.id())
 
     property tail:
         def __get__(self):
@@ -349,7 +372,7 @@ cdef class Edge:
 
     property label:
         def __get__(self):
-            return self.graph.label(self)
+            return self.graph.labeling[self]
 
     property id:
         def __get__(self):
@@ -393,7 +416,7 @@ cdef class Path:
 
         cdef vector[const CHyperedge *] cedges
         self.graph = graph
-        edges.sort(key=lambda e:e.id)
+        edges.sort(key=lambda e: e.id)
         if graph and edges:
             for edge in edges:
                 cedges.push_back((<Edge>edge).edgeptr)
@@ -428,15 +451,17 @@ cdef class Path:
 
     property edges:
         def __get__(self):
-            return convert_edges(self.thisptr.edges(), self.graph)
+            return _LazyEdges(self.graph).init(self.thisptr.edges())
 
     property nodes:
         def __get__(self):
-            return convert_nodes(self.thisptr.nodes(), self.graph)
+            return _LazyNodes(self.graph).init(self.thisptr.nodes())
+
 
 class HypergraphAccessException(Exception):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
 
@@ -444,5 +469,125 @@ class HypergraphAccessException(Exception):
 class HypergraphConstructionException(Exception):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
+
+
+cdef class HypergraphMap:
+    """
+    A map between two hypergraphs.
+
+
+    """
+    def __cinit__(self):
+        self.thisptr = NULL
+
+    cdef HypergraphMap init(self,
+                            const CHypergraphMap *thisptr,
+                            Hypergraph domain_graph,
+                            Hypergraph range_graph):
+
+        self.thisptr = thisptr
+        assert thisptr.domain_graph().id() >= 0
+        assert thisptr.range_graph().id() >= 0
+        if range_graph is None:
+            self.domain_graph = domain_graph
+            assert self.domain_graph.thisptr.id() == \
+                self.thisptr.domain_graph().id()
+            self.range_graph = self._build_range_hypergraph()
+        else:
+            self.range_graph = range_graph
+            assert self.range_graph.thisptr.id() == \
+                self.thisptr.range_graph().id()
+            self.domain_graph = self._build_domain_hypergraph()
+        return self
+
+    def compose(self, HypergraphMap other):
+        """
+        TODO: fill in
+        """
+        cdef CHypergraphMap *newptr = \
+            self.thisptr.compose(deref(other.thisptr))
+        return HypergraphMap().init(newptr,
+                                    other.domain_graph,
+                                    self.range_graph)
+
+    def invert(self, HypergraphMap other):
+        """
+        TODO: fill in
+        """
+        cdef CHypergraphMap *newptr = self.thisptr.invert()
+        return HypergraphMap().init(newptr,
+                                    self.range_graph,
+                                    self.domain_graph)
+
+    property domain_hypergraph:
+        def __get__(self):
+            return self.domain_graph
+
+    property range_hypergraph:
+        def __get__(self):
+            return self.range_graph
+
+    def __dealloc__(self):
+        if self.thisptr is not NULL:
+            del self.thisptr
+            self.thisptr = NULL
+
+    def __getitem__(self, obj):
+        cdef const CHyperedge *edge
+        cdef const CHypernode *node
+        if isinstance(obj, Edge):
+            edge = self.thisptr.map((<Edge>obj).edgeptr)
+            # assert edge.id() >= 0
+            # assert edge.id() == self.range_graph.edges[edge.id()].id
+            if edge != NULL and edge.id() >= 0:
+                return self.range_graph.edges[edge.id()]
+            else:
+                return None
+        if isinstance(obj, Node):
+            node = self.thisptr.map((<Node>obj).nodeptr)
+            if node != NULL and node.id() >= 0:
+                return self.range_graph.nodes[node.id()]
+            else:
+                return None
+
+        if isinstance(obj, Hypergraph):
+            return self.range_hypergraph
+
+        if isinstance(obj, Hypergraph):
+            return self.range_hypergraph
+
+        return obj.project(self.range_graph, self)
+
+    def _build_range_hypergraph(self):
+        cdef const CHypergraphMap *projection = self.thisptr
+
+        # Map nodes.
+        node_labels = [None] * projection.range_graph().nodes().size()
+        cdef vector[const CHypernode*] old_nodes = \
+            projection.domain_graph().nodes()
+        cdef const CHypernode *node
+        for i in range(old_nodes.size()):
+            node = self.thisptr.map(old_nodes[i])
+            if node != NULL and node.id() >= 0:
+                node_labels[node.id()] = \
+                    self.domain_graph.labeling.node_labels[i]
+        edge_labels = [None] * projection.range_graph().edges().size()
+        cdef Hypergraph h = Hypergraph()
+        return h.init(projection.range_graph(),
+                      Labeling(h, node_labels, edge_labels))
+
+    def _build_domain_hypergraph(self):
+        cdef const CHypergraph *graph = self.thisptr.domain_graph()
+        assert graph.id() >= 0
+        node_labels = [None] * graph.nodes().size()
+        cdef const CHypernode *node
+        for i in range(graph.nodes().size()):
+            node = self.thisptr.map(graph.nodes()[i])
+            if node != NULL and node.id() >= 0:
+                node_labels[i] = \
+                    self.range_graph.labeling.node_labels[node.id()]
+        cdef Hypergraph h = Hypergraph()
+        return h.init(graph, Labeling(h, node_labels, []))

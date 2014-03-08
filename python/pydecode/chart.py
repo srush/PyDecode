@@ -1,6 +1,7 @@
 import pydecode.hyper as ph
 import sys
 
+
 class ChartBuilder:
     """
     A imperative interface for specifying dynamic programs.
@@ -53,7 +54,6 @@ class ChartBuilder:
             return self._hypergraph
         else:
             return self._chart[self._last].value
-
 
     def value(self, label):
         """
@@ -129,7 +129,7 @@ class ChartBuilder:
 
     def __getitem__(self, label):
         if self._strict and label not in self._chart:
-            raise Exception("Label not in chart: %s"%(label,))
+            raise Exception("Label not in chart: %s" % (label,))
         if self._debug:
             print >>sys.stderr, "Getting", label, label in self._chart
         return self._chart.get(label, self._semiring.zero())
@@ -140,9 +140,8 @@ class ChartBuilder:
         for key in keys:
             print key, self._chart[key]
 
-
-
 INF = 1e8
+
 
 class HypergraphSemiRing:
     def __init__(self, name=None,
@@ -161,12 +160,14 @@ class HypergraphSemiRing:
                                 self.node_list,
                                 self.name,
                                 self._is_zero)
+
     def is_zero(self):
         return self._is_zero
 
     def __add__(self, other):
-        return HypergraphSemiRing(name = None,
-            edge_list=(self.edges() + other.edges()))
+        edges = self.edges() + other.edges()
+        return HypergraphSemiRing(name=None,
+                                  edge_list=edges)
 
     def edges(self):
         if self.node_list:

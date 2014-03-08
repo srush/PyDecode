@@ -1,25 +1,24 @@
 // Copyright [2013] Alexander Rush
 
 #include <typeinfo>
-#include <string>
 #include <vector>
 
 #include "Hypergraph/Hypergraph.h"
 
 int Hypergraph::ID = 0;
 
-HEdge Hypergraph::add_edge(const vector<HNode> &nodes, string label)  {
+HEdge Hypergraph::add_edge(const vector<HNode> &nodes)  {
   assert(lock_);
-  Hyperedge *edge = new Hyperedge(label, creating_node_, nodes);
+  Hyperedge *edge = new Hyperedge(creating_node_, nodes);
   creating_node_->add_edge(edge);
   temp_edges_.push_back(edge);
   return edge;
 }
 
-HNode Hypergraph::start_node(string label) {
+HNode Hypergraph::start_node() {
   terminal_lock_ = false;
   lock_ = true;
-  creating_node_ = new Hypernode(label);
+  creating_node_ = new Hypernode();
   creating_node_->set_id(temp_nodes_.size());
   temp_nodes_.push_back(creating_node_);
   return creating_node_;
@@ -39,9 +38,9 @@ bool Hypergraph::end_node() {
   }
 }
 
-HNode Hypergraph::add_terminal_node(string label) {
+HNode Hypergraph::add_terminal_node() {
   assert(terminal_lock_);
-  Hypernode *node = new Hypernode(label);
+  Hypernode *node = new Hypernode();
   node->set_id(temp_nodes_.size());
   temp_nodes_.push_back(node);
   return temp_nodes_[temp_nodes_.size() - 1];

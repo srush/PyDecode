@@ -7,6 +7,7 @@ import pulp
 import pydecode.hyper as ph
 from collections import defaultdict
 
+
 class HypergraphLP:
     """
     Manages the linear program for a hypergraph search problem.
@@ -24,6 +25,7 @@ class HypergraphLP:
        Get the (fractional) path of the solved LP.
 
     """
+
     def __init__(self, lp, hypergraph, node_vars, edge_vars,
                  integral=False):
         r"""
@@ -70,8 +72,8 @@ class HypergraphLP:
         solver : LP solver
            A PuLP LP solver (glpsol, Gurobi, etc.).
         """
-        if solver == None:
-            _solver = pulp.solvers.GLPK()
+        if solver is None:
+            _solver = pulp.solvers.GLPK(msg=0)
         else:
             _solver = solver
         self._status = self.lp.solve(_solver)
@@ -115,7 +117,7 @@ class HypergraphLP:
             self.lp += 0 == \
                 constraints.bias[i][1] + \
                 pulp.lpSum([coeff * self.edge_vars[edge.id]
-                     for (coeff, edge) in constraint])
+                            for (coeff, edge) in constraint])
 
     @staticmethod
     def make_lp(hypergraph, potentials, name="", integral=False):
@@ -182,14 +184,13 @@ class HypergraphLP:
             p = potentials[edge]
             v = edge_vars[edge.id]
 
-
         # max \theta x
-        prob += pulp.lpSum([potentials[edge] * edge_vars[edge.id]
-                     for edge in hypergraph.edges]) + potentials.bias
+        prob += pulp.lpSum(
+            [potentials[edge] * edge_vars[edge.id]
+             for edge in hypergraph.edges]) + potentials.bias
 
         # x(r) = 1
         prob += node_vars[hypergraph.root.id] == 1
-
 
         # x(v) = \sum_{e : h(e) = v} x(e)
         for node in hypergraph.nodes:

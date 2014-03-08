@@ -33,10 +33,9 @@ class HypergraphConstructionException : public HypergraphException {};
 
 class Hyperedge {
  public:
-  Hyperedge(string label, HNode head,
+  Hyperedge(HNode head,
             const vector<HNode> &tails)
     : id_(-1),
-      label_(label),
       head_(head),
       tail_nodes_(tails) {}
 
@@ -46,11 +45,6 @@ class Hyperedge {
   int id() const { return id_; }
 
   void set_id(int id) { id_ = id; }
-
-  /**
-   * Get the label of the edge.
-   */
-  string label() const { return label_; }
 
   /**
    * Get the head node of the edge.
@@ -71,7 +65,6 @@ class Hyperedge {
 
  private:
   int id_;
-  string label_;
   HNode head_;
   vector<HNode> tail_nodes_;
 };
@@ -83,10 +76,8 @@ class Hyperedge {
  */
 class Hypernode {
   public:
-  explicit Hypernode(string label)
-    : id_(-1), label_(label) {}
-
-  string label() const { return label_; }
+  explicit Hypernode()
+    : id_(-1) {}
 
   int id() const { return id_; }
 
@@ -108,7 +99,6 @@ class Hypernode {
 
  private:
   int id_;
-  string label_;
   vector<HEdge> edges_;
 };
 
@@ -160,11 +150,11 @@ class Hypergraph {
   /**
    * Create a new node and begin adding edges.
    */
-  HNode add_terminal_node(string label);
+  HNode add_terminal_node();
 
-  HNode start_node(string label);
+  HNode start_node();
 
-  HEdge add_edge(const vector<HNode> &nodes, string label);
+  HEdge add_edge(const vector<HNode> &nodes);
 
   /**
    * Returns true if the node was created.

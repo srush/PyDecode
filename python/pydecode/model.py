@@ -14,6 +14,7 @@ import pydecode.lp as lp
 import pulp
 import sys
 
+
 class DynamicProgrammingModel(StructuredModel):
     """
     An implementation of a structured model for dynamic programming.
@@ -30,7 +31,6 @@ class DynamicProgrammingModel(StructuredModel):
         self._use_gurobi = use_gurobi
         self._use_relaxed = use_relaxed
         self._debug = False
-
 
     def dynamic_program(self, x, chart):
         r"""
@@ -105,51 +105,51 @@ class DynamicProgrammingModel(StructuredModel):
 
     def inference(self, x, w, relaxed=False):
         relaxed = relaxed or self._use_relaxed
-        if self._debug: a = time.time()
+        if self._debug:
+            a = time.time()
         hypergraph = self._build_hypergraph(x)
-        if self._debug: print >>sys.stderr, "BUILD HYPERGRAPH:", time.time() -a 
+        if self._debug:
+            print >>sys.stderr, "BUILD HYPERGRAPH:", time.time() - a
 
-        if self._debug: a = time.time()
+        if self._debug:
+            a = time.time()
         potentials = self._build_potentials(hypergraph, x, w)
-        if self._debug: print >>sys.stderr, "BUILD POTENTIALS:", time.time() - a
+        if self._debug:
+            print >>sys.stderr, "BUILD POTENTIALS:", time.time() - a
         if not self._constrained:
-            if self._debug: a = time.time()
+            if self._debug:
+                a = time.time()
             path = ph.best_path(hypergraph, potentials)
-            if self._debug: print >>sys.stderr, "BEST PATH:", time.time() - a
-
+            if self._debug:
+                print >>sys.stderr, "BEST PATH:", time.time() - a
         else:
-            if self._debug: a = time.time()
+            if self._debug:
+                a = time.time()
             constraints = self.constraints(x, hypergraph)
-            hyperlp = lp.HypergraphLP.make_lp(hypergraph, potentials, integral=not relaxed)
+            hyperlp = lp.HypergraphLP.make_lp(hypergraph,
+                                              potentials,
+                                              integral=not relaxed)
             hyperlp.add_constraints(constraints)
-            if self._debug: print >>sys.stderr, "BUILD LP:", time.time() - a
+            if self._debug:
+                print >>sys.stderr, "BUILD LP:", time.time() - a
 
-            if self._debug: a = time.time()
+            if self._debug:
+                a = time.time()
             if self._use_gurobi:
                 hyperlp.solve(pulp.solvers.GUROBI(mip=1 if not relaxed else 0))
             else:
-                hyperlp.solve(pulp.solvers.GLPK(mip=1 if not relaxed else 0 ))
-            if self._debug: print >>sys.stderr, "SOLVE LP:", time.time() - a
+                hyperlp.solve(pulp.solvers.GLPK(mip=1 if not relaxed else 0))
+            if self._debug:
+                print >>sys.stderr, "SOLVE LP:", time.time() - a
 
             if relaxed:
                 path = hyperlp.decode_fractional()
             else:
                 path = hyperlp.path
-        if self._debug: print 
+        if self._debug:
+            print
         y = set([edge.label for edge in path])
         return y
-
-
-
-            #print repr(hypergraph.label(edge))
-        # print len(path.edges)
-        #print "DONE"
-
-        # a = time.time()
-        # print time.time() - a
-        # b = time.time()
-        # print time.time() - b
-        #print "SCORE IS:", potentials.dot(path)
 
     def loss(self, yhat, y):
         difference = 0
@@ -174,9 +174,10 @@ class DynamicProgrammingModel(StructuredModel):
 
     def _build_potentials(self, hypergraph, x, w):
         data = self.initialize_features(x)
-        features = [self.factored_psi(x, hypergraph.label(edge), data) for edge in hypergraph.edges]
+        features = [self.factored_psi(x, hypergraph.label(edge), data)
+                    for edge in hypergraph.edges]
         f = self._vec.transform(features)
-        scores =  f * w.T
+        scores = f * w.T
         #print "Weights:", self._vec.inverse_transform(w)
         #print
         return ph.Potentials(hypergraph).from_vector(scores)

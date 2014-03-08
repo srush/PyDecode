@@ -1,0 +1,35 @@
+semirings:
+  - type: Viterbi
+    cvalue: double
+    viterbi: Yes
+    description:
+      Weight potentials :math:`R^{{\cal E}}` with :math:`(+, *) = (\max, *)`.
+  - type: LogViterbi
+    cvalue: double
+    viterbi: True
+    description:
+      Weight potentials :math:`R^{{\cal E}}` with :math:`(+, *) = (\max, +)`.
+  - type: Inside
+    cvalue: double
+    viterbi: Yes
+    description:
+      Weight potentials :math:`R^{{\cal E}}` with :math:`(+, *) = (+, *)`.
+  - type: Bool
+    cvalue: bool
+    viterbi: Yes
+    description:
+      Weight potentials :math:`\{0,1\}^{{\cal E}}` with :math:`(+, *) = (\land, \lor)`.
+  - type: SparseVector
+    ctype: SparseVectorPotential
+    cvalue: vector[pair[int, int]]
+    viterbi: No
+  - type: MinSparseVector
+    cvalue: vector[pair[int, int]]
+    viterbi : False
+  - type: MaxSparseVector
+    cvalue: vector[pair[int, int]]
+    viterbi : No
+  - type: Counting
+    cvalue: int
+    viterbi: False,
+    description: test

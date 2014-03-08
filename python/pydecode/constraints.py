@@ -1,6 +1,7 @@
 import pydecode.hyper as ph
 from collections import defaultdict
 
+
 class Constraint:
     def __init__(self, name, variables, coeffs, bias):
         self.name = name
@@ -16,12 +17,12 @@ class Variables():
         self.potentials = ph.BinaryVectorPotentials(graph)
         self.constraints = constraints
 
-    def build(self, build):
-        self.potentials.build(build)
-        return self
+    # def build(self, build):
+    #     self.potentials.build(build)
+    #     return self
 
-    def build_vector(self, build):
-        vector = build(self.hypergraph)
+    def from_vector(self, vector):
+        #vector = build(self.hypergraph)
         self.potentials.from_vector(vector)
         return self
 
@@ -34,7 +35,9 @@ class Variables():
             for var, coeff in zip(cons.variables, cons.coeffs):
                 if sparse_vars[var]:
                     val += coeff
-            if val != 0: yield cons.name
+            if val != 0:
+                yield cons.name
+
 
 class Constraints:
     r"""
@@ -80,51 +83,13 @@ class Constraints:
     def id(self, label):
         return self.by_label[label]
 
-
-        
-    def build(self, builder):
-        """
-        build(constraints, builder)
-
-        Build the constraints for a hypergraph.
-
-        Parameters
-        -----------
-
-        constraints :
-            A list of pairs of the form (label, constant) indicating a constraint.
-
-        builder :
-            A function from edge label to a list of pairs (constraints, coeffificient).
-
-        Returns
-        ------------
-
-        :py:class:`Constraints`
-            The constraints.
-        """
-        self.all_constraints = defaultdict(lambda: [])
-        edge_values = {}
-        for edge in self.hypergraph.edges:
-            semi = []
-            label = self.hypergraph.label(edge)
-            for name, coeff in builder(label):
-                constraint = self.by_label[name]
-                semi.append((constraint, coeff))
-                self.all_constraints[constraint].append((coeff, edge))
-            edge_values[label] = semi
-
-        self.potentials.build(lambda a: edge_values[a], bias=self.bias)
-        return self
-
-    def build_vector(self, builder):
-        v = builder(self.hypergraph)
+    def from_vector(self, vector):
         final = []
         self.all_constraints = defaultdict(lambda: [])
         edge_values = {}
         for i, edge in enumerate(self.hypergraph.edges):
             semi = []
-            for name, coeff in v[i]:
+            for name, coeff in vector[i]:
                 constraint = self.by_label[name]
                 semi.append((constraint, coeff))
                 self.all_constraints[constraint].append((coeff, edge))
@@ -133,71 +98,5 @@ class Constraints:
         self.potentials.from_vector(final, bias=self.bias)
         return self
 
-
     def __iter__(self):
         return self.all_constraints.itervalues()
-
-        # cdef CConstraint *cons
-        # cdef Constraint hcons
-        # by_label = {}
-        # cdef string label
-        # for label, constant in constraints:
-        #     cons = self.thisptr.add_constraint(label)
-        #     hcons = Constraint()
-        #     hcons.init(cons)
-        #     cons.set_constant(constant)
-        #     by_label[label] = hcons
-
-        # cdef vector[const CHyperedge *] edges = \
-        #     self.hypergraph.thisptr.edges()
-        # cdef int coeff
-        # cdef Constraint constraint
-        # for i, ty in enumerate(self.hypergraph.edge_labels):
-        #     constraints = builder(ty)
-
-        #     for term in constraints:
-        #         if term is None: continue
-
-        #         try:
-        #             label, coeff = term
-        #         except:
-        #             raise HypergraphConstructionException(
-        #                 "Term must be a pair of the form (label, coeff)."  + \
-        #                     "Given %s."%(term))
-        #         try:
-        #             constraint = <Constraint> by_label[label]
-        #         except:
-        #             raise HypergraphConstructionException(
-        #                 "Label %s is not a valid label"%label)
-        #         (<CConstraint *>constraint.thisptr).add_edge_term(edges[i], coeff)
-        # return self
-
-    # def __iter__(self):
-    #     return iter(convert_constraints(self.thisptr.constraints()))
-
-    # def check(self, Path path):
-    #     """
-    #     check(path)
-
-    #     Check which constraints a path violates.
-
-    #     Parameters
-    #     ----------------
-
-    #     path : :py:class:`Path`
-    #        The hyperpath to check.
-
-
-    #     Returns
-    #     -------------
-
-    #     A list of :py:class:`Constraint` objects
-    #         The violated constraints.
-    #     """
-
-    #     cdef vector[const CConstraint *] failed
-    #     cdef vector[int] count
-    #     self.thisptr.check_constraints(deref(path.thisptr),
-    #                                    &failed,
-    #                                    &count)
-    #     return convert_constraints(failed)

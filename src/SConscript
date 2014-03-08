@@ -2,12 +2,12 @@ Import('env')
 
 sources = [
     "Hypergraph/Hypergraph.cpp",
+    "Hypergraph/SemiringAlgorithms.cpp",
     "Hypergraph/Algorithms.cpp",
     "Hypergraph/Semirings.cpp",
     "Hypergraph/Factory.cpp",
     "Hypergraph/BeamSearch.cpp",
-    #"Hypergraph/Subgradient.cpp",
-
+    "Hypergraph/Map.cpp",
     ]
 
 hyp_lib = env.Library('decoding', sources)

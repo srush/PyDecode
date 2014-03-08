@@ -42,7 +42,7 @@ class HypergraphFormatter:
            The hypernode to style.
         """
         return {"shape": "ellipse",
-                "label": str(self.hypergraph.node_label(node))}
+                "label": str(node.label)}
 
     def hyperedge_node_attrs(self, edge):
         """
@@ -57,7 +57,7 @@ class HypergraphFormatter:
         """
         if self._show_hyperedges:
             return {"shape": "rect",
-                    "label": str(self.hypergraph.label(edge))}
+                    "label": str(edge.label)}
         else:
             return {"shape": "point"}
 
@@ -135,6 +135,13 @@ d        ------------
         agraph = self.to_graphviz(layout)
         agraph.write("/tmp/tmp.dot")
         agraph.draw(filename)
+
+    def to_pydot(self):
+        G = self.to_networkx()
+        pydot = nx.drawing.to_pydot(G)
+        for k, v in self.graph_attrs().iteritems():
+            pydot.set(k, v)
+        return pydot
 
     def to_graphviz(self, layout="dot"):
         subgraphs = {}

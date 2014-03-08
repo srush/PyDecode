@@ -157,7 +157,7 @@ Hyperpath *BeamChart::get_path(int result) {
             continue;
         }
         path.push_back(edge);
-        for (int i = 0; i < edge->tail_nodes().size(); ++i) {
+        for (uint i = 0; i < edge->tail_nodes().size(); ++i) {
             HNode node = edge->tail_nodes()[i];
             to_examine.push(pair<HNode, int>(node,
                                              score->back_position[i]));
@@ -271,7 +271,7 @@ void BeamChart::finish(int group) {
 // Hyperpath *beam_search(
 //     const Hypergraph *graph,
 //     const HypergraphPotentials<LogViterbiPotential> &potentials,
-//const HypergraphPotentials<SparseVectorPotential> &constraints,
+// const HypergraphPotentials<SparseVectorPotential> &constraints,
 //     const HypergraphPotentials<BinaryVectorPotential> &constraints,
 //     const Chart<LogViterbiPotential> &future) {
 //   potentials.check(graph);

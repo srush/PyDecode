@@ -27,13 +27,14 @@ def hypergraph_to_json(graph):
                          for edge in node.edges])
     return data
 
+
 def json_to_hypergraph(obj):
     """
     Parameters
     -----------
     obj : An object returned by hypergraph_to_json
 
-    Returns 
+    Returns
     --------
     graph : Hypergraph
     """
@@ -51,17 +52,19 @@ def json_to_hypergraph(obj):
                      for edge, lab in edge_ls])
     return hypergraph
 
+
 def json_to_potentials(s, potentials,
                        potential_type,
-                       val_convert=lambda a:a):
+                       val_convert=lambda a: a):
     data = json.loads(s)
     return potential_type.from_vector(
         [val_convert(value) for value in data["values"]],
         val_convert(data["bias"]))
 
+
 def potentials_to_json(graph, potentials,
-                       val_convert=lambda a:a):
-    data = {"values" : [val_convert(potentials.score(edge))
-                        for edge in graph.edges],
-            "bias" : val_convert(potentials.bias)}
+                       val_convert=lambda a: a):
+    data = {"values": [val_convert(potentials.score(edge))
+                       for edge in graph.edges],
+            "bias": val_convert(potentials.bias)}
     return json.dumps(data)
