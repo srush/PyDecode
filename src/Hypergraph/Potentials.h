@@ -9,7 +9,6 @@
 
 #include "Hypergraph/Hypergraph.h"
 #include "Hypergraph/Semirings.h"
-#include "Hypergraph/Map.h"
 #include "./common.h"
 
 class HypergraphMap;
