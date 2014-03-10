@@ -177,7 +177,8 @@ def polyak(t, f_x, f_x_best, g):
 def subgradient_descent(fn, x0, rate,
                         max_iterations=100,
                         primal_fn=lambda r, extra: None,
-                        primal_start=-1e8):
+                        primal_start=-1e8,
+                        logger=None):
     r"""
     Runs subgradient descent on the objective function.
 
@@ -240,7 +241,7 @@ def subgradient_descent(fn, x0, rate,
                                    rate=round_rate)
 
         history.update(status)
-        history.show()
+        if logger: logger(history)
         if norm(result.subgrad) == 0:
             history.success = True
             break
@@ -295,6 +296,7 @@ class SubgradientHistory:
             self.best_dual = status.dual
         assert self.best_primal < self.best_dual, "%f %f" % (self.best_primal,
                                                              self.best_dual)
+
 
     def show(self):
         status = self.status()
