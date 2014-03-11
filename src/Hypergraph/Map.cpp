@@ -73,7 +73,7 @@ HypergraphMap *HypergraphMap::invert() const {
     foreach (HNode node, domain_graph()->nodes()) {
         HNode mapped_node = (*node_map_)[node->id()];
         if (mapped_node == NULL || mapped_node->id() < 0) continue;
-        (*node_reverse_map_)[(*node_map_)[node->id()]->id()] = node;
+        (*node_reverse_map_)[mapped_node->id()] = node;
     }
     foreach (HEdge edge, domain_graph()->edges()) {
         HEdge mapped_edge = (*edge_map_)[edge->id()];

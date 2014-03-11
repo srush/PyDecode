@@ -33,6 +33,7 @@ template<typename SemiringType>
 HypergraphPotentials<SemiringType> *
 HypergraphPotentials<SemiringType>::project_potentials(
         const HypergraphMap &projection) const {
+    check(*projection.domain_graph());
     vector<typename SemiringType::ValType>
             potentials(projection.range_graph()->edges().size());
     foreach (HEdge edge, projection.domain_graph()->edges()) {

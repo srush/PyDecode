@@ -12,6 +12,12 @@ class WeightedConstrainedGraph:
                                         projection[self.weight],
                                         projection[self.constraint])
 
+    def up_project(self, projection):
+        return WeightedConstrainedGraph(
+            projection.domain_hypergraph,
+            self.weight.up_project(projection.domain_hypergraph, projection),
+            self.constraint.up_project(projection.domain_hypergraph, projection))
+
 
 
 class Constraint:

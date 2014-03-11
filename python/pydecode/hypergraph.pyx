@@ -554,6 +554,7 @@ cdef class HypergraphMap:
                 return None
 
         if isinstance(obj, Hypergraph):
+            assert obj.thisptr.id() == self.domain_hypergraph.thisptr.id()
             return self.range_hypergraph
 
         return obj.project(self.range_graph, self)
