@@ -20,7 +20,7 @@ Simple Hypergraph Example
     
     def build_potentials(label):
          return {"edge1" : 3, "edge2" : 1, "edge3" : 1}[label]
-    potentials = ph.Potentials(hyp).build(build_potentials)
+    potentials = ph.Potentials(hyp).from_vector([build_potentials(edge.label) for edge in hyp.edges])
 Draw the graph
 
 .. code:: python

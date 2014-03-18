@@ -8,6 +8,7 @@ Tutorial 1: Fibonacci
     import pydecode.hyper as ph
     import pydecode.chart as chart
     import pydecode.display as display
+    import pydecode.potentials as potentials
 .. code:: python
 
     def fibo_dp(c, n):
@@ -18,15 +19,29 @@ Tutorial 1: Fibonacci
         return c
 .. code:: python
 
-    c = chart.ChartBuilder(semiring=ph._LogViterbiW)
+    c = chart.ChartBuilder(semiring=potentials._LogViterbiW)
     fibo_dp(c, 10).finish()
 
+::
 
 
-.. parsed-literal::
+    ---------------------------------------------------------------------------
+    AttributeError                            Traceback (most recent call last)
 
-    55.0
+    <ipython-input-12-f1e511f48692> in <module>()
+          1 c = chart.ChartBuilder(semiring=potentials._LogViterbiW)
+    ----> 2 fibo_dp(c, 10).finish()
+    
 
+    /home/srush/Projects/decoding/python/pydecode/chart.py in finish(self)
+         53             return self._hypergraph
+         54         else:
+    ---> 55             return self._chart[self._last].value()
+         56 
+         57     def value(self, label):
+
+
+    AttributeError: 'pydecode.potentials._LogViterbiW' object has no attribute 'value'
 
 
 .. code:: python

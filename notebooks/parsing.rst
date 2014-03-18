@@ -68,47 +68,11 @@ Tutorial 4: Dependency Parsing
                            build_hypergraph = True, strict=False)
     the_chart = first_order(sentence, c)
     hypergraph = the_chart.finish()
-
-::
-
-
-    ---------------------------------------------------------------------------
-    TypeError                                 Traceback (most recent call last)
-
-    <ipython-input-4-78d652f2fde9> in <module>()
-         34                        chart.HypergraphSemiRing,
-         35                        build_hypergraph = True)
-    ---> 36 the_chart = first_order(sentence, c)
-         37 hypergraph = the_chart.finish()
-
-
-    <ipython-input-4-78d652f2fde9> in first_order(sentence, c)
-         17             # First create incomplete items.
-         18             c[NodeType(Trap, Left, span)] =                 c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))] * c.sr(Arc(r, s))
-    ---> 19                        for r in range(s, t)])
-         20 
-         21             c[NodeType(Trap, Right, span)] =                 c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))] * c.sr(Arc(head_index=s, modifier_index=r))
-
-
-    /home/srush/Projects/decoding/python/pydecode/chart.pyc in __getitem__(self, label)
-        130     def __getitem__(self, label):
-        131         if self._strict:
-    --> 132             raise Exception("Label not in chart: %s"%label)
-        133         if self._debug:
-        134             print >>sys.stderr, "Getting", label, label in self._chart
-
-
-    TypeError: not all arguments converted during string formatting
-
-
 .. code:: python
 
-    def build_potentials(arc):
-        print arc
-        return random.random()
-    potentials = ph.Potentials(hypergraph).build(build_potentials)
     
-    # phyper, ppotentials = ph.prune_hypergraph(hypergraph, potentials, 0.5)
+    potentials = ph.Potentials(hypergraph).from_vector([random.random() 
+                                                        for i in range(len(hypergraph.edges))])
 .. code:: python
 
     path = ph.best_path(hypergraph, potentials)
@@ -127,14 +91,16 @@ Tutorial 4: Dependency Parsing
             kept.add(edge.id)
 .. code:: python
 
-    potentials = ph.InsidePotentials(hypergraph).build(build_potentials)
+    potentials = ph.InsidePotentials(hypergraph).\
+                    from_vector([random.random() 
+                                 for i in range(len(hypergraph.edges))])
     marginals = ph.compute_marginals(hypergraph, potentials)
     base = marginals[hypergraph.root]
-    for edge in hypergraph.edges:
-        print marginals[edge].value / base.value
 .. code:: python
 
-    phyper, ppotentials = ph.prune_hypergraph(hypergraph, potentials, 0.1)
+    projection = ph.prune_hypergraph(hypergraph, potentials, 0.1)
+    phyper = projection[hypergraph]
+    ppotentials = projection[potentials]
 .. code:: python
 
     import pydecode.lp as lp
@@ -150,7 +116,7 @@ Tutorial 4: Dependency Parsing
         def graph_attrs(self):
             return {"rankdir": "TB", "clusterrank": "local"}
         def hypernode_attrs(self, node):
-            label = self.hypergraph.node_label(node)
+            label = node.label
             return {"image": 
                     ("triangle" if label.type == Tri else "trap") + "-" + 
                     ("right" if label.dir == Right else "left") + ".png",
@@ -163,7 +129,7 @@ Tutorial 4: Dependency Parsing
     
                     }
         def hypernode_subgraph(self, node):
-            label = self.hypergraph.node_label(node)
+            label = node.label
             if label.span[0] == label.span[1]:
                 return [("clust_terminals", label.span[0] + (0.5 if label.dir == Right else 0))]
             return []
@@ -177,6 +143,13 @@ Tutorial 4: Dependency Parsing
                     "penwidth": 5 if edge in self.path else 1}
     
     ParseFormat(hypergraph, sentence, path).to_ipython()
+
+
+
+.. image:: parsing_files/parsing_10_0.png
+
+
+
 .. code:: python
 
     import networkx as nx

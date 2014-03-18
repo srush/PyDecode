@@ -58,11 +58,12 @@ defining a function to map labels to potentials.
         if "Second" in label: return 5
         if "Third" in label: return 5
         return 0
-    potentials = ph.Potentials(hyper1).build(build_potentials)
+    potentials = ph.Potentials(hyper1).from_vector([build_potentials(edge.label) 
+                                                    for edge in hyper1.edges])
 .. code:: python
 
     for edge in hyper1.edges:
-        print hyper1.label(edge), potentials[edge]
+        print edge.label, potentials[edge]
 
 .. parsed-literal::
 

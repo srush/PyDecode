@@ -7,7 +7,7 @@ import pydecode.hyper as ph
 import pydecode.display as display
 
 
-# In[2]:
+# In[4]:
 
 hyp = ph.Hypergraph()
 with hyp.builder() as b:
@@ -20,26 +20,26 @@ with hyp.builder() as b:
 
 def build_potentials(label):
      return {"edge1" : 3, "edge2" : 1, "edge3" : 1}[label]
-potentials = ph.Potentials(hyp).build(build_potentials)
+potentials = ph.Potentials(hyp).from_vector([build_potentials(edge.label) for edge in hyp.edges])
 
 
 # Draw the graph
 
-# In[3]:
+# In[5]:
 
 display.HypergraphPotentialFormatter(hyp, potentials).to_ipython()
 
 
-# Out[3]:
+# Out[5]:
 
-#     <IPython.core.display.Image at 0x2fb1410>
+#     <IPython.core.display.Image at 0x2b58d10>
 
-# In[4]:
+# In[6]:
 
 path = ph.best_path(hyp, potentials)
 display.HypergraphPathFormatter(hyp, [path]).to_ipython()
 
 
-# Out[4]:
+# Out[6]:
 
-#     <IPython.core.display.Image at 0x33e2910>
+#     <IPython.core.display.Image at 0x2b403d0>

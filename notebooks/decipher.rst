@@ -78,13 +78,11 @@ This is a note on running decipherment.
 
     class CipherFormat(display.HypergraphPathFormatter):
         def hypernode_attrs(self, node):
-            label = self.hypergraph.node_label(node)
-            return {"label": "%s -> %s"%(label.cipherletter, label.letter)}
+            return {"label": "%s -> %s"%(node.label.cipherletter, node.label.letter)}
         def hyperedge_node_attrs(self, edge):
             return {"color": "pink", "shape": "point"}
         def hypernode_subgraph(self, node):
-            label = self.hypergraph.node_label(node)
-            return [("cluster_" + str(label.i), label.i)]
+            return [("cluster_" + str(node.label.i), node.label.i)]
         # def subgraph_format(self, subgraph):
         #     return {"label": (sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
     
@@ -123,22 +121,22 @@ l^2 constraints
             count[l] += 1
         def build(conv):
             l = conv.cipherletter
-            if l == " ": return []
+            if l == " " or l == "": return []
             if conv.letter == " ": return []
             if first_position[l] == conv.i:
                 return [(transform(conv.cipherletter, conv.letter), count[l] - 1)]
             else:
                 return [(transform(conv.cipherletter, conv.letter), -1)]
-        constraints.build( 
-                          build)
+        constraints.from_vector([build(edge.label) for edge in hypergraph.edges])
         return constraints
+    
     constraints = build_constraints(hyper1, simple_problem)
-
 .. code:: python
 
     def build_potentials(edge):
         return random.random()
-    potentials = hyper.Potentials(hyper1).build(build_potentials)
+    potentials = hyper.Potentials(hyper1).from_vector([build_potentials(node.label) 
+                                                       for node in hyper1.nodes])
 .. code:: python
 
     for edge in hyper1.edges:
@@ -146,39 +144,39 @@ l^2 constraints
 
 .. parsed-literal::
 
-    0.614117264748
-    0.759764134884
-    0.733525454998
-    0.0815630927682
-    0.916156351566
-    0.0582501739264
-    0.389200419188
-    0.708899497986
-    0.117828272283
-    0.703362822533
-    0.955223083496
-    0.951672554016
-    0.889782249928
-    0.850794136524
-    0.206611990929
-    0.666242241859
-    0.836310505867
-    0.631427586079
-    0.420347988605
-    0.717808246613
-    0.0318541526794
-    0.10944814235
-    0.398276388645
-    0.686978042126
-    0.0620245561004
-    0.156915932894
-    0.227964177728
-    0.761591732502
-    0.0153166977689
-    0.402361214161
-    0.468028366566
-    0.351031720638
-    0.130741521716
+    0.18738485935
+    0.472104200234
+    0.601083619451
+    0.926199823358
+    0.472726063032
+    0.272371839332
+    0.6717332954
+    0.919803900784
+    0.400676874512
+    0.319032345118
+    0.0858441054396
+    0.17732106776
+    0.166267944361
+    0.677231007635
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
 
 
 .. code:: python
@@ -190,7 +188,7 @@ l^2 constraints
 
 .. parsed-literal::
 
-    3.458035945892334
+    2.0691391086535877
 
 
 
@@ -215,8 +213,7 @@ l^2 constraints
 
 .. parsed-literal::
 
-    0.468028366566
-    Constraints {}
+    0.0
 
 
 
@@ -238,9 +235,8 @@ Real Problem
     hyper2 = build_cipher_graph(complicated_problem)
 .. code:: python
 
-    def build_ngram_potentials(edge):
-        return math.log(complicated_problem.lm.prob(edge.letter, edge.prevletter))
-    potentials2 = hyper.Potentials(hyper2).build(build_ngram_potentials)
+    
+    potentials2 = hyper.Potentials(hyper2).from_vector([math.log(complicated_problem.lm.prob(edge.label.letter, edge.label.prevletter)) for edge in hyper2.edges])
 
 .. code:: python
 
@@ -263,72 +259,72 @@ Real Problem
 .. parsed-literal::
 
     11
-    -2.07941651344
+    -2.07941654387
     221
     0.0
     298
     0.0
     648
-    -1.0986123085
+    -1.09861228867
     702
-    -0.405481785536
+    -0.405481773803
     709
-    -1.45088791847
+    -1.45088787965
     814
-    -0.510852277279
+    -0.510852289188
     951
-    -0.693147182465
+    -0.69314718056
     971
-    -2.07941651344
+    -2.07941654387
     1181
     0.0
     1258
     0.0
     1428
-    -1.0986123085
+    -1.09861228867
     1451
-    -2.07941651344
+    -2.07941654387
     1661
     0.0
     1738
     0.0
     1908
-    -0.693234682083
+    -0.693234675638
     2190
-    -0.693172156811
+    -0.693172179622
     2449
-    -0.510852277279
+    -0.510852289188
     2586
-    -0.693147182465
+    -0.69314718056
     2865
-    -0.693172156811
+    -0.693172179622
     3124
-    -0.510852277279
+    -0.510852289188
     3261
-    -0.693147182465
+    -0.69314718056
     3281
-    -2.07941651344
+    -2.07941654387
     3491
     0.0
     3568
     0.0
     3888
-    -1.0986123085
+    -1.09861228867
     3970
-    -0.693234682083
+    -0.693234675638
     4245
-    -0.693172156811
+    -0.693172179622
     4504
-    -0.510852277279
+    -0.510852289188
     4641
-    -0.693147182465
+    -0.69314718056
 
 
 
 
 .. parsed-literal::
 
-    0.0
+    -21.751856464057795
 
 
 
