@@ -40,7 +40,7 @@ The main data structure used PyDecode is a weighted directed hypergraph, which
 is a graphical representation of a dynamic program.
 The algorithms and tools in the rest package make heavy use of this data structure.
 
-.. automodule:: pydecode.hyper
+.. automodule:: pydecode.hypergraph
    :no-members:
    :no-inherited-members:
 
@@ -60,7 +60,7 @@ Algorithms
 The toolkit contains a collection of algorithms for working with weighted hypergraphs, including finding the best path, inside scores, outside score
 
 
-.. automodule:: pydecode.hyper
+.. automodule:: pydecode.potentials
    :no-members:
    :no-inherited-members:
 
@@ -77,7 +77,7 @@ The toolkit contains a collection of algorithms for working with weighted hyperg
 Potentials
 ============
 
-.. automodule:: pydecode.hyper
+.. automodule:: pydecode.potentials
    :no-members:
    :no-inherited-members:
 
