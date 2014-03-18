@@ -20,6 +20,8 @@ sys.path.append(os.path.abspath('_themes'))
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../../python/'))
+sys.path.insert(0, os.path.abspath('../python/'))
+sys.path.insert(0, os.path.abspath('python/'))
 
 sys.path.append(os.path.abspath("../ext/breathe/") )
 sys.path.append(os.path.abspath("../ext/") )
