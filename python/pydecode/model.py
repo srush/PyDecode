@@ -174,7 +174,7 @@ class DynamicProgrammingModel(StructuredModel):
 
     def _build_potentials(self, hypergraph, x, w):
         data = self.initialize_features(x)
-        features = [self.factored_joint_feature(x, hypergraph.label(edge), data)
+        features = [self.factored_joint_feature(x, edge.label, data)
                     for edge in hypergraph.edges]
         f = self._vec.transform(features)
         scores = f * w.T
