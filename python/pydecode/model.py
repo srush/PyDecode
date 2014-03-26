@@ -21,7 +21,7 @@ class DynamicProgrammingModel(StructuredModel):
 
     Minimally implement
     :py:method:`DynamicProgrammingModel.dynamic_program` and
-    :py:method:`DynamicProgrammingModel.factored_psi` to use.
+    :py:method:`DynamicProgrammingModel.factored_joint_feature` to use.
 
     """
     def __init__(self, constrained=False, use_gurobi=True,
@@ -52,7 +52,7 @@ class DynamicProgrammingModel(StructuredModel):
         return None
         #raise NotImplementedError()
 
-    def factored_psi(self, x, index, data):
+    def factored_joint_feature(self, x, index, data):
         """
         Compute the features for a given index.
 
@@ -73,14 +73,14 @@ class DynamicProgrammingModel(StructuredModel):
         """
         raise NotImplementedError()
 
-    def psi(self, x, y, fractions=None):
+    def joint_feature(self, x, y, fractions=None):
         if not fractions:
             fractions = [1] * len(y)
         assert(len(fractions) == len(y))
         features = {}
         data = self.initialize_features(x)
         for index, frac in zip(y, fractions):
-            f = self.factored_psi(x, index, data)
+            f = self.factored_joint_feature(x, index, data)
             for k, v in f.iteritems():
                 features.setdefault(k, 0)
                 features[k] += v * frac
@@ -93,7 +93,7 @@ class DynamicProgrammingModel(StructuredModel):
         sets = []
         for x, y in zip(X, Y):
             data = self.initialize_features(x)
-            sets += [self.factored_psi(x, index, data)
+            sets += [self.factored_joint_feature(x, index, data)
                      for index in y]
         for s in sets:
             for k, v in s.iteritems():
@@ -101,7 +101,7 @@ class DynamicProgrammingModel(StructuredModel):
                 features[k] += v
 
         t = self._vec.fit_transform(features)
-        self.size_psi = t.size
+        self.size_joint_feature = t.size
 
     def inference(self, x, w, relaxed=False):
         relaxed = relaxed or self._use_relaxed
@@ -174,7 +174,7 @@ class DynamicProgrammingModel(StructuredModel):
 
     def _build_potentials(self, hypergraph, x, w):
         data = self.initialize_features(x)
-        features = [self.factored_psi(x, hypergraph.label(edge), data)
+        features = [self.factored_joint_feature(x, hypergraph.label(edge), data)
                     for edge in hypergraph.edges]
         f = self._vec.transform(features)
         scores = f * w.T
@@ -195,7 +195,7 @@ class DynamicProgrammingModel(StructuredModel):
 
 
     # def _features(self, x, index, data):
-    #     d = self.factored_psi(x, index, data)
+    #     d = self.factored_joint_feature(x, index, data)
     #     # This is slow.
     #     return self._vec.transform(d) # {s: 1 for s in d})
 
