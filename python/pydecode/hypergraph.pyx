@@ -564,15 +564,28 @@ cdef class HypergraphMap:
 
         # Map nodes.
         node_labels = [None] * projection.range_graph().nodes().size()
+        edge_labels = [None] * projection.range_graph().edges().size()
         cdef vector[const CHypernode*] old_nodes = \
             projection.domain_graph().nodes()
+        cdef vector[const CHyperedge*] old_edges = \
+            projection.domain_graph().edges()
+
         cdef const CHypernode *node
+        cdef const CHyperedge *edge
+
         for i in range(old_nodes.size()):
             node = self.thisptr.map(old_nodes[i])
             if node != NULL and node.id() >= 0:
                 node_labels[node.id()] = \
                     self.domain_graph.labeling.node_labels[i]
-        edge_labels = [None] * projection.range_graph().edges().size()
+
+        if self.domain_graph.labeling.edge_labels:
+            for i in range(old_edges.size()):
+                edge = self.thisptr.map(old_edges[i])
+                if edge != NULL and edge.id() >= 0:
+                    edge_labels[edge.id()] = \
+                        self.domain_graph.labeling.edge_labels[i]
+
         cdef Hypergraph h = Hypergraph()
         return h.init(projection.range_graph(),
                       Labeling(h, node_labels, edge_labels))
@@ -581,11 +594,22 @@ cdef class HypergraphMap:
         cdef const CHypergraph *graph = self.thisptr.domain_graph()
         assert graph.id() >= 0
         node_labels = [None] * graph.nodes().size()
+        edge_labels = [None] * graph.edges().size()
         cdef const CHypernode *node
+        cdef const CHyperedge *edge
+
         for i in range(graph.nodes().size()):
             node = self.thisptr.map(graph.nodes()[i])
             if node != NULL and node.id() >= 0:
                 node_labels[i] = \
                     self.range_graph.labeling.node_labels[node.id()]
+
+        if self.range_graph.labeling.edge_labels:
+            for i in range(graph.edges().size()):
+                edge = self.thisptr.map(graph.edges()[i])
+                if edge != NULL and edge.id() >= 0:
+                    edge_labels[i] = \
+                        self.range_graph.labeling.edge_labels[edge.id()]
+
         cdef Hypergraph h = Hypergraph()
-        return h.init(graph, Labeling(h, node_labels, []))
+        return h.init(graph, Labeling(h, node_labels, edge_labels))
