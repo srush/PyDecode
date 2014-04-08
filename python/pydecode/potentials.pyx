@@ -2712,6 +2712,7 @@ def project(Hypergraph graph, BoolPotentials filter):
     return make_pruning_projections(graph, filter)
 
 
+
 def binarize(Hypergraph graph):
     """
     Binarize a hypergraph by making all k-ary edges right branching.

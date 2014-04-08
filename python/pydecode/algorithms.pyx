@@ -1,3 +1,4 @@
+
 cdef class BackPointers:
     cdef BackPointers init(self, CBackPointers *ptr,
                            Hypergraph graph):

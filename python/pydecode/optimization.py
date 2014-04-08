@@ -4,7 +4,7 @@ Optimization algorithms.
 import pydecode.hyper as ph
 import numpy as np
 from numpy.linalg import norm
-
+import time
 
 def best_constrained_path(graph, potentials, constraints):
     r"""
@@ -316,17 +316,21 @@ class SubgradientGenerator:
 
     def __call__(self, history):
         status = history.status()
+
         if status.x_diff is None:
             ph.pairwise_dot(self.potentials, status.x, self.dual_weights)
         else:
             ph.pairwise_dot(self.potentials, status.x_diff, self.dual_weights)
-
-        path = ph.best_path(self.current_graph,
-                            self.dual_weights)
+        path = self.dual_weights.kind.viterbi(self.current_graph,
+                                              self.dual_weights,
+                                              self.chart).path
+        # path = ph.best_path(self.current_graph,
+        #                     self.dual_weights)
 
         score = self.dual_weights.dot(path)
         vec = self.potentials.dot(path)
         subgrad = np.zeros(len(status.x))
+
         prune = None
 
         # Call prune function
@@ -349,6 +353,7 @@ class SubgradientGenerator:
                 self.potentials = potentials
                 print "OLD SIZE", len(self.current_graph.nodes)
                 self.current_graph = graph
+                self.chart = ph.LogViterbiChart(self.current_graph)
                 print "NEW SIZE", len(self.current_graph.nodes)
                 prune = history.gap()
 

@@ -6,7 +6,7 @@ import sys
 def check_for_cython():
     try:
         from Cython.Compiler.Version import version
-        if int(version.split(".")[1]) < 19:
+        if int(version.split(".")[1]) < 20:
             raise ImportError("Bad version.")
 
     except ImportError:
@@ -75,7 +75,7 @@ def main():
         package_dir={'pydecode': 'python/pydecode'},
         ext_modules = make_extension(wrapper),
         requires=["networkx", "pandas"],
-        version = '0.1.24',
+        version = '0.1.27',
         description = 'A dynamic programming toolkit',
         author = 'Alexander Rush',
         author_email = 'srush@csail.mit.edu',
