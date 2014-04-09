@@ -5,7 +5,6 @@ from libcpp.vector cimport vector
 from libcpp cimport bool
 from wrap cimport *
 
-
 cdef _hypergraph_registry_counts = {}
 
 cdef class Labeling:

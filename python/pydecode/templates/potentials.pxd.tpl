@@ -11,8 +11,8 @@ from libcpp cimport bool
 
 
 from wrap cimport *
-from hypergraph cimport *
-import hypergraph as py_hypergraph
+from libhypergraph cimport *
+import libhypergraph as py_hypergraph
 
 cdef extern from "Hypergraph/SemiringAlgorithms.h":
     cdef cppclass CBackPointers "BackPointers":

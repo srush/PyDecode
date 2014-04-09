@@ -2,6 +2,7 @@ from cython.operator cimport dereference as deref
 from libcpp cimport bool
 from libcpp.vector cimport vector
 
+
 from pydecode.potentials cimport *
 
 cdef class BeamChart:

@@ -13,6 +13,7 @@
 #include "Hypergraph/Algorithms.h"
 #include "Hypergraph/Potentials.h"
 
+
 using namespace std;
 
 template<class Set1, class Set2>

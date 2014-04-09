@@ -26,34 +26,55 @@ class ExtensionWrapper:
                          language='c++',
                          extra_compile_args=["-O0"] if self.debug else [],
                          include_dirs=[r'src/', "."],
-                        extra_objects=extra_objects)
+
+                         library_dirs=[os.path.abspath('python/pydecode/libhypergraph.so')],
+                         libraries=extra_objects)
 
     def cmdclass(self):
         if self.cython:
             from Cython.Distutils import build_ext
+            from Cython.Build import cythonize
             return {'build_ext': build_ext}
         return {}
 
+def no_cythonize(extensions, **_ignore):
+    for extension in extensions:
+        sources = []
+        for sfile in extension.sources:
+            path, ext = os.path.splitext(sfile)
+            if ext in ('.pyx', '.py'):
+                if extension.language == 'c++':
+                    ext = '.cpp'
+                else:
+                    ext = '.c'
+                sfile = path + ext
+            sources.append(sfile)
+        extension.sources[:] = sources
+    return extensions
+
 def make_extension(wrapper):
-    return [
-        wrapper.make("pydecode.hypergraph",
-                     "python/pydecode/hypergraph.pyx",
+
+    a = [wrapper.make("pydecode.libhypergraph",
+                     "python/pydecode/libhypergraph.pyx",
                      ["src/Hypergraph/Hypergraph.cpp",
                       "src/Hypergraph/Map.cpp"]),
+            wrapper.make("pydecode.potentials",
+                         "python/pydecode/potentials.pyx",
+                         ["src/Hypergraph/Semirings.cpp",
+                          "src/Hypergraph/SemiringAlgorithms.cpp",
+                          "src/Hypergraph/Algorithms.cpp",
+                          "src/Hypergraph/Potentials.cpp"],
+                         extra_objects=["hypergraph"])]
+    return a
+            # ,extra_objects = [os.path.abspath('python/pydecode/hypergraph.so')])
 
-        wrapper.make("pydecode.potentials",
-                     "python/pydecode/potentials.pyx",
-                     ["src/Hypergraph/Semirings.cpp",
-                      "src/Hypergraph/SemiringAlgorithms.cpp",
-                      "src/Hypergraph/Algorithms.cpp",
-                      "src/Hypergraph/Potentials.cpp"],
-                     extra_objects = [os.path.abspath('python/pydecode/hypergraph.so')]),
+        # wrapper.make("pydecode.beam",
+        #              "python/pydecode/beam.pyx",
+        #              ["src/Hypergraph/BeamSearch.cpp"],
+        #              extra_objects=[os.path.abspath('python/pydecode/potentials.so'),
+        #                             os.path.abspath('python/pydecode/hypergraph.so')])
 
-        wrapper.make("pydecode.beam",
-                     "python/pydecode/beam.pyx",
-                     ["src/Hypergraph/BeamSearch.cpp"],
-                     extra_objects=[os.path.abspath('python/pydecode/potentials.so'),
-                                    os.path.abspath('python/pydecode/hypergraph.so')])]
+
 
 
 def main():
