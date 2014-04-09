@@ -1,5 +1,5 @@
-from pydecode.libhypergraph import *
-# from pydecode.potentials import *
+#from pydecode.libhypergraph import *
+from pydecode.potentials import *
 #from pydecode.beam import *
 
 from collections import defaultdict, namedtuple
