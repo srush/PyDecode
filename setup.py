@@ -57,14 +57,11 @@ def make_extension(wrapper):
     a = [wrapper.make("pydecode.libhypergraph",
                      "python/pydecode/libhypergraph.pyx",
                      ["src/Hypergraph/Hypergraph.cpp",
-                      "src/Hypergraph/Map.cpp"]),
-            wrapper.make("pydecode.potentials",
-                         "python/pydecode/potentials.pyx",
-                         ["src/Hypergraph/Semirings.cpp",
-                          "src/Hypergraph/SemiringAlgorithms.cpp",
-                          "src/Hypergraph/Algorithms.cpp",
-                          "src/Hypergraph/Potentials.cpp"],
-                         extra_objects=["hypergraph"])]
+                      "src/Hypergraph/Map.cpp",
+                      "src/Hypergraph/Semirings.cpp",
+                      "src/Hypergraph/SemiringAlgorithms.cpp",
+                      "src/Hypergraph/Algorithms.cpp",
+                      "src/Hypergraph/Potentials.cpp"])]
     return a
             # ,extra_objects = [os.path.abspath('python/pydecode/hypergraph.so')])
 
