@@ -54,8 +54,8 @@ def no_cythonize(extensions, **_ignore):
 
 def make_extension(wrapper):
 
-    a = [wrapper.make("pydecode.libhypergraph",
-                     "python/pydecode/libhypergraph.pyx",
+    a = [wrapper.make("pydecode.potentials",
+                     "python/pydecode/potentials.pyx",
                      ["src/Hypergraph/Hypergraph.cpp",
                       "src/Hypergraph/Map.cpp",
                       "src/Hypergraph/Semirings.cpp",

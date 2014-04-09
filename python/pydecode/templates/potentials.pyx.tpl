@@ -13,8 +13,8 @@ from libcpp.pair cimport pair
 from libcpp cimport bool
 
 from wrap cimport *
-from libhypergraph cimport *
-import libhypergraph as py_hypergraph
+#from libhypergraph cimport *
+#import libhypergraph as py_hypergraph
 
 
 ############# This is the templated semiring part. ##############
@@ -259,7 +259,7 @@ cdef class _{{S.type}}Marginals:
             return _{{S.type}}_from_cpp(
                 self.thisptr.marginal((<Node>obj).nodeptr))
         else:
-            raise py_hypergraph.HypergraphAccessException(
+            raise HypergraphAccessException(
                 "Only nodes and edges have {{S.type}} marginal values." +
                 "Passed %s." % obj)
 
