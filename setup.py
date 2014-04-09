@@ -27,7 +27,7 @@ class ExtensionWrapper:
                          extra_compile_args=["-O0"] if self.debug else [],
                          include_dirs=[r'src/', "."],
 
-                         library_dirs=[os.path.abspath('python/pydecode/libhypergraph.so')],
+                         library_dirs=[os.path.abspath('python/pydecode/')],
                          libraries=extra_objects)
 
     def cmdclass(self):
