@@ -5,7 +5,6 @@ from libcpp.vector cimport vector
 from libcpp cimport bool
 from wrap cimport *
 
-
 cdef _hypergraph_registry_counts = {}
 
 cdef class Labeling:
@@ -63,6 +62,7 @@ cdef class _LazyNodes:
 
 cdef class Hypergraph:
     r"""
+    The search space of a dynamic program.
 
     Hypergraph consisting of a set of nodes :math:`{\cal V}`,
     hyperedges :math:`{\cal E}`, and a root node.
@@ -266,6 +266,8 @@ cdef class GraphBuilder:
 
 cdef class Node:
     r"""
+    A node or vertex associated with the hypergraph.
+
     Node :math:`v \in {\cal V}` associated with a :py:class:`Hypergraph`.
 
     Attributes
@@ -328,6 +330,8 @@ cdef class Node:
 
 cdef class Edge:
     r"""
+    A hyperedge associated with hypergraph.
+
     Hyperedge :math:`e \in {\cal E}` associated with a :py:class:`Hypergraph`.
 
     Attributes
@@ -393,6 +397,8 @@ cdef convert_nodes(vector[const CHypernode *] nodes,
 
 cdef class Path:
     r"""
+    A valid hyperpath through the hypergraph.
+
     Valid hyperpath :math:`y \in {\cal X}` in the hypergraph.
 
     To check if an edge is in a path ::
@@ -879,7 +885,7 @@ cdef class _ViterbiMarginals:
                 "Only nodes and edges have Viterbi marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
     def threshold(self, double semi):
         """
@@ -887,7 +893,7 @@ cdef class _ViterbiMarginals:
         """
         return BoolPotentials(self.graph).init(self.thisptr.threshold(semi),
                                                None)
-
+    
 
 
 class Viterbi:
@@ -914,7 +920,7 @@ class Viterbi:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -936,7 +942,7 @@ class Viterbi:
             del used_chart
         return bp
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -1198,7 +1204,7 @@ cdef class _LogViterbiMarginals:
                 "Only nodes and edges have LogViterbi marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
     def threshold(self, double semi):
         """
@@ -1206,7 +1212,7 @@ cdef class _LogViterbiMarginals:
         """
         return BoolPotentials(self.graph).init(self.thisptr.threshold(semi),
                                                None)
-
+    
 
 
 class LogViterbi:
@@ -1233,7 +1239,7 @@ class LogViterbi:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1255,7 +1261,7 @@ class LogViterbi:
             del used_chart
         return bp
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -1517,7 +1523,7 @@ cdef class _InsideMarginals:
                 "Only nodes and edges have Inside marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
     def threshold(self, double semi):
         """
@@ -1525,7 +1531,7 @@ cdef class _InsideMarginals:
         """
         return BoolPotentials(self.graph).init(self.thisptr.threshold(semi),
                                                None)
-
+    
 
 
 class Inside:
@@ -1552,7 +1558,7 @@ class Inside:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1574,7 +1580,7 @@ class Inside:
             del used_chart
         return bp
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -1836,7 +1842,7 @@ cdef class _BoolMarginals:
                 "Only nodes and edges have Bool marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
     def threshold(self, bool semi):
         """
@@ -1844,7 +1850,7 @@ cdef class _BoolMarginals:
         """
         return BoolPotentials(self.graph).init(self.thisptr.threshold(semi),
                                                None)
-
+    
 
 
 class Bool:
@@ -1871,7 +1877,7 @@ class Bool:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1893,7 +1899,7 @@ class Bool:
             del used_chart
         return bp
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -2155,7 +2161,7 @@ cdef class _SparseVectorMarginals:
                 "Only nodes and edges have SparseVector marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
 
 class SparseVector:
@@ -2182,7 +2188,7 @@ class SparseVector:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -2444,7 +2450,7 @@ cdef class _MinSparseVectorMarginals:
                 "Only nodes and edges have MinSparseVector marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
 
 class MinSparseVector:
@@ -2471,7 +2477,7 @@ class MinSparseVector:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -2733,7 +2739,7 @@ cdef class _MaxSparseVectorMarginals:
                 "Only nodes and edges have MaxSparseVector marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
 
 class MaxSparseVector:
@@ -2760,7 +2766,7 @@ class MaxSparseVector:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -3022,7 +3028,7 @@ cdef class _CountingMarginals:
                 "Only nodes and edges have Counting marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
     def threshold(self, int semi):
         """
@@ -3030,7 +3036,7 @@ cdef class _CountingMarginals:
         """
         return BoolPotentials(self.graph).init(self.thisptr.threshold(semi),
                                                None)
-
+    
 
 
 class Counting:
@@ -3057,7 +3063,7 @@ class Counting:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -3079,7 +3085,7 @@ class Counting:
             del used_chart
         return bp
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -3198,11 +3204,11 @@ def outside(Hypergraph graph, potentials, inside_chart):
     return potentials.kind.outside(graph, potentials, inside_chart)
 
 
-def best_path(Hypergraph graph, potentials, chart=None):
+def best_path(Hypergraph graph, Potentials potentials, chart=None):
     r"""
-    best_path(Hypergraph graph, Potentials potentials):
+    Find the best path through a hypergraph for a given set of potentials. 
 
-    Find the highest-scoring path
+    Formally gives
     :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`
     in the hypergraph.
 
@@ -3215,6 +3221,9 @@ def best_path(Hypergraph graph, potentials, chart=None):
     potentials : :py:class:`Potentials`
       The potentials :math:`\theta` of the hypergraph.
 
+    chart : :py:class:`Chart`
+      A chart to be reused. For memory efficiency.
+
     Returns
     -------
     path : :py:class:`Path`
@@ -3224,11 +3233,9 @@ def best_path(Hypergraph graph, potentials, chart=None):
     return bp.path
 
 
-def prune_hypergraph(Hypergraph graph, potentials, thres):
+def prune_hypergraph(Hypergraph graph, Potentials potentials, thres):
     r"""
-    prune_hypergraph(Hypergraph graph, potentials, thres)
-
-    Prune hyperedges with low max-marginal score from the hypergraph.
+    Prune hyperedges with low marginal score from the hypergraph.
 
     Parameters
     -----------
@@ -3239,6 +3246,9 @@ def prune_hypergraph(Hypergraph graph, potentials, thres):
     potentials : :py:class:`Potentials`
        The potentials of the hypergraph.
 
+    thres : Potential
+       The potential threshold to use. 
+
     Returns
     --------
     (hypergraph, potentials) : :py:class:`Hypergraph`, :py:class:`Potentials`
@@ -3247,10 +3257,8 @@ def prune_hypergraph(Hypergraph graph, potentials, thres):
     return potentials.kind.prune_hypergraph(graph, potentials, thres)
 
 
-def compute_marginals(Hypergraph graph, potentials):
+def compute_marginals(Hypergraph graph, Potentials potentials):
     r"""
-    compute_marginals(Hypergraph graph, Potentials potentials):
-
     Compute marginals for hypergraph and potentials.
 
     Parameters
@@ -3271,6 +3279,8 @@ def compute_marginals(Hypergraph graph, potentials):
 
 class Chart(LogViterbiChart):
     r"""
+    A dynamic programming chart associated with a hypergraph.
+
     Chart :math:`S^{|{\cal V}|}` associated with a hypergraph (V, E)
     and semiring S.
 
@@ -3282,6 +3292,8 @@ class Chart(LogViterbiChart):
 
 class Marginals(_LogViterbiMarginals):
     r"""
+    Marginal values with a hypergraph and potentials.
+
     Marginal values :math:`S^{|{\cal E} \times {\cal V}|}` associated
     with a hypergraph ({\cal V}, {\cal E}) and semiring S.
 
@@ -3310,6 +3322,7 @@ def make_pruning_projections(Hypergraph graph, BoolPotentials filt):
 def project(Hypergraph graph, BoolPotentials filter):
     """
     Prune a graph based on a set of boolean potentials.
+
     Edges with value 0 are pruned, edges with value
     1 are pruned if they are no longer in a path.
 
