@@ -3,7 +3,6 @@ from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
-from wrap cimport *
 
 cdef _hypergraph_registry_counts = {}
 
@@ -634,7 +633,6 @@ cimport libcpp.map as c_map
 from libcpp.pair cimport pair
 from libcpp cimport bool
 
-from wrap cimport *
 #from libhypergraph cimport *
 #import libhypergraph as py_hypergraph
 

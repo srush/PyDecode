@@ -113,7 +113,6 @@ from libcpp.pair cimport pair
 from libcpp cimport bool
 
 
-from wrap cimport *
 #from libhypergraph cimport *
 #import libhypergraph as py_hypergraph
 
