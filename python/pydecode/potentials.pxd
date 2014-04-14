@@ -63,12 +63,12 @@ cdef class GraphBuilder:
 
     cdef GraphBuilder init(self, Hypergraph hyper, CHypergraph *ptr)
 
-cdef class Node:
+cdef class Vertex:
     cdef const CHypernode *nodeptr
     cdef CHypergraph *graphptr
     cdef Hypergraph graph
 
-    cdef Node init(self, const CHypernode *nodeptr,
+    cdef Vertex init(self, const CHypernode *nodeptr,
                    Hypergraph graph)
 
 cdef class Edge:
@@ -127,6 +127,13 @@ cdef class BackPointers:
      cdef Hypergraph graph
      cdef BackPointers init(self, const CBackPointers *ptr,
                             Hypergraph graph)
+
+cdef class Potentials:
+     cdef Hypergraph hypergraph
+     cdef kind
+
+cdef class Chart:
+     pass
 
 ############# This is the templated semiring part. ##############
 
@@ -221,16 +228,14 @@ cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiPotential":
     double Viterbi_normalize "ViterbiPotential::normalize" (double&)
 
 
-cdef class ViterbiPotentials:
-    cdef Hypergraph hypergraph
+cdef class ViterbiPotentials(Potentials):
     cdef CHypergraphViterbiPotentials *thisptr
     cdef HypergraphMap projection
-    cdef kind
 
     cdef init(self, CHypergraphViterbiPotentials *ptr,
               HypergraphMap projection)
 
-cdef class ViterbiChart:
+cdef class ViterbiChart(Chart):
     cdef CViterbiChart *chart
     cdef kind
 
@@ -329,16 +334,14 @@ cdef extern from "Hypergraph/Semirings.h" namespace "LogViterbiPotential":
     double LogViterbi_normalize "LogViterbiPotential::normalize" (double&)
 
 
-cdef class LogViterbiPotentials:
-    cdef Hypergraph hypergraph
+cdef class LogViterbiPotentials(Potentials):
     cdef CHypergraphLogViterbiPotentials *thisptr
     cdef HypergraphMap projection
-    cdef kind
 
     cdef init(self, CHypergraphLogViterbiPotentials *ptr,
               HypergraphMap projection)
 
-cdef class LogViterbiChart:
+cdef class LogViterbiChart(Chart):
     cdef CLogViterbiChart *chart
     cdef kind
 
@@ -437,16 +440,14 @@ cdef extern from "Hypergraph/Semirings.h" namespace "InsidePotential":
     double Inside_normalize "InsidePotential::normalize" (double&)
 
 
-cdef class InsidePotentials:
-    cdef Hypergraph hypergraph
+cdef class InsidePotentials(Potentials):
     cdef CHypergraphInsidePotentials *thisptr
     cdef HypergraphMap projection
-    cdef kind
 
     cdef init(self, CHypergraphInsidePotentials *ptr,
               HypergraphMap projection)
 
-cdef class InsideChart:
+cdef class InsideChart(Chart):
     cdef CInsideChart *chart
     cdef kind
 
@@ -545,16 +546,14 @@ cdef extern from "Hypergraph/Semirings.h" namespace "BoolPotential":
     bool Bool_normalize "BoolPotential::normalize" (bool&)
 
 
-cdef class BoolPotentials:
-    cdef Hypergraph hypergraph
+cdef class BoolPotentials(Potentials):
     cdef CHypergraphBoolPotentials *thisptr
     cdef HypergraphMap projection
-    cdef kind
 
     cdef init(self, CHypergraphBoolPotentials *ptr,
               HypergraphMap projection)
 
-cdef class BoolChart:
+cdef class BoolChart(Chart):
     cdef CBoolChart *chart
     cdef kind
 
@@ -653,16 +652,14 @@ cdef extern from "Hypergraph/Semirings.h" namespace "SparseVectorPotential":
     vector[pair[int, int]] SparseVector_normalize "SparseVectorPotential::normalize" (vector[pair[int, int]]&)
 
 
-cdef class SparseVectorPotentials:
-    cdef Hypergraph hypergraph
+cdef class SparseVectorPotentials(Potentials):
     cdef CHypergraphSparseVectorPotentials *thisptr
     cdef HypergraphMap projection
-    cdef kind
 
     cdef init(self, CHypergraphSparseVectorPotentials *ptr,
               HypergraphMap projection)
 
-cdef class SparseVectorChart:
+cdef class SparseVectorChart(Chart):
     cdef CSparseVectorChart *chart
     cdef kind
 
@@ -761,16 +758,14 @@ cdef extern from "Hypergraph/Semirings.h" namespace "MinSparseVectorPotential":
     vector[pair[int, int]] MinSparseVector_normalize "MinSparseVectorPotential::normalize" (vector[pair[int, int]]&)
 
 
-cdef class MinSparseVectorPotentials:
-    cdef Hypergraph hypergraph
+cdef class MinSparseVectorPotentials(Potentials):
     cdef CHypergraphMinSparseVectorPotentials *thisptr
     cdef HypergraphMap projection
-    cdef kind
 
     cdef init(self, CHypergraphMinSparseVectorPotentials *ptr,
               HypergraphMap projection)
 
-cdef class MinSparseVectorChart:
+cdef class MinSparseVectorChart(Chart):
     cdef CMinSparseVectorChart *chart
     cdef kind
 
@@ -869,16 +864,14 @@ cdef extern from "Hypergraph/Semirings.h" namespace "MaxSparseVectorPotential":
     vector[pair[int, int]] MaxSparseVector_normalize "MaxSparseVectorPotential::normalize" (vector[pair[int, int]]&)
 
 
-cdef class MaxSparseVectorPotentials:
-    cdef Hypergraph hypergraph
+cdef class MaxSparseVectorPotentials(Potentials):
     cdef CHypergraphMaxSparseVectorPotentials *thisptr
     cdef HypergraphMap projection
-    cdef kind
 
     cdef init(self, CHypergraphMaxSparseVectorPotentials *ptr,
               HypergraphMap projection)
 
-cdef class MaxSparseVectorChart:
+cdef class MaxSparseVectorChart(Chart):
     cdef CMaxSparseVectorChart *chart
     cdef kind
 
@@ -977,16 +970,14 @@ cdef extern from "Hypergraph/Semirings.h" namespace "CountingPotential":
     int Counting_normalize "CountingPotential::normalize" (int&)
 
 
-cdef class CountingPotentials:
-    cdef Hypergraph hypergraph
+cdef class CountingPotentials(Potentials):
     cdef CHypergraphCountingPotentials *thisptr
     cdef HypergraphMap projection
-    cdef kind
 
     cdef init(self, CHypergraphCountingPotentials *ptr,
               HypergraphMap projection)
 
-cdef class CountingChart:
+cdef class CountingChart(Chart):
     cdef CCountingChart *chart
     cdef kind
 

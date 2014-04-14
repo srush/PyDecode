@@ -7,30 +7,6 @@ Python API
 
 .. _dp:
 
-Dynamic Programming
-===================
-
-
-PyDecode provides an imperative interface for constructing
-dynamic programs. The goal is to make construction as simple
-as pseudocode.
-
-See these example algorithms.
-
-.. automodule:: pydecode.chart
-   :no-members:
-   :no-inherited-members:
-
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
-
-   ChartBuilder
-
-
-Behind the scenes the toolkit will convert the code to a
-graph structured representation known as a hypergraph.
-
 .. _hypergraph:
 
 Hypergraph
@@ -38,9 +14,8 @@ Hypergraph
 
 The main data structure used PyDecode is a weighted directed hypergraph, which
 is a graphical representation of a dynamic program.
-The algorithms and tools in the rest package make heavy use of this data structure.
 
-.. automodule:: pydecode.hypergraph
+.. automodule:: pydecode.potentials
    :no-members:
    :no-inherited-members:
 
@@ -49,6 +24,8 @@ The algorithms and tools in the rest package make heavy use of this data structu
    :template: class.rst
 
    Hypergraph
+   Vertex
+   Edge
    Path
 
 .. _algorithms:
@@ -71,8 +48,6 @@ The toolkit contains a collection of algorithms for working with weighted hyperg
    inside
    outside
    compute_marginals
-   Marginals
-   Chart
 
 Potentials
 ============
@@ -85,8 +60,43 @@ Potentials
    :toctree: generated/
    :template: class.rst
 
+   Potentials
    LogViterbiPotentials
    InsidePotentials
-   ViterbiPotentials
    BoolPotentials
-   SparseVectorPotentials
+
+Data Structures
+===============
+
+.. automodule:: pydecode.potentials
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+   :toctree: generated/
+
+   Marginals
+   Chart
+
+
+Dynamic Programming
+===================
+
+
+PyDecode provides an imperative interface for constructing
+dynamic programs. The goal is to make construction as simple
+as pseudocode.
+
+.. automodule:: pydecode.chart
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   ChartBuilder
+
+
+Behind the scenes the toolkit will convert the code to a
+graph structured representation known as a hypergraph.

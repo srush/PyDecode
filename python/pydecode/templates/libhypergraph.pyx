@@ -19,7 +19,7 @@ cdef class Labeling:
                     "There is no edge labeling.")
             return self.edge_labels[obj.id]
 
-        if isinstance(obj, Node):
+        if isinstance(obj, Vertex):
             if self.node_labels is None:
                 raise HypergraphAccessException(
                     "There is no node labeling.")
@@ -42,7 +42,7 @@ cdef class _LazyEdges:
     def __len__(self):
         return self._edges.size()
 
-cdef class _LazyNodes:
+cdef class _LazyVertices:
     def __init__(self, graph):
         self._graph = graph
 
@@ -51,10 +51,10 @@ cdef class _LazyNodes:
         return self
 
     def __getitem__(self, item):
-        return Node().init(self._nodes[item], self._graph)
+        return Vertex().init(self._nodes[item], self._graph)
 
     def __iter__(self):
-        return (Node().init(node, self._graph) for node in self._nodes)
+        return (Vertex().init(node, self._graph) for node in self._nodes)
 
     def __len__(self):
         return self._nodes.size()
@@ -69,15 +69,14 @@ cdef class Hypergraph:
     Attributes
     -----------
 
-    root : :py:class:`Node`
+    edges : iterator of :py:class:`Edge`s
+      The edge set :math:`{\cal E}`. In topological order.
+
+    root : :py:class:`Vertex`
       A specialized node in :math:`{\cal V}`.
 
-    node : list of :py:class:`Node`s
-      The node set :math:`{\cal V}`. In topological-order.
-
-    edges : list of :py:class:`Edge`s
-      The edge set :math:`{\cal E}`. In topological-order.
-
+    vertices : iterator of :py:class:`Vertex`s
+      The node set :math:`{\cal V}`. In topological order.
     """
     def __cinit__(Hypergraph self):
         """
@@ -125,13 +124,17 @@ cdef class Hypergraph:
         _hypergraph_registry_counts[self.thisptr.id()] = 1
         return GraphBuilder().init(self, self.thisptr)
 
+    property vertices:
+        def __get__(self):
+            return _LazyVertices(self).init(self.thisptr.nodes())
+
     property nodes:
         def __get__(self):
-            return _LazyNodes(self).init(self.thisptr.nodes())
+            return _LazyVertices(self).init(self.thisptr.nodes())
 
     property root:
         def __get__(self):
-            return Node().init(self.thisptr.root(), self)
+            return Vertex().init(self.thisptr.root(), self)
 
     property edges:
         def __get__(self):
@@ -219,7 +222,7 @@ cdef class GraphBuilder:
 
         edges :
            An iterator where each of the items is of the form
-           ([v_2, v_3..], label)  where v_2 ... are :py:class:`Node`s and
+           ([v_2, v_3..], label)  where v_2 ... are :py:class:`Vertex`s and
            label is an edge label of any type.
 
         label : any
@@ -228,7 +231,7 @@ cdef class GraphBuilder:
 
         Returns
         --------------
-        :py:class:`Node`
+        :py:class:`Vertex`
         """
 
         if not self.started:
@@ -255,24 +258,25 @@ cdef class GraphBuilder:
 
                 tail_node_ptrs.clear()
                 for tail_node in tail_nodes:
-                    tail_node_ptrs.push_back((<Node> tail_node).nodeptr)
+                    tail_node_ptrs.push_back((<Vertex> tail_node).nodeptr)
                 edgeptr = self.thisptr.add_edge(tail_node_ptrs)
                 self.edge_labels.append((Edge().init(edgeptr, self.graph), t))
             self.thisptr.end_node()
-        cdef Node node = Node().init(nodeptr, self.graph)
+        cdef Vertex node = Vertex().init(nodeptr, self.graph)
         self.node_labels.append((node, label))
         return node
 
-cdef class Node:
+cdef class Vertex:
     r"""
-    A node or vertex associated with the hypergraph.
+    A vertex in a hypergraph.
 
-    Node :math:`v \in {\cal V}` associated with a :py:class:`Hypergraph`.
+    Formally :math:`v \in {\cal V}` associated with a :py:class:`Hypergraph`.
 
     Attributes
     -------------
 
-    edge : list of edges
+    edges : iterator of :py:class:`Edge`s
+
        The edges with :math:`v` as head node.
 
        :math:`\{e \in {\cal E} : h(e) = v \}`
@@ -285,7 +289,7 @@ cdef class Node:
 
     """
 
-    cdef Node init(self, const CHypernode *nodeptr,
+    cdef Vertex init(self, const CHypernode *nodeptr,
                    Hypergraph graph):
         self.nodeptr = nodeptr
         self.graph = graph
@@ -327,6 +331,9 @@ cdef class Node:
     def _removed(self):
         return (self.nodeptr.id() == -1)
 
+cdef class Node(Vertex):
+    pass
+
 cdef class Edge:
     r"""
     A hyperedge associated with hypergraph.
@@ -336,7 +343,7 @@ cdef class Edge:
     Attributes
     -----------
 
-    head : :py:class:`Node`
+    head : :py:class:`Vertex`
         The head node :math:`v = h(e)`.
 
     tail : list of nodes
@@ -371,7 +378,7 @@ cdef class Edge:
 
     property head:
         def __get__(self):
-            return Node().init(self.edgeptr.head_node(), self.graph)
+            return Vertex().init(self.edgeptr.head_node(), self.graph)
 
     property label:
         def __get__(self):
@@ -391,7 +398,7 @@ cdef convert_edges(vector[const CHyperedge *] edges,
 
 cdef convert_nodes(vector[const CHypernode *] nodes,
                    Hypergraph graph):
-    return [Node().init(node, graph) for node in nodes]
+    return [Vertex().init(node, graph) for node in nodes]
 
 
 cdef class Path:
@@ -460,7 +467,7 @@ cdef class Path:
 
     property nodes:
         def __get__(self):
-            return _LazyNodes(self.graph).init(self.thisptr.nodes())
+            return _LazyVertices(self.graph).init(self.thisptr.nodes())
 
 
 class HypergraphAccessException(Exception):
@@ -551,8 +558,8 @@ cdef class HypergraphMap:
                 return self.range_graph.edges[edge.id()]
             else:
                 return None
-        if isinstance(obj, Node):
-            node = self.thisptr.map((<Node>obj).nodeptr)
+        if isinstance(obj, Vertex):
+            node = self.thisptr.map((<Vertex>obj).nodeptr)
             if node != NULL and node.id() >= 0:
                 return self.range_graph.nodes[node.id()]
             else:

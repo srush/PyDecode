@@ -25,6 +25,13 @@ cdef class BackPointers:
      cdef BackPointers init(self, const CBackPointers *ptr,
                             Hypergraph graph)
 
+cdef class Potentials:
+     cdef Hypergraph hypergraph
+     cdef kind
+
+cdef class Chart:
+     pass
+
 ############# This is the templated semiring part. ##############
 
 {% for S in semirings %}
@@ -118,16 +125,14 @@ cdef extern from "Hypergraph/Semirings.h" namespace "{{S.ctype}}":
     {{S.cvalue}} {{S.type}}_normalize "{{S.ctype}}::normalize" ({{S.cvalue}}&)
 
 
-cdef class {{S.type}}Potentials:
-    cdef Hypergraph hypergraph
+cdef class {{S.type}}Potentials(Potentials):
     cdef CHypergraph{{S.type}}Potentials *thisptr
     cdef HypergraphMap projection
-    cdef kind
 
     cdef init(self, CHypergraph{{S.type}}Potentials *ptr,
               HypergraphMap projection)
 
-cdef class {{S.type}}Chart:
+cdef class {{S.type}}Chart(Chart):
     cdef C{{S.type}}Chart *chart
     cdef kind
 

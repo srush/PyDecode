@@ -42,7 +42,7 @@ cdef class _LazyEdges:
     cdef vector[const CHyperedge *] _edges
     cdef init(self, vector[const CHyperedge *])
 
-cdef class _LazyNodes:
+cdef class _LazyVertices:
     cdef Hypergraph _graph
     cdef vector[const CHypernode *] _nodes
     cdef init(self, vector[const CHypernode *])
@@ -63,12 +63,12 @@ cdef class GraphBuilder:
 
     cdef GraphBuilder init(self, Hypergraph hyper, CHypergraph *ptr)
 
-cdef class Node:
+cdef class Vertex:
     cdef const CHypernode *nodeptr
     cdef CHypergraph *graphptr
     cdef Hypergraph graph
 
-    cdef Node init(self, const CHypernode *nodeptr,
+    cdef Vertex init(self, const CHypernode *nodeptr,
                    Hypergraph graph)
 
 cdef class Edge:
