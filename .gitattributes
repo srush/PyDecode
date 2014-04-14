@@ -1,0 +1,4 @@
+potentials.so binary
+potentials.cpp binary
+potentials.pyx binary
+potentials.pxd binary
