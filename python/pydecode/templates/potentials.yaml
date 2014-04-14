@@ -3,26 +3,28 @@ semirings:
     cvalue: double
     viterbi: Yes
     description:
-      Weight potentials :math:`R^{{\cal E}}` with :math:`(+, *) = (\max, *)`.
+      Real-valued weights with operations :math:`(+, *) = (\max, *)`.
   - type: LogViterbi
     cvalue: double
     viterbi: True
     description:
-      Weight potentials :math:`R^{{\cal E}}` with :math:`(+, *) = (\max, +)`.
+      Real-valued log weights with operations :math:`(+, *) = (\max, *)`.
   - type: Inside
     cvalue: double
     viterbi: Yes
     description:
-      Weight potentials :math:`R^{{\cal E}}` with :math:`(+, *) = (+, *)`.
+      Real-valued probability weights with operations  :math:`(+, *) = (+, *)`.
   - type: Bool
     cvalue: bool
     viterbi: Yes
     description:
-      Weight potentials :math:`\{0,1\}^{{\cal E}}` with :math:`(+, *) = (\land, \lor)`.
+      Boolean-valued weights with operations :math:`(+, *) = (\land, \lor)`.
   - type: SparseVector
     ctype: SparseVectorPotential
     cvalue: vector[pair[int, int]]
     viterbi: No
+    description:
+      Sparse-vector valued weights.
   - type: MinSparseVector
     cvalue: vector[pair[int, int]]
     viterbi : False
@@ -32,4 +34,5 @@ semirings:
   - type: Counting
     cvalue: int
     viterbi: False,
-    description: test
+    description:
+      Natural-valued weights with operations :math:`(+, *) = (+, *)`.

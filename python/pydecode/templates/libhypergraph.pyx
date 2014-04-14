@@ -62,6 +62,7 @@ cdef class _LazyNodes:
 
 cdef class Hypergraph:
     r"""
+    The search space of a dynamic program.
 
     Hypergraph consisting of a set of nodes :math:`{\cal V}`,
     hyperedges :math:`{\cal E}`, and a root node.
@@ -265,6 +266,8 @@ cdef class GraphBuilder:
 
 cdef class Node:
     r"""
+    A node or vertex associated with the hypergraph.
+
     Node :math:`v \in {\cal V}` associated with a :py:class:`Hypergraph`.
 
     Attributes
@@ -327,6 +330,8 @@ cdef class Node:
 
 cdef class Edge:
     r"""
+    A hyperedge associated with hypergraph.
+
     Hyperedge :math:`e \in {\cal E}` associated with a :py:class:`Hypergraph`.
 
     Attributes
@@ -392,6 +397,8 @@ cdef convert_nodes(vector[const CHypernode *] nodes,
 
 cdef class Path:
     r"""
+    A valid hyperpath through the hypergraph.
+
     Valid hyperpath :math:`y \in {\cal X}` in the hypergraph.
 
     To check if an edge is in a path ::
