@@ -2,33 +2,20 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
   <compounddef id="classTropicalPotential" kind="class" prot="public">
     <compoundname>TropicalPotential</compoundname>
-    <basecompoundref refid="classBaseSemiringPotential" prot="public" virt="non-virtual">BaseSemiringPotential&lt; double, TropicalPotential &gt;</basecompoundref>
-    <includes refid="Semirings_8h" local="no">Semirings.h</includes>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classTropicalPotential_1af57cfaa9ec8f2f4fec3f1f288e30996b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>TropicalPotential::TropicalPotential</definition>
-        <argsstring>(double value)</argsstring>
-        <name>TropicalPotential</name>
+    <basecompoundref refid="classRealPotential" prot="public" virt="non-virtual">RealPotential</basecompoundref>
+    <basecompoundref refid="classRealPotential" prot="public" virt="non-virtual">RealPotential</basecompoundref>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classTropicalPotential_1a385fd40973531781ec6fde28a0e9b5d0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType TropicalPotential::safe_add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
         <param>
-          <type>double</type>
-          <declname>value</declname>
+          <type>ValType</type>
+          <declname>lhs</declname>
         </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="238" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="238" bodyend="238"/>
-      </memberdef>
-      <memberdef kind="function" id="classTropicalPotential_1ab53a97e7daf0a06978c8b2a74f05aa25" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classTropicalPotential" kindref="compound">TropicalPotential</ref> &amp;</type>
-        <definition>TropicalPotential&amp; TropicalPotential::operator+=</definition>
-        <argsstring>(const TropicalPotential &amp;rhs)</argsstring>
-        <name>operator+=</name>
         <param>
-          <type>const <ref refid="classTropicalPotential" kindref="compound">TropicalPotential</ref> &amp;</type>
+          <type>const ValType &amp;</type>
           <declname>rhs</declname>
         </param>
         <briefdescription>
@@ -37,15 +24,19 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="240" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="240" bodyend="243"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="137" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="137" bodyend="140"/>
       </memberdef>
-      <memberdef kind="function" id="classTropicalPotential_1afc72359ab481f609bd6131af88a3d078" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classTropicalPotential" kindref="compound">TropicalPotential</ref> &amp;</type>
-        <definition>TropicalPotential&amp; TropicalPotential::operator*=</definition>
-        <argsstring>(const TropicalPotential &amp;rhs)</argsstring>
-        <name>operator*=</name>
+      <memberdef kind="function" id="classTropicalPotential_1a0fe16b91daa17eaef72fa819af97f176" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType TropicalPotential::safe_times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_times</name>
         <param>
-          <type>const <ref refid="classTropicalPotential" kindref="compound">TropicalPotential</ref> &amp;</type>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
           <declname>rhs</declname>
         </param>
         <briefdescription>
@@ -54,15 +45,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="244" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="244" bodyend="247"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="141" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="141" bodyend="144"/>
       </memberdef>
-      <memberdef kind="function" id="classTropicalPotential_1a4cf23c16f130d402fcbd67b49058035b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>double</type>
-        <definition>double TropicalPotential::normalize</definition>
-        <argsstring>(double val) const </argsstring>
+      <memberdef kind="function" id="classTropicalPotential_1ab798c93535d7bd078d7d52672a18f3d5" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType &amp;</type>
+        <definition>static ValType&amp; TropicalPotential::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
         <name>normalize</name>
         <param>
-          <type>double</type>
+          <type>ValType &amp;</type>
           <declname>val</declname>
         </param>
         <briefdescription>
@@ -71,83 +62,148 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="252" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="252" bodyend="255"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="146" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="146" bodyend="148"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-static-func">
-      <memberdef kind="function" id="classTropicalPotential_1aa9e3a6f8cb1b5c06f764056a667e24a6" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classTropicalPotential" kindref="compound">TropicalPotential</ref></type>
-        <definition>static const TropicalPotential TropicalPotential::one</definition>
+      <memberdef kind="function" id="classTropicalPotential_1a70dc059d5a99f5ea0cafaea89f63b3d3" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType TropicalPotential::randValue</definition>
         <argsstring>()</argsstring>
-        <name>one</name>
+        <name>randValue</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="249" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="249" bodyend="249"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="150" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="150" bodyend="150"/>
       </memberdef>
-      <memberdef kind="function" id="classTropicalPotential_1a95ea340ddb17b9ccf05ead48dfa2f4a0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classTropicalPotential" kindref="compound">TropicalPotential</ref></type>
-        <definition>static const TropicalPotential TropicalPotential::zero</definition>
-        <argsstring>()</argsstring>
-        <name>zero</name>
+      <memberdef kind="function" id="classTropicalPotential_1a385fd40973531781ec6fde28a0e9b5d0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType TropicalPotential::safe_add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="250" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="250" bodyend="250"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="137" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="137" bodyend="140"/>
+      </memberdef>
+      <memberdef kind="function" id="classTropicalPotential_1a0fe16b91daa17eaef72fa819af97f176" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType TropicalPotential::safe_times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_times</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="141" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="141" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="classTropicalPotential_1ab798c93535d7bd078d7d52672a18f3d5" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType &amp;</type>
+        <definition>static ValType&amp; TropicalPotential::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type>ValType &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="146" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="146" bodyend="148"/>
+      </memberdef>
+      <memberdef kind="function" id="classTropicalPotential_1a70dc059d5a99f5ea0cafaea89f63b3d3" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType TropicalPotential::randValue</definition>
+        <argsstring>()</argsstring>
+        <name>randValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="150" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="150" bodyend="150"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Implements the Inside type of semiring as described in Huang 2006 +: min *: + 0: INF 1: 0 </para>    </detaileddescription>
+    </detaileddescription>
     <inheritancegraph>
-      <node id="91">
+      <node id="153">
         <label>TropicalPotential</label>
         <link refid="classTropicalPotential"/>
-        <childnode refid="92" relation="public-inheritance">
+        <childnode refid="154" relation="public-inheritance">
+        </childnode>
+        <childnode refid="154" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="92">
-        <label>BaseSemiringPotential&lt; double, TropicalPotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
+      <node id="154">
+        <label>RealPotential</label>
+        <link refid="classRealPotential"/>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="93">
+      <node id="155">
         <label>TropicalPotential</label>
         <link refid="classTropicalPotential"/>
-        <childnode refid="94" relation="public-inheritance">
+        <childnode refid="156" relation="public-inheritance">
+        </childnode>
+        <childnode refid="156" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="94">
-        <label>BaseSemiringPotential&lt; double, TropicalPotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
+      <node id="156">
+        <label>RealPotential</label>
+        <link refid="classRealPotential"/>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="236" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="236" bodyend="256"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="135" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="135" bodyend="151"/>
     <listofallmembers>
-      <member refid="classBaseSemiringPotential_1a3ccf8b43dd32e794f7a546caa2e8ffd9" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>add</name></member>
-      <member refid="classBaseSemiringPotential_1a54bb42020981d47a9ee5edbefdd0f4b3" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ae70438bcff496bff89daf4c4eac38ce4" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ac4f432c81a12368ae2b1d5230cc762c2" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classTropicalPotential_1a4cf23c16f130d402fcbd67b49058035b" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>normalize</name></member>
-      <member refid="classBaseSemiringPotential_1a87949cd4f8b8aceedaaac1a446c82190" prot="public" virt="non-virtual" ambiguityscope="BaseSemiringPotential&lt; double, TropicalPotential &gt;::"><scope>TropicalPotential</scope><name>normalize</name></member>
-      <member refid="classTropicalPotential_1aa9e3a6f8cb1b5c06f764056a667e24a6" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>one</name></member>
-      <member refid="classBaseSemiringPotential_1a57bbc01de90082ca201dc151d821f0e9" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>operator double</name></member>
-      <member refid="classTropicalPotential_1afc72359ab481f609bd6131af88a3d078" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>operator*=</name></member>
-      <member refid="classTropicalPotential_1ab53a97e7daf0a06978c8b2a74f05aa25" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>operator+=</name></member>
-      <member refid="classBaseSemiringPotential_1af3f7108cca054ed98908a2d536cfcec8" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>operator=</name></member>
-      <member refid="classBaseSemiringPotential_1a688918a5566844351e4fb4ddc95e9784" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>operator=</name></member>
-      <member refid="classBaseSemiringPotential_1a90188fa749f13b11996f2e328dfb4045" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>times</name></member>
-      <member refid="classTropicalPotential_1af57cfaa9ec8f2f4fec3f1f288e30996b" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>TropicalPotential</name></member>
-      <member refid="classBaseSemiringPotential_1a8ab78c41be222b13d87894877608567e" prot="protected" virt="non-virtual"><scope>TropicalPotential</scope><name>value</name></member>
-      <member refid="classTropicalPotential_1a95ea340ddb17b9ccf05ead48dfa2f4a0" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>zero</name></member>
+      <member refid="classRealPotential_1aa89a50cf7cc773dd10e42691101bd517" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>add</name></member>
+      <member refid="classRealPotential_1aa89a50cf7cc773dd10e42691101bd517" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>add</name></member>
+      <member refid="classRealPotential_1a38ab475c6806af81af2c5a45575566cd" prot="protected" virt="non-virtual"><scope>TropicalPotential</scope><name>INFINITY_BUFFER</name></member>
+      <member refid="classRealPotential_1a894e927e7c6e4746e37654221e38f305" prot="protected" virt="non-virtual"><scope>TropicalPotential</scope><name>NEGATIVE_INFINITY</name></member>
+      <member refid="classTropicalPotential_1ab798c93535d7bd078d7d52672a18f3d5" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>normalize</name></member>
+      <member refid="classTropicalPotential_1ab798c93535d7bd078d7d52672a18f3d5" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>normalize</name></member>
+      <member refid="classRealPotential_1ab9993ff1faab79bc8a418bb0b1b20cbb" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>one</name></member>
+      <member refid="classRealPotential_1ab9993ff1faab79bc8a418bb0b1b20cbb" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>one</name></member>
+      <member refid="classTropicalPotential_1a70dc059d5a99f5ea0cafaea89f63b3d3" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>randValue</name></member>
+      <member refid="classTropicalPotential_1a70dc059d5a99f5ea0cafaea89f63b3d3" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>randValue</name></member>
+      <member refid="classTropicalPotential_1a385fd40973531781ec6fde28a0e9b5d0" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>safe_add</name></member>
+      <member refid="classTropicalPotential_1a385fd40973531781ec6fde28a0e9b5d0" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>safe_add</name></member>
+      <member refid="classTropicalPotential_1a0fe16b91daa17eaef72fa819af97f176" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>safe_times</name></member>
+      <member refid="classTropicalPotential_1a0fe16b91daa17eaef72fa819af97f176" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>safe_times</name></member>
+      <member refid="classRealPotential_1ace4d973dd04aa69cb2942b83f062110d" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>times</name></member>
+      <member refid="classRealPotential_1ace4d973dd04aa69cb2942b83f062110d" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>times</name></member>
+      <member refid="classRealPotential_1aac1b6c7efd2e8d5cc18f9ec1b1e5971f" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>ValType</name></member>
+      <member refid="classRealPotential_1aac1b6c7efd2e8d5cc18f9ec1b1e5971f" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>ValType</name></member>
+      <member refid="classRealPotential_1a3c5677f3f2c89e9277de09c971dcfec7" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>zero</name></member>
+      <member refid="classRealPotential_1a3c5677f3f2c89e9277de09c971dcfec7" prot="public" virt="non-virtual"><scope>TropicalPotential</scope><name>zero</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

@@ -3,7 +3,21 @@
   <compounddef id="structboost_1_1foreach__detail_1_1auto__any__base" kind="struct" prot="public">
     <compoundname>boost::foreach_detail::auto_any_base</compoundname>
     <derivedcompoundref refid="structboost_1_1foreach__detail_1_1auto__any" prot="public" virt="non-virtual">boost::foreach_detail::auto_any&lt; T &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structboost_1_1foreach__detail_1_1auto__any" prot="public" virt="non-virtual">boost::foreach_detail::auto_any&lt; T &gt;</derivedcompoundref>
       <sectiondef kind="public-func">
+      <memberdef kind="function" id="structboost_1_1foreach__detail_1_1auto__any__base_1a59b9aec27f7aad61c3bedea4b5a479b4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>boost::foreach_detail::auto_any_base::operator bool</definition>
+        <argsstring>() const </argsstring>
+        <name>operator bool</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/foreach.h" line="23" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/foreach.h" bodystart="23" bodyend="23"/>
+      </memberdef>
       <memberdef kind="function" id="structboost_1_1foreach__detail_1_1auto__any__base_1a59b9aec27f7aad61c3bedea4b5a479b4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>boost::foreach_detail::auto_any_base::operator bool</definition>
@@ -32,10 +46,13 @@
         <link refid="structboost_1_1foreach__detail_1_1auto__any"/>
         <childnode refid="4" relation="public-inheritance">
         </childnode>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
       </node>
     </inheritancegraph>
-    <location file="/home/srush/Projects/decoding/src/foreach.h" line="22" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="21" bodyend="24"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/foreach.h" line="22" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/foreach.h" bodystart="21" bodyend="24"/>
     <listofallmembers>
+      <member refid="structboost_1_1foreach__detail_1_1auto__any__base_1a59b9aec27f7aad61c3bedea4b5a479b4" prot="public" virt="non-virtual"><scope>boost::foreach_detail::auto_any_base</scope><name>operator bool</name></member>
       <member refid="structboost_1_1foreach__detail_1_1auto__any__base_1a59b9aec27f7aad61c3bedea4b5a479b4" prot="public" virt="non-virtual"><scope>boost::foreach_detail::auto_any_base</scope><name>operator bool</name></member>
     </listofallmembers>
   </compounddef>

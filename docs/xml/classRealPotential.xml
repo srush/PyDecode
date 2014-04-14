@@ -2,95 +2,154 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
   <compounddef id="classRealPotential" kind="class" prot="public">
     <compoundname>RealPotential</compoundname>
-    <basecompoundref refid="classBaseSemiringPotential" prot="public" virt="non-virtual">BaseSemiringPotential&lt; double, RealPotential &gt;</basecompoundref>
-    <includes refid="Semirings_8h" local="no">Semirings.h</includes>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classRealPotential_1ab0e0eb40a511f0ff6bf7265b215afb18" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>RealPotential::RealPotential</definition>
-        <argsstring>(double value)</argsstring>
-        <name>RealPotential</name>
-        <param>
-          <type>double</type>
-          <declname>value</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="212" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="212" bodyend="212"/>
-      </memberdef>
-      <memberdef kind="function" id="classRealPotential_1a19f69028b929da534645aa35ca254d06" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classRealPotential" kindref="compound">RealPotential</ref> &amp;</type>
-        <definition>RealPotential&amp; RealPotential::operator+=</definition>
-        <argsstring>(const RealPotential &amp;rhs)</argsstring>
-        <name>operator+=</name>
-        <param>
-          <type>const <ref refid="classRealPotential" kindref="compound">RealPotential</ref> &amp;</type>
-          <declname>rhs</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="214" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="214" bodyend="217"/>
-      </memberdef>
-      <memberdef kind="function" id="classRealPotential_1ab43bd3b064308c4644168a1d9b6ca8db" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classRealPotential" kindref="compound">RealPotential</ref> &amp;</type>
-        <definition>RealPotential&amp; RealPotential::operator*=</definition>
-        <argsstring>(const RealPotential &amp;rhs)</argsstring>
-        <name>operator*=</name>
-        <param>
-          <type>const <ref refid="classRealPotential" kindref="compound">RealPotential</ref> &amp;</type>
-          <declname>rhs</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="218" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="218" bodyend="221"/>
-      </memberdef>
-      <memberdef kind="function" id="classRealPotential_1aac75f5337add6f1a0a330ae23bda28a6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+    <derivedcompoundref refid="classTropicalPotential" prot="public" virt="non-virtual">TropicalPotential</derivedcompoundref>
+    <derivedcompoundref refid="classTropicalPotential" prot="public" virt="non-virtual">TropicalPotential</derivedcompoundref>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classRealPotential_1aac1b6c7efd2e8d5cc18f9ec1b1e5971f" prot="public" static="no">
         <type>double</type>
-        <definition>double RealPotential::normalize</definition>
-        <argsstring>(double val) const </argsstring>
-        <name>normalize</name>
-        <param>
-          <type>double</type>
-          <declname>val</declname>
-        </param>
+        <definition>typedef double RealPotential::ValType</definition>
+        <argsstring></argsstring>
+        <name>ValType</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="226" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="226" bodyend="226"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="95" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classRealPotential_1aac1b6c7efd2e8d5cc18f9ec1b1e5971f" prot="public" static="no">
+        <type>double</type>
+        <definition>typedef double RealPotential::ValType</definition>
+        <argsstring></argsstring>
+        <name>ValType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="95" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-static-attrib">
+      <memberdef kind="variable" id="classRealPotential_1a38ab475c6806af81af2c5a45575566cd" prot="protected" static="yes" mutable="no">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::INFINITY_BUFFER</definition>
+        <argsstring></argsstring>
+        <name>INFINITY_BUFFER</name>
+        <initializer>= INF/8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="131" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="131" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classRealPotential_1a894e927e7c6e4746e37654221e38f305" prot="protected" static="yes" mutable="no">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::NEGATIVE_INFINITY</definition>
+        <argsstring></argsstring>
+        <name>NEGATIVE_INFINITY</name>
+        <initializer>= -INF/10</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="132" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="132" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
-      <memberdef kind="function" id="classRealPotential_1a9837fd64c52d3886fa977968c8c79a3e" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classRealPotential" kindref="compound">RealPotential</ref></type>
-        <definition>static const RealPotential RealPotential::one</definition>
-        <argsstring>()</argsstring>
-        <name>one</name>
+      <memberdef kind="function" id="classRealPotential_1aa89a50cf7cc773dd10e42691101bd517" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="223" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="223" bodyend="223"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="97" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="97" bodyend="100"/>
       </memberdef>
-      <memberdef kind="function" id="classRealPotential_1a561ab2d6df9bebe94c9f3011412cd00d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classRealPotential" kindref="compound">RealPotential</ref></type>
-        <definition>static const RealPotential RealPotential::zero</definition>
+      <memberdef kind="function" id="classRealPotential_1ace4d973dd04aa69cb2942b83f062110d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>times</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="101" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="101" bodyend="104"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1a54dc7ca14c15bad1b4008c39b5807a36" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::safe_add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="106" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="106" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1aca96b9f218f27e1aaa12f062fa8bde35" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::safe_times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_times</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="110" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="110" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1a3c5677f3f2c89e9277de09c971dcfec7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::zero</definition>
         <argsstring>()</argsstring>
         <name>zero</name>
         <briefdescription>
@@ -99,55 +158,232 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="224" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="224" bodyend="224"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="115" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="115" bodyend="115"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1ab9993ff1faab79bc8a418bb0b1b20cbb" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="116" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="116" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1ad3b582d0f48e936d2a829b52f8da1d29" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType &amp;</type>
+        <definition>static ValType&amp; RealPotential::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type>ValType &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="118" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="118" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1a7f1607bf12e8470da323d04fcb047eec" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::randValue</definition>
+        <argsstring>()</argsstring>
+        <name>randValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="124" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="124" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1aa89a50cf7cc773dd10e42691101bd517" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="97" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="97" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1ace4d973dd04aa69cb2942b83f062110d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>times</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="101" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="101" bodyend="104"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1a54dc7ca14c15bad1b4008c39b5807a36" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::safe_add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="106" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="106" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1aca96b9f218f27e1aaa12f062fa8bde35" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::safe_times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_times</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="110" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="110" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1a3c5677f3f2c89e9277de09c971dcfec7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="115" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="115" bodyend="115"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1ab9993ff1faab79bc8a418bb0b1b20cbb" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="116" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="116" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1ad3b582d0f48e936d2a829b52f8da1d29" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType &amp;</type>
+        <definition>static ValType&amp; RealPotential::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type>ValType &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="118" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="118" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="classRealPotential_1a7f1607bf12e8470da323d04fcb047eec" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType RealPotential::randValue</definition>
+        <argsstring>()</argsstring>
+        <name>randValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="124" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="124" bodyend="126"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Implements the Real type of semiring as described in Huang 2006 +: min *: + 0: INF 1: 0 </para>    </detaileddescription>
+    </detaileddescription>
     <inheritancegraph>
-      <node id="78">
-        <label>RealPotential</label>
-        <link refid="classRealPotential"/>
-        <childnode refid="79" relation="public-inheritance">
+      <node id="145">
+        <label>TropicalPotential</label>
+        <link refid="classTropicalPotential"/>
+        <childnode refid="144" relation="public-inheritance">
+        </childnode>
+        <childnode refid="144" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="79">
-        <label>BaseSemiringPotential&lt; double, RealPotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
+      <node id="144">
+        <label>RealPotential</label>
+        <link refid="classRealPotential"/>
       </node>
     </inheritancegraph>
-    <collaborationgraph>
-      <node id="80">
-        <label>RealPotential</label>
-        <link refid="classRealPotential"/>
-        <childnode refid="81" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="81">
-        <label>BaseSemiringPotential&lt; double, RealPotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
-      </node>
-    </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="210" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="210" bodyend="227"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="93" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="93" bodyend="133"/>
     <listofallmembers>
-      <member refid="classBaseSemiringPotential_1a3ccf8b43dd32e794f7a546caa2e8ffd9" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>add</name></member>
-      <member refid="classBaseSemiringPotential_1a54bb42020981d47a9ee5edbefdd0f4b3" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ae70438bcff496bff89daf4c4eac38ce4" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ac4f432c81a12368ae2b1d5230cc762c2" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classRealPotential_1aac75f5337add6f1a0a330ae23bda28a6" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>normalize</name></member>
-      <member refid="classBaseSemiringPotential_1a87949cd4f8b8aceedaaac1a446c82190" prot="public" virt="non-virtual" ambiguityscope="BaseSemiringPotential&lt; double, RealPotential &gt;::"><scope>RealPotential</scope><name>normalize</name></member>
-      <member refid="classRealPotential_1a9837fd64c52d3886fa977968c8c79a3e" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>one</name></member>
-      <member refid="classBaseSemiringPotential_1a57bbc01de90082ca201dc151d821f0e9" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>operator double</name></member>
-      <member refid="classRealPotential_1ab43bd3b064308c4644168a1d9b6ca8db" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>operator*=</name></member>
-      <member refid="classRealPotential_1a19f69028b929da534645aa35ca254d06" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>operator+=</name></member>
-      <member refid="classBaseSemiringPotential_1af3f7108cca054ed98908a2d536cfcec8" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>operator=</name></member>
-      <member refid="classBaseSemiringPotential_1a688918a5566844351e4fb4ddc95e9784" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>operator=</name></member>
-      <member refid="classRealPotential_1ab0e0eb40a511f0ff6bf7265b215afb18" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>RealPotential</name></member>
-      <member refid="classBaseSemiringPotential_1a90188fa749f13b11996f2e328dfb4045" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>times</name></member>
-      <member refid="classBaseSemiringPotential_1a8ab78c41be222b13d87894877608567e" prot="protected" virt="non-virtual"><scope>RealPotential</scope><name>value</name></member>
-      <member refid="classRealPotential_1a561ab2d6df9bebe94c9f3011412cd00d" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>zero</name></member>
+      <member refid="classRealPotential_1aa89a50cf7cc773dd10e42691101bd517" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>add</name></member>
+      <member refid="classRealPotential_1aa89a50cf7cc773dd10e42691101bd517" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>add</name></member>
+      <member refid="classRealPotential_1a38ab475c6806af81af2c5a45575566cd" prot="protected" virt="non-virtual"><scope>RealPotential</scope><name>INFINITY_BUFFER</name></member>
+      <member refid="classRealPotential_1a894e927e7c6e4746e37654221e38f305" prot="protected" virt="non-virtual"><scope>RealPotential</scope><name>NEGATIVE_INFINITY</name></member>
+      <member refid="classRealPotential_1ad3b582d0f48e936d2a829b52f8da1d29" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>normalize</name></member>
+      <member refid="classRealPotential_1ad3b582d0f48e936d2a829b52f8da1d29" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>normalize</name></member>
+      <member refid="classRealPotential_1ab9993ff1faab79bc8a418bb0b1b20cbb" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>one</name></member>
+      <member refid="classRealPotential_1ab9993ff1faab79bc8a418bb0b1b20cbb" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>one</name></member>
+      <member refid="classRealPotential_1a7f1607bf12e8470da323d04fcb047eec" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>randValue</name></member>
+      <member refid="classRealPotential_1a7f1607bf12e8470da323d04fcb047eec" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>randValue</name></member>
+      <member refid="classRealPotential_1a54dc7ca14c15bad1b4008c39b5807a36" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>safe_add</name></member>
+      <member refid="classRealPotential_1a54dc7ca14c15bad1b4008c39b5807a36" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>safe_add</name></member>
+      <member refid="classRealPotential_1aca96b9f218f27e1aaa12f062fa8bde35" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>safe_times</name></member>
+      <member refid="classRealPotential_1aca96b9f218f27e1aaa12f062fa8bde35" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>safe_times</name></member>
+      <member refid="classRealPotential_1ace4d973dd04aa69cb2942b83f062110d" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>times</name></member>
+      <member refid="classRealPotential_1ace4d973dd04aa69cb2942b83f062110d" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>times</name></member>
+      <member refid="classRealPotential_1aac1b6c7efd2e8d5cc18f9ec1b1e5971f" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>ValType</name></member>
+      <member refid="classRealPotential_1aac1b6c7efd2e8d5cc18f9ec1b1e5971f" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>ValType</name></member>
+      <member refid="classRealPotential_1a3c5677f3f2c89e9277de09c971dcfec7" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>zero</name></member>
+      <member refid="classRealPotential_1a3c5677f3f2c89e9277de09c971dcfec7" prot="public" virt="non-virtual"><scope>RealPotential</scope><name>zero</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>
