@@ -5,6 +5,7 @@ from libcpp.vector cimport vector
 from libcpp cimport bool
 from wrap cimport *
 
+
 cdef _hypergraph_registry_counts = {}
 
 cdef class Labeling:
@@ -628,9 +629,8 @@ from libcpp.pair cimport pair
 from libcpp cimport bool
 
 from wrap cimport *
-# from libhypergraph cimport *
-# import libhypergraph as py_hypergraph
-
+#from libhypergraph cimport *
+#import libhypergraph as py_hypergraph
 
 
 ############# This is the templated semiring part. ##############

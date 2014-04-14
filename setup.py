@@ -4,15 +4,7 @@ import os.path
 import sys
 
 def check_for_cython():
-    try:
-        from Cython.Compiler.Version import version
-        if int(version.split(".")[1]) < 20:
-            raise ImportError("Bad version.")
-
-    except ImportError:
-        return False
-    else:
-        return True
+    return True
 
 class ExtensionWrapper:
     def __init__(self, debug=False, cython=False):
@@ -22,13 +14,10 @@ class ExtensionWrapper:
     def make(self, ext_name, pyx_name, cpp_names, extra_objects=[]):
 
         return Extension(ext_name,
-                         [pyx_name] + cpp_names if self.cython else cpp_names,
+                         [pyx_name] + cpp_names if self.cython else [pyx_name.split(".")[0] + "." + "cpp"] + cpp_names,
                          language='c++',
                          extra_compile_args=["-O0"] if self.debug else [],
-                         include_dirs=[r'src/', "."],
-
-                         library_dirs=[os.path.abspath('python/pydecode/')],
-                         libraries=extra_objects)
+                         include_dirs=[r'src/', "."])
 
     def cmdclass(self):
         if self.cython:
@@ -36,21 +25,6 @@ class ExtensionWrapper:
             from Cython.Build import cythonize
             return {'build_ext': build_ext}
         return {}
-
-def no_cythonize(extensions, **_ignore):
-    for extension in extensions:
-        sources = []
-        for sfile in extension.sources:
-            path, ext = os.path.splitext(sfile)
-            if ext in ('.pyx', '.py'):
-                if extension.language == 'c++':
-                    ext = '.cpp'
-                else:
-                    ext = '.c'
-                sfile = path + ext
-            sources.append(sfile)
-        extension.sources[:] = sources
-    return extensions
 
 def make_extension(wrapper):
 
@@ -77,13 +51,17 @@ def make_extension(wrapper):
 def main():
     copy_args = sys.argv[1:]
     has_cython = check_for_cython()
-    if '--nocython' in copy_args:
+    if '--cython' not in copy_args:
         has_cython = False
-
+    if '--cython' in copy_args:
+        copy_args.remove("--cython")
     debug = False
     if '--debug' in copy_args:
         debug = True
+        copy_args.remove("--debug")
 
+    print sys.argv
+    print "done"
     wrapper = ExtensionWrapper(cython=has_cython, debug=debug)
 
     setup(
@@ -93,7 +71,7 @@ def main():
         package_dir={'pydecode': 'python/pydecode'},
         ext_modules = make_extension(wrapper),
         requires=["networkx", "pandas"],
-        version = '0.1.27',
+        version = '0.1.32',
         description = 'A dynamic programming toolkit',
         author = 'Alexander Rush',
         author_email = 'srush@csail.mit.edu',
