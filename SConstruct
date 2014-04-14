@@ -70,8 +70,8 @@ env.Alias("pytest", [pytests, pytests2])
 env.Command(["python/pydecode/potentials.pyx",],
             ["python/pydecode/templates/potentials.pyx.tpl",
              "python/pydecode/templates/potentials.pxd.tpl",
-             "cython_jinja.py"],
-            "python cython_jinja.py")
+             "python/pydecode/templates/cython_jinja.py"],
+            "python python/pydecode/templates/cython_jinja.py")
 
 py_lib = env.Command(["python/pydecode/hyper.so"],
             ["build/debug/src/libdecoding.a",
