@@ -3,8 +3,6 @@ from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
-from wrap cimport *
-
 
 cdef _hypergraph_registry_counts = {}
 
@@ -628,7 +626,6 @@ cimport libcpp.map as c_map
 from libcpp.pair cimport pair
 from libcpp cimport bool
 
-from wrap cimport *
 #from libhypergraph cimport *
 #import libhypergraph as py_hypergraph
 
@@ -879,7 +876,7 @@ cdef class _ViterbiMarginals:
                 "Only nodes and edges have Viterbi marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
     def threshold(self, double semi):
         """
@@ -887,7 +884,7 @@ cdef class _ViterbiMarginals:
         """
         return BoolPotentials(self.graph).init(self.thisptr.threshold(semi),
                                                None)
-
+    
 
 
 class Viterbi:
@@ -914,7 +911,7 @@ class Viterbi:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -936,7 +933,7 @@ class Viterbi:
             del used_chart
         return bp
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -1198,7 +1195,7 @@ cdef class _LogViterbiMarginals:
                 "Only nodes and edges have LogViterbi marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
     def threshold(self, double semi):
         """
@@ -1206,7 +1203,7 @@ cdef class _LogViterbiMarginals:
         """
         return BoolPotentials(self.graph).init(self.thisptr.threshold(semi),
                                                None)
-
+    
 
 
 class LogViterbi:
@@ -1233,7 +1230,7 @@ class LogViterbi:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1255,7 +1252,7 @@ class LogViterbi:
             del used_chart
         return bp
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -1517,7 +1514,7 @@ cdef class _InsideMarginals:
                 "Only nodes and edges have Inside marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
     def threshold(self, double semi):
         """
@@ -1525,7 +1522,7 @@ cdef class _InsideMarginals:
         """
         return BoolPotentials(self.graph).init(self.thisptr.threshold(semi),
                                                None)
-
+    
 
 
 class Inside:
@@ -1552,7 +1549,7 @@ class Inside:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1574,7 +1571,7 @@ class Inside:
             del used_chart
         return bp
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -1836,7 +1833,7 @@ cdef class _BoolMarginals:
                 "Only nodes and edges have Bool marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
     def threshold(self, bool semi):
         """
@@ -1844,7 +1841,7 @@ cdef class _BoolMarginals:
         """
         return BoolPotentials(self.graph).init(self.thisptr.threshold(semi),
                                                None)
-
+    
 
 
 class Bool:
@@ -1871,7 +1868,7 @@ class Bool:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1893,7 +1890,7 @@ class Bool:
             del used_chart
         return bp
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -2155,7 +2152,7 @@ cdef class _SparseVectorMarginals:
                 "Only nodes and edges have SparseVector marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
 
 class SparseVector:
@@ -2182,7 +2179,7 @@ class SparseVector:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -2444,7 +2441,7 @@ cdef class _MinSparseVectorMarginals:
                 "Only nodes and edges have MinSparseVector marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
 
 class MinSparseVector:
@@ -2471,7 +2468,7 @@ class MinSparseVector:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -2733,7 +2730,7 @@ cdef class _MaxSparseVectorMarginals:
                 "Only nodes and edges have MaxSparseVector marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
 
 class MaxSparseVector:
@@ -2760,7 +2757,7 @@ class MaxSparseVector:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -3022,7 +3019,7 @@ cdef class _CountingMarginals:
                 "Only nodes and edges have Counting marginal values." +
                 "Passed %s." % obj)
 
-
+    
 
     def threshold(self, int semi):
         """
@@ -3030,7 +3027,7 @@ cdef class _CountingMarginals:
         """
         return BoolPotentials(self.graph).init(self.thisptr.threshold(semi),
                                                None)
-
+    
 
 
 class Counting:
@@ -3057,7 +3054,7 @@ class Counting:
                                              deref(inside_chart.chart))
         return out_chart
 
-
+    
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -3079,7 +3076,7 @@ class Counting:
             del used_chart
         return bp
 
-
+    
 
     @staticmethod
     def compute_marginals(Hypergraph graph,

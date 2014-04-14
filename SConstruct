@@ -73,11 +73,11 @@ env.Command(["python/pydecode/potentials.pyx",],
              "python/pydecode/templates/cython_jinja.py"],
             "python python/pydecode/templates/cython_jinja.py")
 
-py_lib = env.Command(["python/pydecode/hyper.so"],
+py_lib = env.Command(["python/pydecode/templates/hyper.so"],
             ["build/debug/src/libdecoding.a",
              "python/pydecode/potentials.pyx",
-             "python/pydecode/libhypergraph.pyx",
-             "python/pydecode/beam.pyx"],
+             "python/pydecode/templates/libhypergraph.pyx",
+             "python/pydecode/templates/beam.pyx"],
              #"python/pydecode/constraints.pyx",
              #"python/pydecode/algorithms.pyx"],
             "CC=g++ python setup.py build_ext --inplace --verbose --cython ")
