@@ -3,6 +3,7 @@
   <compounddef id="structboost_1_1foreach__detail_1_1auto__any" kind="struct" prot="public">
     <compoundname>boost::foreach_detail::auto_any</compoundname>
     <basecompoundref refid="structboost_1_1foreach__detail_1_1auto__any__base" prot="public" virt="non-virtual">boost::foreach_detail::auto_any_base</basecompoundref>
+    <basecompoundref refid="structboost_1_1foreach__detail_1_1auto__any__base" prot="public" virt="non-virtual">boost::foreach_detail::auto_any_base</basecompoundref>
     <templateparamlist>
       <param>
         <type>typename T</type>
@@ -20,10 +21,27 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/foreach.h" line="29" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="29" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/foreach.h" line="29" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/foreach.h" bodystart="29" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
+      <memberdef kind="function" id="structboost_1_1foreach__detail_1_1auto__any_1ab97b29bbdca856f3f14498353269db68" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>boost::foreach_detail::auto_any&lt; T &gt;::auto_any</definition>
+        <argsstring>(T const &amp;t)</argsstring>
+        <name>auto_any</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/foreach.h" line="28" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/foreach.h" bodystart="28" bodyend="28"/>
+      </memberdef>
       <memberdef kind="function" id="structboost_1_1foreach__detail_1_1auto__any_1ab97b29bbdca856f3f14498353269db68" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>boost::foreach_detail::auto_any&lt; T &gt;::auto_any</definition>
@@ -56,6 +74,8 @@
         <link refid="structboost_1_1foreach__detail_1_1auto__any"/>
         <childnode refid="1" relation="public-inheritance">
         </childnode>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
@@ -68,12 +88,16 @@
         <link refid="structboost_1_1foreach__detail_1_1auto__any"/>
         <childnode refid="3" relation="public-inheritance">
         </childnode>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/foreach.h" line="27" bodyfile="/home/srush/Projects/decoding/src/foreach.h" bodystart="26" bodyend="30"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/foreach.h" line="27" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/foreach.h" bodystart="26" bodyend="30"/>
     <listofallmembers>
       <member refid="structboost_1_1foreach__detail_1_1auto__any_1ab97b29bbdca856f3f14498353269db68" prot="public" virt="non-virtual"><scope>boost::foreach_detail::auto_any</scope><name>auto_any</name></member>
+      <member refid="structboost_1_1foreach__detail_1_1auto__any_1ab97b29bbdca856f3f14498353269db68" prot="public" virt="non-virtual"><scope>boost::foreach_detail::auto_any</scope><name>auto_any</name></member>
       <member refid="structboost_1_1foreach__detail_1_1auto__any_1a643cb7365f237b85d6ecebc98f38fa6c" prot="public" virt="non-virtual"><scope>boost::foreach_detail::auto_any</scope><name>item</name></member>
+      <member refid="structboost_1_1foreach__detail_1_1auto__any__base_1a59b9aec27f7aad61c3bedea4b5a479b4" prot="public" virt="non-virtual"><scope>boost::foreach_detail::auto_any</scope><name>operator bool</name></member>
       <member refid="structboost_1_1foreach__detail_1_1auto__any__base_1a59b9aec27f7aad61c3bedea4b5a479b4" prot="public" virt="non-virtual"><scope>boost::foreach_detail::auto_any</scope><name>operator bool</name></member>
     </listofallmembers>
   </compounddef>

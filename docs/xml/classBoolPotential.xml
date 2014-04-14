@@ -2,80 +2,126 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
   <compounddef id="classBoolPotential" kind="class" prot="public">
     <compoundname>BoolPotential</compoundname>
-    <basecompoundref refid="classBaseSemiringPotential" prot="public" virt="non-virtual">BaseSemiringPotential&lt; bool, BoolPotential &gt;</basecompoundref>
-    <includes refid="Semirings_8h" local="no">Semirings.h</includes>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classBoolPotential_1a5b918e82dd6cc9820597c2b2f0fcfec9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>BoolPotential::BoolPotential</definition>
-        <argsstring>(bool value)</argsstring>
-        <name>BoolPotential</name>
-        <param>
-          <type>bool</type>
-          <declname>value</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="147" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="147" bodyend="147"/>
-      </memberdef>
-      <memberdef kind="function" id="classBoolPotential_1a7a95641a6610954a2ae873698f9d4447" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>BoolPotential::BoolPotential</definition>
-        <argsstring>()</argsstring>
-        <name>BoolPotential</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="148" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="148" bodyend="148"/>
-      </memberdef>
-      <memberdef kind="function" id="classBoolPotential_1abe2f565f2c3d9385bc77d301be4b17b9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classBoolPotential" kindref="compound">BoolPotential</ref> &amp;</type>
-        <definition>BoolPotential&amp; BoolPotential::operator+=</definition>
-        <argsstring>(const BoolPotential &amp;rhs)</argsstring>
-        <name>operator+=</name>
-        <param>
-          <type>const <ref refid="classBoolPotential" kindref="compound">BoolPotential</ref> &amp;</type>
-          <declname>rhs</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="150" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="150" bodyend="153"/>
-      </memberdef>
-      <memberdef kind="function" id="classBoolPotential_1addc776827e516dec7875f17c01a965bc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classBoolPotential" kindref="compound">BoolPotential</ref> &amp;</type>
-        <definition>BoolPotential&amp; BoolPotential::operator*=</definition>
-        <argsstring>(const BoolPotential &amp;rhs)</argsstring>
-        <name>operator*=</name>
-        <param>
-          <type>const <ref refid="classBoolPotential" kindref="compound">BoolPotential</ref> &amp;</type>
-          <declname>rhs</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="154" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="154" bodyend="157"/>
-      </memberdef>
-      <memberdef kind="function" id="classBoolPotential_1a6b9da2ab65b0c64f3b8c406c71c37c1d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classBoolPotential_1ad93d2ed3b5b4394b500b8c18cddc6c7e" prot="public" static="no">
         <type>bool</type>
-        <definition>bool BoolPotential::normalize</definition>
-        <argsstring>(bool val) const </argsstring>
+        <definition>typedef bool BoolPotential::ValType</definition>
+        <argsstring></argsstring>
+        <name>ValType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="155" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="155" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classBoolPotential_1ad93d2ed3b5b4394b500b8c18cddc6c7e" prot="public" static="no">
+        <type>bool</type>
+        <definition>typedef bool BoolPotential::ValType</definition>
+        <argsstring></argsstring>
+        <name>ValType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="155" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="155" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classBoolPotential_1a4fcf10bf6b6673270bccc1c265b7c336" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::add</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>add</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="157" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="157" bodyend="159"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1a356aace811e41b670da701233768d6ab" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::times</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>times</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="160" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="160" bodyend="162"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1a3a6cb387107cd8ac176d4310ca88b15a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::safe_add</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="164" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="164" bodyend="166"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1a1d77a6053c018aa1396fc255de797a15" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::safe_times</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_times</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="167" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="167" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1aa6468758c5fcc3e9f95bff579f7663d7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType &amp;</type>
+        <definition>static ValType&amp; BoolPotential::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
         <name>normalize</name>
         <param>
-          <type>bool</type>
+          <type>ValType &amp;</type>
           <declname>val</declname>
         </param>
         <briefdescription>
@@ -84,13 +130,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="162" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="162" bodyend="162"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="171" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="171" bodyend="173"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-static-func">
-      <memberdef kind="function" id="classBoolPotential_1a91ca7a89915225ad6cb1ac3c65689b30" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classBoolPotential" kindref="compound">BoolPotential</ref></type>
-        <definition>static const BoolPotential BoolPotential::one</definition>
+      <memberdef kind="function" id="classBoolPotential_1aa7f489a3a7c7c01fc7b34b8e999cdb61" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::one</definition>
         <argsstring>()</argsstring>
         <name>one</name>
         <briefdescription>
@@ -99,11 +143,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="159" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="159" bodyend="159"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="175" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="175" bodyend="175"/>
       </memberdef>
-      <memberdef kind="function" id="classBoolPotential_1a49c4b613f0c402fcb680cee3ea3f08fd" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="classBoolPotential" kindref="compound">BoolPotential</ref></type>
-        <definition>static const BoolPotential BoolPotential::zero</definition>
+      <memberdef kind="function" id="classBoolPotential_1af6ddf32f56caf7e24afd284531520af8" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::zero</definition>
         <argsstring>()</argsstring>
         <name>zero</name>
         <briefdescription>
@@ -112,56 +156,186 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="160" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="160" bodyend="160"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="176" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="176" bodyend="176"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1a75a6c61aebbf4d0a44678dbc6f267011" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::randValue</definition>
+        <argsstring>()</argsstring>
+        <name>randValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="178" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="178" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1a4fcf10bf6b6673270bccc1c265b7c336" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::add</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>add</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="157" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="157" bodyend="159"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1a356aace811e41b670da701233768d6ab" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::times</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>times</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="160" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="160" bodyend="162"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1a3a6cb387107cd8ac176d4310ca88b15a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::safe_add</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="164" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="164" bodyend="166"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1a1d77a6053c018aa1396fc255de797a15" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::safe_times</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_times</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="167" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="167" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1aa6468758c5fcc3e9f95bff579f7663d7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType &amp;</type>
+        <definition>static ValType&amp; BoolPotential::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type>ValType &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="171" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="171" bodyend="173"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1aa7f489a3a7c7c01fc7b34b8e999cdb61" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="175" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="175" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1af6ddf32f56caf7e24afd284531520af8" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="176" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="176" bodyend="176"/>
+      </memberdef>
+      <memberdef kind="function" id="classBoolPotential_1a75a6c61aebbf4d0a44678dbc6f267011" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BoolPotential::randValue</definition>
+        <argsstring>()</argsstring>
+        <name>randValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="178" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="178" bodyend="178"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Implements the Boolean type of semiring as described in Huang 2006 +: logical or *: logical and 0: false 1: true </para>    </detaileddescription>
-    <inheritancegraph>
-      <node id="11">
-        <label>BaseSemiringPotential&lt; bool, BoolPotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
-      </node>
-      <node id="10">
-        <label>BoolPotential</label>
-        <link refid="classBoolPotential"/>
-        <childnode refid="11" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
-      <node id="13">
-        <label>BaseSemiringPotential&lt; bool, BoolPotential &gt;</label>
-        <link refid="classBaseSemiringPotential"/>
-      </node>
-      <node id="12">
-        <label>BoolPotential</label>
-        <link refid="classBoolPotential"/>
-        <childnode refid="13" relation="public-inheritance">
-        </childnode>
-      </node>
-    </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="145" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="145" bodyend="163"/>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="153" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="153" bodyend="179"/>
     <listofallmembers>
-      <member refid="classBaseSemiringPotential_1a3ccf8b43dd32e794f7a546caa2e8ffd9" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>add</name></member>
-      <member refid="classBaseSemiringPotential_1a54bb42020981d47a9ee5edbefdd0f4b3" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ae70438bcff496bff89daf4c4eac38ce4" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBaseSemiringPotential_1ac4f432c81a12368ae2b1d5230cc762c2" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>BaseSemiringPotential</name></member>
-      <member refid="classBoolPotential_1a5b918e82dd6cc9820597c2b2f0fcfec9" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>BoolPotential</name></member>
-      <member refid="classBoolPotential_1a7a95641a6610954a2ae873698f9d4447" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>BoolPotential</name></member>
-      <member refid="classBoolPotential_1a6b9da2ab65b0c64f3b8c406c71c37c1d" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>normalize</name></member>
-      <member refid="classBaseSemiringPotential_1a87949cd4f8b8aceedaaac1a446c82190" prot="public" virt="non-virtual" ambiguityscope="BaseSemiringPotential&lt; bool, BoolPotential &gt;::"><scope>BoolPotential</scope><name>normalize</name></member>
-      <member refid="classBoolPotential_1a91ca7a89915225ad6cb1ac3c65689b30" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>one</name></member>
-      <member refid="classBaseSemiringPotential_1a57bbc01de90082ca201dc151d821f0e9" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>operator bool</name></member>
-      <member refid="classBoolPotential_1addc776827e516dec7875f17c01a965bc" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>operator*=</name></member>
-      <member refid="classBoolPotential_1abe2f565f2c3d9385bc77d301be4b17b9" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>operator+=</name></member>
-      <member refid="classBaseSemiringPotential_1af3f7108cca054ed98908a2d536cfcec8" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>operator=</name></member>
-      <member refid="classBaseSemiringPotential_1a688918a5566844351e4fb4ddc95e9784" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>operator=</name></member>
-      <member refid="classBaseSemiringPotential_1a90188fa749f13b11996f2e328dfb4045" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>times</name></member>
-      <member refid="classBaseSemiringPotential_1a8ab78c41be222b13d87894877608567e" prot="protected" virt="non-virtual"><scope>BoolPotential</scope><name>value</name></member>
-      <member refid="classBoolPotential_1a49c4b613f0c402fcb680cee3ea3f08fd" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>zero</name></member>
+      <member refid="classBoolPotential_1a4fcf10bf6b6673270bccc1c265b7c336" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>add</name></member>
+      <member refid="classBoolPotential_1a4fcf10bf6b6673270bccc1c265b7c336" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>add</name></member>
+      <member refid="classBoolPotential_1aa6468758c5fcc3e9f95bff579f7663d7" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>normalize</name></member>
+      <member refid="classBoolPotential_1aa6468758c5fcc3e9f95bff579f7663d7" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>normalize</name></member>
+      <member refid="classBoolPotential_1aa7f489a3a7c7c01fc7b34b8e999cdb61" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>one</name></member>
+      <member refid="classBoolPotential_1aa7f489a3a7c7c01fc7b34b8e999cdb61" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>one</name></member>
+      <member refid="classBoolPotential_1a75a6c61aebbf4d0a44678dbc6f267011" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>randValue</name></member>
+      <member refid="classBoolPotential_1a75a6c61aebbf4d0a44678dbc6f267011" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>randValue</name></member>
+      <member refid="classBoolPotential_1a3a6cb387107cd8ac176d4310ca88b15a" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>safe_add</name></member>
+      <member refid="classBoolPotential_1a3a6cb387107cd8ac176d4310ca88b15a" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>safe_add</name></member>
+      <member refid="classBoolPotential_1a1d77a6053c018aa1396fc255de797a15" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>safe_times</name></member>
+      <member refid="classBoolPotential_1a1d77a6053c018aa1396fc255de797a15" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>safe_times</name></member>
+      <member refid="classBoolPotential_1a356aace811e41b670da701233768d6ab" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>times</name></member>
+      <member refid="classBoolPotential_1a356aace811e41b670da701233768d6ab" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>times</name></member>
+      <member refid="classBoolPotential_1ad93d2ed3b5b4394b500b8c18cddc6c7e" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>ValType</name></member>
+      <member refid="classBoolPotential_1ad93d2ed3b5b4394b500b8c18cddc6c7e" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>ValType</name></member>
+      <member refid="classBoolPotential_1af6ddf32f56caf7e24afd284531520af8" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>zero</name></member>
+      <member refid="classBoolPotential_1af6ddf32f56caf7e24afd284531520af8" prot="public" virt="non-virtual"><scope>BoolPotential</scope><name>zero</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

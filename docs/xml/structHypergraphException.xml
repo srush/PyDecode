@@ -3,8 +3,12 @@
   <compounddef id="structHypergraphException" kind="struct" prot="public">
     <compoundname>HypergraphException</compoundname>
     <basecompoundref prot="public" virt="non-virtual">exception</basecompoundref>
+    <basecompoundref prot="public" virt="non-virtual">exception</basecompoundref>
+    <derivedcompoundref refid="classHypergraphAccessException" prot="public" virt="non-virtual">HypergraphAccessException</derivedcompoundref>
     <derivedcompoundref refid="classHypergraphAccessException" prot="public" virt="non-virtual">HypergraphAccessException</derivedcompoundref>
     <derivedcompoundref refid="classHypergraphConstructionException" prot="public" virt="non-virtual">HypergraphConstructionException</derivedcompoundref>
+    <derivedcompoundref refid="classHypergraphConstructionException" prot="public" virt="non-virtual">HypergraphConstructionException</derivedcompoundref>
+    <derivedcompoundref refid="classHypergraphMatchException" prot="public" virt="non-virtual">HypergraphMatchException</derivedcompoundref>
     <derivedcompoundref refid="classHypergraphMatchException" prot="public" virt="non-virtual">HypergraphMatchException</derivedcompoundref>
       <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structHypergraphException_1aa9ad558de18804fa3e42e6a9dada8a8f" prot="public" static="no" mutable="no">
@@ -18,11 +22,56 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="24" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="24" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Hypergraph.h" line="24" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Hypergraph.h" bodystart="24" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="structHypergraphException_1a0d2a42fc6d68f2f128b7c14144d3fe66" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="structHypergraphException_1a0d2a42fc6d68f2f128b7c14144d3fe66" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>HypergraphException::HypergraphException</definition>
+        <argsstring>(string ss)</argsstring>
+        <name>HypergraphException</name>
+        <param>
+          <type>string</type>
+          <declname>ss</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Hypergraph.h" line="25" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Hypergraph.h" bodystart="25" bodyend="25"/>
+      </memberdef>
+      <memberdef kind="function" id="structHypergraphException_1ae7c3962239a0c4677915a9129f3772d2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>HypergraphException::~HypergraphException</definition>
+        <argsstring>()</argsstring>
+        <name>~HypergraphException</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Hypergraph.h" line="26" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Hypergraph.h" bodystart="26" bodyend="26"/>
+      </memberdef>
+      <memberdef kind="function" id="structHypergraphException_1a2ef7ad97e32d6699e85219b72470fd58" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* HypergraphException::what</definition>
+        <argsstring>() const </argsstring>
+        <name>what</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Hypergraph.h" line="27" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Hypergraph.h" bodystart="27" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="function" id="structHypergraphException_1a0d2a42fc6d68f2f128b7c14144d3fe66" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>HypergraphException::HypergraphException</definition>
         <argsstring>(string ss)</argsstring>
@@ -73,50 +122,63 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="46">
+      <node id="62">
         <label>HypergraphConstructionException</label>
         <link refid="classHypergraphConstructionException"/>
-        <childnode refid="43" relation="public-inheritance">
+        <childnode refid="59" relation="public-inheritance">
+        </childnode>
+        <childnode refid="59" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="44">
+      <node id="60">
         <label>exception</label>
       </node>
-      <node id="47">
+      <node id="63">
         <label>HypergraphMatchException</label>
         <link refid="classHypergraphMatchException"/>
-        <childnode refid="43" relation="public-inheritance">
+        <childnode refid="59" relation="public-inheritance">
+        </childnode>
+        <childnode refid="59" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="43">
+      <node id="59">
         <label>HypergraphException</label>
         <link refid="structHypergraphException"/>
-        <childnode refid="44" relation="public-inheritance">
+        <childnode refid="60" relation="public-inheritance">
+        </childnode>
+        <childnode refid="60" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="45">
+      <node id="61">
         <label>HypergraphAccessException</label>
         <link refid="classHypergraphAccessException"/>
-        <childnode refid="43" relation="public-inheritance">
+        <childnode refid="59" relation="public-inheritance">
+        </childnode>
+        <childnode refid="59" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="49">
+      <node id="65">
         <label>exception</label>
       </node>
-      <node id="48">
+      <node id="64">
         <label>HypergraphException</label>
         <link refid="structHypergraphException"/>
-        <childnode refid="49" relation="public-inheritance">
+        <childnode refid="65" relation="public-inheritance">
+        </childnode>
+        <childnode refid="65" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="23" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="23" bodyend="28"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Hypergraph.h" line="23" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Hypergraph.h" bodystart="23" bodyend="28"/>
     <listofallmembers>
+      <member refid="structHypergraphException_1a0d2a42fc6d68f2f128b7c14144d3fe66" prot="public" virt="non-virtual"><scope>HypergraphException</scope><name>HypergraphException</name></member>
       <member refid="structHypergraphException_1a0d2a42fc6d68f2f128b7c14144d3fe66" prot="public" virt="non-virtual"><scope>HypergraphException</scope><name>HypergraphException</name></member>
       <member refid="structHypergraphException_1aa9ad558de18804fa3e42e6a9dada8a8f" prot="public" virt="non-virtual"><scope>HypergraphException</scope><name>s</name></member>
       <member refid="structHypergraphException_1a2ef7ad97e32d6699e85219b72470fd58" prot="public" virt="non-virtual"><scope>HypergraphException</scope><name>what</name></member>
+      <member refid="structHypergraphException_1a2ef7ad97e32d6699e85219b72470fd58" prot="public" virt="non-virtual"><scope>HypergraphException</scope><name>what</name></member>
+      <member refid="structHypergraphException_1ae7c3962239a0c4677915a9129f3772d2" prot="public" virt="non-virtual"><scope>HypergraphException</scope><name>~HypergraphException</name></member>
       <member refid="structHypergraphException_1ae7c3962239a0c4677915a9129f3772d2" prot="public" virt="non-virtual"><scope>HypergraphException</scope><name>~HypergraphException</name></member>
     </listofallmembers>
   </compounddef>
