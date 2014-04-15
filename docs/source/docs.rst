@@ -14,4 +14,3 @@ Documentation
    display
    cpp_api
    development
-   gallery

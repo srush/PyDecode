@@ -248,19 +248,26 @@ cdef class Vertex:
     r"""
     Hypergraph vertex.
 
-    Formally :math:`v \in {\cal V}` associated with a :py:class:`Hypergraph`.
+    A hypergraph constains a set of vertices :math:`v \in {\cal V}`.
+    Each vertex (besides the root) is in the tail of many possible
+    hyperedges :math:`e \in {\cal E}`, and (besides terminal vertices)
+    at the head of many other edges.
+
+    The vertex object has access to the subedges of the vertex
+    or a bit indicating it is a terminal vertex. It also optionally
+    has an associated label, which may be any python object.
 
     Attributes
     -------------
 
     subedges : iterator of :py:class:`Edge`s
 
-       The edges with this vertex as head.
+       The hyperedges that have this vertex as head.
 
-       Formally :math:`\{e \in {\cal E} : h(e) = v \}`
+       We write this as :math:`\{e \in {\cal E} : h(e) = v \}`
 
     is_terminal : bool
-       Is the vertex terminal (no-subedges).
+       Indicates whether this vertex is terminal (no-subedges).
 
     label : any
         Data associated with the vertex.
@@ -317,16 +324,24 @@ cdef class Node(Vertex):
 
 cdef class Edge:
     r"""
-    Hypergraph (hyper)edge.
+    Hypergraph hyperedge.
 
-    Formally :math:`e \in {\cal E}` associated with a :py:class:`Hypergraph`.
-    A hyperedge is a vector :math:`\langle v_1 , \langle v_2 \ldots v_{n} \rangle \rangle` where :math:`v_1` is a head vertex and :math:`v_2 \ldots v_{n}` is a tail.
+
+    A hypergraph constains a set of hyperedge :math:`e \in {\cal E}`.
+    at the head of many other edges.  A hyperedge is a vector
+    :math:`\langle v_1 , \langle v_2 \ldots v_{n} \rangle \rangle`
+    where :math:`v_1` is a head vertex and :math:`v_2 \ldots v_{n}` is
+    a tail.
+
+    We represent a hyperedge with a reference to the head vertex,
+    an iterator of tail vertices, and a label which may be any
+    piece of python data.
 
     Attributes
     -----------
 
     head : :py:class:`Vertex`
-        A head vertex :math:`v_1`.
+        The head vertex :math:`v_1`.
 
     tail : iterator of :py:class:`Vertex`
         The tail vertices :math:`v_2 \ldots v_{n}`.
@@ -384,9 +399,13 @@ cdef convert_nodes(vector[const CHypernode *] nodes,
 
 cdef class Path:
     r"""
-    Path in the hypergraph.
+    Path through the hypergraph.
 
-    Formally a valid hyperpath :math:`y \in {\cal Y}` in the hypergraph.
+    A (hyper)path representing a possible traversal of the hypergraph.
+    A path is a member of the combinatorial set
+    :math:`y \in {\cal Y}` satisfying the consistency conditions.
+
+    We represent a path as an ordered list of edges and vertices
 
     Usage:
 
@@ -398,10 +417,10 @@ cdef class Path:
     -----------
 
     edges : iterator of :py:class:`Edge`
-        The hyperedges in the path in topological order.
+        The hyperedges in the path :math:`y_e = 1` in topological order.
 
     vertices : iterator of :py:class:`Vertex`
-        The vertices in the path in topological order.
+        The vertices in the path :math:`y_v = 1` in topological order.
     """
 
     def __dealloc__(self):
@@ -477,25 +496,33 @@ class HypergraphConstructionException(Exception):
 
 cdef class HypergraphMap:
     """
-    A map between two hypergraphs.
+    Map between two hypergraphs.
+
+    It is often useful to indicate the relationship between edges
+    in multiple hypergraphs. Say we have two hypergraphs
+    :math:`({\cal V}, {\cal E})` and :math:`({\cal V}', {\cal E}')`.
+    This class represents a function :math:`m : {\cal V} \cup {\cal E} \mapsto {\cal V}' \cup {\cal E}'`.
+
 
     Usage:
 
-    To check map a vertex, edge, path, or potentials ::
+    To map a vertex or edge ::
 
        >> hypergraph_map[edge]
 
        >> hypergraph_map[vertex]
+
+    It can also be used to map objects over a hypergraph, for instance ::
 
        >> hypergraph_map[potentials]
 
     Attributes
     -----------
     domain_hypergraph : :py:class:`Hypergraph`
-      Hypergraph at the domain  of the map.
+      Hypergraph in the domain  of the map :math:`({\cal V}, {\cal E})`
 
     range_hypergraph : :py:class:`Hypergraph`
-      Hypergraph at the range of the map.
+      Hypergraph in the range of the map :math:`({\cal V}', {\cal E})'`
     """
     def __cinit__(self):
         self.thisptr = NULL
@@ -524,9 +551,17 @@ cdef class HypergraphMap:
         """
         Compose two hypergraph maps.
 
+
+
         Parameters
         -----------
-        other :
+        other : :py:class:`HypergraphMap`
+          A map of type :math:`m' : {\cal V}' \cup {\cal E}' \mapsto {\cal V}'' \cup {\cal E}''`
+
+        Returns
+        ---------
+        composed_map : :py:class:`HypergraphMap`
+          A map of type :math:`m'' : {\cal V} \cup {\cal E} \mapsto {\cal V}'' \cup {\cal E}''`
 
 
         """

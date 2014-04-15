@@ -5,21 +5,36 @@ semirings:
     npvalue: np.double
     viterbi: Yes
     description:
-      Real-valued weights with operations :math:`(+, *) = (\max, *)`.
+      Real-valued max probability potentials.
+
+      Uses the operations :math:`(+, *) = (\max, *)`.
   - type: LogViterbi
     cvalue: double
     format: d
     npvalue: np.double
     viterbi: True
     description:
-      Real-valued log weights with operations :math:`(+, *) = (\max, *)`.
+      Real-valued max log-probability potentials.
+
+      Uses the operations :math:`(+, *) = (\max, *)`.
   - type: Inside
     cvalue: double
     npvalue: np.double
     format: d
     viterbi: Yes
     description:
-      Real-valued probability weights with operations  :math:`(+, *) = (+, *)`.
+      Real-valued probability potentials.
+
+      Uses the operations :math:`(+, *) = (+, *)`.
+  - type: MinMax
+    cvalue: double
+    npvalue: np.double
+    format: d
+    viterbi: No
+    description:
+      Real-valued min value potentials.
+
+      Uses the operations :math:`(+, *) = (\min, \max)`.
   - type: SparseVector
     ctype: SparseVectorPotential
     cvalue: vector[pair[int, int]]
@@ -38,9 +53,13 @@ semirings:
     npvalue: np.int8
     viterbi: False,
     description:
-      Natural-valued weights with operations :math:`(+, *) = (+, *)`.
+      Natural-valued counting potentials.
+
+      Uses the operations :math:`(+, *) = (+, *)`.
   - type: Bool
     cvalue: bool
     viterbi: Yes
     description:
-      Boolean-valued weights with operations :math:`(+, *) = (\land, \lor)`.
+      Boolean-valued logical potentials.
+
+      Uses the operations :math:`(+, *) = (\land, \lor)`.

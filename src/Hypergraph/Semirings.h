@@ -238,6 +238,41 @@ class CountingPotential {
     }
 };
 
+class MinMaxPotential {
+  public:
+    typedef double ValType;
+
+    static inline ValType add(ValType lhs, const ValType &rhs) {
+        lhs = min(lhs, rhs);
+        return lhs;
+    }
+    static inline ValType times(ValType lhs, const ValType &rhs) {
+        lhs = max(lhs, rhs);
+        return lhs;
+    }
+
+    static inline ValType safe_add(ValType lhs, const ValType &rhs) {
+        lhs = min(lhs, rhs);
+        return MinMaxPotential::normalize(lhs);
+    }
+    static inline ValType safe_times(ValType lhs, const ValType &rhs ) {
+        lhs = max(lhs, rhs);
+        return MinMaxPotential::normalize(lhs);
+    }
+
+    static inline const ValType &normalize(ValType &val) {
+        return val;
+    }
+
+    static inline ValType one() { return INF; }
+    static inline ValType zero() { return -INF; }
+
+    static inline ValType randValue() {
+        return rand();
+    }
+};
+
+
 /**
  * Comparison pair. *Experimental*
  * Type (s, t) op (s', t')

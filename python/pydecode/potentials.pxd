@@ -469,6 +469,115 @@ cdef class InsideValue:
 # Type identifiers.
 
 cdef extern from "Hypergraph/SemiringAlgorithms.h":
+    CMinMaxChart *inside_MinMax "general_inside<MinMaxPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphMinMaxPotentials theta) except +
+
+    CMinMaxChart *outside_MinMax "general_outside<MinMaxPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphMinMaxPotentials theta,
+        CMinMaxChart inside_chart) except +
+
+    void viterbi_MinMax"general_viterbi<MinMaxPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphMinMaxPotentials theta,
+        CMinMaxChart * chart,
+        CBackPointers *back
+        ) except +
+
+    cdef cppclass CMinMaxMarginals "Marginals<MinMaxPotential>":
+        double marginal(const CHyperedge *edge)
+        double marginal(const CHypernode *node)
+        CHypergraphBoolPotentials *threshold(
+            const double &threshold)
+        const CHypergraph *hypergraph()
+        vector[double] node_marginals()
+
+    cdef cppclass CMinMaxChart "Chart<MinMaxPotential>":
+        CMinMaxChart(const CHypergraph *graph)
+        double get(const CHypernode *node)
+        void insert(const CHypernode& node, const double& val)
+        vector[double] chart()
+
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<MinMaxPotential>":
+    CMinMaxMarginals *MinMax_compute "Marginals<MinMaxPotential>::compute" (
+                           const CHypergraph *hypergraph,
+                           const CHypergraphMinMaxPotentials *potentials)
+
+cdef extern from "Hypergraph/Semirings.h":
+    cdef cppclass MinMaxPotential:
+        pass
+
+
+cdef extern from "Hypergraph/Potentials.h":
+    cdef cppclass CHypergraphMinMaxPotentials "HypergraphPotentials<MinMaxPotential>":
+        double dot(const CHyperpath &path) except +
+        double score(const CHyperedge *edge)
+        CHypergraphMinMaxPotentials *times(
+            const CHypergraphMinMaxPotentials &potentials)
+        CHypergraphMinMaxPotentials *project_potentials(
+            const CHypergraphMap)
+        CHypergraphMinMaxPotentials(
+            const CHypergraph *hypergraph,
+            const vector[double] potentials,
+            double bias) except +
+        double bias()
+        vector[double] &potentials()
+        CHypergraphMinMaxPotentials *clone() const
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<MinMaxPotential>":
+    CHypergraphMinMaxPotentials *cmake_potentials_MinMax "HypergraphSparsePotentials<MinMaxPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const c_map.map[int, int] map_potentials,
+        const vector[double] potentials,
+        double bias) except +
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<MinMaxPotential>":
+    CHypergraphMinMaxPotentials *cmake_potentials_MinMax "HypergraphVectorPotentials<MinMaxPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const vector[double] *potentials,
+        double bias,
+        bool copy) except +
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<MinMaxPotential>":
+    CHypergraphMinMaxPotentials *cmake_projected_potentials_MinMax "HypergraphMappedPotentials<MinMaxPotential>::make_potentials" (
+        CHypergraphMinMaxPotentials *base_potentials,
+        const CHypergraphMap *projection) except +
+
+
+cdef extern from "Hypergraph/Semirings.h" namespace "MinMaxPotential":
+    double MinMax_one "MinMaxPotential::one" ()
+    double MinMax_zero "MinMaxPotential::zero" ()
+    double MinMax_add "MinMaxPotential::add" (double, const double&)
+    double MinMax_times "MinMaxPotential::times" (double, const double&)
+    double MinMax_safeadd "MinMaxPotential::safe_add" (double, const double&)
+    double MinMax_safetimes "MinMaxPotential::safe_times" (double, const double&)
+    double MinMax_normalize "MinMaxPotential::normalize" (double&)
+
+
+cdef class MinMaxPotentials(Potentials):
+    cdef CHypergraphMinMaxPotentials *thisptr
+    cdef HypergraphMap projection
+
+    cdef init(self, CHypergraphMinMaxPotentials *ptr,
+              HypergraphMap projection)
+
+cdef class MinMaxChart(Chart):
+    cdef CMinMaxChart *chart
+    cdef kind
+
+cdef class MinMaxValue:
+    cdef double thisval
+    cdef MinMaxValue init(self, double val)
+
+
+
+# Type identifiers.
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h":
     CSparseVectorChart *inside_SparseVector "general_inside<SparseVectorPotential>" (
         const CHypergraph *graph,
         const CHypergraphSparseVectorPotentials theta) except +

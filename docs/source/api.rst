@@ -83,7 +83,7 @@ The toolkit contains a collection of algorithms for working with hypergraphs.
    project
    binarize
 
-These methods return data structures with useful information from the algorithm
+Using the corresponding data structures
 
 
 .. automodule:: pydecode.potentials
@@ -111,7 +111,7 @@ Graph Builder
    :toctree: generated/
    :template: class.rst
 
-   ChartBuilder
+   GraphBuilder
 
 Imperative
 ------------

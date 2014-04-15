@@ -64,19 +64,19 @@ cdef class Hypergraph:
     The search space of a dynamic program.
 
     Hypergraph consisting of a set of nodes :math:`{\cal V}`,
-    hyperedges :math:`{\cal E}`, and a root node.
+    hyperedges :math:`{\cal E}`, and a root vertex.
 
     Attributes
     -----------
 
-    edges : iterator of :py:class:`Edge`
-      The edge set :math:`{\cal E}`. In topological order.
+    edges : list of :py:class:`Edge`
+      List of edge set :math:`{\cal E}` in topological order.
 
     root : :py:class:`Vertex`
       Root vertex in :math:`{\cal V}`.
 
-    vertices : iterator of :py:class:`Vertex`
-      The node set :math:`{\cal V}`. In topological order.
+    vertices : list of :py:class:`Vertex`
+      List of vertex set :math:`{\cal V}` in topological order.
     """
     def __cinit__(Hypergraph self):
         """
@@ -106,19 +106,6 @@ cdef class Hypergraph:
         return self
 
     def builder(self):
-        r"""
-        builder()
-
-        The builder for the hypergraph ::
-
-           >> hypergraph = Hypergraph()
-           >> with hypergraph.builder() as b:
-           >>    b.add_node()
-
-        Returns
-        ---------------------
-        :py:class:`GraphBuilder`
-        """
         self.thisptr = new CHypergraph()
         #_hypergraph_registry[self.thisptr.id()] = self
         _hypergraph_registry_counts[self.thisptr.id()] = 1
@@ -141,7 +128,7 @@ cdef class Hypergraph:
             return _LazyEdges(self).init(self.thisptr.edges())
 
     def __str__(self):
-        s = "Hypergraph: Edges: %s Nodes: %s" % (len(self.edges),
+        s = "Hypergraph: Edges: %s Vertices: %s" % (len(self.edges),
                                                  len(self.nodes)) + "\n"
         s += "Root %s" % (self.root.id) + "\n"
         for edge in self.edges:
@@ -159,13 +146,6 @@ cdef class GraphBuilder:
            >> hypergraph = Hypergraph()
            >> with hypergraph.builder() as b:
            >>    b.add_node()
-
-    Methods
-    -------
-
-    add_node(edges=[], label="")
-        Add a node (and its hyperedges) to the hypergraph.
-
     """
 
     def __init__(self):
@@ -268,19 +248,26 @@ cdef class Vertex:
     r"""
     Hypergraph vertex.
 
-    Formally :math:`v \in {\cal V}` associated with a :py:class:`Hypergraph`.
+    A hypergraph constains a set of vertices :math:`v \in {\cal V}`.
+    Each vertex (besides the root) is in the tail of many possible
+    hyperedges :math:`e \in {\cal E}`, and (besides terminal vertices)
+    at the head of many other edges.
+
+    The vertex object has access to the subedges of the vertex
+    or a bit indicating it is a terminal vertex. It also optionally
+    has an associated label, which may be any python object.
 
     Attributes
     -------------
 
     subedges : iterator of :py:class:`Edge`s
 
-       The edges with this vertex as head.
+       The hyperedges that have this vertex as head.
 
-       Formally :math:`\{e \in {\cal E} : h(e) = v \}`
+       We write this as :math:`\{e \in {\cal E} : h(e) = v \}`
 
     is_terminal : bool
-       Is the vertex terminal (no-subedges).
+       Indicates whether this vertex is terminal (no-subedges).
 
     label : any
         Data associated with the vertex.
@@ -337,16 +324,24 @@ cdef class Node(Vertex):
 
 cdef class Edge:
     r"""
-    Hypergraph (hyper)edge.
+    Hypergraph hyperedge.
 
-    Formally :math:`e \in {\cal E}` associated with a :py:class:`Hypergraph`.
-    A hyperedge is a vector :math:`\langle v_1 , \langle v_2 \ldots v_{n} \rangle \rangle` where :math:`v_1` is a head vertex and :math:`v_2 \ldots v_{n}` is a tail.
+
+    A hypergraph constains a set of hyperedge :math:`e \in {\cal E}`.
+    at the head of many other edges.  A hyperedge is a vector
+    :math:`\langle v_1 , \langle v_2 \ldots v_{n} \rangle \rangle`
+    where :math:`v_1` is a head vertex and :math:`v_2 \ldots v_{n}` is
+    a tail.
+
+    We represent a hyperedge with a reference to the head vertex,
+    an iterator of tail vertices, and a label which may be any
+    piece of python data.
 
     Attributes
     -----------
 
     head : :py:class:`Vertex`
-        A head vertex :math:`v_1`.
+        The head vertex :math:`v_1`.
 
     tail : iterator of :py:class:`Vertex`
         The tail vertices :math:`v_2 \ldots v_{n}`.
@@ -404,9 +399,13 @@ cdef convert_nodes(vector[const CHypernode *] nodes,
 
 cdef class Path:
     r"""
-    Path in the hypergraph.
+    Path through the hypergraph.
 
-    Formally a valid hyperpath :math:`y \in {\cal Y}` in the hypergraph.
+    A (hyper)path representing a possible traversal of the hypergraph.
+    A path is a member of the combinatorial set
+    :math:`y \in {\cal Y}` satisfying the consistency conditions.
+
+    We represent a path as an ordered list of edges and vertices
 
     Usage:
 
@@ -418,10 +417,10 @@ cdef class Path:
     -----------
 
     edges : iterator of :py:class:`Edge`
-        The hyperedges in the path in topological order.
+        The hyperedges in the path :math:`y_e = 1` in topological order.
 
     vertices : iterator of :py:class:`Vertex`
-        The vertices in the path in topological order.
+        The vertices in the path :math:`y_v = 1` in topological order.
     """
 
     def __dealloc__(self):
@@ -497,9 +496,33 @@ class HypergraphConstructionException(Exception):
 
 cdef class HypergraphMap:
     """
-    A map between two hypergraphs.
+    Map between two hypergraphs.
+
+    It is often useful to indicate the relationship between edges
+    in multiple hypergraphs. Say we have two hypergraphs
+    :math:`({\cal V}, {\cal E})` and :math:`({\cal V}', {\cal E}')`.
+    This class represents a function :math:`m : {\cal V} \cup {\cal E} \mapsto {\cal V}' \cup {\cal E}'`.
 
 
+    Usage:
+
+    To map a vertex or edge ::
+
+       >> hypergraph_map[edge]
+
+       >> hypergraph_map[vertex]
+
+    It can also be used to map objects over a hypergraph, for instance ::
+
+       >> hypergraph_map[potentials]
+
+    Attributes
+    -----------
+    domain_hypergraph : :py:class:`Hypergraph`
+      Hypergraph in the domain  of the map :math:`({\cal V}, {\cal E})`
+
+    range_hypergraph : :py:class:`Hypergraph`
+      Hypergraph in the range of the map :math:`({\cal V}', {\cal E})'`
     """
     def __cinit__(self):
         self.thisptr = NULL
@@ -526,7 +549,21 @@ cdef class HypergraphMap:
 
     def compose(self, HypergraphMap other):
         """
-        TODO: fill in
+        Compose two hypergraph maps.
+
+
+
+        Parameters
+        -----------
+        other : :py:class:`HypergraphMap`
+          A map of type :math:`m' : {\cal V}' \cup {\cal E}' \mapsto {\cal V}'' \cup {\cal E}''`
+
+        Returns
+        ---------
+        composed_map : :py:class:`HypergraphMap`
+          A map of type :math:`m'' : {\cal V} \cup {\cal E} \mapsto {\cal V}'' \cup {\cal E}''`
+
+
         """
         cdef CHypergraphMap *newptr = \
             self.thisptr.compose(deref(other.thisptr))
@@ -664,9 +701,10 @@ cdef class Potentials:
     with a hypergraph.
 
     Attributes
-    =============
+    ------------
 
-    bias :
+    bias : value
+
     """
 
     def show(self, Hypergraph graph):
@@ -737,7 +775,8 @@ cdef class Marginals:
 
 cdef class ViterbiPotentials(Potentials):
     r"""
-    Real-valued weights with operations :math:`(+, *) = (\max, *)`.
+    Real-valued max probability potentials.
+Uses the operations :math:`(+, *) = (\max, *)`.
 
     Potentials associated with the edges of a hypergraph.
 
@@ -1092,7 +1131,8 @@ class Viterbi:
 
 cdef class LogViterbiPotentials(Potentials):
     r"""
-    Real-valued log weights with operations :math:`(+, *) = (\max, *)`.
+    Real-valued max log-probability potentials.
+Uses the operations :math:`(+, *) = (\max, *)`.
 
     Potentials associated with the edges of a hypergraph.
 
@@ -1447,7 +1487,8 @@ class LogViterbi:
 
 cdef class InsidePotentials(Potentials):
     r"""
-    Real-valued probability weights with operations  :math:`(+, *) = (+, *)`.
+    Real-valued probability potentials.
+Uses the operations :math:`(+, *) = (+, *)`.
 
     Potentials associated with the edges of a hypergraph.
 
@@ -1792,6 +1833,332 @@ class Inside:
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
                          InsidePotentials potentials,
+                         threshold):
+        marginals = compute_marginals(graph, potentials)
+        bool_potentials = marginals.threshold(threshold)
+        return make_pruning_projections(graph, bool_potentials)
+
+
+
+
+cdef class MinMaxPotentials(Potentials):
+    r"""
+    Real-valued min value potentials.
+Uses the operations :math:`(+, *) = (\min, \max)`.
+
+    Potentials associated with the edges of a hypergraph.
+
+    Potential vector :math:`\theta \in R^{|{\cal E}|}` associated
+    with a hypergraph.
+
+    Acts as a dictionary::
+       >> print potentials[edge]
+    """
+
+    def __cinit__(self, Hypergraph graph):
+        """
+        Build the potential vector for a hypergraph.
+
+        :param hypergraph: The underlying hypergraph.
+        """
+        self.hypergraph = graph
+        self.kind = MinMax
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+        self.thisptr = NULL
+
+    def times(self, MinMaxPotentials other):
+        cdef CHypergraphMinMaxPotentials *new_potentials = \
+            self.thisptr.times(deref(other.thisptr))
+        return MinMaxPotentials(self.hypergraph).init(new_potentials, None)
+
+    def clone(self):
+        return MinMaxPotentials(self.hypergraph).init(self.thisptr.clone(),
+                                                          None)
+
+    def project(self, Hypergraph graph, HypergraphMap projection):
+        cdef CHypergraphMinMaxPotentials *ptr = \
+            self.thisptr.project_potentials(deref(projection.thisptr))
+        return MinMaxPotentials(graph).init(ptr, None)
+
+    def up_project(self, Hypergraph graph, HypergraphMap projection):
+        cdef CHypergraphMinMaxPotentials *ptr = \
+            cmake_projected_potentials_MinMax(self.thisptr,
+                                                  projection.thisptr)
+        return MinMaxPotentials(graph).init(ptr, projection)
+
+    property bias:
+        def __get__(self):
+            return _MinMax_from_cpp(self.thisptr.bias())
+
+    # def build(self, fn, bias=None):
+    #     """
+    #     build(fn)
+
+    #     Build the potential vector for a hypergraph.
+
+    #     :param fn: A function from edge labels to potentials.
+    #     """
+    #     cdef double my_bias
+    #     if bias is None:
+    #         my_bias = MinMax_one()
+    #     else:
+    #         my_bias = _MinMax_to_cpp(bias)
+
+    #     cdef vector[double] potentials = \
+    #          vector[double](self.hypergraph.thisptr.edges().size(),
+    #          MinMax_zero())
+    #     # cdef d result
+    #     for i, ty in enumerate(self.hypergraph.labeling.edge_labels):
+    #         result = fn(ty)
+    #         if result is None: potentials[i] = MinMax_zero()
+    #         potentials[i] = _MinMax_to_cpp(result)
+    #     self.thisptr =  \
+    #         cmake_potentials_MinMax(self.hypergraph.thisptr,
+    #                                    potentials, my_bias)
+    #     return self
+
+    def from_potentials(self, other_potentials):
+        cdef vector[double] *potentials = \
+            new vector[double](self.hypergraph.thisptr.edges().size())
+
+        for i, edge in enumerate(self.hypergraph.edges):
+            deref(potentials)[i] = _MinMax_to_cpp(other_potentials[edge])
+
+        self.thisptr =  \
+            cmake_potentials_MinMax(self.hypergraph.thisptr,
+                                        potentials,
+                                        _MinMax_to_cpp(other_potentials.bias),
+                                        False)
+
+        return self
+
+    def from_vector(self, in_vec, bias=None):
+        cdef double my_bias = self._bias(bias)
+
+        cdef vector[double] *potentials = \
+            new vector[double](self.hypergraph.thisptr.edges().size())
+
+        for i, v in enumerate(in_vec):
+            deref(potentials)[i] = _MinMax_to_cpp(v)
+
+        self.thisptr =  \
+            cmake_potentials_MinMax(self.hypergraph.thisptr,
+                                        potentials,
+                                        my_bias,
+                                        False)
+        return self
+
+    def from_map(self, in_map, bias=None):
+        cdef double my_bias = self._bias(bias)
+        cdef c_map.map[int, int] map_potentials
+        cdef vector[double] potentials = \
+            vector[double](len(in_map))
+
+        for j, (key, v) in enumerate(in_map.iteritems()):
+            map_potentials[key] = j
+            potentials[j] = _MinMax_to_cpp(v)
+
+        self.thisptr =  \
+            cmake_potentials_MinMax(self.hypergraph.thisptr,
+                                        map_potentials,
+                                        potentials,
+                                        my_bias)
+        return self
+
+    def _bias(self, bias):
+        if bias is None:
+            return MinMax_one()
+        else:
+            return _MinMax_to_cpp(bias)
+
+    
+    def from_array(self, double [:] X,
+                   bias=None):
+        cdef double my_bias = self._bias(bias)
+        cdef int s = self.hypergraph.thisptr.edges().size()
+
+        cdef vector[double] *vec= \
+            new vector[double]()
+        vec.assign(&X[0], (&X[0]) + s)
+
+        self.thisptr =  \
+            cmake_potentials_MinMax(self.hypergraph.thisptr,
+                                        vec, my_bias, False)
+        return self
+
+    def as_array(self):
+        return _MinMaxvector_to_numpy(self.thisptr.potentials())
+    
+
+
+    cdef init(self, CHypergraphMinMaxPotentials *ptr,
+              HypergraphMap projection):
+        self.thisptr = ptr
+        self.projection = projection
+        return self
+
+    def __getitem__(self, Edge edge not None):
+        return _MinMax_from_cpp(self.thisptr.score(edge.edgeptr))
+
+    def dot(self, Path path not None):
+        r"""
+        Take the dot product with `path` :math:`\theta^{\top} y`.
+        """
+        return _MinMax_from_cpp(self.thisptr.dot(deref(path.thisptr)))
+
+
+cdef class MinMaxValue:
+    cdef MinMaxValue init(self, double val):
+        self.thisval = val
+        return self
+
+    @staticmethod
+    def from_value(double val):
+        created = MinMaxValue()
+        created.thisval = _MinMax_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _MinMax_from_cpp(MinMax_zero())
+
+    @staticmethod
+    def one_raw():
+        return _MinMax_from_cpp(MinMax_one())
+
+    @staticmethod
+    def zero():
+        return MinMaxValue().init(MinMax_zero())
+
+    @staticmethod
+    def one():
+        return MinMaxValue().init(MinMax_one())
+
+    def __add__(MinMaxValue self, MinMaxValue other):
+        return MinMaxValue().init(MinMax_add(self.thisval,
+                                                  other.thisval))
+
+    def __mul__(MinMaxValue self, MinMaxValue other):
+        return MinMaxValue().init(MinMax_times(self.thisval,
+                                                    other.thisval))
+
+    property value:
+        def __get__(self):
+            return _MinMax_from_cpp(self.thisval)
+
+cdef double _MinMax_to_cpp(double val):
+    return val
+
+
+cdef _MinMax_from_cpp(double val):
+    return val
+
+cdef class MinMaxChart(Chart):
+    def __init__(self, Hypergraph graph=None):
+        self.kind = MinMax
+        self.chart = NULL
+        if graph is not None:
+            self.chart = new CMinMaxChart(graph.thisptr)
+
+    def __getitem__(self, Vertex node):
+        return _MinMax_from_cpp(self.chart.get(node.nodeptr))
+
+    def __dealloc__(self):
+        del self.chart
+        self.chart = NULL
+
+    
+    def as_array(self):
+        return _MinMaxvector_to_numpy(self.chart.chart())
+    
+
+
+cdef _MinMaxvector_to_numpy(const vector[double] &vec):
+    cdef view.array my_array = \
+        view.array(shape=(vec.size(),),
+                   itemsize=sizeof(double),
+                   format="d",
+                   mode="c", allocate_buffer=False)
+    my_array.data = <char *> vec.data()
+    cdef double [:] my_view = my_array
+    return np.asarray(my_view)
+
+
+cdef class _MinMaxMarginals(Marginals):
+    cdef const CMinMaxMarginals *thisptr
+    cdef Hypergraph graph
+
+    def __init__(self):
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    cdef init(self, const CMinMaxMarginals *ptr, Hypergraph graph):
+        self.thisptr = ptr
+        self.graph = graph
+        return self
+
+    def __getitem__(self, obj):
+        if isinstance(obj, Edge):
+            return _MinMax_from_cpp(
+                self.thisptr.marginal((<Edge>obj).edgeptr))
+        elif isinstance(obj, Vertex):
+            return _MinMax_from_cpp(
+                self.thisptr.marginal((<Vertex>obj).nodeptr))
+        else:
+            raise HypergraphAccessException(
+                "Only nodes and edges have MinMax marginal values." +
+                "Passed %s." % obj)
+
+    
+    def as_array(self):
+        return _MinMaxvector_to_numpy(self.thisptr.node_marginals())
+    
+
+
+    
+
+
+class MinMax:
+    Chart = MinMaxChart
+    Marginals = _MinMaxMarginals
+    #Semi = _MinMax
+    Potentials = MinMaxPotentials
+
+    @staticmethod
+    def inside(Hypergraph graph,
+               MinMaxPotentials potentials):
+        cdef MinMaxChart chart = MinMaxChart()
+        chart.chart = inside_MinMax(graph.thisptr,
+                                        deref(potentials.thisptr))
+        return chart
+
+    @staticmethod
+    def outside(Hypergraph graph,
+                MinMaxPotentials potentials,
+                MinMaxChart inside_chart):
+        cdef MinMaxChart out_chart = MinMaxChart()
+        out_chart.chart = outside_MinMax(graph.thisptr,
+                                             deref(potentials.thisptr),
+                                             deref(inside_chart.chart))
+        return out_chart
+
+    
+
+    @staticmethod
+    def compute_marginals(Hypergraph graph,
+                          MinMaxPotentials potentials):
+        cdef const CMinMaxMarginals *marginals = \
+            MinMax_compute(graph.thisptr, potentials.thisptr)
+        return _MinMaxMarginals().init(marginals, graph)
+
+    @staticmethod
+    def prune_hypergraph(Hypergraph graph,
+                         MinMaxPotentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
         bool_potentials = marginals.threshold(threshold)
@@ -2678,7 +3045,8 @@ class MaxSparseVector:
 
 cdef class CountingPotentials(Potentials):
     r"""
-    Natural-valued weights with operations :math:`(+, *) = (+, *)`.
+    Natural-valued counting potentials.
+Uses the operations :math:`(+, *) = (+, *)`.
 
     Potentials associated with the edges of a hypergraph.
 
@@ -3033,7 +3401,8 @@ class Counting:
 
 cdef class BoolPotentials(Potentials):
     r"""
-    Boolean-valued weights with operations :math:`(+, *) = (\land, \lor)`.
+    Boolean-valued logical potentials.
+Uses the operations :math:`(+, *) = (\land, \lor)`.
 
     Potentials associated with the edges of a hypergraph.
 
@@ -3368,7 +3737,7 @@ cdef class BackPointers:
     Attributes
     -----------
 
-    path: Hyperpath
+    path : Hyperpath
        The best hyperpath from the root.
     """
 
