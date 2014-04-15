@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structPlusOperator" kind="struct" prot="public">
+    <compoundname>PlusOperator</compoundname>
+    <basecompoundref refid="structOperator" prot="public" virt="non-virtual">Operator</basecompoundref>
+    <basecompoundref refid="structOperator" prot="public" virt="non-virtual">Operator</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structPlusOperator_1a954f6b0fa0e59cc3a3df4b2751081b48" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int PlusOperator::operator()</definition>
+        <argsstring>(int x, int y) const </argsstring>
+        <name>operator()</name>
+        <reimplements refid="structOperator_1ae04714381888721a1c79deaba7572aeb">operator()</reimplements>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="308" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="308" bodyend="308"/>
+      </memberdef>
+      <memberdef kind="function" id="structPlusOperator_1a954f6b0fa0e59cc3a3df4b2751081b48" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int PlusOperator::operator()</definition>
+        <argsstring>(int x, int y) const </argsstring>
+        <name>operator()</name>
+        <reimplements refid="structOperator_1ae04714381888721a1c79deaba7572aeb">operator()</reimplements>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="308" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="308" bodyend="308"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="141">
+        <label>Operator</label>
+        <link refid="structOperator"/>
+      </node>
+      <node id="140">
+        <label>PlusOperator</label>
+        <link refid="structPlusOperator"/>
+        <childnode refid="141" relation="public-inheritance">
+        </childnode>
+        <childnode refid="141" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="143">
+        <label>Operator</label>
+        <link refid="structOperator"/>
+      </node>
+      <node id="142">
+        <label>PlusOperator</label>
+        <link refid="structPlusOperator"/>
+        <childnode refid="143" relation="public-inheritance">
+        </childnode>
+        <childnode refid="143" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="307" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="307" bodyend="309"/>
+    <listofallmembers>
+      <member refid="structPlusOperator_1a954f6b0fa0e59cc3a3df4b2751081b48" prot="public" virt="virtual"><scope>PlusOperator</scope><name>operator()</name></member>
+      <member refid="structPlusOperator_1a954f6b0fa0e59cc3a3df4b2751081b48" prot="public" virt="virtual"><scope>PlusOperator</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

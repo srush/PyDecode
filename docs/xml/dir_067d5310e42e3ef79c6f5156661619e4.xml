@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_067d5310e42e3ef79c6f5156661619e4" kind="dir">
+    <compoundname>pydecode-0.1.27</compoundname>
+    <innerdir refid="dir_c2394923faf7f7b91fa4e3991d80f763">pydecode-0.1.27/src</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/"/>
+  </compounddef>
+</doxygen>

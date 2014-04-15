@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structEdgeGroup" kind="struct" prot="public">
+    <compoundname>EdgeGroup</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structEdgeGroup_1ab9b156dc31d37bdf23e601281609568e" prot="public" static="no" mutable="no">
+        <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+        <definition>HEdge EdgeGroup::edge</definition>
+        <argsstring></argsstring>
+        <name>edge</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" line="86" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEdgeGroup_1a2e3e121ef3cafdb5cb39aef0016274d9" prot="public" static="no" mutable="no">
+        <type>vector&lt; int &gt;</type>
+        <definition>vector&lt; int &gt; EdgeGroup::back</definition>
+        <argsstring></argsstring>
+        <name>back</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" line="87" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structEdgeGroup_1a30d924d5d86f23e3866ab787e29a646a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>EdgeGroup::EdgeGroup</definition>
+        <argsstring>(HEdge _edge, int back_left, int back_right)</argsstring>
+        <name>EdgeGroup</name>
+        <param>
+          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <declname>_edge</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>back_left</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>back_right</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" line="82" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="81" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="structEdgeGroup_1a30d924d5d86f23e3866ab787e29a646a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>EdgeGroup::EdgeGroup</definition>
+        <argsstring>(HEdge _edge, int back_left, int back_right)</argsstring>
+        <name>EdgeGroup</name>
+        <param>
+          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <declname>_edge</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>back_left</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>back_right</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="82" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="81" bodyend="85"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="38">
+        <label>Hyperedge</label>
+        <link refid="classHyperedge"/>
+      </node>
+      <node id="37">
+        <label>EdgeGroup</label>
+        <link refid="structEdgeGroup"/>
+        <childnode refid="38" relation="usage">
+          <edgelabel>edge</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" line="80" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="80" bodyend="88"/>
+    <listofallmembers>
+      <member refid="structEdgeGroup_1a2e3e121ef3cafdb5cb39aef0016274d9" prot="public" virt="non-virtual"><scope>EdgeGroup</scope><name>back</name></member>
+      <member refid="structEdgeGroup_1ab9b156dc31d37bdf23e601281609568e" prot="public" virt="non-virtual"><scope>EdgeGroup</scope><name>edge</name></member>
+      <member refid="structEdgeGroup_1a30d924d5d86f23e3866ab787e29a646a" prot="public" virt="non-virtual"><scope>EdgeGroup</scope><name>EdgeGroup</name></member>
+      <member refid="structEdgeGroup_1a30d924d5d86f23e3866ab787e29a646a" prot="public" virt="non-virtual"><scope>EdgeGroup</scope><name>EdgeGroup</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

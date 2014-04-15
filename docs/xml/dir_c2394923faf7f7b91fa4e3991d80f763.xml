@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_c2394923faf7f7b91fa4e3991d80f763" kind="dir">
+    <compoundname>pydecode-0.1.27/src</compoundname>
+    <innerdir refid="dir_28064550829a66d6a7c44b870f11db2a">pydecode-0.1.27/src/Hypergraph</innerdir>
+    <innerfile refid="pydecode-0_81_827_2src_2common_8h">common.h</innerfile>
+    <innerfile refid="pydecode-0_81_827_2src_2foreach_8h">foreach.h</innerfile>
+    <innerfile refid="pydecode-0_81_827_2src_2Tests_8cpp">Tests.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/"/>
+  </compounddef>
+</doxygen>

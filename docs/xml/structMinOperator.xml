@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structMinOperator" kind="struct" prot="public">
+    <compoundname>MinOperator</compoundname>
+    <basecompoundref refid="structOperator" prot="public" virt="non-virtual">Operator</basecompoundref>
+    <basecompoundref refid="structOperator" prot="public" virt="non-virtual">Operator</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structMinOperator_1a12f92c51b80921b66842175e8c521c31" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int MinOperator::operator()</definition>
+        <argsstring>(int x, int y) const </argsstring>
+        <name>operator()</name>
+        <reimplements refid="structOperator_1ae04714381888721a1c79deaba7572aeb">operator()</reimplements>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="312" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="312" bodyend="312"/>
+      </memberdef>
+      <memberdef kind="function" id="structMinOperator_1a12f92c51b80921b66842175e8c521c31" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int MinOperator::operator()</definition>
+        <argsstring>(int x, int y) const </argsstring>
+        <name>operator()</name>
+        <reimplements refid="structOperator_1ae04714381888721a1c79deaba7572aeb">operator()</reimplements>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="312" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="312" bodyend="312"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="122">
+        <label>Operator</label>
+        <link refid="structOperator"/>
+      </node>
+      <node id="121">
+        <label>MinOperator</label>
+        <link refid="structMinOperator"/>
+        <childnode refid="122" relation="public-inheritance">
+        </childnode>
+        <childnode refid="122" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="124">
+        <label>Operator</label>
+        <link refid="structOperator"/>
+      </node>
+      <node id="123">
+        <label>MinOperator</label>
+        <link refid="structMinOperator"/>
+        <childnode refid="124" relation="public-inheritance">
+        </childnode>
+        <childnode refid="124" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="311" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="311" bodyend="313"/>
+    <listofallmembers>
+      <member refid="structMinOperator_1a12f92c51b80921b66842175e8c521c31" prot="public" virt="virtual"><scope>MinOperator</scope><name>operator()</name></member>
+      <member refid="structMinOperator_1a12f92c51b80921b66842175e8c521c31" prot="public" virt="virtual"><scope>MinOperator</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,319 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structBeamGroups" kind="struct" prot="public">
+    <compoundname>BeamGroups</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="structBeamGroups_1a498f53129a4c754aa81e018fe3fa444f" prot="private" static="no" mutable="no">
+        <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+        <definition>const Hypergraph * BeamGroups::hypergraph_</definition>
+        <argsstring></argsstring>
+        <name>hypergraph_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="60" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamGroups_1a66f0a9f3b8fb27afd35dc079e02e2a5a" prot="private" static="no" mutable="no">
+        <type>vector&lt; int &gt;</type>
+        <definition>vector&lt; int &gt; BeamGroups::groups_</definition>
+        <argsstring></argsstring>
+        <name>groups_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="62" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamGroups_1a418ca2a541043b850106ba1b8a343883" prot="private" static="no" mutable="no">
+        <type>vector&lt; int &gt;</type>
+        <definition>vector&lt; int &gt; BeamGroups::group_limit_</definition>
+        <argsstring></argsstring>
+        <name>group_limit_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="63" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamGroups_1a713762358ca290f0f854519bbb5092f0" prot="private" static="no" mutable="no">
+        <type>vector&lt; vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; &gt;</type>
+        <definition>vector&lt; vector&lt; HNode &gt; &gt; BeamGroups::group_nodes_</definition>
+        <argsstring></argsstring>
+        <name>group_nodes_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="64" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamGroups_1aa25d33d9fe8909029949b2194394c994" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BeamGroups::num_groups_</definition>
+        <argsstring></argsstring>
+        <name>num_groups_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="65" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structBeamGroups_1ab2c34b27058f2bc075f215a8a30ffc15" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BeamGroups::BeamGroups</definition>
+        <argsstring>(const Hypergraph *graph, const vector&lt; int &gt; &amp;groups, const vector&lt; int &gt; &amp;group_limit, int num_groups)</argsstring>
+        <name>BeamGroups</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const vector&lt; int &gt; &amp;</type>
+          <declname>groups</declname>
+        </param>
+        <param>
+          <type>const vector&lt; int &gt; &amp;</type>
+          <declname>group_limit</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_groups</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="25" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="17" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1aac0563e6bb495ce29a14c61f89ae7928" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int BeamGroups::groups_size</definition>
+        <argsstring>() const </argsstring>
+        <name>groups_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="36" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="36" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1ad4644858864a8a048cad50b646c7f190" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int BeamGroups::group_limit</definition>
+        <argsstring>(int group) const </argsstring>
+        <name>group_limit</name>
+        <param>
+          <type>int</type>
+          <declname>group</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="40" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="40" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1aaed409941f22bee901d54af1c6059740" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int BeamGroups::group</definition>
+        <argsstring>(HNode node) const </argsstring>
+        <name>group</name>
+        <param>
+          <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+          <declname>node</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="44" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="44" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1a1725665d8cc4cf478dc34664765e29b2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; &amp;</type>
+        <definition>const vector&lt;HNode&gt;&amp; BeamGroups::group_nodes</definition>
+        <argsstring>(int group) const </argsstring>
+        <name>group_nodes</name>
+        <param>
+          <type>int</type>
+          <declname>group</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="48" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="48" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1ac48a0a6943c7f7c6453cfb7227cd46ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void BeamGroups::check</definition>
+        <argsstring>(const Hypergraph *hypergraph) const </argsstring>
+        <name>check</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="52" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="52" bodyend="57"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1ab2c34b27058f2bc075f215a8a30ffc15" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BeamGroups::BeamGroups</definition>
+        <argsstring>(const Hypergraph *graph, const vector&lt; int &gt; &amp;groups, const vector&lt; int &gt; &amp;group_limit, int num_groups)</argsstring>
+        <name>BeamGroups</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const vector&lt; int &gt; &amp;</type>
+          <declname>groups</declname>
+        </param>
+        <param>
+          <type>const vector&lt; int &gt; &amp;</type>
+          <declname>group_limit</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_groups</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="25" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="17" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1aac0563e6bb495ce29a14c61f89ae7928" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int BeamGroups::groups_size</definition>
+        <argsstring>() const </argsstring>
+        <name>groups_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="36" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="36" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1ad4644858864a8a048cad50b646c7f190" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int BeamGroups::group_limit</definition>
+        <argsstring>(int group) const </argsstring>
+        <name>group_limit</name>
+        <param>
+          <type>int</type>
+          <declname>group</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="40" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="40" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1aaed409941f22bee901d54af1c6059740" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int BeamGroups::group</definition>
+        <argsstring>(HNode node) const </argsstring>
+        <name>group</name>
+        <param>
+          <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+          <declname>node</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="44" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="44" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1a1725665d8cc4cf478dc34664765e29b2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; &amp;</type>
+        <definition>const vector&lt;HNode&gt;&amp; BeamGroups::group_nodes</definition>
+        <argsstring>(int group) const </argsstring>
+        <name>group_nodes</name>
+        <param>
+          <type>int</type>
+          <declname>group</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="48" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="48" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamGroups_1ac48a0a6943c7f7c6453cfb7227cd46ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void BeamGroups::check</definition>
+        <argsstring>(const Hypergraph *hypergraph) const </argsstring>
+        <name>check</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>hypergraph</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="52" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="52" bodyend="57"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="16" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="16" bodyend="66"/>
+    <listofallmembers>
+      <member refid="structBeamGroups_1ab2c34b27058f2bc075f215a8a30ffc15" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>BeamGroups</name></member>
+      <member refid="structBeamGroups_1ab2c34b27058f2bc075f215a8a30ffc15" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>BeamGroups</name></member>
+      <member refid="structBeamGroups_1ac48a0a6943c7f7c6453cfb7227cd46ea" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>check</name></member>
+      <member refid="structBeamGroups_1ac48a0a6943c7f7c6453cfb7227cd46ea" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>check</name></member>
+      <member refid="structBeamGroups_1aaed409941f22bee901d54af1c6059740" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>group</name></member>
+      <member refid="structBeamGroups_1aaed409941f22bee901d54af1c6059740" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>group</name></member>
+      <member refid="structBeamGroups_1ad4644858864a8a048cad50b646c7f190" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>group_limit</name></member>
+      <member refid="structBeamGroups_1ad4644858864a8a048cad50b646c7f190" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>group_limit</name></member>
+      <member refid="structBeamGroups_1a418ca2a541043b850106ba1b8a343883" prot="private" virt="non-virtual"><scope>BeamGroups</scope><name>group_limit_</name></member>
+      <member refid="structBeamGroups_1a1725665d8cc4cf478dc34664765e29b2" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>group_nodes</name></member>
+      <member refid="structBeamGroups_1a1725665d8cc4cf478dc34664765e29b2" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>group_nodes</name></member>
+      <member refid="structBeamGroups_1a713762358ca290f0f854519bbb5092f0" prot="private" virt="non-virtual"><scope>BeamGroups</scope><name>group_nodes_</name></member>
+      <member refid="structBeamGroups_1a66f0a9f3b8fb27afd35dc079e02e2a5a" prot="private" virt="non-virtual"><scope>BeamGroups</scope><name>groups_</name></member>
+      <member refid="structBeamGroups_1aac0563e6bb495ce29a14c61f89ae7928" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>groups_size</name></member>
+      <member refid="structBeamGroups_1aac0563e6bb495ce29a14c61f89ae7928" prot="public" virt="non-virtual"><scope>BeamGroups</scope><name>groups_size</name></member>
+      <member refid="structBeamGroups_1a498f53129a4c754aa81e018fe3fa444f" prot="private" virt="non-virtual"><scope>BeamGroups</scope><name>hypergraph_</name></member>
+      <member refid="structBeamGroups_1aa25d33d9fe8909029949b2194394c994" prot="private" virt="non-virtual"><scope>BeamGroups</scope><name>num_groups_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
