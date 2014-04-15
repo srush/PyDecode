@@ -12,8 +12,8 @@ Python API
 Hypergraph
 ==========
 
-The main data structure used PyDecode is a weighted directed hypergraph, which
-is a graphical representation of a dynamic program.
+PyDecode uses directed hypergraphs to represent the
+structure of a dynamic programming algorithm.
 
 .. automodule:: pydecode.potentials
    :no-members:
@@ -27,14 +27,45 @@ is a graphical representation of a dynamic program.
    Vertex
    Edge
    Path
+   HypergraphMap
 
 .. _algorithms:
+
+Potentials
+============
+
+Users can specify potential vectors that are associated with
+each edge of the hypergraph.
+
+.. automodule:: pydecode.potentials
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   Potentials
+
+There are several types of potentials implemented.
+
+.. automodule:: pydecode.potentials
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   LogViterbiPotentials
+   InsidePotentials
+   BoolPotentials
 
 
 Algorithms
 ==========
 
-The toolkit contains a collection of algorithms for working with weighted hypergraphs, including finding the best path, inside scores, outside score
+The toolkit contains a collection of algorithms for working with hypergraphs.
 
 
 .. automodule:: pydecode.potentials
@@ -47,10 +78,30 @@ The toolkit contains a collection of algorithms for working with weighted hyperg
    best_path
    inside
    outside
-   compute_marginals
+   marginals
+   prune
+   project
+   binarize
 
-Potentials
-============
+These methods return data structures with useful information from the algorithm
+
+
+.. automodule:: pydecode.potentials
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+   :toctree: generated/
+
+   Chart
+   Marginals
+   BackPointers
+
+Construction
+===================
+
+Graph Builder
+------------
 
 .. automodule:: pydecode.potentials
    :no-members:
@@ -60,32 +111,10 @@ Potentials
    :toctree: generated/
    :template: class.rst
 
-   Potentials
-   LogViterbiPotentials
-   InsidePotentials
-   BoolPotentials
+   ChartBuilder
 
-Data Structures
-===============
-
-.. automodule:: pydecode.potentials
-   :no-members:
-   :no-inherited-members:
-
-.. autosummary::
-   :toctree: generated/
-
-   Marginals
-   Chart
-
-
-Dynamic Programming
-===================
-
-
-PyDecode provides an imperative interface for constructing
-dynamic programs. The goal is to make construction as simple
-as pseudocode.
+Imperative
+------------
 
 .. automodule:: pydecode.chart
    :no-members:
@@ -96,7 +125,3 @@ as pseudocode.
    :template: class.rst
 
    ChartBuilder
-
-
-Behind the scenes the toolkit will convert the code to a
-graph structured representation known as a hypergraph.

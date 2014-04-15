@@ -80,24 +80,38 @@ template<typename SemiringType>
 
  public:
     HypergraphVectorPotentials(const Hypergraph *hypergraph,
-                               const vector<V> &potentials,
-                               V bias)
-            : HypergraphPotentials<SemiringType>(hypergraph, bias),
-            potentials_(potentials) {
-            assert(potentials.size() == hypergraph->edges().size());
+                               vector<V> *potentials,
+                               V bias,
+                               bool copy=true)
+            : HypergraphPotentials<SemiringType>(hypergraph, bias)
+    {
+        assert(potentials->size() == hypergraph->edges().size());
+        if (copy) {
+            potentials_ = new vector<V>(*potentials);
+        } else {
+            potentials_ = potentials;
+        }
     }
-    vector<V> &potentials() { return potentials_; }
-    const vector<V> &potentials() const { return potentials_; }
+
+    ~HypergraphVectorPotentials() {
+        delete potentials_;
+    }
+
+    vector<V> &potentials() { return *potentials_; }
+    const vector<V> &potentials() const { return *potentials_; }
 
     explicit HypergraphVectorPotentials(const Hypergraph *hypergraph)
             : HypergraphPotentials<SemiringType>(hypergraph,
-                                                 SemiringType::one()),
-            potentials_(hypergraph->edges().size(), SemiringType::one()) {}
+                                                 SemiringType::one()) {
+        potentials_ = new vector<V>(hypergraph->edges().size(),
+                                    SemiringType::one());
+    }
 
     static HypergraphPotentials<SemiringType> *
             make_potentials(const Hypergraph *hypergraph,
-                            const vector<V> &potentials,
-                            V bias) {
+                            vector<V> *potentials,
+                            V bias,
+                            bool copy=true) {
         return new HypergraphVectorPotentials<SemiringType>(
             hypergraph, potentials, bias);
     }
@@ -107,18 +121,18 @@ template<typename SemiringType>
         V score = SemiringType::one();
         foreach (HEdge edge, path.edges()) {
             score = SemiringType::times(score,
-                                        potentials_[edge->id()]);
+                                        (*potentials_)[edge->id()]);
         }
         return SemiringType::times(score, this->bias_);
     }
 
-    V score(HEdge edge) const { return potentials_[edge->id()]; }
+    V score(HEdge edge) const { return (*potentials_)[edge->id()]; }
     inline V operator[] (HEdge edge) const {
-        return potentials_[edge->id()];
+        return (*potentials_)[edge->id()];
     }
 
     void insert(const HEdge& edge, const V& val) {
-        potentials_[edge->id()] = val;
+        (*potentials_)[edge->id()] = val;
     }
 
     HypergraphPotentials<S> *times(
@@ -131,8 +145,13 @@ template<typename SemiringType>
     }
 
  protected:
-    vector<V> potentials_;
+    vector<V> *potentials_;
+
+    // Is the potential vector owned by the class.
+    bool owned_;
 };
+
+
 
 template<typename SemiringType>
   class HypergraphSparsePotentials :

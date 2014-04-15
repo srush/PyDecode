@@ -1,6 +1,5 @@
 // Copyright [2013] Alexander Rush
 
-
 #include <algorithm>
 #include <cassert>
 #include <exception>
@@ -39,7 +38,6 @@ Chart<S> *
 general_inside(const Hypergraph *graph,
                const HypergraphPotentials<S> &potentials) {
   potentials.check(*graph);
-
 
   // Run Viterbi Hypergraph algorithm.
   Chart<S> *chart = new Chart<S>(graph);

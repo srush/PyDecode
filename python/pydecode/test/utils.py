@@ -3,7 +3,7 @@ import random
 import itertools
 from collections import defaultdict
 from pydecode.hyper import EdgeDesc
-
+import numpy as np
 
 def simple_hypergraph():
     """
@@ -186,6 +186,10 @@ def random_log_viterbi_potentials(hypergraph):
     return ph.LogViterbiPotentials(hypergraph)\
         .from_vector([random.random()
                       for e in hypergraph.edges])
+
+def random_log_viterbi_potentials_array(hypergraph):
+    return ph.LogViterbiPotentials(hypergraph)\
+        .from_array(np.random.rand(len(hypergraph.edges)))
 
 
 def random_bool_potentials(hypergraph):

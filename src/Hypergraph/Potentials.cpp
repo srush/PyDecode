@@ -16,17 +16,20 @@ HypergraphPotentials<SemiringType> *
 HypergraphVectorPotentials<SemiringType>::times(
     const HypergraphPotentials<SemiringType> &other) const {
     HypergraphPotentials<SemiringType>::check(other);
-    vector<typename SemiringType::ValType> new_potentials(potentials_);
+    vector<typename SemiringType::ValType> *new_potentials
+            = new vector<typename SemiringType::ValType>(*potentials_);
     int i = -1;
     foreach (HEdge edge, this->hypergraph_->edges()) {
         i++;
-        new_potentials[i] = SemiringType::times(new_potentials[i],
-                                                other[edge]);
+        (*new_potentials)[i] = SemiringType::times(
+            (*new_potentials)[i],
+            other[edge]);
     }
     return new HypergraphVectorPotentials<SemiringType>(
         this->hypergraph_,
         new_potentials,
-        SemiringType::times(this->bias_, other.bias_));
+        SemiringType::times(this->bias_, other.bias_),
+        false);
 }
 
 template<typename SemiringType>
@@ -34,17 +37,19 @@ HypergraphPotentials<SemiringType> *
 HypergraphPotentials<SemiringType>::project_potentials(
         const HypergraphMap &projection) const {
     check(*projection.domain_graph());
-    vector<typename SemiringType::ValType>
-            potentials(projection.range_graph()->edges().size());
+    vector<typename SemiringType::ValType> *potentials =
+            new vector<typename SemiringType::ValType>(
+                projection.range_graph()->edges().size());
+
     foreach (HEdge edge, projection.domain_graph()->edges()) {
         HEdge new_edge = projection.map(edge);
         if (new_edge != NULL && new_edge->id() >= 0) {
             assert(new_edge->id() < projection.range_graph()->edges().size());
-            potentials[new_edge->id()] = score(edge);
+            (*potentials)[new_edge->id()] = score(edge);
         }
     }
     return new HypergraphVectorPotentials<SemiringType>(
-        projection.range_graph(), potentials, bias_);
+        projection.range_graph(), potentials, bias_, false);
 }
 
 template<typename SemiringType>
@@ -52,17 +57,20 @@ HypergraphPotentials<SemiringType> *
 HypergraphSparsePotentials<SemiringType>::times(
     const HypergraphPotentials<SemiringType> &other) const {
     HypergraphPotentials<SemiringType>::check(other);
-    vector<typename SemiringType::ValType> new_potentials(potentials_);
+    vector<typename SemiringType::ValType> *new_potentials=
+            new vector<typename SemiringType::ValType>(potentials_);
     int i = -1;
     foreach (HEdge edge, this->hypergraph_->edges()) {
         i++;
-        new_potentials[i] = SemiringType::times(new_potentials[i],
-                                                other[edge]);
+        (*new_potentials)[i] = SemiringType::times(
+            (*new_potentials)[i],
+            other[edge]);
     }
     return new HypergraphVectorPotentials<SemiringType>(
         this->hypergraph_,
         new_potentials,
-        SemiringType::times(this->bias_, other.bias_));
+        SemiringType::times(this->bias_, other.bias_),
+        false);
 }
 
 template<typename SemiringType>
@@ -81,12 +89,13 @@ template<typename SemiringType>
 HypergraphPotentials<SemiringType> *
 HypergraphMappedPotentials<SemiringType>::times(
     const HypergraphPotentials<SemiringType> &other) const {
-    vector<typename SemiringType::ValType> new_potentials(
-        projection_->range_graph()->edges().size());
+    vector<typename SemiringType::ValType> *new_potentials =
+            new vector<typename SemiringType::ValType>(
+                projection_->range_graph()->edges().size());
     int i = -1;
     foreach (HEdge edge, projection_->range_graph()->edges()) {
         i++;
-        new_potentials[i] = SemiringType::times(
+        (*new_potentials)[i] = SemiringType::times(
             base_potentials_->score(edge),
             other.score(edge));
     }
@@ -94,7 +103,8 @@ HypergraphMappedPotentials<SemiringType>::times(
         new HypergraphVectorPotentials<SemiringType>(
             projection_->range_graph(),
             new_potentials,
-            SemiringType::times(this->bias_, other.bias())),
+            SemiringType::times(this->bias_, other.bias()),
+            false),
         projection_);
 }
 

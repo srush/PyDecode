@@ -2,11 +2,11 @@ import pydecode.hyper as ph
 import pydecode.test.utils as utils
 from collections import defaultdict
 import nose.tools as nt
-
+import numpy as np
 
 def test_main():
     for hypergraph in utils.hypergraphs():
-        log_pot = utils.random_log_viterbi_potentials(hypergraph)
+        log_pot = utils.random_log_viterbi_potentials_array(hypergraph)
         inside = utils.random_inside_potentials(hypergraph)
         yield check_best_path, hypergraph, log_pot
         yield check_inside, hypergraph, inside
@@ -49,9 +49,19 @@ def check_outside(hypergraph, pot):
     nt.assert_not_equal(best, 0.0)
     out_chart = ph.outside_values(hypergraph, pot, chart)
 
+    # Array-form
     for node in hypergraph.nodes:
         other = chart[node] * out_chart[node]
         nt.assert_less_equal(other, best + 1e-4)
+
+    # Matrix-form
+    m = chart.as_array() * out_chart.as_array()
+    assert (m < best + 1e4).all()
+
+    # for node in hypergraph.nodes:
+    #     other = chart[node] * out_chart[node]
+    #     nt.assert_less_equal(other, best + 1e-4)
+
 
     for edge in path.edges:
         for node in edge.tail:
@@ -99,9 +109,14 @@ def check_max_marginals(hypergraph, pot):
     print best
     nt.assert_not_equal(best, 0.0)
     max_marginals = ph.compute_marginals(hypergraph, pot)
+
+    # Array-form.
     for node in hypergraph.nodes:
         other = max_marginals[node]
         nt.assert_less_equal(other, best + 1e-4)
+
+    # Matrix-form.
+    assert (max_marginals.as_array() < best + 1e-4).all()
 
     for edge in hypergraph.edges:
         other = max_marginals[edge]
@@ -120,8 +135,13 @@ def check_semirings(hypergraph):
     potentials = ph.LogViterbiPotentials(hypergraph).from_vector(weights)
     chart = ph.inside(hypergraph, log_potentials)
     chart2 = ph.inside_values(hypergraph, potentials)
+
+    # Array-form.
     for node in hypergraph.nodes:
         nt.assert_equal(chart[node], chart2[node])
+
+    # Matrix-form.
+    assert (chart.as_array() == chart2.as_array()).all()
 
     marg = ph.LogViterbi.compute_marginals(hypergraph, log_potentials)
     marg2 = ph.compute_marginals(hypergraph, potentials)

@@ -29,8 +29,9 @@ def test_pruning():
 
         # Test pruning amount.
         prune = 0.001
-        max_marginals = ph.compute_marginals(h, w)
-        prune_projection = ph.prune_hypergraph(h, w, prune)
+        max_marginals = ph.marginals(h, w)
+        prune_projection = ph.prune(h, w, prune)
+
         new_hyper = prune_projection.small_hypergraph
         new_potentials = w.project(h, prune_projection)
 

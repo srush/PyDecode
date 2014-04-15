@@ -206,27 +206,27 @@ HypergraphMap *extend_hypergraph_by_count(
 }
 
 Chart<SetPotential> *edge_domination(const Hypergraph &graph) {
-    vector<set<int> > v(graph.edges().size());
+    vector<set<int> > *v = new vector<set<int> >(graph.edges().size());
     foreach (HEdge edge, graph.edges()) {
-        v[edge->id()].insert(edge->id());
+        (*v)[edge->id()].insert(edge->id());
     }
 
     HypergraphVectorPotentials<SetPotential> potentials(
-        &graph, v, set<int>());
+        &graph, v, set<int>(), false /* copy */);
     Chart<SetPotential> *chart = general_inside(&graph, potentials);
     return chart;
 }
 
 Chart<SetPotential> *node_domination(const Hypergraph &graph) {
-    vector<set<int> > v(graph.edges().size());
+    vector<set<int> > *v = new vector<set<int> >(graph.edges().size());
     foreach (HEdge edge, graph.edges()) {
         foreach (HNode node, edge->tail_nodes()) {
-            v[edge->id()].insert(node->id());
+            (*v)[edge->id()].insert(node->id());
         }
     }
 
     HypergraphVectorPotentials<SetPotential> potentials(
-        &graph, v, set<int>());
+        &graph, v, set<int>(), false /* copy */);
     Chart<SetPotential> *chart = general_inside(&graph, potentials);
     return chart;
 }

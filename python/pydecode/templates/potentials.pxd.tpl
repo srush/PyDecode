@@ -61,12 +61,13 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         CHypergraphBoolPotentials *threshold(
             const {{S.cvalue}} &threshold)
         const CHypergraph *hypergraph()
+        vector[{{S.cvalue}}] node_marginals()
 
     cdef cppclass C{{S.type}}Chart "Chart<{{S.ctype}}>":
         C{{S.type}}Chart(const CHypergraph *graph)
         {{S.cvalue}} get(const CHypernode *node)
         void insert(const CHypernode& node, const {{S.cvalue}}& val)
-
+        vector[{{S.cvalue}}] chart()
 
 
 cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<{{S.ctype}}>":
@@ -92,6 +93,7 @@ cdef extern from "Hypergraph/Potentials.h":
             const vector[{{S.cvalue}}] potentials,
             {{S.cvalue}} bias) except +
         {{S.cvalue}} bias()
+        vector[{{S.cvalue}}] &potentials()
         CHypergraph{{S.type}}Potentials *clone() const
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<{{S.ctype}}>":
@@ -105,8 +107,9 @@ cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<{{S.ctype}}>":
     CHypergraph{{S.type}}Potentials *cmake_potentials_{{S.type}} "HypergraphVectorPotentials<{{S.ctype}}>::make_potentials" (
         const CHypergraph *hypergraph,
-        const vector[{{S.cvalue}}] potentials,
-        {{S.cvalue}} bias) except +
+        const vector[{{S.cvalue}}] *potentials,
+        {{S.cvalue}} bias,
+        bool copy) except +
 
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<{{S.ctype}}>":
@@ -136,9 +139,9 @@ cdef class {{S.type}}Chart(Chart):
     cdef C{{S.type}}Chart *chart
     cdef kind
 
-cdef class _{{S.type}}:
+cdef class {{S.type}}Value:
     cdef {{S.cvalue}} thisval
-    cdef _{{S.type}} init(self, {{S.cvalue}} val)
+    cdef {{S.type}}Value init(self, {{S.cvalue}} val)
 
 {% endfor %}
 

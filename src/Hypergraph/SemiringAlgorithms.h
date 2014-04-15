@@ -60,6 +60,7 @@ class Chart {
         }
     }
 
+    vector<V> chart() { return chart_; }
   protected:
     const Hypergraph *graph_;
     vector<V> chart_;
@@ -125,10 +126,14 @@ class Marginals {
              : hypergraph_(hypergraph),
             potentials_(potentials),
             in_chart_(in_chart),
-            out_chart_(out_chart) {
+            out_chart_(out_chart),
+            node_marginals_(hypergraph->nodes().size()) {
                 potentials->check(*hypergraph);
                 in_chart->check(hypergraph);
                 out_chart->check(hypergraph);
+                foreach (HNode node, hypergraph_->nodes()) {
+                    node_marginals_[node->id()] = marginal(node);
+                }
             }
 
     ~Marginals() {
@@ -191,6 +196,10 @@ class Marginals {
         return hypergraph_;
     }
 
+    const vector<typename SemiringType::ValType> &node_marginals() const {
+        return node_marginals_;
+    }
+
   private:
     const Hypergraph *hypergraph_;
     const HypergraphPotentials<SemiringType> *potentials_;
@@ -199,6 +208,8 @@ class Marginals {
     // Note these are owned by the object.
     const Chart<SemiringType> *in_chart_;
     const Chart<SemiringType> *out_chart_;
+
+    vector<typename SemiringType::ValType> node_marginals_;
 };
 
 #endif  // HYPERGRAPH_SEMIRINGALGORITHMS_H_

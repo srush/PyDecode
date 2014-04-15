@@ -1,24 +1,25 @@
 semirings:
   - type: Viterbi
     cvalue: double
+    format: d
+    npvalue: np.double
     viterbi: Yes
     description:
       Real-valued weights with operations :math:`(+, *) = (\max, *)`.
   - type: LogViterbi
     cvalue: double
+    format: d
+    npvalue: np.double
     viterbi: True
     description:
       Real-valued log weights with operations :math:`(+, *) = (\max, *)`.
   - type: Inside
     cvalue: double
+    npvalue: np.double
+    format: d
     viterbi: Yes
     description:
       Real-valued probability weights with operations  :math:`(+, *) = (+, *)`.
-  - type: Bool
-    cvalue: bool
-    viterbi: Yes
-    description:
-      Boolean-valued weights with operations :math:`(+, *) = (\land, \lor)`.
   - type: SparseVector
     ctype: SparseVectorPotential
     cvalue: vector[pair[int, int]]
@@ -33,6 +34,13 @@ semirings:
     viterbi : No
   - type: Counting
     cvalue: int
+    format: i
+    npvalue: np.int8
     viterbi: False,
     description:
       Natural-valued weights with operations :math:`(+, *) = (+, *)`.
+  - type: Bool
+    cvalue: bool
+    viterbi: Yes
+    description:
+      Boolean-valued weights with operations :math:`(+, *) = (\land, \lor)`.

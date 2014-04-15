@@ -64,19 +64,19 @@ cdef class Hypergraph:
     The search space of a dynamic program.
 
     Hypergraph consisting of a set of nodes :math:`{\cal V}`,
-    hyperedges :math:`{\cal E}`, and a root node.
+    hyperedges :math:`{\cal E}`, and a root vertex.
 
     Attributes
     -----------
 
-    edges : iterator of :py:class:`Edge`s
-      The edge set :math:`{\cal E}`. In topological order.
+    edges : list of :py:class:`Edge`
+      List of edge set :math:`{\cal E}` in topological order.
 
     root : :py:class:`Vertex`
-      A specialized node in :math:`{\cal V}`.
+      Root vertex in :math:`{\cal V}`.
 
-    vertices : iterator of :py:class:`Vertex`s
-      The node set :math:`{\cal V}`. In topological order.
+    vertices : list of :py:class:`Vertex`
+      List of vertex set :math:`{\cal V}` in topological order.
     """
     def __cinit__(Hypergraph self):
         """
@@ -106,19 +106,6 @@ cdef class Hypergraph:
         return self
 
     def builder(self):
-        r"""
-        builder()
-
-        The builder for the hypergraph ::
-
-           >> hypergraph = Hypergraph()
-           >> with hypergraph.builder() as b:
-           >>    b.add_node()
-
-        Returns
-        ---------------------
-        :py:class:`GraphBuilder`
-        """
         self.thisptr = new CHypergraph()
         #_hypergraph_registry[self.thisptr.id()] = self
         _hypergraph_registry_counts[self.thisptr.id()] = 1
@@ -141,7 +128,7 @@ cdef class Hypergraph:
             return _LazyEdges(self).init(self.thisptr.edges())
 
     def __str__(self):
-        s = "Hypergraph: Edges: %s Nodes: %s" % (len(self.edges),
+        s = "Hypergraph: Edges: %s Vertices: %s" % (len(self.edges),
                                                  len(self.nodes)) + "\n"
         s += "Root %s" % (self.root.id) + "\n"
         for edge in self.edges:
@@ -159,13 +146,6 @@ cdef class GraphBuilder:
            >> hypergraph = Hypergraph()
            >> with hypergraph.builder() as b:
            >>    b.add_node()
-
-    Methods
-    -------
-
-    add_node(edges=[], label="")
-        Add a node (and its hyperedges) to the hypergraph.
-
     """
 
     def __init__(self):
@@ -213,8 +193,6 @@ cdef class GraphBuilder:
 
     def add_node(self, edges=[], label=None):
         """
-        add_node(edges=[], label=None)
-
         Add a node to the hypergraph.
 
         Parameters
@@ -268,25 +246,24 @@ cdef class GraphBuilder:
 
 cdef class Vertex:
     r"""
-    A vertex in a hypergraph.
+    Hypergraph vertex.
 
     Formally :math:`v \in {\cal V}` associated with a :py:class:`Hypergraph`.
 
     Attributes
     -------------
 
-    edges : iterator of :py:class:`Edge`s
+    subedges : iterator of :py:class:`Edge`s
 
-       The edges with :math:`v` as head node.
+       The edges with this vertex as head.
 
-       :math:`\{e \in {\cal E} : h(e) = v \}`
+       Formally :math:`\{e \in {\cal E} : h(e) = v \}`
 
     is_terminal : bool
-       Is the node :math:`v` in terminal node.
+       Is the vertex terminal (no-subedges).
 
     label : any
-        A piece of data associated with the edge.
-
+        Data associated with the vertex.
     """
 
     cdef Vertex init(self, const CHypernode *nodeptr,
@@ -309,9 +286,13 @@ cdef class Vertex:
             assert self.nodeptr.id() != -1, "Bad node id."
             return self.nodeptr.id()
 
-    property edges:
+    property subedges:
         def __get__(self):
             return convert_edges(self.nodeptr.edges(), self.graph)
+
+    property edges:
+        def __get__(self):
+            return self.subedges
 
     property is_terminal:
         def __get__(self):
@@ -336,22 +317,22 @@ cdef class Node(Vertex):
 
 cdef class Edge:
     r"""
-    A hyperedge associated with hypergraph.
+    Hypergraph (hyper)edge.
 
-    Hyperedge :math:`e \in {\cal E}` associated with a :py:class:`Hypergraph`.
+    Formally :math:`e \in {\cal E}` associated with a :py:class:`Hypergraph`.
+    A hyperedge is a vector :math:`\langle v_1 , \langle v_2 \ldots v_{n} \rangle \rangle` where :math:`v_1` is a head vertex and :math:`v_2 \ldots v_{n}` is a tail.
 
     Attributes
     -----------
 
     head : :py:class:`Vertex`
-        The head node :math:`v = h(e)`.
+        A head vertex :math:`v_1`.
 
-    tail : list of nodes
-        The tail nodes :math:`v_2 \ldots v_{n} \in t(e)`.
+    tail : iterator of :py:class:`Vertex`
+        The tail vertices :math:`v_2 \ldots v_{n}`.
 
     label : any
-        A piece of data associated with the edge.
-
+        Data associated with the hyperedge.
     """
 
     def __cinit__(self):
@@ -403,20 +384,24 @@ cdef convert_nodes(vector[const CHypernode *] nodes,
 
 cdef class Path:
     r"""
-    A valid hyperpath through the hypergraph.
+    Path in the hypergraph.
 
-    Valid hyperpath :math:`y \in {\cal X}` in the hypergraph.
+    Formally a valid hyperpath :math:`y \in {\cal Y}` in the hypergraph.
+
+    Usage:
 
     To check if an edge is in a path ::
 
        >> edge in path
 
-    To iterate over a path (in topological order) ::
+    Attributes
+    -----------
 
-       >> [edge for edge in path]
+    edges : iterator of :py:class:`Edge`
+        The hyperedges in the path in topological order.
 
-    The edges :math:`e \in {\cal E}` with :math:`y(e) = 1`.
-
+    vertices : iterator of :py:class:`Vertex`
+        The vertices in the path in topological order.
     """
 
     def __dealloc__(self):
@@ -465,9 +450,13 @@ cdef class Path:
         def __get__(self):
             return _LazyEdges(self.graph).init(self.thisptr.edges())
 
-    property nodes:
+    property vertices:
         def __get__(self):
             return _LazyVertices(self.graph).init(self.thisptr.nodes())
+
+    property nodes:
+        def __get__(self):
+            return self.vertices
 
 
 class HypergraphAccessException(Exception):
@@ -490,7 +479,23 @@ cdef class HypergraphMap:
     """
     A map between two hypergraphs.
 
+    Usage:
 
+    To check map a vertex, edge, path, or potentials ::
+
+       >> hypergraph_map[edge]
+
+       >> hypergraph_map[vertex]
+
+       >> hypergraph_map[potentials]
+
+    Attributes
+    -----------
+    domain_hypergraph : :py:class:`Hypergraph`
+      Hypergraph at the domain  of the map.
+
+    range_hypergraph : :py:class:`Hypergraph`
+      Hypergraph at the range of the map.
     """
     def __cinit__(self):
         self.thisptr = NULL
@@ -517,7 +522,13 @@ cdef class HypergraphMap:
 
     def compose(self, HypergraphMap other):
         """
-        TODO: fill in
+        Compose two hypergraph maps.
+
+        Parameters
+        -----------
+        other :
+
+
         """
         cdef CHypergraphMap *newptr = \
             self.thisptr.compose(deref(other.thisptr))

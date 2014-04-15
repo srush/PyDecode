@@ -41,7 +41,7 @@ def best_constrained_path(graph, potentials, constraints):
                                      opt.optimizer.best_value,
                                      opt.optimizer.last_subgradient))
         else:
-            opt.descent_round(1)
+            path = opt.descent_round(1)
         if opt.optimizer.check_optimal(opt.optimizer.last_subgradient):
             break
     return path
