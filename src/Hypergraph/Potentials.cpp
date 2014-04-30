@@ -152,6 +152,7 @@ void non_zero_weights(const Hypergraph *graph,
 SPECIALIZE_HYPER_FOR_SEMI(ViterbiPotential)
 SPECIALIZE_HYPER_FOR_SEMI(LogViterbiPotential)
 SPECIALIZE_HYPER_FOR_SEMI(InsidePotential)
+SPECIALIZE_HYPER_FOR_SEMI(MinMaxPotential)
 SPECIALIZE_HYPER_FOR_SEMI(BoolPotential)
 SPECIALIZE_HYPER_FOR_SEMI(SparseVectorPotential)
 SPECIALIZE_HYPER_FOR_SEMI(MinSparseVectorPotential)

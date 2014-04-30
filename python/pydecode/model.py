@@ -31,6 +31,7 @@ class DynamicProgrammingModel(StructuredModel):
         self._use_gurobi = use_gurobi
         self._use_relaxed = use_relaxed
         self._debug = False
+        self.inference_calls = 0
 
     def dynamic_program(self, x, chart):
         r"""
@@ -86,7 +87,7 @@ class DynamicProgrammingModel(StructuredModel):
                 features[k] += v * frac
 
         final_features = self._vec.transform(features)
-        return final_features
+        return np.array(final_features.todense()).flatten()
 
     def initialize(self, X, Y):
         features = {}
@@ -102,8 +103,10 @@ class DynamicProgrammingModel(StructuredModel):
 
         t = self._vec.fit_transform(features)
         self.size_joint_feature = t.size
+        self.size_psi = t.size
 
     def inference(self, x, w, relaxed=False):
+        self.inference_calls += 1
         relaxed = relaxed or self._use_relaxed
         if self._debug:
             a = time.time()
@@ -180,7 +183,7 @@ class DynamicProgrammingModel(StructuredModel):
         scores = f * w.T
         #print "Weights:", self._vec.inverse_transform(w)
         #print
-        return ph.Potentials(hypergraph).from_vector(scores)
+        return ph.LogViterbiPotentials(hypergraph).from_vector(scores)
 
         #return weights
         #print len(), len(hypergraph.edges)

@@ -114,6 +114,40 @@ void general_viterbi(
     }
 }
 
+struct Hypothesis {
+    vector<int> vec;
+    HEdge edge;
+    V score;
+};
+
+template<typename S>
+void general_kbest(
+    const Hypergraph *graph,
+    const HypergraphPotentials<S> &potentials,
+    KBestPointers *back,
+    int K) {
+
+    potentials.check(*graph);
+    back->check(graph);
+
+
+    foreach (HNode node, graph->nodes()) {
+        typename S::ValType best = (*chart)[node];
+        int edge_num = 0;
+        foreach (HEdge edge, node->edges()) {
+            vector<int> children(edge.tail->size(), 0);
+            typename S::ValType score = potentials.score(edge);
+            foreach(HNode node, edge->tail()) {
+                score = S::times(score, chart_[tail->id()]);
+            }
+            Hypothesis hypothesis();
+
+                    edge_num++;
+        }
+        children[best_edge]++;
+    }
+}
+
 Hyperpath *BackPointers::construct_path() const {
     // Collect backpointers.
     vector<HEdge> path;
@@ -146,5 +180,6 @@ SPECIALIZE_FOR_SEMI_MIN(SparseVectorPotential)
 SPECIALIZE_FOR_SEMI_MIN(MinSparseVectorPotential)
 SPECIALIZE_FOR_SEMI_MIN(MaxSparseVectorPotential)
 SPECIALIZE_FOR_SEMI_MIN(BinaryVectorPotential)
+SPECIALIZE_FOR_SEMI_MIN(MinMaxPotential)
 
 // End General code.

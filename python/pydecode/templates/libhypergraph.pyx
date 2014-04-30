@@ -141,7 +141,9 @@ cdef class Hypergraph:
 
 cdef class GraphBuilder:
     r"""
-    Build a hypergraph. Created using ::
+    Direct constructor for hypergraphs.
+
+    Usage ::
 
            >> hypergraph = Hypergraph()
            >> with hypergraph.builder() as b:
@@ -200,7 +202,7 @@ cdef class GraphBuilder:
 
         edges :
            An iterator where each of the items is of the form
-           ([v_2, v_3..], label)  where v_2 ... are :py:class:`Vertex`s and
+           ([v_2, v_3..], label)  where v_2 ... are :py:class:`Vertex` s and
            label is an edge label of any type.
 
         label : any
@@ -260,7 +262,7 @@ cdef class Vertex:
     Attributes
     -------------
 
-    subedges : iterator of :py:class:`Edge`s
+    subedges : iterator of :py:class:`Edge` s
 
        The hyperedges that have this vertex as head.
 
