@@ -114,39 +114,39 @@ void general_viterbi(
     }
 }
 
-struct Hypothesis {
-    vector<int> vec;
-    HEdge edge;
-    V score;
-};
+// struct Hypothesis {
+//     vector<int> vec;
+//     HEdge edge;
+//     V score;
+// };
 
-template<typename S>
-void general_kbest(
-    const Hypergraph *graph,
-    const HypergraphPotentials<S> &potentials,
-    KBestPointers *back,
-    int K) {
+// template<typename S>
+// void general_kbest(
+//     const Hypergraph *graph,
+//     const HypergraphPotentials<S> &potentials,
+//     KBestPointers *back,
+//     int K) {
 
-    potentials.check(*graph);
-    back->check(graph);
+    // potentials.check(*graph);
+    // back->check(graph);
 
 
-    foreach (HNode node, graph->nodes()) {
-        typename S::ValType best = (*chart)[node];
-        int edge_num = 0;
-        foreach (HEdge edge, node->edges()) {
-            vector<int> children(edge.tail->size(), 0);
-            typename S::ValType score = potentials.score(edge);
-            foreach(HNode node, edge->tail()) {
-                score = S::times(score, chart_[tail->id()]);
-            }
-            Hypothesis hypothesis();
+    // foreach (HNode node, graph->nodes()) {
+    //     typename S::ValType best = (*chart)[node];
+    //     int edge_num = 0;
+    //     foreach (HEdge edge, node->edges()) {
+    //         vector<int> children(edge.tail->size(), 0);
+    //         typename S::ValType score = potentials.score(edge);
+    //         foreach(HNode node, edge->tail()) {
+    //             score = S::times(score, chart_[tail->id()]);
+    //         }
+    //         Hypothesis hypothesis();
 
-                    edge_num++;
-        }
-        children[best_edge]++;
-    }
-}
+    //                 edge_num++;
+    //     }
+    //     children[best_edge]++;
+    // }
+// }
 
 Hyperpath *BackPointers::construct_path() const {
     // Collect backpointers.
