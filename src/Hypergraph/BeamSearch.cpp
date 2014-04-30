@@ -9,11 +9,15 @@
 #include <utility>
 #include <vector>
 #include "./common.h"
+#include "Hypergraph/Semirings.h"
 
-BeamChart *beam_search(
+
+
+template<typename BVP>
+BeamChart<BVP> *BeamChart<BVP>::beam_search(
     const Hypergraph *graph,
     const HypergraphPotentials<LogViterbiPotential> &potentials,
-    const HypergraphPotentials<BinaryVectorPotential> &constraints,
+    const HypergraphPotentials<BVP> &constraints,
     const Chart<LogViterbiPotential> &future,
     double lower_bound,
     const BeamGroups &groups) {
@@ -23,11 +27,10 @@ BeamChart *beam_search(
     constraints.check(*graph);
     groups.check(graph);
 
-    typedef BinaryVectorPotential BVP;
     typedef LogViterbiPotential LVP;
 
-    BeamChart *chart = new BeamChart(graph, &groups,
-                                     &future, lower_bound);
+    BeamChart<BVP> *chart = new BeamChart<BVP>(graph, &groups,
+                                               &future, lower_bound);
 
     // 1) Initialize the chart with terminal nodes.
     foreach (HNode node, graph->nodes()) {
@@ -43,42 +46,43 @@ BeamChart *beam_search(
         foreach (HNode node, groups.group_nodes(group)) {
             // 2) Enumerate over each edge (in topological order).
             foreach (HEdge edge, node->edges()) {
-                const binvec &sig = constraints.score(edge);
+                const typename BVP::ValType &sig = constraints.score(edge);
                 double score = potentials.score(edge);
 
                 // Assume unary/binary edges.
                 HNode node_left = edge->tail_nodes()[0];
-                const BeamChart::BeamPointers &beam_left =
+                const typename BeamChart<BVP>::BeamPointers &beam_left =
                         chart->get_beam(node_left);
 
                 bool unary = edge->tail_nodes().size() == 1;
 
                 // Optimization.
-                vector<bool> valid_right;
-                binvec and_sig_right;
+                // vector<bool> valid_right;
+                // binvec and_sig_right;
                 if (!unary) {
-                    and_sig_right.flip();
-                    binvec and_sig;
-                    and_sig.flip();
+                    // valid_right.resize(beam_right.size(), true);
+                    // and_sig_right.flip();
+                    // binvec and_sig;
+                    // and_sig.flip();
 
-                    foreach (const BeamHyp *p, beam_left) {
-                        and_sig &= p->sig;
-                    }
+                    // foreach (const BeamHyp *p, beam_left) {
+                    //     and_sig &= p->sig;
+                    // }
 
-                    HNode node_right = edge->tail_nodes()[1];
-                    const BeamChart::BeamPointers &beam_right =
-                            chart->get_beam(node_right);
-                    valid_right.resize(beam_right.size(), false);
-                    int j = 0;
-                    foreach (const BeamHyp *p, beam_right) {
-                        const binvec &right_sig = p->sig;
-                        if (VALID_BINARY_VECTORS(sig, right_sig) &&
-                            VALID_BINARY_VECTORS(and_sig, right_sig)) {
-                            valid_right[j] = true;
-                            and_sig_right &= p->sig;
-                        }
-                        ++j;
-                    }
+                    // HNode node_right = edge->tail_nodes()[1];
+                    // const BeamChart::BeamPointers &beam_right =
+                    //         chart->get_beam(node_right);
+                    // valid_right.resize(beam_right.size(), false);
+                    // int j = 0;
+                    // foreach (const BeamHyp *p, beam_right) {
+                    //     const binvec &right_sig = p->sig;
+                    //     if (BVP::valid(sig, right_sig) &&
+                    //         BVP::valid(and_sig, right_sig)) {
+                    //         valid_right[j] = true;
+                    //         and_sig_right &= p->sig;
+                    //     }
+                    //     ++j;
+                    // }
                 }
                 // End Optimization.
 
@@ -88,12 +92,13 @@ BeamChart *beam_search(
                     ++i;
 
                     // Check valid.
-                    if (!VALID_BINARY_VECTORS(sig, p_left->sig) ||
-                        !VALID_BINARY_VECTORS(and_sig_right,
-                                                  p_left->sig)) continue;
+                    if (!BVP::valid(sig, p_left->sig)) continue;
+                        // ||
+                        // !BVP::valid(and_sig_right,
+                        //             p_left->sig)) continue;
 
                     // Construct sig and score.
-                    const binvec mid_sig = BVP::times(sig, p_left->sig);
+                    const typename BVP::ValType mid_sig = BVP::times(sig, p_left->sig);
                     double mid_score =
                             LVP::times(score, p_left->current_score);
                     back_position[0] = i;
@@ -107,7 +112,7 @@ BeamChart *beam_search(
 
                     // Do right node.
                     HNode node_right = edge->tail_nodes()[1];
-                    const BeamChart::BeamPointers &beam_right =
+                    const typename BeamChart<BVP>::BeamPointers &beam_right =
                             chart->get_beam(node_right);
 
                     int j = -1;
@@ -115,13 +120,13 @@ BeamChart *beam_search(
                         ++j;
 
                         // Check if this signature is valid.
-                        if (!valid_right[j]) continue;
-                        if (!VALID_BINARY_VECTORS(mid_sig,
-                                                  p_right->sig)) continue;
+                        // if (!valid_right[j]) continue;
+                        if (!BVP::valid(mid_sig,
+                                        p_right->sig)) continue;
 
                         // Construct scores and sig.
                         back_position[1] = j;
-                        const binvec full_sig =
+                        const typename BVP::ValType full_sig =
                                 BVP::times(mid_sig, p_right->sig);
                         double full_score =
                                 LVP::times(mid_score, p_right->current_score);
@@ -138,7 +143,8 @@ BeamChart *beam_search(
     return chart;
 }
 
-Hyperpath *BeamChart::get_path(int result) {
+template<typename BVP>
+Hyperpath *BeamChart<BVP>::get_path(int result) {
     // Collect backpointers.
     vector<HEdge> path;
     queue<pair<HNode, int> > to_examine;
@@ -167,13 +173,15 @@ Hyperpath *BeamChart::get_path(int result) {
     return new Hyperpath(hypergraph_, path);
 }
 
-void BeamChart::insert(HNode node,
+template<typename BVP>
+void BeamChart<BVP>::insert(HNode node,
                        HEdge edge,
-                       binvec bitmap,
+                       typename BVP::ValType bitmap,
                        double val,
                        const vector<int> &bp) {
     // Check that the node is not bounded out.
     double future_val = (*future_)[node];
+
     if (val + future_val < lower_bound_) return;
     int group = groups_->group(node);
     assert(current_group_ == group);
@@ -256,7 +264,8 @@ void BeamChart::insert(HNode node,
     // }
 }
 
-void BeamChart::finish(int group) {
+template<typename BVP>
+void BeamChart<BVP>::finish(int group) {
     // Finished all nodes in the group.
     assert(group == current_group_);
     Beam &b = beam_[group];
@@ -336,3 +345,6 @@ void BeamChart::finish(int group) {
 //       }
 //   }
 // }
+
+template class BeamChart<BinaryVectorPotential>;
+template class BeamChart<AlphabetPotential>;

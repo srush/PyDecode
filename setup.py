@@ -35,7 +35,9 @@ def make_extension(wrapper):
                       "src/Hypergraph/Semirings.cpp",
                       "src/Hypergraph/SemiringAlgorithms.cpp",
                       "src/Hypergraph/Algorithms.cpp",
-                      "src/Hypergraph/Potentials.cpp"])]
+                      "src/Hypergraph/Potentials.cpp",
+                      "src/Hypergraph/BeamSearch.cpp"
+                      ])]
     return a
             # ,extra_objects = [os.path.abspath('python/pydecode/hypergraph.so')])
 

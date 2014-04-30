@@ -13,7 +13,14 @@
 #include "Hypergraph/Algorithms.h"
 
 
+struct Beamable {
+    bool valid(Beamable a, Beamable b);
+};
+
 struct BeamGroups {
+
+    // groups : vector size of nodes.
+    // group_limit : max size of each group.
     BeamGroups(const Hypergraph *graph,
                const vector<int> &groups,
                const vector<int> &group_limit,
@@ -65,37 +72,40 @@ struct BeamGroups {
     int num_groups_;
 };
 
-struct BeamHyp {
-    BeamHyp() {}
-  BeamHyp(HEdge _edge,
-            HNode _node,
-            binvec _sig,
-            double _cs,
-            double _fs,
-            const vector<int> &_bp)
-    : edge(_edge), node(_node), sig(_sig),
-      current_score(_cs),
-      future_score(_fs),
-      back_position(_bp) {}
 
-    double total_score() const {
-        return current_score + future_score;
-    }
-
-    HEdge edge;
-    HNode node;
-    binvec sig;
-    double current_score;
-    double future_score;
-
-    // Beam position for the tail nodes.
-    vector<int> back_position;
-};
-
+template<typename BVP>
 class BeamChart {
   public:
-    typedef vector<BeamHyp> Beam;
+    struct BeamHyp {
+        BeamHyp() {}
+        BeamHyp(HEdge _edge,
+                     HNode _node,
+                     typename BVP::ValType _sig,
+                     double _cs,
+                     double _fs,
+                     const vector<int> &_bp)
+        : edge(_edge), node(_node), sig(_sig),
+            current_score(_cs),
+            future_score(_fs),
+            back_position(_bp) {}
+
+        double total_score() const {
+            return current_score + future_score;
+        }
+
+        HEdge edge;
+        HNode node;
+        typename BVP::ValType sig;
+        double current_score;
+        double future_score;
+
+        // Beam position for the tail nodes.
+        vector<int> back_position;
+    };
+
+    typedef vector<BeamHyp > Beam;
     typedef vector<BeamHyp * > BeamPointers;
+
 
     BeamChart(const Hypergraph *hypergraph,
               const BeamGroups *groups,
@@ -109,7 +119,8 @@ class BeamChart {
             beam_(groups->groups_size()),
             beam_nodes_(hypergraph->nodes().size()) {}
 
-    void insert(HNode node, HEdge edge, binvec bitmap, double val,
+    void insert(HNode node, HEdge edge,
+                typename BVP::ValType bitmap, double val,
                 const vector<int> &back_position);
 
     void finish(int group);
@@ -123,6 +134,16 @@ class BeamChart {
             throw HypergraphException("Hypergraph does not match chart.");
         }
     }
+
+
+
+    static BeamChart<BVP> *beam_search(
+            const Hypergraph *graph,
+            const HypergraphPotentials<LogViterbiPotential> &potentials,
+            const HypergraphPotentials<BVP> &constraints,
+            const Chart<LogViterbiPotential> &outside,
+            double lower_bound,
+            const BeamGroups &groups);
 
     Hyperpath *get_path(int result);
 
@@ -141,13 +162,6 @@ class BeamChart {
     int current_group_;
 };
 
-BeamChart *beam_search(
-    const Hypergraph *graph,
-    const HypergraphPotentials<LogViterbiPotential> &potentials,
-    const HypergraphPotentials<BinaryVectorPotential> &constraints,
-    const Chart<LogViterbiPotential> &outside,
-    double lower_bound,
-    const BeamGroups &groups);
 
 
 #endif  // HYPERGRAPH_BEAMSEARCH_H_

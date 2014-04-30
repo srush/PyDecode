@@ -230,7 +230,7 @@ cdef class {{S.type}}Potentials(Potentials):
                                         my_bias)
         return self
 
-    def _bias(self, bias):
+    cdef {{S.cvalue}} _bias(self, bias):
         if bias is None:
             return {{S.type}}_one()
         else:
@@ -278,7 +278,7 @@ cdef class {{S.type}}Value:
         return self
 
     @staticmethod
-    def from_value({{S.cvalue}} val):
+    def from_value({{S.pvalue if S.pvalue else S.cvalue}} val):
         created = {{S.type}}Value()
         created.thisval = _{{S.type}}_to_cpp(val)
         return created
@@ -311,12 +311,22 @@ cdef class {{S.type}}Value:
         def __get__(self):
             return _{{S.type}}_from_cpp(self.thisval)
 
+{% if S.to_cpp %}
+cdef {{S.cvalue}} _{{S.type}}_to_cpp({{S.pvalue}} val):
+    return <{{S.cvalue}}>{{S.to_cpp}}
+{% else %}
 cdef {{S.cvalue}} _{{S.type}}_to_cpp({{S.cvalue}} val):
     return val
-
+{% endif %}
 
 cdef _{{S.type}}_from_cpp({{S.cvalue}} val):
+    {% if S.from_cpp %}
+    return {{S.from_cpp}}
+    {% else %}
     return val
+    {% endif %}
+
+
 
 cdef class {{S.type}}Chart(Chart):
     def __init__(self, Hypergraph graph=None):

@@ -135,6 +135,8 @@ cdef class {{S.type}}Potentials(Potentials):
     cdef init(self, CHypergraph{{S.type}}Potentials *ptr,
               HypergraphMap projection)
 
+    cdef {{S.cvalue}} _bias(self, bias)
+
 cdef class {{S.type}}Chart(Chart):
     cdef C{{S.type}}Chart *chart
     cdef kind

@@ -77,7 +77,7 @@ py_lib = env.Command(["python/pydecode/templates/hyper.so"],
             ["build/debug/src/libdecoding.a",
              "python/pydecode/potentials.pyx",
              "python/pydecode/templates/libhypergraph.pyx",
-             "python/pydecode/templates/beam.pyx"],
+             "python/pydecode/templates/beam.pyx.tpl"],
              #"python/pydecode/constraints.pyx",
              #"python/pydecode/algorithms.pyx"],
             "CC='ccache g++' python setup.py build_ext --inplace --verbose --cython --debug")

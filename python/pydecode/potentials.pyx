@@ -674,6 +674,187 @@ cdef class HypergraphMap:
         cdef Hypergraph h = Hypergraph()
         return h.init(graph, Labeling(h, node_labels, edge_labels))
 
+from cython.operator cimport dereference as deref
+from libcpp cimport bool
+from libcpp.vector cimport vector
+
+
+from pydecode.potentials cimport *
+
+cdef class Bitset:
+    """
+    Bitset
+
+
+    """
+
+    cdef init(self, cbitset data):
+        self.data = data
+        return self
+
+    def __getitem__(self, int position):
+        return self.data[position]
+
+    def __setitem__(self, int position, int val):
+        self.data[position] = val
+
+
+cdef class BeamChartBinaryVectorPotential:
+    cdef init(self, CBeamChartBinaryVectorPotential *chart, Hypergraph graph):
+        self.thisptr = chart
+        self.graph = graph
+        return self
+
+    def path(self, int result):
+        return Path().init(self.thisptr.get_path(result),
+                           self.graph)
+
+    def __getitem__(self, Vertex vertex):
+        cdef vector[CBeamHypBinaryVectorPotential *] beam = \
+            self.thisptr.get_beam(vertex.nodeptr)
+        data = []
+        i = 0
+        for p in beam:
+            data.append((_BinaryVector_from_cpp(p.sig),
+                         p.current_score,
+                         p.future_score))
+        return data
+
+
+def beam_search_BinaryVector(Hypergraph graph,
+                LogViterbiPotentials potentials,
+                BinaryVectorPotentials constraints,
+                LogViterbiChart outside,
+                double lower_bound,
+                groups,
+                group_limits,
+                int num_groups):
+    r"""
+
+    Parameters
+    -----------
+    graph : Hypergraph
+
+    potentials : LogViterbiPotentials
+       The potentials on each hyperedge.
+
+    constraints : BinaryVectorPotentials
+       The constraints (bitset) at each hyperedge.
+
+    lower_bound : double
+
+    groups : size of vetex list
+       The group for each vertex.
+
+    group_limits :
+       The size limit for each group.
+
+    num_groups :
+        The total number of groups.
+    """
+
+    cdef vector[int] cgroups = groups
+    cdef vector[int] cgroup_limits = group_limits
+    cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
+                                                    cgroups,
+                                                    cgroup_limits,
+                                                    num_groups)
+    # cgroups.resize(graph.nodes_size())
+    # cdef vector[int] cgroup_limits
+    # cgroups.resize(graph.nodes_size())
+
+    # for i, group in enumerate(groups):
+    #     cgroups[i] = group
+
+
+    cdef CBeamChartBinaryVectorPotential *chart = \
+        cbeam_searchBinaryVectorPotential(graph.thisptr,
+                     deref(potentials.thisptr),
+                     deref(constraints.thisptr),
+                     deref(outside.chart),
+                     lower_bound,
+                     deref(beam_groups))
+    return BeamChartBinaryVectorPotential().init(chart, graph)
+
+
+cdef class BeamChartAlphabetPotential:
+    cdef init(self, CBeamChartAlphabetPotential *chart, Hypergraph graph):
+        self.thisptr = chart
+        self.graph = graph
+        return self
+
+    def path(self, int result):
+        return Path().init(self.thisptr.get_path(result),
+                           self.graph)
+
+    def __getitem__(self, Vertex vertex):
+        cdef vector[CBeamHypAlphabetPotential *] beam = \
+            self.thisptr.get_beam(vertex.nodeptr)
+        data = []
+        i = 0
+        for p in beam:
+            data.append((_Alphabet_from_cpp(p.sig),
+                         p.current_score,
+                         p.future_score))
+        return data
+
+
+def beam_search_Alphabet(Hypergraph graph,
+                LogViterbiPotentials potentials,
+                AlphabetPotentials constraints,
+                LogViterbiChart outside,
+                double lower_bound,
+                groups,
+                group_limits,
+                int num_groups):
+    r"""
+
+    Parameters
+    -----------
+    graph : Hypergraph
+
+    potentials : LogViterbiPotentials
+       The potentials on each hyperedge.
+
+    constraints : BinaryVectorPotentials
+       The constraints (bitset) at each hyperedge.
+
+    lower_bound : double
+
+    groups : size of vetex list
+       The group for each vertex.
+
+    group_limits :
+       The size limit for each group.
+
+    num_groups :
+        The total number of groups.
+    """
+
+    cdef vector[int] cgroups = groups
+    cdef vector[int] cgroup_limits = group_limits
+    cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
+                                                    cgroups,
+                                                    cgroup_limits,
+                                                    num_groups)
+    # cgroups.resize(graph.nodes_size())
+    # cdef vector[int] cgroup_limits
+    # cgroups.resize(graph.nodes_size())
+
+    # for i, group in enumerate(groups):
+    #     cgroups[i] = group
+
+
+    cdef CBeamChartAlphabetPotential *chart = \
+        cbeam_searchAlphabetPotential(graph.thisptr,
+                     deref(potentials.thisptr),
+                     deref(constraints.thisptr),
+                     deref(outside.chart),
+                     lower_bound,
+                     deref(beam_groups))
+    return BeamChartAlphabetPotential().init(chart, graph)
+
+
 #cython: embedsignature=True
 
 ##
@@ -907,7 +1088,7 @@ Uses the operations :math:`(+, *) = (\max, *)`.
                                         my_bias)
         return self
 
-    def _bias(self, bias):
+    cdef double _bias(self, bias):
         if bias is None:
             return Viterbi_one()
         else:
@@ -988,12 +1169,17 @@ cdef class ViterbiValue:
         def __get__(self):
             return _Viterbi_from_cpp(self.thisval)
 
+
 cdef double _Viterbi_to_cpp(double val):
     return val
 
 
 cdef _Viterbi_from_cpp(double val):
+    
     return val
+    
+
+
 
 cdef class ViterbiChart(Chart):
     def __init__(self, Hypergraph graph=None):
@@ -1265,7 +1451,7 @@ Uses the operations :math:`(+, *) = (\max, *)`.
                                         my_bias)
         return self
 
-    def _bias(self, bias):
+    cdef double _bias(self, bias):
         if bias is None:
             return LogViterbi_one()
         else:
@@ -1346,12 +1532,17 @@ cdef class LogViterbiValue:
         def __get__(self):
             return _LogViterbi_from_cpp(self.thisval)
 
+
 cdef double _LogViterbi_to_cpp(double val):
     return val
 
 
 cdef _LogViterbi_from_cpp(double val):
+    
     return val
+    
+
+
 
 cdef class LogViterbiChart(Chart):
     def __init__(self, Hypergraph graph=None):
@@ -1623,7 +1814,7 @@ Uses the operations :math:`(+, *) = (+, *)`.
                                         my_bias)
         return self
 
-    def _bias(self, bias):
+    cdef double _bias(self, bias):
         if bias is None:
             return Inside_one()
         else:
@@ -1704,12 +1895,17 @@ cdef class InsideValue:
         def __get__(self):
             return _Inside_from_cpp(self.thisval)
 
+
 cdef double _Inside_to_cpp(double val):
     return val
 
 
 cdef _Inside_from_cpp(double val):
+    
     return val
+    
+
+
 
 cdef class InsideChart(Chart):
     def __init__(self, Hypergraph graph=None):
@@ -1981,7 +2177,7 @@ Uses the operations :math:`(+, *) = (\min, \max)`.
                                         my_bias)
         return self
 
-    def _bias(self, bias):
+    cdef double _bias(self, bias):
         if bias is None:
             return MinMax_one()
         else:
@@ -2062,12 +2258,17 @@ cdef class MinMaxValue:
         def __get__(self):
             return _MinMax_from_cpp(self.thisval)
 
+
 cdef double _MinMax_to_cpp(double val):
     return val
 
 
 cdef _MinMax_from_cpp(double val):
+    
     return val
+    
+
+
 
 cdef class MinMaxChart(Chart):
     def __init__(self, Hypergraph graph=None):
@@ -2308,7 +2509,7 @@ cdef class SparseVectorPotentials(Potentials):
                                         my_bias)
         return self
 
-    def _bias(self, bias):
+    cdef vector[pair[int, int]] _bias(self, bias):
         if bias is None:
             return SparseVector_one()
         else:
@@ -2372,12 +2573,17 @@ cdef class SparseVectorValue:
         def __get__(self):
             return _SparseVector_from_cpp(self.thisval)
 
+
 cdef vector[pair[int, int]] _SparseVector_to_cpp(vector[pair[int, int]] val):
     return val
 
 
 cdef _SparseVector_from_cpp(vector[pair[int, int]] val):
+    
     return val
+    
+
+
 
 cdef class SparseVectorChart(Chart):
     def __init__(self, Hypergraph graph=None):
@@ -2466,6 +2672,305 @@ class SparseVector:
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
                          SparseVectorPotentials potentials,
+                         threshold):
+        marginals = compute_marginals(graph, potentials)
+        bool_potentials = marginals.threshold(threshold)
+        return make_pruning_projections(graph, bool_potentials)
+
+
+
+
+cdef class AlphabetPotentials(Potentials):
+    r"""
+    Alphabet valued weights.
+
+    Potentials associated with the edges of a hypergraph.
+
+    Potential vector :math:`\theta \in R^{|{\cal E}|}` associated
+    with a hypergraph.
+
+    Acts as a dictionary::
+
+       >> print potentials[edge]
+
+    """
+
+    def __cinit__(self, Hypergraph graph):
+        """
+        Build the potential vector for a hypergraph.
+
+        :param hypergraph: The underlying hypergraph.
+        """
+        self.hypergraph = graph
+        self.kind = Alphabet
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+        self.thisptr = NULL
+
+    def times(self, AlphabetPotentials other):
+        cdef CHypergraphAlphabetPotentials *new_potentials = \
+            self.thisptr.times(deref(other.thisptr))
+        return AlphabetPotentials(self.hypergraph).init(new_potentials, None)
+
+    def clone(self):
+        return AlphabetPotentials(self.hypergraph).init(self.thisptr.clone(),
+                                                          None)
+
+    def project(self, Hypergraph graph, HypergraphMap projection):
+        cdef CHypergraphAlphabetPotentials *ptr = \
+            self.thisptr.project_potentials(deref(projection.thisptr))
+        return AlphabetPotentials(graph).init(ptr, None)
+
+    def up_project(self, Hypergraph graph, HypergraphMap projection):
+        cdef CHypergraphAlphabetPotentials *ptr = \
+            cmake_projected_potentials_Alphabet(self.thisptr,
+                                                  projection.thisptr)
+        return AlphabetPotentials(graph).init(ptr, projection)
+
+    property bias:
+        def __get__(self):
+            return _Alphabet_from_cpp(self.thisptr.bias())
+
+    # def build(self, fn, bias=None):
+    #     """
+    #     build(fn)
+
+    #     Build the potential vector for a hypergraph.
+
+    #     :param fn: A function from edge labels to potentials.
+    #     """
+    #     cdef vector[int] my_bias
+    #     if bias is None:
+    #         my_bias = Alphabet_one()
+    #     else:
+    #         my_bias = _Alphabet_to_cpp(bias)
+
+    #     cdef vector[vector[int]] potentials = \
+    #          vector[vector[int]](self.hypergraph.thisptr.edges().size(),
+    #          Alphabet_zero())
+    #     # cdef d result
+    #     for i, ty in enumerate(self.hypergraph.labeling.edge_labels):
+    #         result = fn(ty)
+    #         if result is None: potentials[i] = Alphabet_zero()
+    #         potentials[i] = _Alphabet_to_cpp(result)
+    #     self.thisptr =  \
+    #         cmake_potentials_Alphabet(self.hypergraph.thisptr,
+    #                                    potentials, my_bias)
+    #     return self
+
+    def from_potentials(self, other_potentials):
+        cdef vector[vector[int]] *potentials = \
+            new vector[vector[int]](self.hypergraph.thisptr.edges().size())
+
+        for i, edge in enumerate(self.hypergraph.edges):
+            deref(potentials)[i] = _Alphabet_to_cpp(other_potentials[edge])
+
+        self.thisptr =  \
+            cmake_potentials_Alphabet(self.hypergraph.thisptr,
+                                        potentials,
+                                        _Alphabet_to_cpp(other_potentials.bias),
+                                        False)
+
+        return self
+
+    def from_vector(self, in_vec, bias=None):
+        cdef vector[int] my_bias = self._bias(bias)
+
+        cdef vector[vector[int]] *potentials = \
+            new vector[vector[int]](self.hypergraph.thisptr.edges().size())
+
+        for i, v in enumerate(in_vec):
+            deref(potentials)[i] = _Alphabet_to_cpp(v)
+
+        self.thisptr =  \
+            cmake_potentials_Alphabet(self.hypergraph.thisptr,
+                                        potentials,
+                                        my_bias,
+                                        False)
+        return self
+
+    def from_map(self, in_map, bias=None):
+        cdef vector[int] my_bias = self._bias(bias)
+        cdef c_map.map[int, int] map_potentials
+        cdef vector[vector[int]] potentials = \
+            vector[vector[int]](len(in_map))
+
+        for j, (key, v) in enumerate(in_map.iteritems()):
+            map_potentials[key] = j
+            potentials[j] = _Alphabet_to_cpp(v)
+
+        self.thisptr =  \
+            cmake_potentials_Alphabet(self.hypergraph.thisptr,
+                                        map_potentials,
+                                        potentials,
+                                        my_bias)
+        return self
+
+    cdef vector[int] _bias(self, bias):
+        if bias is None:
+            return Alphabet_one()
+        else:
+            return _Alphabet_to_cpp(bias)
+
+    
+
+
+    cdef init(self, CHypergraphAlphabetPotentials *ptr,
+              HypergraphMap projection):
+        self.thisptr = ptr
+        self.projection = projection
+        return self
+
+    def __getitem__(self, Edge edge not None):
+        return _Alphabet_from_cpp(self.thisptr.score(edge.edgeptr))
+
+    def dot(self, Path path not None):
+        r"""
+        Take the dot product with `path` :math:`\theta^{\top} y`.
+        """
+        return _Alphabet_from_cpp(self.thisptr.dot(deref(path.thisptr)))
+
+
+cdef class AlphabetValue:
+    cdef AlphabetValue init(self, vector[int] val):
+        self.thisval = val
+        return self
+
+    @staticmethod
+    def from_value(vector[int] val):
+        created = AlphabetValue()
+        created.thisval = _Alphabet_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _Alphabet_from_cpp(Alphabet_zero())
+
+    @staticmethod
+    def one_raw():
+        return _Alphabet_from_cpp(Alphabet_one())
+
+    @staticmethod
+    def zero():
+        return AlphabetValue().init(Alphabet_zero())
+
+    @staticmethod
+    def one():
+        return AlphabetValue().init(Alphabet_one())
+
+    def __add__(AlphabetValue self, AlphabetValue other):
+        return AlphabetValue().init(Alphabet_add(self.thisval,
+                                                  other.thisval))
+
+    def __mul__(AlphabetValue self, AlphabetValue other):
+        return AlphabetValue().init(Alphabet_times(self.thisval,
+                                                    other.thisval))
+
+    property value:
+        def __get__(self):
+            return _Alphabet_from_cpp(self.thisval)
+
+
+cdef vector[int] _Alphabet_to_cpp(vector[int] val):
+    return val
+
+
+cdef _Alphabet_from_cpp(vector[int] val):
+    
+    return val
+    
+
+
+
+cdef class AlphabetChart(Chart):
+    def __init__(self, Hypergraph graph=None):
+        self.kind = Alphabet
+        self.chart = NULL
+        if graph is not None:
+            self.chart = new CAlphabetChart(graph.thisptr)
+
+    def __getitem__(self, Vertex node):
+        return _Alphabet_from_cpp(self.chart.get(node.nodeptr))
+
+    def __dealloc__(self):
+        del self.chart
+        self.chart = NULL
+
+    
+
+
+
+cdef class _AlphabetMarginals(Marginals):
+    cdef const CAlphabetMarginals *thisptr
+    cdef Hypergraph graph
+
+    def __init__(self):
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    cdef init(self, const CAlphabetMarginals *ptr, Hypergraph graph):
+        self.thisptr = ptr
+        self.graph = graph
+        return self
+
+    def __getitem__(self, obj):
+        if isinstance(obj, Edge):
+            return _Alphabet_from_cpp(
+                self.thisptr.marginal((<Edge>obj).edgeptr))
+        elif isinstance(obj, Vertex):
+            return _Alphabet_from_cpp(
+                self.thisptr.marginal((<Vertex>obj).nodeptr))
+        else:
+            raise HypergraphAccessException(
+                "Only nodes and edges have Alphabet marginal values." +
+                "Passed %s." % obj)
+
+    
+
+
+    
+
+
+class Alphabet:
+    Chart = AlphabetChart
+    Marginals = _AlphabetMarginals
+    #Semi = _Alphabet
+    Potentials = AlphabetPotentials
+
+    @staticmethod
+    def inside(Hypergraph graph,
+               AlphabetPotentials potentials):
+        cdef AlphabetChart chart = AlphabetChart()
+        chart.chart = inside_Alphabet(graph.thisptr,
+                                        deref(potentials.thisptr))
+        return chart
+
+    @staticmethod
+    def outside(Hypergraph graph,
+                AlphabetPotentials potentials,
+                AlphabetChart inside_chart):
+        cdef AlphabetChart out_chart = AlphabetChart()
+        out_chart.chart = outside_Alphabet(graph.thisptr,
+                                             deref(potentials.thisptr),
+                                             deref(inside_chart.chart))
+        return out_chart
+
+    
+
+    @staticmethod
+    def compute_marginals(Hypergraph graph,
+                          AlphabetPotentials potentials):
+        cdef const CAlphabetMarginals *marginals = \
+            Alphabet_compute(graph.thisptr, potentials.thisptr)
+        return _AlphabetMarginals().init(marginals, graph)
+
+    @staticmethod
+    def prune_hypergraph(Hypergraph graph,
+                         AlphabetPotentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
         bool_potentials = marginals.threshold(threshold)
@@ -2602,7 +3107,7 @@ cdef class MinSparseVectorPotentials(Potentials):
                                         my_bias)
         return self
 
-    def _bias(self, bias):
+    cdef vector[pair[int, int]] _bias(self, bias):
         if bias is None:
             return MinSparseVector_one()
         else:
@@ -2666,12 +3171,17 @@ cdef class MinSparseVectorValue:
         def __get__(self):
             return _MinSparseVector_from_cpp(self.thisval)
 
+
 cdef vector[pair[int, int]] _MinSparseVector_to_cpp(vector[pair[int, int]] val):
     return val
 
 
 cdef _MinSparseVector_from_cpp(vector[pair[int, int]] val):
+    
     return val
+    
+
+
 
 cdef class MinSparseVectorChart(Chart):
     def __init__(self, Hypergraph graph=None):
@@ -2896,7 +3406,7 @@ cdef class MaxSparseVectorPotentials(Potentials):
                                         my_bias)
         return self
 
-    def _bias(self, bias):
+    cdef vector[pair[int, int]] _bias(self, bias):
         if bias is None:
             return MaxSparseVector_one()
         else:
@@ -2960,12 +3470,17 @@ cdef class MaxSparseVectorValue:
         def __get__(self):
             return _MaxSparseVector_from_cpp(self.thisval)
 
+
 cdef vector[pair[int, int]] _MaxSparseVector_to_cpp(vector[pair[int, int]] val):
     return val
 
 
 cdef _MaxSparseVector_from_cpp(vector[pair[int, int]] val):
+    
     return val
+    
+
+
 
 cdef class MaxSparseVectorChart(Chart):
     def __init__(self, Hypergraph graph=None):
@@ -3191,7 +3706,7 @@ Uses the operations :math:`(+, *) = (+, *)`.
                                         my_bias)
         return self
 
-    def _bias(self, bias):
+    cdef int _bias(self, bias):
         if bias is None:
             return Counting_one()
         else:
@@ -3272,12 +3787,17 @@ cdef class CountingValue:
         def __get__(self):
             return _Counting_from_cpp(self.thisval)
 
+
 cdef int _Counting_to_cpp(int val):
     return val
 
 
 cdef _Counting_from_cpp(int val):
+    
     return val
+    
+
+
 
 cdef class CountingChart(Chart):
     def __init__(self, Hypergraph graph=None):
@@ -3549,7 +4069,7 @@ Uses the operations :math:`(+, *) = (\land, \lor)`.
                                         my_bias)
         return self
 
-    def _bias(self, bias):
+    cdef bool _bias(self, bias):
         if bias is None:
             return Bool_one()
         else:
@@ -3613,12 +4133,17 @@ cdef class BoolValue:
         def __get__(self):
             return _Bool_from_cpp(self.thisval)
 
+
 cdef bool _Bool_to_cpp(bool val):
     return val
 
 
 cdef _Bool_from_cpp(bool val):
+    
     return val
+    
+
+
 
 cdef class BoolChart(Chart):
     def __init__(self, Hypergraph graph=None):
@@ -3737,6 +4262,305 @@ class Bool:
     @staticmethod
     def prune_hypergraph(Hypergraph graph,
                          BoolPotentials potentials,
+                         threshold):
+        marginals = compute_marginals(graph, potentials)
+        bool_potentials = marginals.threshold(threshold)
+        return make_pruning_projections(graph, bool_potentials)
+
+
+
+
+cdef class BinaryVectorPotentials(Potentials):
+    r"""
+    Binary vector potentials.
+
+    Potentials associated with the edges of a hypergraph.
+
+    Potential vector :math:`\theta \in R^{|{\cal E}|}` associated
+    with a hypergraph.
+
+    Acts as a dictionary::
+
+       >> print potentials[edge]
+
+    """
+
+    def __cinit__(self, Hypergraph graph):
+        """
+        Build the potential vector for a hypergraph.
+
+        :param hypergraph: The underlying hypergraph.
+        """
+        self.hypergraph = graph
+        self.kind = BinaryVector
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+        self.thisptr = NULL
+
+    def times(self, BinaryVectorPotentials other):
+        cdef CHypergraphBinaryVectorPotentials *new_potentials = \
+            self.thisptr.times(deref(other.thisptr))
+        return BinaryVectorPotentials(self.hypergraph).init(new_potentials, None)
+
+    def clone(self):
+        return BinaryVectorPotentials(self.hypergraph).init(self.thisptr.clone(),
+                                                          None)
+
+    def project(self, Hypergraph graph, HypergraphMap projection):
+        cdef CHypergraphBinaryVectorPotentials *ptr = \
+            self.thisptr.project_potentials(deref(projection.thisptr))
+        return BinaryVectorPotentials(graph).init(ptr, None)
+
+    def up_project(self, Hypergraph graph, HypergraphMap projection):
+        cdef CHypergraphBinaryVectorPotentials *ptr = \
+            cmake_projected_potentials_BinaryVector(self.thisptr,
+                                                  projection.thisptr)
+        return BinaryVectorPotentials(graph).init(ptr, projection)
+
+    property bias:
+        def __get__(self):
+            return _BinaryVector_from_cpp(self.thisptr.bias())
+
+    # def build(self, fn, bias=None):
+    #     """
+    #     build(fn)
+
+    #     Build the potential vector for a hypergraph.
+
+    #     :param fn: A function from edge labels to potentials.
+    #     """
+    #     cdef cbitset my_bias
+    #     if bias is None:
+    #         my_bias = BinaryVector_one()
+    #     else:
+    #         my_bias = _BinaryVector_to_cpp(bias)
+
+    #     cdef vector[cbitset] potentials = \
+    #          vector[cbitset](self.hypergraph.thisptr.edges().size(),
+    #          BinaryVector_zero())
+    #     # cdef d result
+    #     for i, ty in enumerate(self.hypergraph.labeling.edge_labels):
+    #         result = fn(ty)
+    #         if result is None: potentials[i] = BinaryVector_zero()
+    #         potentials[i] = _BinaryVector_to_cpp(result)
+    #     self.thisptr =  \
+    #         cmake_potentials_BinaryVector(self.hypergraph.thisptr,
+    #                                    potentials, my_bias)
+    #     return self
+
+    def from_potentials(self, other_potentials):
+        cdef vector[cbitset] *potentials = \
+            new vector[cbitset](self.hypergraph.thisptr.edges().size())
+
+        for i, edge in enumerate(self.hypergraph.edges):
+            deref(potentials)[i] = _BinaryVector_to_cpp(other_potentials[edge])
+
+        self.thisptr =  \
+            cmake_potentials_BinaryVector(self.hypergraph.thisptr,
+                                        potentials,
+                                        _BinaryVector_to_cpp(other_potentials.bias),
+                                        False)
+
+        return self
+
+    def from_vector(self, in_vec, bias=None):
+        cdef cbitset my_bias = self._bias(bias)
+
+        cdef vector[cbitset] *potentials = \
+            new vector[cbitset](self.hypergraph.thisptr.edges().size())
+
+        for i, v in enumerate(in_vec):
+            deref(potentials)[i] = _BinaryVector_to_cpp(v)
+
+        self.thisptr =  \
+            cmake_potentials_BinaryVector(self.hypergraph.thisptr,
+                                        potentials,
+                                        my_bias,
+                                        False)
+        return self
+
+    def from_map(self, in_map, bias=None):
+        cdef cbitset my_bias = self._bias(bias)
+        cdef c_map.map[int, int] map_potentials
+        cdef vector[cbitset] potentials = \
+            vector[cbitset](len(in_map))
+
+        for j, (key, v) in enumerate(in_map.iteritems()):
+            map_potentials[key] = j
+            potentials[j] = _BinaryVector_to_cpp(v)
+
+        self.thisptr =  \
+            cmake_potentials_BinaryVector(self.hypergraph.thisptr,
+                                        map_potentials,
+                                        potentials,
+                                        my_bias)
+        return self
+
+    cdef cbitset _bias(self, bias):
+        if bias is None:
+            return BinaryVector_one()
+        else:
+            return _BinaryVector_to_cpp(bias)
+
+    
+
+
+    cdef init(self, CHypergraphBinaryVectorPotentials *ptr,
+              HypergraphMap projection):
+        self.thisptr = ptr
+        self.projection = projection
+        return self
+
+    def __getitem__(self, Edge edge not None):
+        return _BinaryVector_from_cpp(self.thisptr.score(edge.edgeptr))
+
+    def dot(self, Path path not None):
+        r"""
+        Take the dot product with `path` :math:`\theta^{\top} y`.
+        """
+        return _BinaryVector_from_cpp(self.thisptr.dot(deref(path.thisptr)))
+
+
+cdef class BinaryVectorValue:
+    cdef BinaryVectorValue init(self, cbitset val):
+        self.thisval = val
+        return self
+
+    @staticmethod
+    def from_value(Bitset val):
+        created = BinaryVectorValue()
+        created.thisval = _BinaryVector_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _BinaryVector_from_cpp(BinaryVector_zero())
+
+    @staticmethod
+    def one_raw():
+        return _BinaryVector_from_cpp(BinaryVector_one())
+
+    @staticmethod
+    def zero():
+        return BinaryVectorValue().init(BinaryVector_zero())
+
+    @staticmethod
+    def one():
+        return BinaryVectorValue().init(BinaryVector_one())
+
+    def __add__(BinaryVectorValue self, BinaryVectorValue other):
+        return BinaryVectorValue().init(BinaryVector_add(self.thisval,
+                                                  other.thisval))
+
+    def __mul__(BinaryVectorValue self, BinaryVectorValue other):
+        return BinaryVectorValue().init(BinaryVector_times(self.thisval,
+                                                    other.thisval))
+
+    property value:
+        def __get__(self):
+            return _BinaryVector_from_cpp(self.thisval)
+
+
+cdef cbitset _BinaryVector_to_cpp(Bitset val):
+    return <cbitset>val.data
+
+
+cdef _BinaryVector_from_cpp(cbitset val):
+    
+    return Bitset().init(val)
+    
+
+
+
+cdef class BinaryVectorChart(Chart):
+    def __init__(self, Hypergraph graph=None):
+        self.kind = BinaryVector
+        self.chart = NULL
+        if graph is not None:
+            self.chart = new CBinaryVectorChart(graph.thisptr)
+
+    def __getitem__(self, Vertex node):
+        return _BinaryVector_from_cpp(self.chart.get(node.nodeptr))
+
+    def __dealloc__(self):
+        del self.chart
+        self.chart = NULL
+
+    
+
+
+
+cdef class _BinaryVectorMarginals(Marginals):
+    cdef const CBinaryVectorMarginals *thisptr
+    cdef Hypergraph graph
+
+    def __init__(self):
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    cdef init(self, const CBinaryVectorMarginals *ptr, Hypergraph graph):
+        self.thisptr = ptr
+        self.graph = graph
+        return self
+
+    def __getitem__(self, obj):
+        if isinstance(obj, Edge):
+            return _BinaryVector_from_cpp(
+                self.thisptr.marginal((<Edge>obj).edgeptr))
+        elif isinstance(obj, Vertex):
+            return _BinaryVector_from_cpp(
+                self.thisptr.marginal((<Vertex>obj).nodeptr))
+        else:
+            raise HypergraphAccessException(
+                "Only nodes and edges have BinaryVector marginal values." +
+                "Passed %s." % obj)
+
+    
+
+
+    
+
+
+class BinaryVector:
+    Chart = BinaryVectorChart
+    Marginals = _BinaryVectorMarginals
+    #Semi = _BinaryVector
+    Potentials = BinaryVectorPotentials
+
+    @staticmethod
+    def inside(Hypergraph graph,
+               BinaryVectorPotentials potentials):
+        cdef BinaryVectorChart chart = BinaryVectorChart()
+        chart.chart = inside_BinaryVector(graph.thisptr,
+                                        deref(potentials.thisptr))
+        return chart
+
+    @staticmethod
+    def outside(Hypergraph graph,
+                BinaryVectorPotentials potentials,
+                BinaryVectorChart inside_chart):
+        cdef BinaryVectorChart out_chart = BinaryVectorChart()
+        out_chart.chart = outside_BinaryVector(graph.thisptr,
+                                             deref(potentials.thisptr),
+                                             deref(inside_chart.chart))
+        return out_chart
+
+    
+
+    @staticmethod
+    def compute_marginals(Hypergraph graph,
+                          BinaryVectorPotentials potentials):
+        cdef const CBinaryVectorMarginals *marginals = \
+            BinaryVector_compute(graph.thisptr, potentials.thisptr)
+        return _BinaryVectorMarginals().init(marginals, graph)
+
+    @staticmethod
+    def prune_hypergraph(Hypergraph graph,
+                         BinaryVectorPotentials potentials,
                          threshold):
         marginals = compute_marginals(graph, potentials)
         bool_potentials = marginals.threshold(threshold)

@@ -41,12 +41,22 @@ semirings:
     viterbi: No
     description:
       Sparse-vector valued weights.
+
+  - type: Alphabet
+    ctype: AlphabetPotential
+    cvalue: vector[int]
+    viterbi: No
+    description:
+      Alphabet valued weights.
+
   - type: MinSparseVector
     cvalue: vector[pair[int, int]]
     viterbi : False
+
   - type: MaxSparseVector
     cvalue: vector[pair[int, int]]
     viterbi : No
+
   - type: Counting
     cvalue: int
     format: i
@@ -56,6 +66,7 @@ semirings:
       Natural-valued counting potentials.
 
       Uses the operations :math:`(+, *) = (+, *)`.
+
   - type: Bool
     cvalue: bool
     viterbi: Yes
@@ -63,3 +74,12 @@ semirings:
       Boolean-valued logical potentials.
 
       Uses the operations :math:`(+, *) = (\land, \lor)`.
+
+  - type: BinaryVector
+    cvalue: cbitset
+    pvalue: Bitset
+    to_cpp: val.data
+    from_cpp: Bitset().init(val)
+    viterbi: No
+    description:
+      Binary vector potentials.
