@@ -12,13 +12,7 @@
 #include "Hypergraph/Semirings.h"
 #include "Hypergraph/Algorithms.h"
 
-
-struct Beamable {
-    bool valid(Beamable a, Beamable b);
-};
-
 struct BeamGroups {
-
     // groups : vector size of nodes.
     // group_limit : max size of each group.
     BeamGroups(const Hypergraph *graph,
@@ -79,11 +73,11 @@ class BeamChart {
     struct BeamHyp {
         BeamHyp() {}
         BeamHyp(HEdge _edge,
-                     HNode _node,
-                     typename BVP::ValType _sig,
-                     double _cs,
-                     double _fs,
-                     const vector<int> &_bp)
+                HNode _node,
+                typename BVP::ValType _sig,
+                double _cs,
+                double _fs,
+                const vector<int> &_bp)
         : edge(_edge), node(_node), sig(_sig),
             current_score(_cs),
             future_score(_fs),
@@ -106,12 +100,11 @@ class BeamChart {
     typedef vector<BeamHyp > Beam;
     typedef vector<BeamHyp * > BeamPointers;
 
-
     BeamChart(const Hypergraph *hypergraph,
               const BeamGroups *groups,
               const Chart<LogViterbiPotential> *future,
               double lower_bound)
-      : hypergraph_(hypergraph),
+            : hypergraph_(hypergraph),
             future_(future),
             lower_bound_(lower_bound),
             groups_(groups),
@@ -119,23 +112,21 @@ class BeamChart {
             beam_(groups->groups_size()),
             beam_nodes_(hypergraph->nodes().size()) {}
 
-    void insert(HNode node, HEdge edge,
-                typename BVP::ValType bitmap, double val,
+    // Insert an a hypothesis into the chart.
+    //
+    void insert(HNode node,
+                HEdge edge,
+                typename BVP::ValType &sig,
+                double val,
                 const vector<int> &back_position);
 
+    // Finish a beam group.
     void finish(int group);
 
+    //
     const BeamPointers &get_beam(HNode node) const {
         return beam_nodes_[node->id()];
     }
-
-    void check(const Hypergraph *hypergraph) const {
-        if (!hypergraph->same(*hypergraph_)) {
-            throw HypergraphException("Hypergraph does not match chart.");
-        }
-    }
-
-
 
     static BeamChart<BVP> *beam_search(
             const Hypergraph *graph,
@@ -146,6 +137,12 @@ class BeamChart {
             const BeamGroups &groups);
 
     Hyperpath *get_path(int result);
+
+    void check(const Hypergraph *hypergraph) const {
+        if (!hypergraph->same(*hypergraph_)) {
+            throw HypergraphException("Hypergraph does not match chart.");
+        }
+    }
 
   protected:
     const Hypergraph *hypergraph_;

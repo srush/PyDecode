@@ -46,7 +46,8 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
         foreach (HNode node, groups.group_nodes(group)) {
             // 2) Enumerate over each edge (in topological order).
             foreach (HEdge edge, node->edges()) {
-                const typename BVP::ValType &sig = constraints.score(edge);
+                const typename BVP::ValType &sig =
+                        constraints.score(edge);
                 double score = potentials.score(edge);
 
                 // Assume unary/binary edges.
@@ -175,27 +176,31 @@ Hyperpath *BeamChart<BVP>::get_path(int result) {
 
 template<typename BVP>
 void BeamChart<BVP>::insert(HNode node,
-                       HEdge edge,
-                       typename BVP::ValType bitmap,
-                       double val,
-                       const vector<int> &bp) {
-    // Check that the node is not bounded out.
-    double future_val = (*future_)[node];
+                            HEdge edge,
+                            typename BVP::ValType &sig,
+                            double score,
+                            const vector<int> &bp) {
 
-    if (val + future_val < lower_bound_) return;
+    // Check that the node is not bounded out.
+    double future_score = (*future_)[node];
+    if (score + future_score < lower_bound_) return;
+
+    // Check the group of the current node.
     int group = groups_->group(node);
     assert(current_group_ == group);
+
+
     Beam &b = beam_[group];
     int beam_size = groups_->group_limit(group);
     int limit = min(static_cast<int>(b.size()), beam_size);
     if (limit >= beam_size &&
-        val + future_val < b[beam_size].total_score()) return;
+        score + future_score < b[beam_size].total_score()) return;
 
     // Check overlap.
     for (int i = 0; i < limit; ++i) {
-        if (b[i].node->id() == node->id() && b[i].sig == bitmap) {
-            if (val + future_val > b[i].total_score()) {
-                b[i] = BeamHyp(edge, node, bitmap, val, future_val, bp);
+        if (b[i].node->id() == node->id() && b[i].sig == sig) {
+            if (score + future_score > b[i].total_score()) {
+                b[i] = BeamHyp(edge, node, sig, score, future_score, bp);
                 return;
             } else {
                 return;
@@ -204,9 +209,9 @@ void BeamChart<BVP>::insert(HNode node,
     }
 
     for (int i = 0; i < limit; ++i) {
-        if (val + future_val >= b[i].total_score()) {
+        if (score + future_score >= b[i].total_score()) {
             b.insert(b.begin() + i,
-                     BeamHyp(edge, node, bitmap, val, future_val, bp));
+                     BeamHyp(edge, node, sig, score, future_score, bp));
             if (b.size() >= beam_size) {
                 b.resize(beam_size);
             }
@@ -217,51 +222,8 @@ void BeamChart<BVP>::insert(HNode node,
 
     if (b.size() < beam_size)  {
         b.push_back(
-            BeamHyp(edge, node, bitmap, val, future_val, bp));
+            BeamHyp(edge, node, sig, score, future_score, bp));
     }
-
-
-    //
-    // int i = -1;
-    // if () {
-
-    // }
-
-    // Binary search.
-
-    // int upper = limit;
-    // int lower = 0;
-    // int cur = (upper + lower) / 2;
-    // while(true) {
-    //     assert(cur >= lower);
-    //     assert(cur <= upper);
-    //     pair<binvec, BeamScore> &p = b[cur];
-    //     if (cur == lower || cur == upper) {
-    //         b.insert(b.begin() + cur,
-    //                  pair<binvec, BeamScore>(bitmap,
-    //           BeamScore(edge, val, future_val, bp)));
-    //         return;
-    //     }
-
-    //     if (val >= p.second.current_score) {
-    //         upper = cur;
-    //         cur = (cur + lower) / 2;
-    //     } else if (val < p.second.current_score) {
-    //         lower = cur;
-    //         cur = (cur + upper) / 2;
-    //     }
-    // }
-
-
-
-    // BeamMap::iterator iter = chart_[node->id()].find(bitmap);
-    // if (iter != chart_[node->id()].end()) {
-    //     if (val + future_val > iter->second.total_score()) {
-    //         iter->second = BeamScore(edge, val, future_val, bp);
-    //     }
-    // } else {
-    //     chart_[node->id()][bitmap] = BeamScore(edge, val, future_val, bp);
-    // }
 }
 
 template<typename BVP>
@@ -275,6 +237,10 @@ void BeamChart<BVP>::finish(int group) {
     }
     current_group_++;
 }
+
+template class BeamChart<BinaryVectorPotential>;
+template class BeamChart<AlphabetPotential>;
+
 
 // Non-binary beam search.
 // Hyperpath *beam_search(
@@ -346,5 +312,46 @@ void BeamChart<BVP>::finish(int group) {
 //   }
 // }
 
-template class BeamChart<BinaryVectorPotential>;
-template class BeamChart<AlphabetPotential>;
+
+
+    //
+    // int i = -1;
+    // if () {
+
+    // }
+
+    // Binary search.
+
+    // int upper = limit;
+    // int lower = 0;
+    // int cur = (upper + lower) / 2;
+    // while(true) {
+    //     assert(cur >= lower);
+    //     assert(cur <= upper);
+    //     pair<binvec, BeamScore> &p = b[cur];
+    //     if (cur == lower || cur == upper) {
+    //         b.insert(b.begin() + cur,
+    //                  pair<binvec, BeamScore>(bitmap,
+    //           BeamScore(edge, val, future_val, bp)));
+    //         return;
+    //     }
+
+    //     if (val >= p.second.current_score) {
+    //         upper = cur;
+    //         cur = (cur + lower) / 2;
+    //     } else if (val < p.second.current_score) {
+    //         lower = cur;
+    //         cur = (cur + upper) / 2;
+    //     }
+    // }
+
+
+
+    // BeamMap::iterator iter = chart_[node->id()].find(bitmap);
+    // if (iter != chart_[node->id()].end()) {
+    //     if (val + future_val > iter->second.total_score()) {
+    //         iter->second = BeamScore(edge, val, future_val, bp);
+    //     }
+    // } else {
+    //     chart_[node->id()][bitmap] = BeamScore(edge, val, future_val, bp);
+    // }

@@ -1,0 +1,7 @@
+semirings:
+  - type: BinaryVectorPotential
+    from: BinaryVector
+    cvalue: cbitset
+  - type: AlphabetPotential
+    from: Alphabet
+    cvalue: vector[int]
