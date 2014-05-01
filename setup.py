@@ -2,6 +2,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 import os.path
 import sys
+import numpy as np
 
 def check_for_cython():
     return True
@@ -79,7 +80,8 @@ def main():
         download_url = 'https://github.com/srush/PyDecode/tarball/master',
         keywords = ['nlp'],
         classifiers = [],
-        script_args = copy_args
+        script_args = copy_args,
+        include_dirs = [np.get_include()]
         )
 
 if __name__ == "__main__": main()
