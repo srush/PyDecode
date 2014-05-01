@@ -184,23 +184,26 @@ void BeamChart<BVP>::insert(HNode node,
 
     // Check that the node is not bounded out.
     double future_score = (*future_)[node];
-    if (score + future_score < lower_bound_) return;
+    double total_score = score + future_score;
+    if (total_score < lower_bound_) return;
 
-    // Check the group of the current node.
+    // Get the group and size limit of the current node.
     int group = groups_->group(node);
+    int beam_size = groups_->group_limit(group);
     assert(current_group_ == group);
 
-
+    // Get the current beam.
     Beam &b = beam_[group];
-    int beam_size = groups_->group_limit(group);
+
+    // If beam is full, check that we're at least better than the last one.
     int limit = min(static_cast<int>(b.size()), beam_size);
     if (limit >= beam_size &&
-        score + future_score < b[beam_size].total_score()) return;
+        total_score < b[beam_size - 1].total_score()) return;
 
     // Check overlap.
     for (int i = 0; i < limit; ++i) {
         if (b[i].node->id() == node->id() && b[i].sig == sig) {
-            if (score + future_score > b[i].total_score()) {
+            if (total_score > b[i].total_score()) {
                 b[i] = BeamHyp(edge, node, sig, score, future_score, bp);
                 return;
             } else {
@@ -210,7 +213,7 @@ void BeamChart<BVP>::insert(HNode node,
     }
 
     for (int i = 0; i < limit; ++i) {
-        if (score + future_score >= b[i].total_score()) {
+        if (total_score >= b[i].total_score()) {
             b.insert(b.begin() + i,
                      BeamHyp(edge, node, sig, score, future_score, bp));
             if (b.size() >= beam_size) {
@@ -219,7 +222,6 @@ void BeamChart<BVP>::insert(HNode node,
             return;
         }
     }
-
 
     if (b.size() < beam_size)  {
         b.push_back(
