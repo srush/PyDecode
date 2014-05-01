@@ -116,7 +116,7 @@ class BeamChart {
     //
     void insert(HNode node,
                 HEdge edge,
-                typename BVP::ValType &sig,
+                const typename BVP::ValType &sig,
                 double val,
                 const vector<int> &back_position);
 

@@ -33,10 +33,11 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
                                                &future, lower_bound);
 
     // 1) Initialize the chart with terminal nodes.
+    typename BVP::ValType one = BVP::one();
     foreach (HNode node, graph->nodes()) {
         if (node->terminal()) {
             vector<int> back_position;
-            chart->insert(node, NULL, BVP::one(), LVP::one(),
+            chart->insert(node, NULL, one, LVP::one(),
                           back_position);
             continue;
         }
@@ -177,7 +178,7 @@ Hyperpath *BeamChart<BVP>::get_path(int result) {
 template<typename BVP>
 void BeamChart<BVP>::insert(HNode node,
                             HEdge edge,
-                            typename BVP::ValType &sig,
+                            const typename BVP::ValType &sig,
                             double score,
                             const vector<int> &bp) {
 
