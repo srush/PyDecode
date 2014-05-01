@@ -514,7 +514,7 @@ class AlphabetPotential {
                 return false;
             }
             for (int j = 0; j < kSize; ++j) {
-                if (lhs[j] != -1 && rhs[i] != -1 && lhs[j] == rhs[i]) {
+                if (i != j && lhs[j] != -1 && rhs[i] != -1 && lhs[j] == rhs[i]) {
                     return false;
                 }
             }
