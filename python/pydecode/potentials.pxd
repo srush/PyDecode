@@ -165,6 +165,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
             const double &threshold)
         const CHypergraph *hypergraph()
         vector[double] node_marginals()
+        vector[double] edge_marginals()
 
     cdef cppclass CViterbiChart "Chart<ViterbiPotential>":
         CViterbiChart(const CHypergraph *graph)
@@ -274,6 +275,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
             const double &threshold)
         const CHypergraph *hypergraph()
         vector[double] node_marginals()
+        vector[double] edge_marginals()
 
     cdef cppclass CLogViterbiChart "Chart<LogViterbiPotential>":
         CLogViterbiChart(const CHypergraph *graph)
@@ -383,6 +385,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
             const double &threshold)
         const CHypergraph *hypergraph()
         vector[double] node_marginals()
+        vector[double] edge_marginals()
 
     cdef cppclass CInsideChart "Chart<InsidePotential>":
         CInsideChart(const CHypergraph *graph)
@@ -492,6 +495,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
             const double &threshold)
         const CHypergraph *hypergraph()
         vector[double] node_marginals()
+        vector[double] edge_marginals()
 
     cdef cppclass CMinMaxChart "Chart<MinMaxPotential>":
         CMinMaxChart(const CHypergraph *graph)
@@ -601,6 +605,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
             const vector[pair[int, int]] &threshold)
         const CHypergraph *hypergraph()
         vector[vector[pair[int, int]]] node_marginals()
+        vector[vector[pair[int, int]]] edge_marginals()
 
     cdef cppclass CSparseVectorChart "Chart<SparseVectorPotential>":
         CSparseVectorChart(const CHypergraph *graph)
@@ -710,6 +715,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
             const vector[pair[int, int]] &threshold)
         const CHypergraph *hypergraph()
         vector[vector[pair[int, int]]] node_marginals()
+        vector[vector[pair[int, int]]] edge_marginals()
 
     cdef cppclass CMinSparseVectorChart "Chart<MinSparseVectorPotential>":
         CMinSparseVectorChart(const CHypergraph *graph)
@@ -819,6 +825,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
             const vector[pair[int, int]] &threshold)
         const CHypergraph *hypergraph()
         vector[vector[pair[int, int]]] node_marginals()
+        vector[vector[pair[int, int]]] edge_marginals()
 
     cdef cppclass CMaxSparseVectorChart "Chart<MaxSparseVectorPotential>":
         CMaxSparseVectorChart(const CHypergraph *graph)
@@ -928,6 +935,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
             const int &threshold)
         const CHypergraph *hypergraph()
         vector[int] node_marginals()
+        vector[int] edge_marginals()
 
     cdef cppclass CCountingChart "Chart<CountingPotential>":
         CCountingChart(const CHypergraph *graph)
@@ -1037,6 +1045,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
             const bool &threshold)
         const CHypergraph *hypergraph()
         vector[bool] node_marginals()
+        vector[bool] edge_marginals()
 
     cdef cppclass CBoolChart "Chart<BoolPotential>":
         CBoolChart(const CHypergraph *graph)

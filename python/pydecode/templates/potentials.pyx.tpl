@@ -379,6 +379,9 @@ cdef class _{{S.type}}Marginals(Marginals):
     {% if S.npvalue %}
     def as_array(self):
         return _{{S.type}}vector_to_numpy(self.thisptr.node_marginals())
+
+    def as_edge_array(self):
+        return _{{S.type}}vector_to_numpy(self.thisptr.edge_marginals())
     {% endif %}
 
 

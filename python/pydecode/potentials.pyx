@@ -1056,6 +1056,9 @@ cdef class _ViterbiMarginals(Marginals):
     
     def as_array(self):
         return _Viterbivector_to_numpy(self.thisptr.node_marginals())
+
+    def as_edge_array(self):
+        return _Viterbivector_to_numpy(self.thisptr.edge_marginals())
     
 
 
@@ -1414,6 +1417,9 @@ cdef class _LogViterbiMarginals(Marginals):
     
     def as_array(self):
         return _LogViterbivector_to_numpy(self.thisptr.node_marginals())
+
+    def as_edge_array(self):
+        return _LogViterbivector_to_numpy(self.thisptr.edge_marginals())
     
 
 
@@ -1772,6 +1778,9 @@ cdef class _InsideMarginals(Marginals):
     
     def as_array(self):
         return _Insidevector_to_numpy(self.thisptr.node_marginals())
+
+    def as_edge_array(self):
+        return _Insidevector_to_numpy(self.thisptr.edge_marginals())
     
 
 
@@ -2130,6 +2139,9 @@ cdef class _MinMaxMarginals(Marginals):
     
     def as_array(self):
         return _MinMaxvector_to_numpy(self.thisptr.node_marginals())
+
+    def as_edge_array(self):
+        return _MinMaxvector_to_numpy(self.thisptr.edge_marginals())
     
 
 
@@ -3340,6 +3352,9 @@ cdef class _CountingMarginals(Marginals):
     
     def as_array(self):
         return _Countingvector_to_numpy(self.thisptr.node_marginals())
+
+    def as_edge_array(self):
+        return _Countingvector_to_numpy(self.thisptr.edge_marginals())
     
 
 

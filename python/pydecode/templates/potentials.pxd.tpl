@@ -62,6 +62,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
             const {{S.cvalue}} &threshold)
         const CHypergraph *hypergraph()
         vector[{{S.cvalue}}] node_marginals()
+        vector[{{S.cvalue}}] edge_marginals()
 
     cdef cppclass C{{S.type}}Chart "Chart<{{S.ctype}}>":
         C{{S.type}}Chart(const CHypergraph *graph)

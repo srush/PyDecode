@@ -200,7 +200,17 @@ class Marginals {
         return node_marginals_;
     }
 
-  private:
+    // Lazily creates array if non-existent.
+    const vector<typename SemiringType::ValType> &edge_marginals() const {
+        if (edge_marginals_.size() == 0) {
+            edge_marginals_.resize(hypergraph_->edges().size());
+            foreach (HEdge edge, hypergraph_->edges()) {
+                edge_marginals_[edge->id()] = marginal(edge);
+            }
+        }
+        return edge_marginals_;
+    }
+   private:
     const Hypergraph *hypergraph_;
     const HypergraphPotentials<SemiringType> *potentials_;
 
@@ -210,6 +220,7 @@ class Marginals {
     const Chart<SemiringType> *out_chart_;
 
     vector<typename SemiringType::ValType> node_marginals_;
+    mutable vector<typename SemiringType::ValType> edge_marginals_;
 };
 
 #endif  // HYPERGRAPH_SEMIRINGALGORITHMS_H_
