@@ -19,7 +19,6 @@ print >>out, open("python/pydecode/templates/libhypergraph.pyx").read()
 print >>out, template_beam.render(vars_beam)
 print >>out, template.render(vars)
 
-
 template = env.get_template('potentials.pxd.tpl')
 template_beam = env.get_template('beam.pxd.tpl')
 out = open("python/pydecode/potentials.pxd", "w")

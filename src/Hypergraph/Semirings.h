@@ -474,14 +474,14 @@ class BinaryVectorPotential {
 class AlphabetPotential {
   public:
     typedef vector<int> ValType;
-
+    static const int kSize = 26;
     static inline ValType add(ValType lhs, const ValType& rhs) {
         // not used.
         return lhs;
     }
 
     static inline ValType times(ValType value, const ValType& rhs) {
-        for (int i = 0; i < 26; ++i) {
+        for (int i = 0; i < kSize; ++i) {
             if (rhs[i] != -1)
                 value[i] = rhs[i];
         }
@@ -489,13 +489,13 @@ class AlphabetPotential {
     }
 
     static inline ValType one() {
-        ValType vec(26, -1);
+        ValType vec(kSize, -1);
         return vec;
     }
 
     static inline ValType zero() {
         // not used.
-        ValType vec(26, -1);
+        ValType vec(kSize, -1);
         return vec;
     }
 
@@ -509,11 +509,11 @@ class AlphabetPotential {
 
     static inline bool valid(const ValType& lhs,
                              const ValType& rhs) {
-        for (int i = 0; i < 26; ++i) {
+        for (int i = 0; i < kSize; ++i) {
             if (lhs[i] != -1 && rhs[i] != -1 && lhs[i] != rhs[i]) {
                 return false;
             }
-            for (int j = 0; j < i; ++j) {
+            for (int j = 0; j < kSize; ++j) {
                 if (lhs[j] != -1 && rhs[i] != -1 && lhs[j] == rhs[i]) {
                     return false;
                 }

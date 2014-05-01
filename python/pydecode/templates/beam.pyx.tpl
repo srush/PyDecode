@@ -34,7 +34,8 @@ cdef class BeamChart{{S.type}}:
                            self.graph)
 
     def __getitem__(self, Vertex vertex):
-        cdef vector[CBeamHyp{{S.type}} *]             self.thisptr.get_beam(vertex.nodeptr)
+        cdef vector[CBeamHyp{{S.type}} *] beam = \
+                    self.thisptr.get_beam(vertex.nodeptr)
         data = []
         i = 0
         for p in beam:

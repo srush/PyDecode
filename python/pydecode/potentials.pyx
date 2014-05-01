@@ -711,7 +711,7 @@ cdef class BeamChartBinaryVectorPotential:
 
     def __getitem__(self, Vertex vertex):
         cdef vector[CBeamHypBinaryVectorPotential *] beam = \
-            self.thisptr.get_beam(vertex.nodeptr)
+                    self.thisptr.get_beam(vertex.nodeptr)
         data = []
         i = 0
         for p in beam:
@@ -789,7 +789,7 @@ cdef class BeamChartAlphabetPotential:
 
     def __getitem__(self, Vertex vertex):
         cdef vector[CBeamHypAlphabetPotential *] beam = \
-            self.thisptr.get_beam(vertex.nodeptr)
+                    self.thisptr.get_beam(vertex.nodeptr)
         data = []
         i = 0
         for p in beam:
