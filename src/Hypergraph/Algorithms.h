@@ -52,4 +52,17 @@ HypergraphMap *project_hypergraph(
 
 HypergraphMap *binarize(const Hypergraph *hypergraph);
 
+struct LatticeLabel {
+    LatticeLabel() {}
+  LatticeLabel(int i_, int j_) : i(i_), j(j_) {}
+    int i, j;
+};
+
+Hypergraph *make_lattice(int width, int height,
+                         const vector<vector<int> > &transitions,
+                         vector<LatticeLabel> *labels);
+
+
+
+
 #endif  // HYPERGRAPH_ALGORITHMS_H_

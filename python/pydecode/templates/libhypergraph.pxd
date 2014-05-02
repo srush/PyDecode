@@ -33,6 +33,20 @@ cdef extern from "Hypergraph/Hypergraph.h":
         int has_edge(const CHyperedge *)
         bool equal(const CHyperpath path)
 
+cdef extern from "Hypergraph/Algorithms.h":
+    CHypergraph *cmake_lattice "make_lattice"(int width, int height,
+                                              const vector[vector[int] ] transitions,
+                                              vector[CLatticeLabel ] *transitions
+                                              )
+
+
+    cdef cppclass CLatticeLabel "LatticeLabel":
+        int i
+        int j
+
+
+
+
 cdef class Labeling:
     cdef edge_labels
     cdef node_labels
@@ -100,3 +114,7 @@ cdef class HypergraphMap:
 
     cdef HypergraphMap init(self, const CHypergraphMap *thisptr,
                             Hypergraph range_graph, Hypergraph domain_graph)
+
+cdef class LatticeLabel:
+    cdef CLatticeLabel label
+    cdef init(LatticeLabel self, CLatticeLabel label)

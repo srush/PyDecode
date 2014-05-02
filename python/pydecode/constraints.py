@@ -1,5 +1,6 @@
 import pydecode.hyper as ph
 from collections import defaultdict
+from itertools import izip
 
 class WeightedConstrainedGraph:
     def __init__(self, graph, weight, constraint):
@@ -105,9 +106,9 @@ class Constraints:
         final = []
         self.all_constraints = defaultdict(lambda: [])
         edge_values = {}
-        for i, edge in enumerate(self.hypergraph.edges):
+        for i, (edge, cons) in enumerate(izip(self.hypergraph.edges, vector)):
             semi = []
-            for name, coeff in vector[i]:
+            for name, coeff in cons:
                 constraint = self.by_label[name]
                 semi.append((constraint, coeff))
                 self.all_constraints[constraint].append((coeff, edge))

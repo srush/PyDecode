@@ -383,6 +383,52 @@ HypergraphMap *binarize(const Hypergraph *hypergraph) {
                              nodes, edges, true);
 }
 
+
+Hypergraph *make_lattice(int width, int height,
+                         const vector<vector<int> > &transitions,
+                         vector<LatticeLabel> *labels) {
+    Hypergraph *graph = new Hypergraph();
+    HNode source = graph->add_terminal_node();
+    labels->push_back(LatticeLabel(0, 0));
+
+    vector<HNode> old_nodes(height), new_nodes(height);
+    for (int j = 0; j < height; ++j) {
+        old_nodes[j] = graph->start_node();
+        labels->push_back(LatticeLabel(1, j));
+        vector<HNode> tails;
+        tails.push_back(source);
+        graph->add_edge(tails);
+        graph->end_node();
+    }
+
+    for (int i = 1; i <= width; ++i) {
+        for (int j = 0; j < height; ++j) {
+            new_nodes[j] = graph->start_node();
+            labels->push_back(LatticeLabel(i, j));
+            foreach (int k, transitions[j]) {
+                vector<HNode> tails;
+                tails.push_back(old_nodes[k]);
+                graph->add_edge(tails);
+            }
+            graph->end_node();
+        }
+        old_nodes = new_nodes;
+    }
+
+    graph->start_node();
+    labels->push_back(LatticeLabel(width + 1, 0));
+    for (int j = 0; j < height; ++j) {
+        vector<HNode> tails;
+        tails.push_back(old_nodes[j]);
+        graph->add_edge(tails);
+    }
+    graph->end_node();
+
+    graph->finish();
+    return graph;
+}
+
+
 // vector<bool> active_nodes(const Hypergraph *graph, set<int> on_edges) {
 //     Chart<SetPotential> *edges = edge_domination;
 

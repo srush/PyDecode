@@ -11,6 +11,9 @@ cdef class Bitset:
 
 
     """
+    def __init__(self, v=-1):
+        if v != -1:
+            self.data[v] = 1
 
     cdef init(self, cbitset data):
         self.data = data

@@ -76,6 +76,7 @@ struct BeamGroups {
 template<typename BVP>
 class BeamChart {
   public:
+    bool exact;
 
     struct BeamHyp
               : public set_base_hook<>{
@@ -196,7 +197,7 @@ class BeamChart {
         }
     }
 
-    bool exact;
+
 
   protected:
     const Hypergraph *hypergraph_;

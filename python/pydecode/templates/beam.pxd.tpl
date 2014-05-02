@@ -38,15 +38,17 @@ cdef extern from "Hypergraph/BeamSearch.h" namespace "BeamChart<{{S.type}}>":
             double lower_bound,
             const CBeamGroups &groups)
 
+
 cdef extern from "Hypergraph/BeamSearch.h":
     cdef cppclass CBeamChart{{S.type}} "BeamChart<{{S.type}}>":
         CHyperpath *get_path(int result)
         vector[CBeamHyp{{S.type}} *] get_beam(const CHypernode *node)
+        bool exact
 
 cdef class BeamChart{{S.type}}:
     cdef CBeamChart{{S.type}} *thisptr
     cdef Hypergraph graph
-    cdef bool exact
+
     cdef init(self, CBeamChart{{S.type}} *chart, Hypergraph graph)
 
 {% endfor %}

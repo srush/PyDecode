@@ -674,6 +674,43 @@ cdef class HypergraphMap:
         cdef Hypergraph h = Hypergraph()
         return h.init(graph, Labeling(h, node_labels, edge_labels))
 
+
+
+cdef class LatticeLabel:
+    cdef init(self, CLatticeLabel label):
+        self.label = label
+        return self
+
+    property i:
+        def __get__(self):
+            return self.label.i
+
+    property j:
+        def __get__(self):
+            return self.label.j
+
+    def __str__(self):
+        return str(self.i) + " " + str(self.j)
+
+def make_lattice(int width, int height, transitions):
+    cdef vector[vector[int] ] ctrans
+    cdef vector[int] tmp
+    for i in range(len(transitions)):
+        for j in range(len(transitions[i])):
+            tmp.push_back(transitions[i][j])
+        ctrans.push_back(tmp)
+        tmp.clear()
+    cdef Hypergraph h = Hypergraph()
+
+    cdef vector[CLatticeLabel] clabels
+    cdef CHypergraph *chyper = cmake_lattice(width, height, ctrans, &clabels)
+
+    node_labels = [LatticeLabel().init(clabels[i])
+                   for i in range(clabels.size())]
+
+    return h.init(chyper,
+                  Labeling(h, node_labels, None))
+
 from cython.operator cimport dereference as deref
 from libcpp cimport bool
 from libcpp.vector cimport vector
@@ -687,6 +724,9 @@ cdef class Bitset:
 
 
     """
+    def __init__(self, v=-1):
+        if v != -1:
+            self.data[v] = 1
 
     cdef init(self, cbitset data):
         self.data = data

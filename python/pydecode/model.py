@@ -177,12 +177,16 @@ class DynamicProgrammingModel(StructuredModel):
 
     def _build_potentials(self, hypergraph, x, w):
         data = self.initialize_features(x)
+        print "making features"
         features = [self.factored_joint_feature(x, edge.label, data)
                     for edge in hypergraph.edges]
+        print "transforming"
         f = self._vec.transform(features)
+        print "Dotting"
         scores = f * w.T
         #print "Weights:", self._vec.inverse_transform(w)
         #print
+        print "Vectoring"
         return ph.LogViterbiPotentials(hypergraph).from_vector(scores)
 
         #return weights
