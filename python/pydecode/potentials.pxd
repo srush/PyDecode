@@ -149,6 +149,7 @@ cdef extern from "Hypergraph/BeamSearch.h":
 cdef class BeamChartBinaryVectorPotential:
     cdef CBeamChartBinaryVectorPotential *thisptr
     cdef Hypergraph graph
+    cdef bool exact
     cdef init(self, CBeamChartBinaryVectorPotential *chart, Hypergraph graph)
 
 
@@ -175,6 +176,7 @@ cdef extern from "Hypergraph/BeamSearch.h":
 cdef class BeamChartAlphabetPotential:
     cdef CBeamChartAlphabetPotential *thisptr
     cdef Hypergraph graph
+    cdef bool exact
     cdef init(self, CBeamChartAlphabetPotential *chart, Hypergraph graph)
 
 

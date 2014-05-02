@@ -4,13 +4,19 @@
 #define HYPERGRAPH_BEAMSEARCH_H_
 
 #include <list>
+#include <stack>
+#include <deque>
 #include <vector>
+#include <boost/intrusive/rbtree.hpp>
+
 
 #include "./common.h"
 
 #include "Hypergraph/Hypergraph.h"
 #include "Hypergraph/Semirings.h"
 #include "Hypergraph/Algorithms.h"
+
+using namespace boost::intrusive;
 
 struct BeamGroups {
     // groups : vector size of nodes.
@@ -70,21 +76,48 @@ struct BeamGroups {
 template<typename BVP>
 class BeamChart {
   public:
-    struct BeamHyp {
+
+    struct BeamHyp
+              : public set_base_hook<>{
+
+       set_member_hook<> member_hook_;
+
+
         BeamHyp() {}
+
         BeamHyp(HEdge _edge,
                 HNode _node,
                 typename BVP::ValType _sig,
                 double _cs,
                 double _fs,
-                const vector<int> &_bp)
+                int _bp_left,
+                int _bp_right)
         : edge(_edge), node(_node), sig(_sig),
             current_score(_cs),
             future_score(_fs),
-            back_position(_bp) {}
+            total_score(_cs + _fs),
+            back_position_left(_bp_left),
+            back_position_right(_bp_right) {}
 
-        double total_score() const {
-            return current_score + future_score;
+         void reset(HEdge _edge,
+                    HNode _node,
+                    typename BVP::ValType _sig,
+                    double _cs,
+                    double _fs,
+                    int _bp_left,
+                    int _bp_right) {
+             edge = _edge;
+             node = _node;
+             sig = _sig;
+             current_score = _cs;
+             future_score = _fs;
+             total_score = _cs + _fs;
+             back_position_left = _bp_left;
+             back_position_right = _bp_right;
+         }
+
+        bool operator<(const BeamHyp &other) const {
+            return total_score >= other.total_score;
         }
 
         HEdge edge;
@@ -92,12 +125,20 @@ class BeamChart {
         typename BVP::ValType sig;
         double current_score;
         double future_score;
+        double total_score;
 
         // Beam position for the tail nodes.
-        vector<int> back_position;
+        int back_position_left;
+        int back_position_right;
     };
 
-    typedef vector<BeamHyp > Beam;
+    struct delete_disposer {
+        void operator()(BeamHyp *delete_this) {
+            delete delete_this;
+        }
+    };
+
+    typedef rbtree<BeamHyp> Beam;
     typedef vector<BeamHyp * > BeamPointers;
 
     BeamChart(const Hypergraph *hypergraph,
@@ -110,7 +151,16 @@ class BeamChart {
             groups_(groups),
             current_group_(0),
             beam_(groups->groups_size()),
-            beam_nodes_(hypergraph->nodes().size()) {}
+            beam_size_(groups->groups_size(), 0),
+            beam_nodes_(hypergraph->nodes().size()),
+            exact(true) {
+        for (int i = 0; i < groups->groups_size(); ++i) {
+            beam_[i] = new Beam();
+        }
+
+    }
+
+    ~BeamChart();
 
     // Insert an a hypothesis into the chart.
     //
@@ -118,7 +168,9 @@ class BeamChart {
                 HEdge edge,
                 const typename BVP::ValType &sig,
                 double val,
-                const vector<int> &back_position);
+                const int back_position_left,
+                const int back_position_right
+                );
 
     // Finish a beam group.
     void finish(int group);
@@ -144,6 +196,8 @@ class BeamChart {
         }
     }
 
+    bool exact;
+
   protected:
     const Hypergraph *hypergraph_;
 
@@ -151,14 +205,21 @@ class BeamChart {
     const Chart<LogViterbiPotential> *future_;
     double lower_bound_;
 
-    vector<Beam> beam_;
+    vector<Beam *> beam_;
+    vector<int> beam_size_;
     vector<BeamPointers> beam_nodes_;
 
     // Mapping from nodes to beam group.
     const BeamGroups *groups_;
     int current_group_;
+
+    stack<BeamHyp *> hyp_pool_;
+
 };
 
 
+template<typename BVP>
+bool comp(typename BeamChart<BVP>::BeamHyp *hyp1,
+          typename BeamChart<BVP>::BeamHyp *hyp2);
 
 #endif  // HYPERGRAPH_BEAMSEARCH_H_

@@ -29,7 +29,14 @@ cdef class BeamChart{{S.type}}:
         self.graph = graph
         return self
 
+    def __dealloc__(self):
+        if self.thisptr is not NULL:
+            del self.thisptr
+            self.thisptr = NULL
+
     def path(self, int result):
+        if self.thisptr.get_path(result) == NULL:
+            return None
         return Path().init(self.thisptr.get_path(result),
                            self.graph)
 
@@ -43,6 +50,11 @@ cdef class BeamChart{{S.type}}:
                          p.current_score,
                          p.future_score))
         return data
+
+
+    property exact:
+        def __get__(self):
+            return self.thisptr.exact
 
 
 def beam_search_{{S.from}}(Hypergraph graph,

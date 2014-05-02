@@ -46,6 +46,7 @@ cdef extern from "Hypergraph/BeamSearch.h":
 cdef class BeamChart{{S.type}}:
     cdef CBeamChart{{S.type}} *thisptr
     cdef Hypergraph graph
+    cdef bool exact
     cdef init(self, CBeamChart{{S.type}} *chart, Hypergraph graph)
 
 {% endfor %}
