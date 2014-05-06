@@ -401,10 +401,10 @@ Hypergraph *make_lattice(int width, int height,
         graph->end_node();
     }
 
-    for (int i = 1; i <= width; ++i) {
+    for (int i = 1; i < width; ++i) {
         for (int j = 0; j < height; ++j) {
             new_nodes[j] = graph->start_node();
-            labels->push_back(LatticeLabel(i, j));
+            labels->push_back(LatticeLabel(i + 1, j));
             foreach (int k, transitions[j]) {
                 vector<HNode> tails;
                 tails.push_back(old_nodes[k]);

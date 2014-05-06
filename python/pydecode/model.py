@@ -110,16 +110,23 @@ class DynamicProgrammingModel(StructuredModel):
         relaxed = relaxed or self._use_relaxed
         if self._debug:
             a = time.time()
+
+        # Build the hypergraph.
         hypergraph = self._build_hypergraph(x)
         if self._debug:
             print >>sys.stderr, "BUILD HYPERGRAPH:", time.time() - a
 
+
+        # Build the potentials.
         if self._debug:
             a = time.time()
         potentials = self._build_potentials(hypergraph, x, w)
         if self._debug:
             print >>sys.stderr, "BUILD POTENTIALS:", time.time() - a
+
+
         if not self._constrained:
+            # Call best path.
             if self._debug:
                 a = time.time()
             path = ph.best_path(hypergraph, potentials)
@@ -151,6 +158,8 @@ class DynamicProgrammingModel(StructuredModel):
                 path = hyperlp.path
         if self._debug:
             print
+
+        # Returns y.
         y = set([edge.label for edge in path])
         return y
 
