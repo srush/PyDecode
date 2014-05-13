@@ -166,6 +166,12 @@ cdef extern from "Hypergraph/Algorithms.h":
         int upper_limit,
         int goal)
 
+    CHypergraphMap *cextend_hypergraph_by_dfa "extend_with_dfa" (
+        CHypergraph *graph,
+        CHypergraphCountingPotentials potentials,
+        CDFA dfa,
+        vector[CDFALabel] *labels) except +
+
     CHypergraphMap *cproject_hypergraph "project_hypergraph"(
         const CHypergraph *hypergraph,
         const CHypergraphBoolPotentials &edge_mask)

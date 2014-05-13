@@ -170,6 +170,10 @@ class Hypergraph {
       throw HypergraphException("Hypergraph has size 0.");
     }
     root_ = temp_nodes_[temp_nodes_.size() - 1];
+    /* if (!(root == NULL || root_ == root)) { */
+    /*   throw HypergraphException("Root is not expected root."); */
+    /* } */
+
     fill();
     if (nodes_.size() == 0) {
       throw HypergraphException("Final hypergraph has node size 0.");

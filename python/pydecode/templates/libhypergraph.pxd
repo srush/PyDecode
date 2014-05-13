@@ -1,5 +1,7 @@
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp.map cimport map
+from libcpp.set cimport set
 from libcpp cimport bool
 
 cdef extern from "Hypergraph/Hypergraph.h":
@@ -33,6 +35,16 @@ cdef extern from "Hypergraph/Hypergraph.h":
         int has_edge(const CHyperedge *)
         bool equal(const CHyperpath path)
 
+cdef extern from "Hypergraph/Automaton.h":
+    cdef cppclass CDFA "DFA":
+        CDFA(int num_states, int num_symbols,
+            const vector[map[int, int] ] &transition,
+            const set[int] &final)
+        bool final(int state)
+        int transition(int state, int symbol)
+        int valid_transition(int state, int symbol)
+
+
 cdef extern from "Hypergraph/Algorithms.h":
     CHypergraph *cmake_lattice "make_lattice"(int width, int height,
                                               const vector[vector[int] ] transitions,
@@ -43,6 +55,11 @@ cdef extern from "Hypergraph/Algorithms.h":
     cdef cppclass CLatticeLabel "LatticeLabel":
         int i
         int j
+
+    cdef cppclass CDFALabel "DFANode":
+        int left_state
+        int right_state
+
 
 
 
@@ -114,6 +131,15 @@ cdef class HypergraphMap:
 
     cdef HypergraphMap init(self, const CHypergraphMap *thisptr,
                             Hypergraph range_graph, Hypergraph domain_graph)
+
+cdef class DFALabel:
+    cdef CDFALabel label
+    cdef _core
+    cdef init(DFALabel self, CDFALabel label, core)
+
+cdef class DFA:
+    cdef const CDFA *thisptr
+
 
 cdef class LatticeLabel:
     cdef CLatticeLabel label

@@ -739,6 +739,37 @@ def extend_hypergraph_by_count(Hypergraph graph,
     return HypergraphMap().init(projection, None, graph)
 
 
+def extend_hypergraph_by_dfa(Hypergraph graph,
+                             CountingPotentials potentials,
+                             DFA dfa):
+    """
+    DEPRECATED
+    """
+
+    cdef vector[CDFALabel] labels
+    cdef CHypergraphMap *projection = \
+        cextend_hypergraph_by_dfa(graph.thisptr,
+                                  deref(potentials.thisptr),
+                                  deref(dfa.thisptr),
+                                  &labels)
+    node_labels = []
+    cdef const CHypernode *node
+    cdef vector[const CHypernode*] new_nodes = \
+        projection.domain_graph().nodes()
+
+    for i in range(labels.size()):
+        node = projection.map(new_nodes[i])
+        node_labels.append(DFALabel().init(labels[i],
+                                           graph.labeling.node_labels[node.id()]))
+
+    # Build domain graph
+    cdef Hypergraph range_graph = Hypergraph()
+    assert(projection.domain_graph().nodes().size() == \
+               len(node_labels))
+    range_graph.init(projection.domain_graph(),
+                     Labeling(range_graph, node_labels, None))
+    return HypergraphMap().init(projection, range_graph, graph)
+
 # def valid_binary_vectors(Bitset lhs, Bitset rhs):
 #     return cvalid_binary_vectors(lhs.data, rhs.data)
 

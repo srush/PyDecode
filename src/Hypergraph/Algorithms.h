@@ -9,6 +9,7 @@
 
 #include "./common.h"
 
+#include "Hypergraph/Automaton.h"
 #include "Hypergraph/Hypergraph.h"
 #include "Hypergraph/Semirings.h"
 #include "Hypergraph/SemiringAlgorithms.h"
@@ -22,6 +23,28 @@ struct IdComparator {
         return edge1->id() < edge2->id();
     }
 };
+
+struct DFANode {
+  DFANode(int _left_state, int _right_state,
+          HNode _node, int _id) :
+    left_state(_left_state),
+        right_state(_right_state),
+        node(_node),
+        id( _id) {}
+
+    DFANode() {}
+
+    int left_state;
+    int right_state;
+    HNode node;
+    int id;
+};
+
+HypergraphMap *extend_with_dfa(
+    Hypergraph *graph,
+    const HypergraphPotentials<CountingPotential> &potentials,
+    const DFA &dfa,
+    vector<DFANode> *labels);
 
 HypergraphMap *extend_hypergraph_by_count(
     Hypergraph *graph,

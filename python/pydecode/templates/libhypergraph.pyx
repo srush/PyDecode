@@ -12,6 +12,8 @@ cdef class Labeling:
         self.edge_labels = edge_labels
         self.node_labels = node_labels
 
+
+
     def __getitem__(self, obj):
         if isinstance(obj, Edge):
             if self.edge_labels is None:
@@ -132,7 +134,7 @@ cdef class Hypergraph:
                                                  len(self.nodes)) + "\n"
         s += "Root %s" % (self.root.id) + "\n"
         for edge in self.edges:
-            s += " %s %s \n" % (edge.id, self.label(edge))
+            s += " %s %s \n" % (edge.id, edge.label)
             s += "\t%d -> " % (edge.head.id)
             for node in edge.tail:
                 s += " %d " % (node.id)
@@ -542,18 +544,24 @@ cdef class HypergraphMap:
             assert self.domain_graph.thisptr.id() == \
                 self.thisptr.domain_graph().id()
             self.range_graph = self._build_range_hypergraph()
-        else:
+        elif domain_graph is None:
             self.range_graph = range_graph
             assert self.range_graph.thisptr.id() == \
                 self.thisptr.range_graph().id()
             self.domain_graph = self._build_domain_hypergraph()
+        else:
+            self.domain_graph = domain_graph
+            self.range_graph = range_graph
+            assert self.range_graph.thisptr.id() == \
+                self.thisptr.range_graph().id()
+            assert self.domain_graph.thisptr.id() == \
+                self.thisptr.domain_graph().id()
+
         return self
 
     def compose(self, HypergraphMap other):
         """
         Compose two hypergraph maps.
-
-
 
         Parameters
         -----------
@@ -675,6 +683,57 @@ cdef class HypergraphMap:
         return h.init(graph, Labeling(h, node_labels, edge_labels))
 
 
+# For finite-state automaton construction.
+
+cdef class DFA:
+    def __init__(self, int num_states,
+                 int num_symbols, transitions,
+                 final):
+        cdef vector[map[int, int]] ctransitions
+        ctransitions.resize(num_states)
+        for i, m in enumerate(transitions):
+            for k in m:
+                ctransitions[i][k] = m[k]
+
+        cdef set[int] cfinals
+        for f in final:
+            cfinals.insert(f)
+
+        self.thisptr = new CDFA(num_states, num_symbols,
+                                ctransitions, cfinals)
+
+    def is_final(self, int state):
+        return self.thisptr.final(state)
+
+    def transition(self, int state, int symbol):
+        return self.thisptr.transition(state, symbol)
+
+    def valid_transition(self, int state, int symbol):
+        return self.thisptr.valid_transition(state, symbol)
+
+cdef class DFALabel:
+    cdef init(self, CDFALabel label, core):
+        self.label = label
+        self._core = core
+        return self
+
+    property left_state:
+        def __get__(self):
+            return self.label.left_state
+
+    property right_state:
+        def __get__(self):
+            return self.label.right_state
+
+    property core:
+        def __get__(self):
+            return self._core
+
+    def __str__(self):
+        return str(self.core) + " " + str(self.label.left_state) + " " + str(self.label.right_state)
+
+
+# For lattice construction.
 
 cdef class LatticeLabel:
     cdef init(self, CLatticeLabel label):
@@ -707,6 +766,6 @@ def make_lattice(int width, int height, transitions):
 
     node_labels = [LatticeLabel().init(clabels[i])
                    for i in range(clabels.size())]
-
+    assert(chyper.nodes().size() == len(node_labels))
     return h.init(chyper,
                   Labeling(h, node_labels, None))
