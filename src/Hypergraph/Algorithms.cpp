@@ -208,7 +208,7 @@ HypergraphMap *extend_with_dfa(
             }
         }
     }
-    if (reverse_node_map[hypergraph->root()->id()].size() != 0) {
+    if (reverse_node_map[hypergraph->root()->id()].size() != 1) {
         throw HypergraphException("New hypergraph has root size is not 1.");
     }
     new_graph->finish();
