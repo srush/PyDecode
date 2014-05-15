@@ -165,14 +165,11 @@ class DynamicProgrammingModel(StructuredModel):
 
     def loss(self, yhat, y):
         difference = 0
-        # print "GOLD", y
-        # print "CHECK", yhat
         ydiff = set()
         for y1 in y:
             if y1 not in yhat:
                 difference += 1
                 ydiff.add(y1)
-        #print "DIFF", difference, ydiff
         return difference
 
     def max_loss(self, y):
@@ -186,49 +183,10 @@ class DynamicProgrammingModel(StructuredModel):
 
     def _build_potentials(self, hypergraph, x, w):
         data = self.initialize_features(x)
-        print "making features"
         features = [self.factored_joint_feature(x, edge.label, data)
                     for edge in hypergraph.edges]
-        print "transforming"
         f = self._vec.transform(features)
-        print "Dotting"
         scores = f * w.T
-        #print "Weights:", self._vec.inverse_transform(w)
-        #print
-        print "Vectoring"
         return ph.LogViterbiPotentials(hypergraph).from_vector(scores)
 
-        #return weights
-        #print len(), len(hypergraph.edges)
-        # def potential_builder(index):
-        #     return
-        # return ph.Potentials(hypergraph).build(potential_builder)
-        # def potential_builder(index):
-        #      return self._features(x, index, data).dot(w.T)
-        # w2 = ph.Potentials(hypergraph).build(potential_builder)
-        # for edge in hypergraph.edges:
-        #     assert weights[edge] == w2[edge]
 
-
-    # def _features(self, x, index, data):
-    #     d = self.factored_joint_feature(x, index, data)
-    #     # This is slow.
-    #     return self._vec.transform(d) # {s: 1 for s in d})
-
-    # def _path_features(self, hypergraph, x, path, data):
-    #     return sum((self._features(x, hypergraph.label(edge), data)
-    #                 for edge in path))
-
-
-# hm = TaggingCRFModel()
-# hm.initialize(data_X, data_Y)
-# for i in range(len(data_X))[:10]:
-#     s = set(data_Y[i])
-#     c = chart.ChartBuilder(lambda a: a,
-#                            chart.HypergraphSemiRing, True)
-#     hm.dynamic_program(data_X[i], c)
-#     h = c.finish()
-#     bool_pot = ph.BoolPotentials(h).build(lambda a: a in s)
-#     path = ph.best_path(h, bool_pot)
-#     #for edge in path: print h.label(edge)
-#     assert bool_pot.dot(path)

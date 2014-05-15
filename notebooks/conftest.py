@@ -1,4 +1,3 @@
-# put this file into any folder under which ipynb files shall be collected.
 import pytest
 import os,sys
 
@@ -14,11 +13,11 @@ from IPython.nbformat.current import reads
 # and
 # https://gist.github.com/2621679 by minrk
 
-tests = ["parsing", "hypergraphs", "decipher", "Fibonacci", "BuildingHypergraph"  ]
+tests = ["parsing", "hypergraphs", "decipher", "Fibonacci", "BuildingHypergraph", "sequence_crf", "BeamSearch", "DFA"]
 
 def pytest_collect_file(path, parent):
     print path
-    if path.ext == ".ipynb" and any([t in str(path) for t in tests]):
+    if path.ext == ".ipynb" and any([t + "." in str(path) for t in tests]):
         return IPyNbFile(path, parent)
 
 class IPyNbFile(pytest.File):

@@ -12,8 +12,6 @@ cdef class Labeling:
         self.edge_labels = edge_labels
         self.node_labels = node_labels
 
-
-
     def __getitem__(self, obj):
         if isinstance(obj, Edge):
             if self.edge_labels is None:
@@ -79,6 +77,10 @@ cdef class Hypergraph:
 
     vertices : list of :py:class:`Vertex`
       List of vertex set :math:`{\cal V}` in topological order.
+
+    labeling : :py:class:`Labeling`
+      The labels associated with vertices and edges.
+
     """
     def __cinit__(Hypergraph self):
         """
@@ -128,6 +130,13 @@ cdef class Hypergraph:
     property edges:
         def __get__(self):
             return _LazyEdges(self).init(self.thisptr.edges())
+
+    property labeling:
+        def __get__(self):
+            return self.labeling
+        
+        def __set__(self, labeling):
+            self.labeling = labeling
 
     def __str__(self):
         s = "Hypergraph: Edges: %s Vertices: %s" % (len(self.edges),
