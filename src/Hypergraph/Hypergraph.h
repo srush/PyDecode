@@ -104,9 +104,9 @@ class Hypernode {
 
 class Hypergraph {
  public:
-  Hypergraph()
+  Hypergraph(bool unary=false)
       : terminal_lock_(true), lock_(false),
-      temp_nodes_(0), temp_edges_(0),
+            temp_nodes_(0), temp_edges_(0), unary_(unary),
       id_(ID++) {}
 
     ~Hypergraph() {
@@ -148,8 +148,14 @@ class Hypergraph {
 
   /* int edges() const { return edges_.size(); } */
   HNode head(HEdge edge) const { return edge_heads_[edge]; }
-  int tail_nodes(HEdge edge) const { return edge_tails_[edge].size(); }
-  HNode tail_node(HEdge edge, int tail) const { return edge_tails_[edge][tail]; }
+  int tail_nodes(HEdge edge) const {
+      if (unary_) return 1;
+      return edge_tails_[edge].size();
+  }
+  HNode tail_node(HEdge edge, int tail) const {
+      if (unary_) return edge_tails_unary_[edge];
+      return edge_tails_[edge][tail];
+  }
 
   // Construction Code.
 
@@ -162,6 +168,7 @@ class Hypergraph {
 
   /* HEdge add_edge(const vector<HNode> &nodes); */
   HEdge add_edge(const vector<HNode> &nodes);
+  HEdge add_edge(HNode node);
 
   /**
    * Returns true if the node was created.
@@ -203,6 +210,8 @@ class Hypergraph {
 
   int id() const { return id_; }
 
+  bool is_unary() const { return unary_; }
+
  private:
   // For construction.
   bool terminal_lock_;
@@ -219,6 +228,7 @@ class Hypergraph {
   // List of temporary edges.
   vector<HEdge> temp_edges_;
   vector<vector<HNode> > temp_edge_tails_;
+  vector<HNode > temp_edge_tails_unary_;
   vector<Hypernode *> temp_edge_heads_;
 
   // The true interface.
@@ -230,9 +240,12 @@ class Hypergraph {
   // List of edges guarenteed to be in topological order.
   vector<HEdge> edges_;
   vector<vector<HNode> > edge_tails_;
+  vector<HNode > edge_tails_unary_;
   vector<HNode> edge_heads_;
 
   HNode root_;
+
+  bool unary_;
 
   int id_;
 

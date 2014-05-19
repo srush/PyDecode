@@ -94,7 +94,7 @@ HypergraphMap *extend_with_dfa(
     const DFA &dfa,
     vector<DFANode> *labels) {
 
-    Hypergraph *new_graph = new Hypergraph();
+    Hypergraph *new_graph = new Hypergraph(hypergraph->is_unary());
     vector<vector<DFANode> > new_nodes(
         hypergraph->nodes().size());
     vector<vector<vector<DFANode> > > new_indexed(
@@ -245,7 +245,7 @@ HypergraphMap *extend_hypergraph_by_count(
     int limit = upper_limit - lower_limit;
     int modified_goal = goal - lower_limit;
 
-    Hypergraph *new_graph = new Hypergraph();
+    Hypergraph *new_graph = new Hypergraph(hypergraph->is_unary());
     vector<vector<HNode> > reverse_node_map(hypergraph->nodes().size());
     vector<vector<HEdge> > reverse_edge_map(hypergraph->edges().size());
     vector<vector<NodeCount > > new_nodes(hypergraph->nodes().size());
@@ -509,7 +509,7 @@ HypergraphMap *binarize(const Hypergraph *hypergraph) {
 Hypergraph *make_lattice(int width, int height,
                          const vector<vector<int> > &transitions,
                          vector<LatticeLabel> *labels) {
-    Hypergraph *graph = new Hypergraph();
+    Hypergraph *graph = new Hypergraph(true);
     HNode source = graph->add_terminal_node();
     labels->push_back(LatticeLabel(0, 0));
 
@@ -517,9 +517,7 @@ Hypergraph *make_lattice(int width, int height,
     for (int j = 0; j < height; ++j) {
         old_nodes[j] = graph->start_node();
         labels->push_back(LatticeLabel(1, j));
-        vector<HNode> tails;
-        tails.push_back(source);
-        graph->add_edge(tails);
+        graph->add_edge(source);
         graph->end_node();
     }
 
@@ -528,9 +526,7 @@ Hypergraph *make_lattice(int width, int height,
             new_nodes[j] = graph->start_node();
             labels->push_back(LatticeLabel(i + 1, j));
             foreach (int k, transitions[j]) {
-                vector<HNode> tails;
-                tails.push_back(old_nodes[k]);
-                graph->add_edge(tails);
+                graph->add_edge(old_nodes[k]);
             }
             graph->end_node();
         }
@@ -540,9 +536,7 @@ Hypergraph *make_lattice(int width, int height,
     graph->start_node();
     labels->push_back(LatticeLabel(width + 1, 0));
     for (int j = 0; j < height; ++j) {
-        vector<HNode> tails;
-        tails.push_back(old_nodes[j]);
-        graph->add_edge(tails);
+        graph->add_edge(old_nodes[j]);
     }
     graph->end_node();
 

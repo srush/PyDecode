@@ -82,7 +82,7 @@ cdef class Hypergraph:
       The labels associated with vertices and edges.
 
     """
-    def __cinit__(Hypergraph self):
+    def __cinit__(Hypergraph self, bool unary=False):
         """
         Create a new hypergraph.
         """
@@ -110,7 +110,7 @@ cdef class Hypergraph:
         return self
 
     def builder(self):
-        self.thisptr = new CHypergraph()
+        self.thisptr = new CHypergraph(self.unary)
         #_hypergraph_registry[self.thisptr.id()] = self
         _hypergraph_registry_counts[self.thisptr.id()] = 1
         return GraphBuilder().init(self, self.thisptr)

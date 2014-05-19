@@ -16,7 +16,7 @@ cdef extern from "Hypergraph/Hypergraph.h":
         vector[int ] edges()
 
     cdef cppclass CHypergraph "Hypergraph":
-        CHypergraph()
+        CHypergraph(bool)
         const CHypernode *root()
         int tail_nodes(int)
         const CHypernode *tail_node(int, int)
@@ -86,8 +86,9 @@ cdef class Hypergraph:
     cdef CHypergraph *thisptr
     cdef Labeling labeling
     cdef _cached_edges
-
+    cdef bool unary
     cdef Hypergraph init(self, const CHypergraph *ptr, Labeling labeling)
+
 
 cdef class GraphBuilder:
     cdef CHypergraph *thisptr
