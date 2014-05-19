@@ -67,7 +67,7 @@ def beam_search_{{S.from}}(Hypergraph graph,
                 double lower_bound,
                 groups,
                 group_limits,
-                int num_groups):
+                int num_groups=-1):
     r"""
 
     Parameters
@@ -82,7 +82,10 @@ def beam_search_{{S.from}}(Hypergraph graph,
 
     lower_bound : double
 
-    groups : size of vetex list
+    outside : LogViterbiChart
+        The outside scores.
+
+    groups : size of vertex list
        The group for each vertex.
 
     group_limits :
@@ -91,13 +94,17 @@ def beam_search_{{S.from}}(Hypergraph graph,
     num_groups :
         The total number of groups.
     """
-
+    if num_groups == -1:
+        ngroups = max(groups) + 1
+    else:
+        ngroups = num_groups
     cdef vector[int] cgroups = groups
     cdef vector[int] cgroup_limits = group_limits
+    
     cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
                                                     cgroups,
                                                     cgroup_limits,
-                                                    num_groups)
+                                                    ngroups)
     # cgroups.resize(graph.nodes_size())
     # cdef vector[int] cgroup_limits
     # cgroups.resize(graph.nodes_size())

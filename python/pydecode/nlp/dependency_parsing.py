@@ -1,8 +1,33 @@
-class DependencyParse:
+from collections import namedtuple
+import itertools
+import pydecode.nlp.decoding as decoding
+import random
+
+class DependencyDecodingProblem(decoding.DecodingProblem):
+    def __init__(self, size, order):
+        self.size = size
+        self.order = order
+
+    def feasible_set(self):
+        """
+        Enumerate all possible projective trees.
+
+        Returns
+        --------
+        parses : iterator
+           An iterator of possible n-parse trees.
+        """
+        n = self.size
+        for mid in itertools.product(range(n + 1), repeat=n):
+            parse = DependencyParse([-1] + list(mid))
+            if (not parse.check_projective()) or (not parse.check_spanning()): 
+                continue
+            yield parse
+
+class DependencyParse(object):
     """
     Class representing a dependency parse with
     possible unused modifier words.
-
     """
 
     def __init__(self, heads):
@@ -18,6 +43,12 @@ class DependencyParse:
 
     def __eq__(self, other):
         return self.heads == other.heads
+
+    def __cmp__(self, other):
+        return cmp(self.heads, other.heads)
+
+    def __repr__(self):
+        return str(self.heads)
 
     def arcs(self, second=False):
         """
@@ -111,119 +142,256 @@ class DependencyParse:
                         return False
         return True
 
-    @staticmethod
-    def enumerate_projective(n, m=None):
+
+
+class DependencyScorer(decoding.Scorer):
+    """
+    Object for scoring parse structures.
+    """
+
+    def __init__(self, problem, arc_scores, second_order=None):
         """
-        Enumerate all possible projective trees.
+        Parameters
+        ----------
+        n : int
+           Length of the sentence (without root).
+
+        arc_scores : 2D array (n+1 x n+1)
+           Scores for each possible arc
+           arc_scores[h][m].
+
+        second_order : 3d array (n+2 x n+2 x n+2)
+           Scores for each possible modifier bigram
+           second_order[h][s][m].
+        """
+        self._arc_scores = arc_scores
+        self._second_order_scores = second_order
+        self._problem = problem
+
+    @staticmethod
+    def random(dependency_problem):
+        n = dependency_problem.size
+        order = dependency_problem.order
+        first = [[random.random() for j in range(n+1)] for i in range(n+1)]
+        second = None
+        if order == 2:
+            second = [[[random.random() for k in range(n+1)] for j in range(n+1)] 
+                      for i in range(n+1)]
+        return DependencyScorer(dependency_problem, first, second)
+
+
+
+    def arc_score(self, head, modifier, sibling=None):
+        """
+        Returns
+        -------
+        score : float
+           The score of head->modifier
+        """
+        assert((sibling is None) or (self._second_order_scores is not None))
+        if sibling is None:
+            return self._arc_scores[head][modifier]
+        else:
+            return self._arc_scores[head][modifier] + \
+                self._second_order_scores[head][sibling][modifier]
+
+    def score(self, parse):
+        """
+        Score a parse based on arc score.
 
         Parameters
         ----------
-        n - int
-           Length of sentence (without root symbol)
-
-        m - int
-           Number of modifiers to use.
+        parse : Parse
+            The parse to score.
 
         Returns
-        --------
-        parses : iterator
-           An iterator of possible (m,n) parse trees.
+        -------
+        score : float
+           The score of the parse structure.
         """
-        for mid in itertools.product([None] + range( n + 1), repeat=n):
-            parse = Parse([-1] + list(mid))
-            if m is not None and parse.skipped_words() != n- m:
-                continue
+        parse_score = 0.0
+        if self._second_order_scores is None:
+            parse_score = \
+                sum((self.arc_score(h, m)
+                     for m, h in parse.arcs()))
+        else:
+            parse_score = \
+                sum((self.arc_score(h, m, parse.sibling(m))
+                     for m, h in parse.arcs()))
 
-            if (not parse.check_projective()) or (not parse.check_spanning()): 
-                continue
-            yield parse
+        return parse_score 
+
+
 
 
 # Globals
 Tri = 1
-TrapSkipped = 2
-Trap = 3
-Box = 4
+Trap = 2
+Box = 3
 
 Right = 0
 Left = 1
 
-def NodeType(type, dir, span, count, states=None) :
-    if states is None:
-        return (type, dir, span, count)
-    return (type, dir, span, count, states)
+def NodeType(type, dir, span) :
+    return (type, dir, span)
 def node_type(nodetype): return nodetype[0]
 def node_span(nodetype): return nodetype[2]
 def node_dir(nodetype): return nodetype[1]
+
 
 class Arc(namedtuple("Arc", ["head", "mod", "sibling"])):
     def __new__(cls, head, mod, sibling=None):
         return super(Arc, cls).__new__(cls, head, mod, sibling)
 
-def parse_first_order(self, sentence_length, chart=None):
+class DependencyDecoder(decoding.HypergraphDecoder):
+    def path_to_instance(self, path):        
+        labels =  [edge.label for edge in path if edge.label is not None] 
+        labels.sort(key = lambda arc: arc.mod)
+        heads = ([-1] + [arc.head for arc in labels])
+        return DependencyParse(heads)
+
+    def potentials(self, hypergraph):
+        def score(label):
+            if label is None: return 0.0
+            return scorer.arc_score(label.head, label.mod, label.sibling)
+        return LogViterbiPotentials(hypergraph).from_vector([
+                score(edge.label) for edge in hypergraph.edges])
+
+
+class FirstOrderDecoder(DependencyDecoder):
     """
     First-order dependency parsing.
-
-    Parameters
-    -----------
-    sentence_length : int
-       The length of the sentence.
-
-    Returns
-    -------
-    chart : 
-       The finished chart.
     """
-    n = sentence_length + 1
+    def dynamic_program(self, chart, problem):
+        """
+        Parameters
+        -----------
+        sentence_length : int
+          The length of the sentence.
+        
+        Returns
+        -------
+        chart : 
+          The finished chart.
+        """
+        n = problem.size + 1
 
-    # Add terminal nodes.
-    [c.init(NodeType(sh, d, (s, s), 0), 0.0)
-     for s in range(n)
-     for d in [Right, Left]
-     for sh in [Trap, Tri]]
+        # Add terminal nodes.
+        [c.init(NodeType(sh, d, (s, s)))
+         for s in range(n)
+         for d in [Right, Left]
+         for sh in [Trap, Tri]]
 
-    for k in range(1, n):
+        for k in range(1, n):
+            for s in range(n):
+                t = k + s
+                if t >= n: break
+                span = (s, t)
+
+                # First create incomplete items.
+                if s != 0:
+                    c[NodeType(Trap, Left, span)] = \
+                        c.sum([c[key1] * c[key2] * c.sr(Arc(t, s))
+                               for r in range(s, t)
+                               for key1 in [(Tri, Right, (s, r))]
+                               if key1 in c
+                               for key2 in [(Tri, Left, (r+1, t))]
+                               if key2 in c
+                               ])
+
+
+                c[NodeType(Trap, Right, span)] = \
+                    c.sum([ c[key1] * c[key2] * c.sr(Arc(s, t))
+                            for r in range(s, t)
+                            for key1 in [(Tri, Right, (s, r))]
+                            if key1 in c
+                            for key2 in [(Tri, Left, (r+1, t))]
+                            if key2 in c])
+
+                if s != 0:
+                    c[NodeType(Tri, Left, span)]= \
+                        c.sum([c[key1] * c[key2]
+                               for r in range(s, t)
+                               for key1 in [(Tri, Left, (s, r))]
+                               if key1 in c
+                               for key2 in [(Trap, Left, (r, t))]
+                               if key2 in c])
+
+                c[NodeType(Tri, Right, span)] = \
+                    c.sum([c[key1] * c[key2]
+                           for r in range(s + 1, t + 1)
+                           for key1 in [(Trap, Right, (s, r))]
+                           if key1 in c
+                           for key2 in [(Tri, Right, (r, t))]
+                           if key2 in c])
+
+
+class SecondOrderDecoder(DependencyDecoder):
+    def dynamic_program(self, chart, problem):
+        n = sent_len + 1
+
+        # Initialize the chart.
         for s in range(n):
-            t = k + s
-            if t >= n: break
-            span = (s, t)
-            need = m
+             for d in [Right, Left]:
+                 for sh in [Tri]:
+                     c.init(NodeType(sh, d, (s, s)))
 
-            # First create incomplete items.
-            if s != 0:
-                c[NodeType(Trap, Left, span)] = \
-                    c.sum([key1 * key2 * Arc(t, s)
-                           for r in range(s, t)
-                           for key1 in [(Tri, Right, (s, r))]
-                           if key1 in c.chart
-                           for key2 in [(Tri, Left, (r+1, t))]
-                           if key2 in c.chart
-                           ])
+        for k in range(1, n):
+            for s in range(n):
+                t = k + s
+                if t >= n: break
+                span = (s, t)
 
-            
-            c[NodeType(Trap, Right, span)] = \ 
-                c.sum([ key1 * key2 * Arc(s, t)
-                       for r in range(s, t)
-                       for key1 in [(Tri, Right, (s, r))]
-                       if key1 in c.chart
-                       for key2 in [(Tri, Left, (r+1, t))]
-                       if key2 in c.chart])
+                if s != 0:
+                    c[NodeType(Box, Left, span)] = \
+                        c.sum([c[key1] * c[key2]
+                               for r  in range(s, t)
+                               for key1 in [(Tri, Right, (s, r))]
+                               if key1 in c
+                               for key2 in [(Tri, Left, (r+1, t))]
+                               if key2 in c])
 
-            if s != 0:
-                c[NodeType(Tri, Left, span)]= \ 
-                c.sum([key1 * key2
-                       for r in range(s, t)
-                       for key1 in [(Tri, Left, (s, r))]
-                       if key1 in c.chart
-                       for key2 in [(Trap, Left, (r, t))]
-                       if key2 in c.chart])
+                if s != 0:
+                    c[NodeType(Trap, Left, span)] = \
+                        c.sum([c[key1] * c[key2] * c.sr(Arc(t, s, t))
+                               for key1 in [(Tri, Right, (s, t-1))]
+                               if key1 in c
+                               for key2 in [(Tri, Left, (t, t))]
+                               if key2 in c] +
+                              [c[key1] * c[key2] * c.sr(Arc(t, s, r))
+                               for r in range(s+1, t)
+                               for key1 in [(Box, Left, (s, r))]
+                               if key1 in c
+                               for key2 in [(Trap, Left, (r, t))]
+                               if key2 in c])
 
-            c[NodeType(Tri, Right, span)] = \
-                c.sum(key1 * key2
-                      for r in range(s + 1, t + 1)
-                      for key1 in [(Trap, Right, (s, r))]
-                      if key1 in c.chart
-                      for key2 in [(Tri, Right, (r, t))]
-                      if key2 in c.chart]
+                c[NodeType(Trap, Right, span)] = \
+                    c.sum([c[key1] * c[key2] * c.sr(Arc(s, t, s))
+                           for key1 in [(Tri, Right, (s, s))]
+                           if key1 in c
+                           for key2 in [(Tri, Left, (s+1, t))]
+                           if key2 in c] +
+                          [c[key1] * c[key2] * c.sr(Arc(s, t, r))
+                           for r  in range(s + 1, t)
+                           for key1 in [(Trap, Right, (s, r))]
+                           if key1 in c
+                           for key2 in [(Box, Left, (r, t))]
+                           if key2 in c])
 
-    return make_parse(n, c.backtrace(NodeType(Tri, Right, (0, n-1))))
+                if s != 0:
+                    c[NodeType(Tri, Left, span)] = \
+                        c.sum([c[key1] * c[key2]
+                               for r  in range(s, t)
+                               for key1 in [(Tri, Left, (s, r))]
+                               if key1 in c
+                               for key2 in [(Trap, Left, (r, t))]
+                               if key2 in c])
+
+                c[NodeType(Tri, Right, span)] = \
+                    c.sum([c[key1] * c[key2]
+                           for r in range(s + 1, t + 1)
+                           for key1 in [(Trap, Right, (s, r))]
+                           if key1 in c
+                           for key2 in [(Tri, Right, (r, t))]
+                           if key2 in c])
+

@@ -36,7 +36,7 @@ cdef extern from "Hypergraph/BeamSearch.h" namespace "BeamChart<{{S.type}}>":
             const CHypergraph{{S.type}}s &constraints,
             const CLogViterbiChart &outside,
             double lower_bound,
-            const CBeamGroups &groups)
+            const CBeamGroups &groups) except +
 
 
 cdef extern from "Hypergraph/BeamSearch.h":

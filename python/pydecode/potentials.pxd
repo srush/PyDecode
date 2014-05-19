@@ -183,7 +183,7 @@ cdef extern from "Hypergraph/BeamSearch.h" namespace "BeamChart<BinaryVectorPote
             const CHypergraphBinaryVectorPotentials &constraints,
             const CLogViterbiChart &outside,
             double lower_bound,
-            const CBeamGroups &groups)
+            const CBeamGroups &groups) except +
 
 
 cdef extern from "Hypergraph/BeamSearch.h":
@@ -212,7 +212,7 @@ cdef extern from "Hypergraph/BeamSearch.h" namespace "BeamChart<AlphabetPotentia
             const CHypergraphAlphabetPotentials &constraints,
             const CLogViterbiChart &outside,
             double lower_bound,
-            const CBeamGroups &groups)
+            const CBeamGroups &groups) except +
 
 
 cdef extern from "Hypergraph/BeamSearch.h":
