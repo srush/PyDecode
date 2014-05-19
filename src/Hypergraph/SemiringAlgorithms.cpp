@@ -46,8 +46,8 @@ general_inside(const Hypergraph *graph,
   foreach (HEdge edge, graph->edges()) {
     typename S::ValType score =
             chart->compute_edge_score(edge, potentials.score(edge));
-    chart->insert(edge->head_node(),
-                  S::add((*chart)[edge->head_node()], score));
+    chart->insert(graph->head(edge),
+                  S::add((*chart)[graph->head(edge)], score));
   }
   chart->insert(graph->root(),
                 S::times((*chart)[graph->root()], potentials.bias()));
@@ -67,20 +67,22 @@ general_outside(const Hypergraph *graph,
 
   for (int i = edges.size() - 1; i >= 0; --i) {
     HEdge edge = edges[i];
-    typename S::ValType head_score = (*chart)[edge->head_node()];
+    typename S::ValType head_score = (*chart)[graph->head(edge)];
     // if (edge->head_node()->id() == graph->root()->id()) {
     //     head_score = potentials.bias();
     // }
-    foreach (HNode node, edge->tail_nodes()) {
-      typename S::ValType other_score = S::one();
-      foreach (HNode other_node, edge->tail_nodes()) {
-        if (other_node->id() == node->id()) continue;
-        other_score = S::times(other_score, inside_chart[other_node]);
-      }
-      chart->insert(node, S::add((*chart)[node],
-                                 S::times(head_score,
-                                          S::times(other_score,
-                                                   potentials.score(edge)))));
+    for (int j = 0; j < graph->tail_nodes(edge); ++j) {
+        HNode node = graph->tail_node(edge, j);
+        typename S::ValType other_score = S::one();
+        for (int k = 0; k < graph->tail_nodes(edge); ++k) {
+            HNode other_node = graph->tail_node(edge, k);
+            if (other_node->id() == node->id()) continue;
+            other_score = S::times(other_score, inside_chart[other_node]);
+        }
+        chart->insert(node, S::add((*chart)[node],
+                                   S::times(head_score,
+                                            S::times(other_score,
+                                                     potentials.score(edge)))));
     }
   }
   return chart;
@@ -157,13 +159,13 @@ Hyperpath *BackPointers::construct_path() const {
         HNode node = to_examine.front();
         HEdge edge = chart_[node->id()];
         to_examine.pop();
-        if (edge == NULL) {
+        if (edge == -1) {
             assert(node->terminal());
             continue;
         }
         path.push_back(edge);
-        foreach (HNode node, edge->tail_nodes()) {
-            to_examine.push(node);
+        for (int i = 0; i < graph_->tail_nodes(edge); ++i) {
+            to_examine.push(graph_->tail_node(edge, i));
         }
     }
     sort(path.begin(), path.end(), IdComparator());

@@ -43,9 +43,9 @@ HypergraphPotentials<SemiringType>::project_potentials(
 
     foreach (HEdge edge, projection.domain_graph()->edges()) {
         HEdge new_edge = projection.map(edge);
-        if (new_edge != NULL && new_edge->id() >= 0) {
+        if (new_edge >= 0) {
             assert(new_edge->id() < projection.range_graph()->edges().size());
-            (*potentials)[new_edge->id()] = score(edge);
+            (*potentials)[projection.range_graph()->id(new_edge)] = score(edge);
         }
     }
     return new HypergraphVectorPotentials<SemiringType>(

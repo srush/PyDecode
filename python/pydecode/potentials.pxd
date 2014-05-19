@@ -5,34 +5,38 @@ from libcpp.set cimport set
 from libcpp cimport bool
 
 cdef extern from "Hypergraph/Hypergraph.h":
-    cdef cppclass CHyperedge "Hyperedge":
-        int id()
-        const CHypernode *head_node()
-        vector[const CHypernode *] tail_nodes()
+    # cdef cppclass CHyperedge "Hyperedge":
+    #     int id()
+    #     const CHypernode *head_node()
+    #     vector[const CHypernode *] tail_nodes()
 
 
     cdef cppclass CHypernode "Hypernode":
         int id()
-        vector[const CHyperedge *] edges()
+        vector[int ] edges()
 
     cdef cppclass CHypergraph "Hypergraph":
         CHypergraph()
         const CHypernode *root()
+        int tail_nodes(int)
+        const CHypernode *tail_node(int, int)
+        const CHypernode *head(int)
         const CHypernode *start_node()
         const CHypernode *add_terminal_node()
         void end_node()
         int id()
-        const CHyperedge *add_edge(vector[const CHypernode *]) except +
+        int new_id(int)
+        int add_edge(vector[const CHypernode *]) except +
         void finish() except +
         vector[const CHypernode *] nodes()
-        vector[const CHyperedge *] edges()
+        vector[int ] edges()
 
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,
-                   const vector[const CHyperedge *] edges) except +
-        vector[const CHyperedge *] edges()
+                   const vector[int] edges) except +
+        vector[int] edges()
         vector[const CHypernode *] nodes()
-        int has_edge(const CHyperedge *)
+        int has_edge(int)
         bool equal(const CHyperpath path)
 
 cdef extern from "Hypergraph/Automaton.h":
@@ -70,8 +74,8 @@ cdef class Labeling:
 
 cdef class _LazyEdges:
     cdef Hypergraph _graph
-    cdef vector[const CHyperedge *] _edges
-    cdef init(self, vector[const CHyperedge *])
+    cdef vector[int] _edges
+    cdef init(self, vector[int])
 
 cdef class _LazyVertices:
     cdef Hypergraph _graph
@@ -103,10 +107,11 @@ cdef class Vertex:
                    Hypergraph graph)
 
 cdef class Edge:
-    cdef const CHyperedge *edgeptr
+    cdef int edgeptr
     cdef Hypergraph graph
 
-    cdef Edge init(self, const CHyperedge *ptr, Hypergraph graph)
+    cdef Edge init(self, int edge, Hypergraph graph, bool unfinished=?)
+    cdef bool unfinished
 
 cdef class Path:
     cdef const CHyperpath *thisptr
@@ -117,7 +122,7 @@ cdef class Path:
 
 cdef extern from "Hypergraph/Map.h":
     cdef cppclass CHypergraphMap "HypergraphMap":
-        const CHyperedge *map(const CHyperedge *edge)
+        int map(int)
         const CHypernode *map(const CHypernode *node)
         const CHypergraph *domain_graph()
         const CHypergraph *range_graph()
@@ -246,7 +251,7 @@ from libcpp cimport bool
 cdef extern from "Hypergraph/SemiringAlgorithms.h":
     cdef cppclass CBackPointers "BackPointers":
         CBackPointers(CHypergraph *graph)
-        const CHyperedge *get(const CHypernode *node)
+        int get(const CHypernode *node)
         CHyperpath *construct_path()
 
 cdef class BackPointers:
@@ -286,7 +291,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CViterbiMarginals "Marginals<ViterbiPotential>":
-        double marginal(const CHyperedge *edge)
+        double marginal(int edge)
         double marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const double &threshold)
@@ -313,7 +318,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphViterbiPotentials "HypergraphPotentials<ViterbiPotential>":
         double dot(const CHyperpath &path) except +
-        double score(const CHyperedge *edge)
+        double score(int edge)
         CHypergraphViterbiPotentials *times(
             const CHypergraphViterbiPotentials &potentials)
         CHypergraphViterbiPotentials *project_potentials(
@@ -397,7 +402,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CLogViterbiMarginals "Marginals<LogViterbiPotential>":
-        double marginal(const CHyperedge *edge)
+        double marginal(int edge)
         double marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const double &threshold)
@@ -424,7 +429,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphLogViterbiPotentials "HypergraphPotentials<LogViterbiPotential>":
         double dot(const CHyperpath &path) except +
-        double score(const CHyperedge *edge)
+        double score(int edge)
         CHypergraphLogViterbiPotentials *times(
             const CHypergraphLogViterbiPotentials &potentials)
         CHypergraphLogViterbiPotentials *project_potentials(
@@ -508,7 +513,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CInsideMarginals "Marginals<InsidePotential>":
-        double marginal(const CHyperedge *edge)
+        double marginal(int edge)
         double marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const double &threshold)
@@ -535,7 +540,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphInsidePotentials "HypergraphPotentials<InsidePotential>":
         double dot(const CHyperpath &path) except +
-        double score(const CHyperedge *edge)
+        double score(int edge)
         CHypergraphInsidePotentials *times(
             const CHypergraphInsidePotentials &potentials)
         CHypergraphInsidePotentials *project_potentials(
@@ -619,7 +624,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CMinMaxMarginals "Marginals<MinMaxPotential>":
-        double marginal(const CHyperedge *edge)
+        double marginal(int edge)
         double marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const double &threshold)
@@ -646,7 +651,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphMinMaxPotentials "HypergraphPotentials<MinMaxPotential>":
         double dot(const CHyperpath &path) except +
-        double score(const CHyperedge *edge)
+        double score(int edge)
         CHypergraphMinMaxPotentials *times(
             const CHypergraphMinMaxPotentials &potentials)
         CHypergraphMinMaxPotentials *project_potentials(
@@ -730,7 +735,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CSparseVectorMarginals "Marginals<SparseVectorPotential>":
-        vector[pair[int, int]] marginal(const CHyperedge *edge)
+        vector[pair[int, int]] marginal(int edge)
         vector[pair[int, int]] marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const vector[pair[int, int]] &threshold)
@@ -757,7 +762,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphSparseVectorPotentials "HypergraphPotentials<SparseVectorPotential>":
         vector[pair[int, int]] dot(const CHyperpath &path) except +
-        vector[pair[int, int]] score(const CHyperedge *edge)
+        vector[pair[int, int]] score(int edge)
         CHypergraphSparseVectorPotentials *times(
             const CHypergraphSparseVectorPotentials &potentials)
         CHypergraphSparseVectorPotentials *project_potentials(
@@ -841,7 +846,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CAlphabetMarginals "Marginals<AlphabetPotential>":
-        vector[int] marginal(const CHyperedge *edge)
+        vector[int] marginal(int edge)
         vector[int] marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const vector[int] &threshold)
@@ -868,7 +873,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphAlphabetPotentials "HypergraphPotentials<AlphabetPotential>":
         vector[int] dot(const CHyperpath &path) except +
-        vector[int] score(const CHyperedge *edge)
+        vector[int] score(int edge)
         CHypergraphAlphabetPotentials *times(
             const CHypergraphAlphabetPotentials &potentials)
         CHypergraphAlphabetPotentials *project_potentials(
@@ -952,7 +957,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CMinSparseVectorMarginals "Marginals<MinSparseVectorPotential>":
-        vector[pair[int, int]] marginal(const CHyperedge *edge)
+        vector[pair[int, int]] marginal(int edge)
         vector[pair[int, int]] marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const vector[pair[int, int]] &threshold)
@@ -979,7 +984,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphMinSparseVectorPotentials "HypergraphPotentials<MinSparseVectorPotential>":
         vector[pair[int, int]] dot(const CHyperpath &path) except +
-        vector[pair[int, int]] score(const CHyperedge *edge)
+        vector[pair[int, int]] score(int edge)
         CHypergraphMinSparseVectorPotentials *times(
             const CHypergraphMinSparseVectorPotentials &potentials)
         CHypergraphMinSparseVectorPotentials *project_potentials(
@@ -1063,7 +1068,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CMaxSparseVectorMarginals "Marginals<MaxSparseVectorPotential>":
-        vector[pair[int, int]] marginal(const CHyperedge *edge)
+        vector[pair[int, int]] marginal(int edge)
         vector[pair[int, int]] marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const vector[pair[int, int]] &threshold)
@@ -1090,7 +1095,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphMaxSparseVectorPotentials "HypergraphPotentials<MaxSparseVectorPotential>":
         vector[pair[int, int]] dot(const CHyperpath &path) except +
-        vector[pair[int, int]] score(const CHyperedge *edge)
+        vector[pair[int, int]] score(int edge)
         CHypergraphMaxSparseVectorPotentials *times(
             const CHypergraphMaxSparseVectorPotentials &potentials)
         CHypergraphMaxSparseVectorPotentials *project_potentials(
@@ -1174,7 +1179,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CCountingMarginals "Marginals<CountingPotential>":
-        int marginal(const CHyperedge *edge)
+        int marginal(int edge)
         int marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const int &threshold)
@@ -1201,7 +1206,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphCountingPotentials "HypergraphPotentials<CountingPotential>":
         int dot(const CHyperpath &path) except +
-        int score(const CHyperedge *edge)
+        int score(int edge)
         CHypergraphCountingPotentials *times(
             const CHypergraphCountingPotentials &potentials)
         CHypergraphCountingPotentials *project_potentials(
@@ -1285,7 +1290,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CBoolMarginals "Marginals<BoolPotential>":
-        bool marginal(const CHyperedge *edge)
+        bool marginal(int edge)
         bool marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const bool &threshold)
@@ -1312,7 +1317,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphBoolPotentials "HypergraphPotentials<BoolPotential>":
         bool dot(const CHyperpath &path) except +
-        bool score(const CHyperedge *edge)
+        bool score(int edge)
         CHypergraphBoolPotentials *times(
             const CHypergraphBoolPotentials &potentials)
         CHypergraphBoolPotentials *project_potentials(
@@ -1396,7 +1401,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass CBinaryVectorMarginals "Marginals<BinaryVectorPotential>":
-        cbitset marginal(const CHyperedge *edge)
+        cbitset marginal(int edge)
         cbitset marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const cbitset &threshold)
@@ -1423,7 +1428,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphBinaryVectorPotentials "HypergraphPotentials<BinaryVectorPotential>":
         cbitset dot(const CHyperpath &path) except +
-        cbitset score(const CHyperedge *edge)
+        cbitset score(int edge)
         CHypergraphBinaryVectorPotentials *times(
             const CHypergraphBinaryVectorPotentials &potentials)
         CHypergraphBinaryVectorPotentials *project_potentials(

@@ -5,34 +5,38 @@ from libcpp.set cimport set
 from libcpp cimport bool
 
 cdef extern from "Hypergraph/Hypergraph.h":
-    cdef cppclass CHyperedge "Hyperedge":
-        int id()
-        const CHypernode *head_node()
-        vector[const CHypernode *] tail_nodes()
+    # cdef cppclass CHyperedge "Hyperedge":
+    #     int id()
+    #     const CHypernode *head_node()
+    #     vector[const CHypernode *] tail_nodes()
 
 
     cdef cppclass CHypernode "Hypernode":
         int id()
-        vector[const CHyperedge *] edges()
+        vector[int ] edges()
 
     cdef cppclass CHypergraph "Hypergraph":
         CHypergraph()
         const CHypernode *root()
+        int tail_nodes(int)
+        const CHypernode *tail_node(int, int)
+        const CHypernode *head(int)
         const CHypernode *start_node()
         const CHypernode *add_terminal_node()
         void end_node()
         int id()
-        const CHyperedge *add_edge(vector[const CHypernode *]) except +
+        int new_id(int)
+        int add_edge(vector[const CHypernode *]) except +
         void finish() except +
         vector[const CHypernode *] nodes()
-        vector[const CHyperedge *] edges()
+        vector[int ] edges()
 
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,
-                   const vector[const CHyperedge *] edges) except +
-        vector[const CHyperedge *] edges()
+                   const vector[int] edges) except +
+        vector[int] edges()
         vector[const CHypernode *] nodes()
-        int has_edge(const CHyperedge *)
+        int has_edge(int)
         bool equal(const CHyperpath path)
 
 cdef extern from "Hypergraph/Automaton.h":
@@ -70,8 +74,8 @@ cdef class Labeling:
 
 cdef class _LazyEdges:
     cdef Hypergraph _graph
-    cdef vector[const CHyperedge *] _edges
-    cdef init(self, vector[const CHyperedge *])
+    cdef vector[int] _edges
+    cdef init(self, vector[int])
 
 cdef class _LazyVertices:
     cdef Hypergraph _graph
@@ -103,10 +107,11 @@ cdef class Vertex:
                    Hypergraph graph)
 
 cdef class Edge:
-    cdef const CHyperedge *edgeptr
+    cdef int edgeptr
     cdef Hypergraph graph
 
-    cdef Edge init(self, const CHyperedge *ptr, Hypergraph graph)
+    cdef Edge init(self, int edge, Hypergraph graph, bool unfinished=?)
+    cdef bool unfinished
 
 cdef class Path:
     cdef const CHyperpath *thisptr
@@ -117,7 +122,7 @@ cdef class Path:
 
 cdef extern from "Hypergraph/Map.h":
     cdef cppclass CHypergraphMap "HypergraphMap":
-        const CHyperedge *map(const CHyperedge *edge)
+        int map(int)
         const CHypernode *map(const CHypernode *node)
         const CHypergraph *domain_graph()
         const CHypergraph *range_graph()

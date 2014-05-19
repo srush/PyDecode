@@ -17,8 +17,8 @@ class Hypernode;
 class Hyperedge;
 typedef const Hypernode *HNode;
 typedef vector <const Hypernode *> HNodes;
-typedef const Hyperedge *HEdge;
-typedef vector<const Hyperedge *> HEdges;
+typedef int HEdge;
+/* typedef vector<const Hyperedge *> HEdges; */
 
 struct HypergraphException : public exception {
   string s;
@@ -31,43 +31,43 @@ class HypergraphAccessException : public HypergraphException {};
 class HypergraphMatchException : public HypergraphException {};
 class HypergraphConstructionException : public HypergraphException {};
 
-class Hyperedge {
- public:
-  Hyperedge(HNode head,
-            const vector<HNode> &tails)
-    : id_(-1),
-      head_(head),
-      tail_nodes_(tails) {}
+/* class Hyperedge { */
+/*  public: */
+/*   Hyperedge(HNode head, */
+/*             const vector<HNode> &tails) */
+/*     : id_(-1), */
+/*       head_(head), */
+/*       tail_nodes_(tails) {} */
 
-  /**
-   * Get the id of the edge.
-   */
-  int id() const { return id_; }
+/*   /\** */
+/*    * Get the id of the edge. */
+/*    *\/ */
+/*   int id() const { return id_; } */
 
-  void set_id(int id) { id_ = id; }
+/*   void set_id(int id) { id_ = id; } */
 
-  /**
-   * Get the head node of the edge.
-   */
-  HNode head_node() const { return head_; }
+/*   /\** */
+/*    * Get the head node of the edge. */
+/*    *\/ */
+/*   HNode head_node() const { return head_; } */
 
-  /**
-   * Get the tail nodes of the hyperedge in order.
-   */
-  const vector<HNode> &tail_nodes() const { return tail_nodes_; }
+/*   /\** */
+/*    * Get the tail nodes of the hyperedge in order. */
+/*    *\/ */
+/*   const vector<HNode> &tail_nodes() const { return tail_nodes_; } */
 
-  /**
-   * Topological order on edges.
-   */
-  bool operator<(const Hyperedge *edge2) const {
-    return id() < edge2->id();
-  }
+/*   /\** */
+/*    * Topological order on edges. */
+/*    *\/ */
+/*   bool operator<(const Hyperedge *edge2) const { */
+/*     return id() < edge2->id(); */
+/*   } */
 
- private:
-  int id_;
-  HNode head_;
-  vector<HNode> tail_nodes_;
-};
+/*  private: */
+/*   int id_; */
+/*   HNode head_; */
+/*   vector<HNode> tail_nodes_; */
+/* }; */
 
 
 /**
@@ -83,7 +83,7 @@ class Hypernode {
 
   void set_id(int id) { id_ = id; }
 
-  void add_edge(const Hyperedge *edge) {
+  void add_edge(HEdge edge) {
     edges_.push_back(edge);
   }
 
@@ -110,9 +110,9 @@ class Hypergraph {
       id_(ID++) {}
 
     ~Hypergraph() {
-        foreach (HEdge edge, edges_) {
-            delete edge;
-        }
+        /* foreach (HEdge edge, edges_) { */
+        /*     delete edge; */
+        /* } */
         foreach (HNode node, nodes_) {
             delete node;
         }
@@ -125,6 +125,9 @@ class Hypergraph {
    * @return Hypernode at root
    */
   HNode root() const { return root_; }
+
+  int id(HEdge edge) const { return edge; }
+  int new_id(HEdge edge) const { return temp_edges_[edge]; }
 
 
   /**
@@ -141,9 +144,12 @@ class Hypergraph {
    * WARNING: Treat this as a const iterator.
    * @return Const iterator to edges in hypergraph .
    */
-  const vector<HEdge> & edges() const {
-    return edges_;
-  }
+  const vector<HEdge> &edges() const { return edges_; }
+
+  /* int edges() const { return edges_.size(); } */
+  HNode head(HEdge edge) const { return edge_heads_[edge]; }
+  int tail_nodes(HEdge edge) const { return edge_tails_[edge].size(); }
+  HNode tail_node(HEdge edge, int tail) const { return edge_tails_[edge][tail]; }
 
   // Construction Code.
 
@@ -154,6 +160,7 @@ class Hypergraph {
 
   HNode start_node();
 
+  /* HEdge add_edge(const vector<HNode> &nodes); */
   HEdge add_edge(const vector<HNode> &nodes);
 
   /**
@@ -206,11 +213,13 @@ class Hypergraph {
   // The current node being created.
   Hypernode *creating_node_;
 
-  // List of nodes guarenteed to be in topological order.
+  // List of temporary nodes (for construction).
   vector<Hypernode *> temp_nodes_;
 
-  // List of edges guarenteed to be in topological order.
-  vector<Hyperedge *> temp_edges_;
+  // List of temporary edges.
+  vector<HEdge> temp_edges_;
+  vector<vector<HNode> > temp_edge_tails_;
+  vector<Hypernode *> temp_edge_heads_;
 
   // The true interface.
 
@@ -220,6 +229,8 @@ class Hypergraph {
 
   // List of edges guarenteed to be in topological order.
   vector<HEdge> edges_;
+  vector<vector<HNode> > edge_tails_;
+  vector<HNode> edge_heads_;
 
   HNode root_;
 
@@ -233,21 +244,22 @@ class Hyperpath {
   Hyperpath(const Hypergraph *graph,
             const vector<HEdge> &edges)
       : graph_(graph), edges_(edges) {
-    HEdge last_edge = NULL;
+    HEdge last_edge = -1;
     foreach (HEdge edge, edges) {
-      edges_set_.insert(edge->id());
-      if (last_edge != NULL && last_edge->id() >= edge->id()) {
-        throw HypergraphException("Hyperpath is not in order.");
-      }
-      foreach (HNode node, edge->tail_nodes()) {
-          nodes_.push_back(node);
-          nodes_set_.insert(node->id());
-      }
-      last_edge = edge;
+        edges_set_.insert(graph->id(edge));
+        if (last_edge != -1 && graph->id(last_edge) >= graph->id(edge)) {
+            throw HypergraphException("Hyperpath is not in order.");
+        }
+        for (int i = 0; i < graph_->tail_nodes(edge); ++i) {
+            HNode node = graph_->tail_node(edge, i);
+            nodes_.push_back(node);
+            nodes_set_.insert(node->id());
+        }
+        last_edge = edge;
     }
     nodes_.push_back(graph->root());
     nodes_set_.insert(graph->root()->id());
-  }
+    }
 
   /**
    * Get the edges in the path. In topological order.
@@ -264,7 +276,7 @@ class Hyperpath {
    * Is edge in the hyperpath.
    */
   bool has_edge(HEdge edge) const {
-    return edges_set_.find(edge->id()) != edges_set_.end();
+    return edges_set_.find(graph_->id(edge)) != edges_set_.end();
   }
 
   bool has_node(HNode node) const {
@@ -282,14 +294,14 @@ class Hyperpath {
   }
 
   bool equal(const Hyperpath &path) const {
-    check(*path.graph_);
-    if (edges_.size() != path.edges_.size()) return false;
-    for (uint i = 0; i < edges_.size(); ++i) {
-      if (edges_[i]->id() != path.edges_[i]->id()) {
-        return false;
+      check(*path.graph_);
+      if (edges_.size() != path.edges_.size()) return false;
+      for (uint i = 0; i < edges_.size(); ++i) {
+          if (graph_->id(edges_[i]) != graph_->id(path.edges_[i])) {
+              return false;
+          }
       }
-    }
-    return true;
+      return true;
   }
 
  private:

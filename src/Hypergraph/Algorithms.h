@@ -20,7 +20,7 @@ vector<set<int> > *children_nodes(const Hypergraph &graph);
 
 struct IdComparator {
     bool operator()(HEdge edge1, HEdge edge2) const {
-        return edge1->id() < edge2->id();
+        return edge1 < edge2;
     }
 };
 

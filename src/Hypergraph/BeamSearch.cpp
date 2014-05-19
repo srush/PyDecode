@@ -68,11 +68,11 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
                 double score = potentials.score(edge);
 
                 // Assume unary/binary edges.
-                HNode node_left = edge->tail_nodes()[0];
+                HNode node_left = graph->tail_node(edge, 0);
                 const typename BeamChart<BVP>::BeamPointers &beam_left =
                         chart->get_beam(node_left);
 
-                bool unary = edge->tail_nodes().size() == 1;
+                bool unary = graph->tail_nodes(edge) == 1;
 
                 // Optimization.
                 // vector<bool> valid_right;
@@ -127,7 +127,7 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
                     }
 
                     // Do right node.
-                    HNode node_right = edge->tail_nodes()[1];
+                    HNode node_right = graph->tail_node(edge, 1);
                     const typename BeamChart<BVP>::BeamPointers &beam_right =
                             chart->get_beam(node_right);
 
@@ -182,8 +182,8 @@ Hyperpath *BeamChart<BVP>::get_path(int result) {
             continue;
         }
         path.push_back(edge);
-        for (uint i = 0; i < edge->tail_nodes().size(); ++i) {
-            HNode node = edge->tail_nodes()[i];
+        for (uint i = 0; i < hypergraph_->tail_nodes(edge); ++i) {
+            HNode node = hypergraph_->tail_node(edge, i);
             to_examine.push(pair<HNode, int>(node,
                                              (i == 0 ? score->back_position_left :
                                               score->back_position_right

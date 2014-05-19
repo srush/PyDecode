@@ -19,12 +19,12 @@ def test_main():
     vec[-3] = 3
     counts = ph.CountingPotentials(hypergraph).from_vector(vec)
     hmap = ph.extend_hypergraph_by_dfa(hypergraph, counts, dfa)
-    for n in hmap.domain_hypergraph.nodes:
-        print lat(n.label.core), n.label.left_state, n.label.right_state
-    path = utils.random_path(hmap.domain_hypergraph)
-    print [lat(edge.head.label.core) for edge in path.edges]
-    print [(edge.head.label.core.j, counts[hmap[edge]]) for edge in path.edges]
-    print [(edge.head.label.left_state, edge.head.label.right_state) for edge in path.edges]
+    # for n in hmap.domain_hypergraph.nodes:
+    #     print lat(n.label.core), n.label.left_state, n.label.right_state
+    # path = utils.random_path(hmap.domain_hypergraph)
+    # print [lat(edge.head.label.core) for edge in path.edges]
+    # print [(edge.head.label.core.j, counts[hmap[edge]]) for edge in path.edges]
+    # print [(edge.head.label.left_state, edge.head.label.right_state) for edge in path.edges]
 
 if __name__ == "__main__":
     test_main()

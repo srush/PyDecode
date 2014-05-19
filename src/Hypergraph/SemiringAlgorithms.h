@@ -48,7 +48,8 @@ class Chart {
 
     inline V compute_edge_score(HEdge edge, const V &start) {
         V score = start;
-        foreach (HNode tail, edge->tail_nodes()) {
+        for (int j = 0; j < this->graph_->tail_nodes(edge); ++j) {
+            HNode tail = this->graph_->tail_node(edge, j);
             score = S::times(score, chart_[tail->id()]);
         }
         return score;
@@ -70,7 +71,7 @@ class BackPointers {
   public:
     explicit BackPointers(const Hypergraph *graph)
             : graph_(graph),
-        chart_(graph_->nodes().size(), NULL) {}
+        chart_(graph_->nodes().size(), -1) {}
 
     inline HEdge operator[] (HNode node) const {
         return chart_[node->id()];
@@ -164,11 +165,11 @@ class Marginals {
 
     // Get max-marginal for edge or node.
     V marginal(HEdge edge) const {
-        V score = (*out_chart_)[edge->head_node()];
+        V score = (*out_chart_)[hypergraph_->head(edge)];
 
         score = SemiringType::times(score, potentials_->score(edge));
-
-        foreach (HNode node, edge->tail_nodes()) {
+        for (int j = 0; j < hypergraph_->tail_nodes(edge); ++j) {
+            HNode node = hypergraph_->tail_node(edge, j);
             score = SemiringType::times(score, (*in_chart_)[node]);
         }
         return score;

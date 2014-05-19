@@ -33,8 +33,8 @@ class HypergraphMap {
     }
 
     HEdge map(HEdge original) const {
-        assert(original->id() < edge_map_->size());
-        return (*edge_map_)[original->id()];
+        //assert(original->id() < edge_map_->size());
+        return (*edge_map_)[domain_graph_->id(original)];
     }
 
     HNode map(HNode original) const {
@@ -60,7 +60,7 @@ class HypergraphMap {
         vector<HNode> *node_map =
                 new vector<HNode>(domain_graph->nodes().size(), NULL);
         vector<HEdge> *edge_map =
-                new vector<HEdge>(domain_graph->edges().size(), NULL);
+                new vector<HEdge>(domain_graph->edges().size(), -1);
 
 
         foreach (HNode node, range_graph->nodes()) {
@@ -70,9 +70,9 @@ class HypergraphMap {
             }
         }
         foreach (HEdge edge, range_graph->edges()) {
-            foreach (HEdge new_edge, reverse_edge_map[edge->id()]) {
-                if (new_edge->id() == -1) continue;
-                (*edge_map)[new_edge->id()] = edge;
+            foreach (HEdge new_edge, reverse_edge_map[domain_graph->id(edge)]) {
+                if (domain_graph->new_id(new_edge) == -1) continue;
+                (*edge_map)[domain_graph->new_id(new_edge)] = edge;
             }
         }
         return new HypergraphMap(domain_graph, range_graph,

@@ -121,18 +121,18 @@ template<typename SemiringType>
         V score = SemiringType::one();
         foreach (HEdge edge, path.edges()) {
             score = SemiringType::times(score,
-                                        (*potentials_)[edge->id()]);
+                                        (*potentials_)[this->hypergraph_->id(edge)]);
         }
         return SemiringType::times(score, this->bias_);
     }
 
-    V score(HEdge edge) const { return (*potentials_)[edge->id()]; }
+    V score(HEdge edge) const { return (*potentials_)[this->hypergraph_->id(edge)]; }
     inline V operator[] (HEdge edge) const {
-        return (*potentials_)[edge->id()];
+        return (*potentials_)[this->hypergraph_->id(edge)];
     }
 
     void insert(const HEdge& edge, const V& val) {
-        (*potentials_)[edge->id()] = val;
+        (*potentials_)[this->hypergraph_->id(edge)] = val;
     }
 
     HypergraphPotentials<S> *times(
@@ -197,7 +197,7 @@ template<typename SemiringType>
 
     inline V score(HEdge edge) const {
         map<int, int>::const_iterator iter =
-                potential_map_.find(edge->id());
+                potential_map_.find(this->hypergraph_->id(edge));
         if (iter == potential_map_.end()) {
             return S::one();
         } else {
@@ -210,7 +210,7 @@ template<typename SemiringType>
 
     void insert(const HEdge& edge, const V& val) {
         int i = potentials_.size();
-        potential_map_[edge->id()] = i;
+        potential_map_[this->hypergraph_->id(edge)] = i;
         potentials_.push_back(val);
     }
 

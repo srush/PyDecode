@@ -16,7 +16,7 @@ from libcpp cimport bool
 cdef extern from "Hypergraph/SemiringAlgorithms.h":
     cdef cppclass CBackPointers "BackPointers":
         CBackPointers(CHypergraph *graph)
-        const CHyperedge *get(const CHypernode *node)
+        int get(const CHypernode *node)
         CHyperpath *construct_path()
 
 cdef class BackPointers:
@@ -56,7 +56,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         ) except +
 
     cdef cppclass C{{S.type}}Marginals "Marginals<{{S.ctype}}>":
-        {{S.cvalue}} marginal(const CHyperedge *edge)
+        {{S.cvalue}} marginal(int edge)
         {{S.cvalue}} marginal(const CHypernode *node)
         CHypergraphBoolPotentials *threshold(
             const {{S.cvalue}} &threshold)
@@ -83,7 +83,7 @@ cdef extern from "Hypergraph/Semirings.h":
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraph{{S.type}}Potentials "HypergraphPotentials<{{S.ctype}}>":
         {{S.cvalue}} dot(const CHyperpath &path) except +
-        {{S.cvalue}} score(const CHyperedge *edge)
+        {{S.cvalue}} score(int edge)
         CHypergraph{{S.type}}Potentials *times(
             const CHypergraph{{S.type}}Potentials &potentials)
         CHypergraph{{S.type}}Potentials *project_potentials(
