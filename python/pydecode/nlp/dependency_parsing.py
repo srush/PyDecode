@@ -1,6 +1,7 @@
 from collections import namedtuple
 import itertools
 import pydecode.nlp.decoding as decoding
+import pydecode.hyper as ph
 import random
 
 class DependencyDecodingProblem(decoding.DecodingProblem):
@@ -20,7 +21,7 @@ class DependencyDecodingProblem(decoding.DecodingProblem):
         n = self.size
         for mid in itertools.product(range(n + 1), repeat=n):
             parse = DependencyParse([-1] + list(mid))
-            if (not parse.check_projective()) or (not parse.check_spanning()): 
+            if (not parse.check_projective()) or (not parse.check_spanning()):
                 continue
             yield parse
 
@@ -175,7 +176,7 @@ class DependencyScorer(decoding.Scorer):
         first = [[random.random() for j in range(n+1)] for i in range(n+1)]
         second = None
         if order == 2:
-            second = [[[random.random() for k in range(n+1)] for j in range(n+1)] 
+            second = [[[random.random() for k in range(n+1)] for j in range(n+1)]
                       for i in range(n+1)]
         return DependencyScorer(dependency_problem, first, second)
 
@@ -219,7 +220,7 @@ class DependencyScorer(decoding.Scorer):
                 sum((self.arc_score(h, m, parse.sibling(m))
                      for m, h in parse.arcs()))
 
-        return parse_score 
+        return parse_score
 
 
 
@@ -244,17 +245,17 @@ class Arc(namedtuple("Arc", ["head", "mod", "sibling"])):
         return super(Arc, cls).__new__(cls, head, mod, sibling)
 
 class DependencyDecoder(decoding.HypergraphDecoder):
-    def path_to_instance(self, path):        
-        labels =  [edge.label for edge in path if edge.label is not None] 
+    def path_to_instance(self, problem, path):
+        labels =  [edge.label for edge in path if edge.label is not None]
         labels.sort(key = lambda arc: arc.mod)
         heads = ([-1] + [arc.head for arc in labels])
         return DependencyParse(heads)
 
-    def potentials(self, hypergraph):
+    def potentials(self, hypergraph, scorer):
         def score(label):
             if label is None: return 0.0
             return scorer.arc_score(label.head, label.mod, label.sibling)
-        return LogViterbiPotentials(hypergraph).from_vector([
+        return ph.LogViterbiPotentials(hypergraph).from_vector([
                 score(edge.label) for edge in hypergraph.edges])
 
 
@@ -262,16 +263,16 @@ class FirstOrderDecoder(DependencyDecoder):
     """
     First-order dependency parsing.
     """
-    def dynamic_program(self, chart, problem):
+    def dynamic_program(self, c, problem):
         """
         Parameters
         -----------
         sentence_length : int
           The length of the sentence.
-        
+
         Returns
         -------
-        chart : 
+        chart :
           The finished chart.
         """
         n = problem.size + 1
@@ -327,8 +328,8 @@ class FirstOrderDecoder(DependencyDecoder):
 
 
 class SecondOrderDecoder(DependencyDecoder):
-    def dynamic_program(self, chart, problem):
-        n = sent_len + 1
+    def dynamic_program(self, c, problem):
+        n = problem.size + 1
 
         # Initialize the chart.
         for s in range(n):
@@ -394,4 +395,3 @@ class SecondOrderDecoder(DependencyDecoder):
                            if key1 in c
                            for key2 in [(Tri, Right, (r, t))]
                            if key2 in c])
-
