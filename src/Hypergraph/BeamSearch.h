@@ -78,8 +78,7 @@ class BeamChart {
   public:
     bool exact;
 
-    struct BeamHyp
-              : public set_base_hook<>{
+    struct BeamHyp : public set_base_hook<>{
 
        set_member_hook<> member_hook_;
 
@@ -158,7 +157,6 @@ class BeamChart {
         for (int i = 0; i < groups->groups_size(); ++i) {
             beam_[i] = new Beam();
         }
-
     }
 
     ~BeamChart();
@@ -170,8 +168,7 @@ class BeamChart {
                 const typename BVP::ValType &sig,
                 double val,
                 const int back_position_left,
-                const int back_position_right
-                );
+                const int back_position_right);
 
     // Finish a beam group.
     void finish(int group);

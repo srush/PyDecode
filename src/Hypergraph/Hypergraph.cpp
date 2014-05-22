@@ -14,9 +14,7 @@ HEdge  Hypergraph::add_edge(const vector<HNode> &nodes)  {
     assert(lock_);
     assert(!unary_);
 
-    //Hyperedge *edge = new Hyperedge(creating_node_, nodes);
     HEdge edge = temp_edges_.size();
-    //creating_node_->add_edge(edge);
     temp_edges_.push_back(-1);
     temp_edge_tails_.push_back(nodes);
     temp_edge_heads_.push_back(creating_node_);
@@ -26,9 +24,8 @@ HEdge  Hypergraph::add_edge(const vector<HNode> &nodes)  {
 HEdge  Hypergraph::add_edge(HNode node)  {
     assert(lock_);
     assert(unary_);
-    //Hyperedge *edge = new Hyperedge(creating_node_, nodes);
+
     HEdge edge = temp_edges_.size();
-    //creating_node_->add_edge(edge);
     temp_edges_.push_back(-1);
     temp_edge_tails_unary_.push_back(node);
     temp_edge_heads_.push_back(creating_node_);
@@ -72,7 +69,6 @@ void Hypergraph::fill() {
 
     // Mark the reachable temp edges and nodes.
     for (int i = temp_edges_.size() - 1; i >= 0; --i) {
-
         HNode head = temp_edge_heads_[i];
         if (head->id() == root()->id()) {
             reachable_nodes[head->id()] = true;
@@ -106,7 +102,7 @@ void Hypergraph::fill() {
         if (reachable_edges[i]) {
             temp_edges_[i] = edge_count;
             edges_.push_back(edge_count);
-            if (!unary_){
+            if (!unary_) {
                 edge_tails_.push_back(temp_edge_tails_[i]);
             } else {
                 edge_tails_unary_.push_back(temp_edge_tails_unary_[i]);

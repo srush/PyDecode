@@ -30,7 +30,7 @@ struct DFANode {
     left_state(_left_state),
         right_state(_right_state),
         node(_node),
-        id( _id) {}
+        id(_id) {}
 
     DFANode() {}
 

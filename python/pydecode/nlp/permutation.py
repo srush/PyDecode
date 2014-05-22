@@ -109,8 +109,9 @@ class PermutationDecoder(decoding.ConstrainedHypergraphDecoder):
             return beam_chart.path(0)
         elif method == "MULTIDFA":
             old = hypergraph
+            old_hmap = None
+
             for j in range(problem.size):
-                print j
                 states = 2
                 symbols = 2
                 dfa = ph.DFA(states, symbols, [{0:0, 1:1} , {0:1}], [1])
@@ -122,7 +123,14 @@ class PermutationDecoder(decoding.ConstrainedHypergraphDecoder):
                 old.labeling = ph.Labeling(old, [hmap[node].label
                                                  for node in old.nodes],
                                            None)
-            new_scores = self.potentials(old, scorer)
+                #new_scores = old_scores.up_project(old, hmap)
+                if old_hmap is not None:
+                    old_hmap = old_hmap.compose(hmap)
+                else:
+                    old_hmap = hmap
+                # old_scores = new_scores
+            new_scores = scores.up_project(old, old_hmap)
+            #new_scores = self.potentials(old, scorer)
             return ph.best_path(old, new_scores)
 
         elif method == "BIGDFA":
@@ -146,5 +154,5 @@ class PermutationDecoder(decoding.ConstrainedHypergraphDecoder):
             old.labeling = ph.Labeling(old, [hmap[node].label
                                              for node in old.nodes],
                                        None)
-            new_scores = self.potentials(old, scorer)
+            new_scores = scores.up_project(old, hmap)
             return ph.best_path(old, new_scores)

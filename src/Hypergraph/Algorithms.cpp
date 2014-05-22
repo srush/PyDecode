@@ -152,7 +152,7 @@ HypergraphMap *extend_with_dfa(
 
                     } else {
                         HNode right_node = hypergraph->tail_node(edge, 1);
-                        vector<DFANode> &base_right = \
+                        vector<DFANode> &base_right =
                                 new_indexed[right_node->id()][base[i].right_state];
                         for (int j = 0; j < base_right.size(); ++j) {
                             if (!dfa.valid_transition(base_right[j].right_state,
@@ -173,9 +173,11 @@ HypergraphMap *extend_with_dfa(
             }
 
             // Make new decorated nodes.
-            for (set<int>::iterator iter = lefts.begin(); iter != lefts.end(); ++iter) {
+            for (set<int>::iterator iter = lefts.begin();
+                 iter != lefts.end(); ++iter) {
                 int state_left = *iter;
-                for (set<int>::iterator iter2 = rights.begin(); iter2 != rights.end(); ++iter2) {
+                for (set<int>::iterator iter2 = rights.begin();
+                     iter2 != rights.end(); ++iter2) {
                     int state_right = *iter2;
                     if (hyps[state_left][state_right].size() == 0) continue;
                     if (hypergraph->root()->id() == node->id() &&

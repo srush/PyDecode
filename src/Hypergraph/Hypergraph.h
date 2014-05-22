@@ -104,7 +104,7 @@ class Hypernode {
 
 class Hypergraph {
  public:
-  Hypergraph(bool unary=false)
+  explicit Hypergraph(bool unary = false)
       : terminal_lock_(true), lock_(false),
             temp_nodes_(0), temp_edges_(0), unary_(unary),
       id_(ID++) {}
