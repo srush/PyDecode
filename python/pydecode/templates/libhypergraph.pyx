@@ -25,6 +25,8 @@ cdef class Labeling:
                     "There is no node labeling.")
             return self.node_labels[obj.id]
 
+
+
 cdef class _LazyEdges:
     def __init__(self, graph):
         self._graph = graph
@@ -137,6 +139,22 @@ cdef class Hypergraph:
 
         def __set__(self, labeling):
             self.labeling = labeling
+
+    def head_labels(self):
+        for i in range(self.thisptr.edges().size()):
+            edge_num = self.thisptr.edges()[i]
+            label = self.labeling.node_labels[self.thisptr.head(edge_num).id()]
+            if label is not None:
+                yield edge_num, label
+
+    def node_labels(self):
+        for i in range(self.thisptr.edges().size()):
+            edge_num = self.thisptr.edges()[i]
+            label = self.labeling.node_labels[self.thisptr.head(edge_num).id()]
+            tail_labels = [self.labeling.node_labels[self.thisptr.tail_node(edge_num, tail).id()]
+                           for tail in range(self.thisptr.tail_nodes(edge_num))]
+            if label is not None:
+                yield edge_num, label, tail_labels
 
     def __str__(self):
         s = "Hypergraph: Edges: %s Vertices: %s" % (len(self.edges),
@@ -391,6 +409,11 @@ cdef class Edge:
     property head:
         def __get__(self):
             return Vertex().init(self.graph.thisptr.head(self.id), self.graph)
+
+    property head_label:
+        def __get__(self):
+            return self.graph.labeling.node_labels[self.graph.thisptr.head(self.id).id()]
+
 
     property label:
         def __get__(self):

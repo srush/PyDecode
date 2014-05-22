@@ -23,7 +23,7 @@ cdef extern from "Hypergraph/Hypergraph.h":
         const CHypernode *head(int)
         const CHypernode *start_node()
         const CHypernode *add_terminal_node()
-        void end_node()
+        bool end_node()
         int id()
         int new_id(int)
         int add_edge(vector[const CHypernode *]) except +

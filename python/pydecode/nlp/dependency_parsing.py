@@ -1,8 +1,9 @@
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 import itertools
 import pydecode.nlp.decoding as decoding
 import pydecode.hyper as ph
 import random
+import numpy as np
 
 class DependencyDecodingProblem(decoding.DecodingProblem):
     def __init__(self, size, order):
@@ -165,7 +166,7 @@ class DependencyScorer(decoding.Scorer):
            Scores for each possible modifier bigram
            second_order[h][s][m].
         """
-        self._arc_scores = arc_scores
+        self.arc_scores = arc_scores
         self._second_order_scores = second_order
         self._problem = problem
 
@@ -191,9 +192,9 @@ class DependencyScorer(decoding.Scorer):
         """
         assert((sibling is None) or (self._second_order_scores is not None))
         if sibling is None:
-            return self._arc_scores[head][modifier]
+            return self.arc_scores[head][modifier]
         else:
-            return self._arc_scores[head][modifier] + \
+            return self.arc_scores[head][modifier] + \
                 self._second_order_scores[head][sibling][modifier]
 
     def score(self, parse):
@@ -233,31 +234,79 @@ Box = 3
 Right = 0
 Left = 1
 
-def NodeType(type, dir, span) :
-    return (type, dir, span)
+def NodeType(type, dir, s, t) :
+    return (type, dir, s, t)
 def node_type(nodetype): return nodetype[0]
-def node_span(nodetype): return nodetype[2]
+def node_span(nodetype): return nodetype[2:]
 def node_dir(nodetype): return nodetype[1]
 
 
-class Arc(namedtuple("Arc", ["head", "mod", "sibling"])):
-    def __new__(cls, head, mod, sibling=None):
-        return super(Arc, cls).__new__(cls, head, mod, sibling)
+def Arc(head, mod):
+    return (head, mod)
+
+def Arc2(head, mod, sibling):
+    return (head, mod, sibling)
+
+def arc_head(arc):
+    return arc[0]
+def arc_mod(arc):
+    return arc[1]
+def arc_sib(arc):
+    if len(arc) > 2:
+        return arc[2]
+    else:
+        return None
+
+
+# class Arc(namedtuple("Arc", ["head", "mod", "sibling"])):
+#     def __new__(cls, head, mod, sibling=None):
+#         return super(Arc, cls).__new__(cls, head, mod, sibling)
 
 class DependencyDecoder(decoding.HypergraphDecoder):
+    def _to_arc(self, hasher, edge):
+        label = edge.head_label
+        if label is None: return None
+        # label = hasher.unhash(edge.head.label)
+
+        typ, d, s, t = label
+        # s, t = node_span(label)
+        # d = node_dir(label)
+        if typ != Trap:
+            return None
+        if d == Left: s, t = t, s
+        return (s, t)
+
     def path_to_instance(self, problem, path):
-        labels =  [edge.label for edge in path if edge.label is not None]
-        labels.sort(key = lambda arc: arc.mod)
-        heads = ([-1] + [arc.head for arc in labels])
+        n = problem.size + 1
+        hasher = ph.SizedTupleHasher([3, 2, n, n])
+
+        labels = [self._to_arc(hasher, edge) for edge in path]
+        labels = [l for l in labels if l is not None]
+        labels.sort(key = arc_mod)
+        heads = ([-1] + [arc_head(arc) for arc in labels])
         return DependencyParse(heads)
 
-    def potentials(self, hypergraph, scorer):
-        def score(label):
-            if label is None: return 0.0
-            return scorer.arc_score(label.head, label.mod, label.sibling)
-        return ph.LogViterbiPotentials(hypergraph).from_vector([
-                score(edge.label) for edge in hypergraph.edges])
-
+    def potentials(self, hypergraph, scorer, problem):
+        # for node in hypergraph.vertices:
+        #     print node.label
+        n = problem.size + 1
+        hasher = ph.SizedTupleHasher([3, 2, n, n])
+        scores = np.zeros(len(hypergraph.edges))
+        for edge_num, label in hypergraph.head_labels():
+            typ, d, s, t = label
+            if typ != Trap: continue
+            if d == Left: s, t = t, s
+            scores[edge_num] = scorer.arc_scores[s][t]
+        # def score(edge):
+        #     arc = self._to_arc(hasher, edge)
+        #     if arc == None: return 0.0
+        #     # label = hasher.unhash(edge.head.label)
+        #     # s, t = node_span(label)
+        #     # d = node_dir(label)
+        #     # if d == Left: s, t = t, s
+        #     return scorer.arc_score(arc[0], arc[1])
+        return ph.LogViterbiPotentials(hypergraph).from_array(scores)
+                # score(edge) for edge in hypergraph.edges])
 
 class FirstOrderDecoder(DependencyDecoder):
     """
@@ -276,122 +325,113 @@ class FirstOrderDecoder(DependencyDecoder):
           The finished chart.
         """
         n = problem.size + 1
+        hasher = ph.SizedTupleHasher([3, 2, n, n])
+        c.set_hasher(hasher)
+        # print hasher((1,2,1, 1))
 
         # Add terminal nodes.
-        [c.init(NodeType(sh, d, (s, s)))
-         for s in range(n)
-         for d in [Right, Left]
-         for sh in [Trap, Tri]]
 
+        for s in range(n):
+            for d in [Right, Left]:
+                for sh in [Trap, Tri]:
+                    c.init(NodeType(sh, d, s, s))
+
+        # id = lambda a, b: a
+        # c = defaultdict(lambda :0)
         for k in range(1, n):
             for s in range(n):
                 t = k + s
                 if t >= n: break
-                span = (s, t)
 
                 # First create incomplete items.
                 if s != 0:
-                    c[NodeType(Trap, Left, span)] = \
-                        c.sum([c[key1] * c[key2] * c.sr(Arc(t, s))
-                               for r in range(s, t)
-                               for key1 in [(Tri, Right, (s, r))]
-                               if key1 in c
-                               for key2 in [(Tri, Left, (r+1, t))]
-                               if key2 in c
-                               ])
+                    arc = Arc(t, s)
+                    c.set(NodeType(Trap, Left, s, t),
+                          [(((Tri, Right, s, r), (Tri, Left, r+1, t)), arc)
+                           for r in range(s, t)])
 
-
-                c[NodeType(Trap, Right, span)] = \
-                    c.sum([ c[key1] * c[key2] * c.sr(Arc(s, t))
-                            for r in range(s, t)
-                            for key1 in [(Tri, Right, (s, r))]
-                            if key1 in c
-                            for key2 in [(Tri, Left, (r+1, t))]
-                            if key2 in c])
+                arc = Arc(s, t)
+                c.set(NodeType(Trap, Right, s, t),
+                      [(((Tri, Right, s, r), (Tri, Left, r+1, t)), arc)
+                       for r in range(s, t)])
 
                 if s != 0:
-                    c[NodeType(Tri, Left, span)]= \
-                        c.sum([c[key1] * c[key2]
-                               for r in range(s, t)
-                               for key1 in [(Tri, Left, (s, r))]
-                               if key1 in c
-                               for key2 in [(Trap, Left, (r, t))]
-                               if key2 in c])
+                    c.set(NodeType(Tri, Left, s, t),
+                          [(((Tri, Left, s, r), (Trap, Left, r, t)), None)
+                           for r in range(s, t)])
 
-                c[NodeType(Tri, Right, span)] = \
-                    c.sum([c[key1] * c[key2]
-                           for r in range(s + 1, t + 1)
-                           for key1 in [(Trap, Right, (s, r))]
-                           if key1 in c
-                           for key2 in [(Tri, Right, (r, t))]
-                           if key2 in c])
+                c.set(NodeType(Tri, Right, s, t),
+                      [(((Trap, Right, s, r), (Tri, Right, r, t)), None)
+                       for r in range(s + 1, t + 1)])
 
 
 class SecondOrderDecoder(DependencyDecoder):
     def dynamic_program(self, c, problem):
         n = problem.size + 1
+        hasher = ph.SizedTupleHasher([3, 2, n, n])
+        c.set_hasher(hasher)
 
         # Initialize the chart.
         for s in range(n):
              for d in [Right, Left]:
                  for sh in [Tri]:
-                     c.init(NodeType(sh, d, (s, s)))
+                     c.init(NodeType(sh, d, s, s))
 
         for k in range(1, n):
             for s in range(n):
                 t = k + s
                 if t >= n: break
-                span = (s, t)
+                #span = (s, t)
 
                 if s != 0:
-                    c[NodeType(Box, Left, span)] = \
-                        c.sum([c[key1] * c[key2]
-                               for r  in range(s, t)
-                               for key1 in [(Tri, Right, (s, r))]
-                               if key1 in c
-                               for key2 in [(Tri, Left, (r+1, t))]
-                               if key2 in c])
-
-                if s != 0:
-                    c[NodeType(Trap, Left, span)] = \
-                        c.sum([c[key1] * c[key2] * c.sr(Arc(t, s, t))
-                               for key1 in [(Tri, Right, (s, t-1))]
-                               if key1 in c
-                               for key2 in [(Tri, Left, (t, t))]
-                               if key2 in c] +
-                              [c[key1] * c[key2] * c.sr(Arc(t, s, r))
-                               for r in range(s+1, t)
-                               for key1 in [(Box, Left, (s, r))]
-                               if key1 in c
-                               for key2 in [(Trap, Left, (r, t))]
-                               if key2 in c])
-
-                c[NodeType(Trap, Right, span)] = \
-                    c.sum([c[key1] * c[key2] * c.sr(Arc(s, t, s))
-                           for key1 in [(Tri, Right, (s, s))]
+                    c.set(NodeType(Box, Left, s, t),
+                          [((c[key1], c[key2]), None)
+                           for r  in range(s, t)
+                           for key1 in [(Tri, Right, s, r)]
                            if key1 in c
-                           for key2 in [(Tri, Left, (s+1, t))]
+                           for key2 in [(Tri, Left, r+1, t)]
+                           if key2 in c])
+
+                if s != 0:
+                    c.set(NodeType(Trap, Left, s, t),
+                          [((c[key1], c[key2]), Arc(t, s, t))
+                           for key1 in [(Tri, Right, s, t-1)]
+                           if key1 in c
+                           for key2 in [(Tri, Left, t, t)]
                            if key2 in c] +
-                          [c[key1] * c[key2] * c.sr(Arc(s, t, r))
-                           for r  in range(s + 1, t)
-                           for key1 in [(Trap, Right, (s, r))]
+                          [((c[key1], c[key2]),  Arc(t, s, r))
+                           for r in range(s+1, t)
+                           for key1 in [(Box, Left, s, r)]
                            if key1 in c
-                           for key2 in [(Box, Left, (r, t))]
+                           for key2 in [(Trap, Left, r, t)]
                            if key2 in c])
+
+                c.set(NodeType(Trap, Right, s, t),
+                      [((c[key1], c[key2]),  Arc(s, t, s))
+                       for key1 in [(Tri, Right, s, s)]
+                       if key1 in c
+                       for key2 in [(Tri, Left, s+1, t)]
+                       if key2 in c] +
+                      [((c[key1], c[key2]), Arc(s, t, r))
+                       for r  in range(s + 1, t)
+                       for key1 in [(Trap, Right, s, r)]
+                       if key1 in c
+                       for key2 in [(Box, Left, r, t)]
+                       if key2 in c])
 
                 if s != 0:
-                    c[NodeType(Tri, Left, span)] = \
-                        c.sum([c[key1] * c[key2]
-                               for r  in range(s, t)
-                               for key1 in [(Tri, Left, (s, r))]
-                               if key1 in c
-                               for key2 in [(Trap, Left, (r, t))]
-                               if key2 in c])
-
-                c[NodeType(Tri, Right, span)] = \
-                    c.sum([c[key1] * c[key2]
-                           for r in range(s + 1, t + 1)
-                           for key1 in [(Trap, Right, (s, r))]
+                    c.set(NodeType(Tri, Left, s, t),
+                          [((c[key1], c[key2]), None)
+                           for r  in range(s, t)
+                           for key1 in [(Tri, Left, s, r)]
                            if key1 in c
-                           for key2 in [(Tri, Right, (r, t))]
+                           for key2 in [(Trap, Left, r, t)]
                            if key2 in c])
+
+                c.set(NodeType(Tri, Right, s, t),
+                      [((c[key1], c[key2]), None)
+                      for r in range(s + 1, t + 1)
+                      for key1 in [(Trap, Right, s, r)]
+                      if key1 in c
+                      for key2 in [(Tri, Right, r, t)]
+                      if key2 in c])

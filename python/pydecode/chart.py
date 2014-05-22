@@ -36,10 +36,18 @@ class ChartBuilder:
         self._last = None
         self._debug = debug
         self._strict = strict
+        self._hasher = lambda a: a
         if self._builder:
             self._hypergraph = ph.Hypergraph()
             self._build = self._hypergraph.builder()
             self._build.__enter__()
+
+        self._list_chart = False
+
+    def set_hasher(self, hasher):
+        self._hasher = hasher
+        self._chart = [None] * self._hasher.max_size()
+        self._list_chart = True
 
     def finish(self):
         """
@@ -81,15 +89,15 @@ class ChartBuilder:
         label : any
            The node to initialize.
         """
-
+        h = self._hasher(label)
         if self._builder:
             node = self._build.add_node([], label=label)
-            self._chart[label] = HypergraphSemiRing(None, [], [node])
+            self._chart[h] = HypergraphSemiRing(None, [], [node])
         else:
-            self._chart[label] = self._semiring.one()
+            self._chart[h] = self._semiring.one()
         if self._debug:
-            print >>sys.stderr, "Initing", label, label in self._chart
-        return self._chart[label]
+            print >>sys.stderr, "Initing", label, label in self
+        return self._chart[h]
 
     def sum(self, edges):
         """
@@ -104,7 +112,8 @@ class ChartBuilder:
         return sum(edges, self._semiring.zero())
 
     def __setitem__(self, label, val):
-        if label in self._chart:
+        h = self._hasher(label)
+        if label in self:
             raise Exception(
                 "Chart already has label {}".format(label))
         if self._builder:
@@ -115,30 +124,47 @@ class ChartBuilder:
                         print >>sys.stderr, "\t with edge", edge
                 node = self._build.add_node(val.edges(),
                                             label=label)
-                self._chart[label] = \
+                self._chart[h] = \
                     HypergraphSemiRing(None, [], [node])
             # else:
             #     self._chart[label] = val.zero()
         else:
-            self._chart[label] = val
-        self._last = label
+            self._chart[h] = val
+        self._last = self._hasher(label)
         #return self._chart[label]
 
     def __contains__(self, label):
-        return label in self._chart
+        h = self._hasher(label)
+        if self._list_chart:
+            return self._chart[h] != None
+        else:
+            return h in self._chart
+
+    def _get(self, h, default):
+        if self._list_chart:
+            v = self._chart[h]
+            return v if v is not None else default
+        else:
+            return self._chart.get(h, default)
 
     def __getitem__(self, label):
-        if self._strict and label not in self._chart:
+        h = self._hasher(label)
+        if self._strict and label not in self:
             raise Exception("Label not in chart: %s" % (label,))
         if self._debug:
-            print >>sys.stderr, "Getting", label, label in self._chart
-        return self._chart.get(label, self._semiring.zero())
+            print >>sys.stderr, "Getting", label, label in self
+        return self._get(h, self._semiring.zero())
 
     def show(self):
-        keys = self._chart.keys()
-        keys.sort()
-        for key in keys:
-            print key, self._chart[key]
+        if self._list_chart:
+            for i, v in enumerate(self._chart):
+                print i, v
+        else:
+            keys = self._chart.keys()
+            keys.sort()
+            for key in keys:
+                print key, self._chart[key]
+
 
 INF = 1e8
 
