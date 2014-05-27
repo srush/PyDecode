@@ -41,41 +41,6 @@ bool is_disjoint(const Set1 &set1, const Set2 &set2) {
     return true;
 }
 
-
-template<typename StatSem>
-struct NodeScore {
-    NodeScore()
-            :
-            count(-1),
-            edge(NULL),
-            back(0),
-            score(StatSem::zero()) {}
-
-    NodeScore(int _count, HEdge _edge,
-              typename StatSem::ValType _score)
-            :
-            count(_count),
-            edge(_edge),
-            back(0),
-            score(_score) {}
-
-    NodeScore(int _count, HEdge _edge, int i, int j,
-              typename StatSem::ValType _score)
-            :
-            count(_count),
-            edge(_edge),
-            back(2),
-            score(_score) {
-        back[0] = i;
-        back[1] = j;
-    }
-
-    int count;
-    HEdge edge;
-    vector<int> back;
-    typename StatSem::ValType score;
-};
-
 struct EdgeGroup {
     EdgeGroup(HEdge _edge, int back_left, int back_right)
             : edge(_edge), back(2) {
@@ -325,6 +290,7 @@ HypergraphMap *extend_hypergraph_by_count(
         new_graph, hypergraph,
         reverse_node_map, reverse_edge_map);
 }
+
 
 Chart<SetPotential> *edge_domination(const Hypergraph &graph) {
     vector<set<int> > *v = new vector<set<int> >(graph.edges().size());

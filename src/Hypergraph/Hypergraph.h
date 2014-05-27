@@ -106,16 +106,28 @@ class Hypergraph {
  public:
   explicit Hypergraph(bool unary = false)
       : terminal_lock_(true), lock_(false),
-            temp_nodes_(0), temp_edges_(0), unary_(unary),
-      id_(ID++) {}
+            unary_(unary),
+            id_(ID++), temp_structure_(NULL), structure_(NULL) {
+        temp_structure_ = new Structure();
+    }
+
+    void set_expected_size(int num_nodes, int num_edges, int max_arity) {
+        delete temp_structure_;
+        temp_structure_ = new Structure(num_nodes, num_edges, max_arity);
+    }
 
     ~Hypergraph() {
-        /* foreach (HEdge edge, edges_) { */
-        /*     delete edge; */
-        /* } */
-        foreach (HNode node, nodes_) {
+        foreach (HNode node, temp_structure_->nodes_) {
             delete node;
         }
+        delete structure_;
+
+        /* if (structure_ == temp_structure_) { */
+        /*     delete temp_structure_; */
+        /* } else { */
+        /*     delete structure_; */
+        /*     delete temp_structure_; */
+        /* } */
     }
 
 
@@ -127,7 +139,9 @@ class Hypergraph {
   HNode root() const { return root_; }
 
   int id(HEdge edge) const { return edge; }
-  int new_id(HEdge edge) const { return temp_edges_[edge]; }
+  int new_id(HEdge edge) const {
+      return temp_structure_->edges_[edge];
+  }
 
 
   /**
@@ -136,7 +150,7 @@ class Hypergraph {
    * @return Const iterator to hypernodes in hypergraph.
    */
   const vector<HNode> &nodes() const {
-    return nodes_;
+    return structure_->nodes_;
   }
 
   /**
@@ -144,17 +158,22 @@ class Hypergraph {
    * WARNING: Treat this as a const iterator.
    * @return Const iterator to edges in hypergraph .
    */
-  const vector<HEdge> &edges() const { return edges_; }
+  const vector<HEdge> &edges() const {
+      return structure_->edges_;
+  }
 
   /* int edges() const { return edges_.size(); } */
-  HNode head(HEdge edge) const { return edge_heads_[edge]; }
+  HNode head(HEdge edge) const {
+      return structure_->edge_heads_[edge];
+  }
+
   int tail_nodes(HEdge edge) const {
       if (unary_) return 1;
-      return edge_tails_[edge].size();
+      return structure_->edge_tails_[edge].size();
   }
   HNode tail_node(HEdge edge, int tail) const {
-      if (unary_) return edge_tails_unary_[edge];
-      return edge_tails_[edge][tail];
+      if (unary_) return structure_->edge_tails_unary_[edge];
+      return structure_->edge_tails_[edge][tail];
   }
 
   // Construction Code.
@@ -179,20 +198,29 @@ class Hypergraph {
   /**
    * Complete the hypergraph.
    */
-  void finish() {
-    if (temp_nodes_.size() == 0) {
+  void finish(bool reconstruct=true) {
+    if (temp_structure_->nodes_.size() == 0) {
       throw HypergraphException("Hypergraph has size 0.");
     }
-    root_ = temp_nodes_[temp_nodes_.size() - 1];
+    root_ = temp_structure_->nodes_[temp_structure_->nodes_.size() - 1];
     /* if (!(root == NULL || root_ == root)) { */
     /*   throw HypergraphException("Root is not expected root."); */
     /* } */
 
-    fill();
-    if (nodes_.size() == 0) {
+    if (reconstruct) {
+        structure_ = new Structure();
+        fill();
+    } else {
+        structure_ = temp_structure_;
+        for (int i = 0; i < structure_->edges_.size(); ++i) {
+            ((Hypernode *)structure_->edge_heads_[i])->add_edge(i);
+        }
+    }
+
+    if (structure_->nodes_.size() == 0) {
       throw HypergraphException("Final hypergraph has node size 0.");
     }
-    if (edges_.size() == 0) {
+    if (structure_->edges_.size() == 0) {
       throw HypergraphException("Final hypergraph has edge size 0.");
     }
     // TODO(srush) Run checks to make sure we are complete.
@@ -222,26 +250,50 @@ class Hypergraph {
   // The current node being created.
   Hypernode *creating_node_;
 
-  // List of temporary nodes (for construction).
-  vector<Hypernode *> temp_nodes_;
+  struct Structure {
+      Structure(int num_nodes, int num_edges, int max_arity) {
+          nodes_.reserve(num_nodes);
+          edges_.reserve(num_edges);
+          edge_heads_.reserve(num_edges);
+          if (max_arity == 1) {
+              edge_tails_unary_.reserve(num_edges);
+          } else {
+              edge_tails_.reserve(num_edges);
+          }
+      }
+      Structure() {}
 
-  // List of temporary edges.
-  vector<HEdge> temp_edges_;
-  vector<vector<HNode> > temp_edge_tails_;
-  vector<HNode > temp_edge_tails_unary_;
-  vector<Hypernode *> temp_edge_heads_;
+      vector<HNode> nodes_;
 
-  // The true interface.
+      vector<HEdge> edges_;
+      vector<vector<HNode> > edge_tails_;
+      vector<HNode> edge_tails_unary_;
+      vector<pair<HNode, HNode> > edge_tails_binary_;
+      vector<HNode> edge_heads_;
+  };
 
-  // List of nodes guarenteed to be in topological order.
-  vector<HNode> nodes_;
+  Structure *temp_structure_;
+  Structure *structure_;
 
+  /* // List of temporary nodes (for construction). */
+  /* vector<Hypernode *> temp_nodes_; */
 
-  // List of edges guarenteed to be in topological order.
-  vector<HEdge> edges_;
-  vector<vector<HNode> > edge_tails_;
-  vector<HNode > edge_tails_unary_;
-  vector<HNode> edge_heads_;
+  /* // List of temporary edges. */
+  /* vector<HEdge> temp_edges_; */
+  /* vector<vector<HNode> > temp_edge_tails_; */
+  /* vector<HNode > temp_edge_tails_unary_; */
+  /* vector<Hypernode *> temp_edge_heads_; */
+
+  /* // The true interface. */
+
+  /* // List of nodes guarenteed to be in topological order. */
+  /* vector<HNode> nodes_; */
+
+  /* // List of edges guarenteed to be in topological order. */
+  /* vector<HEdge> edges_; */
+  /* vector<vector<HNode> > edge_tails_; */
+  /* vector<HNode > edge_tails_unary_; */
+  /* vector<HNode> edge_heads_; */
 
   HNode root_;
 

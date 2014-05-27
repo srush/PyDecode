@@ -17,6 +17,7 @@ cdef extern from "Hypergraph/Hypergraph.h":
 
     cdef cppclass CHypergraph "Hypergraph":
         CHypergraph(bool)
+        void set_expected_size(int, int, int)
         const CHypernode *root()
         int tail_nodes(int)
         const CHypernode *tail_node(int, int)
@@ -27,9 +28,11 @@ cdef extern from "Hypergraph/Hypergraph.h":
         int id()
         int new_id(int)
         int add_edge(vector[const CHypernode *]) except +
-        void finish() except +
+        void finish(bool reconstruct) except +
         vector[const CHypernode *] nodes()
         vector[int ] edges()
+
+
 
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,
@@ -162,12 +165,25 @@ cdef class DPChartBuilder:
     cdef bool _debug
     cdef bool _strict
     cdef _hasher
-
-
+    cdef int _max_arity
+    cdef _data
 
 cdef class SizedTupleHasher:
     cdef vector[int] _multipliers
     cdef int _max_size
+    cdef _np_multi
+    cpdef hasher(self, t)
+
+cdef class Quartet:
+    cdef int a
+    cdef int b
+    cdef int c
+    cdef int d
+
+cdef class QuartetHash:
+    cdef Quartet _multipliers
+    cdef int _max_size
+    cpdef int hasher(self, Quartet t)
 
 # Cython template hack.
 from cython.operator cimport dereference as deref
@@ -1509,6 +1525,15 @@ cdef class BinaryVectorValue:
     cdef cbitset thisval
     cdef BinaryVectorValue init(self, cbitset val)
 
+
+
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h":
+    CHyperpath *ccount_constrained_viterbi "count_constrained_viterbi<LogViterbiPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphLogViterbiPotentials theta,
+        const CHypergraphCountingPotentials count,
+        int limit) except +
 
 
 cdef extern from "Hypergraph/Potentials.h":

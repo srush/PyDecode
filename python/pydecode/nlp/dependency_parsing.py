@@ -223,14 +223,13 @@ class DependencyScorer(decoding.Scorer):
 
         return parse_score
 
-
-
-
 # Globals
-Tri = 1
-Trap = 2
-Box = 3
+kShapes = 3
+Tri = 0
+Trap = 1
+Box = 2
 
+kDir = 2
 Right = 0
 Left = 1
 
@@ -257,20 +256,13 @@ def arc_sib(arc):
     else:
         return None
 
-
-# class Arc(namedtuple("Arc", ["head", "mod", "sibling"])):
-#     def __new__(cls, head, mod, sibling=None):
-#         return super(Arc, cls).__new__(cls, head, mod, sibling)
-
 class DependencyDecoder(decoding.HypergraphDecoder):
     def _to_arc(self, hasher, edge):
-        label = edge.head_label
-        if label is None: return None
-        # label = hasher.unhash(edge.head.label)
 
-        typ, d, s, t = label
-        # s, t = node_span(label)
-        # d = node_dir(label)
+        label = edge.head_label
+
+        if label is None: return None
+        typ, d, s, t = label.unpack()
         if typ != Trap:
             return None
         if d == Left: s, t = t, s
@@ -278,22 +270,24 @@ class DependencyDecoder(decoding.HypergraphDecoder):
 
     def path_to_instance(self, problem, path):
         n = problem.size + 1
-        hasher = ph.SizedTupleHasher([3, 2, n, n])
+        print "path"
+        #hasher = ph.SizedTupleHasher([3, 2, n, n])
+        # hasher = ph.QuartetHasher(3, 2, n, n])
 
-        labels = [self._to_arc(hasher, edge) for edge in path]
+        labels = [self._to_arc(None, edge) for edge in path]
         labels = [l for l in labels if l is not None]
         labels.sort(key = arc_mod)
         heads = ([-1] + [arc_head(arc) for arc in labels])
         return DependencyParse(heads)
 
     def potentials(self, hypergraph, scorer, problem):
-        # for node in hypergraph.vertices:
-        #     print node.label
         n = problem.size + 1
-        hasher = ph.SizedTupleHasher([3, 2, n, n])
-        scores = np.zeros(len(hypergraph.edges))
+        print len(hypergraph.nodes)
+        print len(hypergraph.edges)
+
+        scores = np.zeros([len(hypergraph.edges)])
         for edge_num, label in hypergraph.head_labels():
-            typ, d, s, t = label
+            typ, d, s, t = label.unpack()
             if typ != Trap: continue
             if d == Left: s, t = t, s
             scores[edge_num] = scorer.arc_scores[s][t]
@@ -309,10 +303,13 @@ class DependencyDecoder(decoding.HypergraphDecoder):
                 # score(edge) for edge in hypergraph.edges])
 
 class FirstOrderDecoder(DependencyDecoder):
+    def potentials(self, hypergraph, scorer, problem):
+        return ph.LogViterbiPotentials(hypergraph).from_array(self.data)
+
     """
     First-order dependency parsing.
     """
-    def dynamic_program(self, c, problem):
+    def dynamic_program(self, c, problem, scorer):
         """
         Parameters
         -----------
@@ -325,19 +322,20 @@ class FirstOrderDecoder(DependencyDecoder):
           The finished chart.
         """
         n = problem.size + 1
-        hasher = ph.SizedTupleHasher([3, 2, n, n])
+        q = ph.Quartet
+        num_edges = 4 * n ** 3
+        hasher = ph.QuartetHasher(q(kShapes, kDir, n, n))
+        c.set_expected_size(hasher.max_size(), num_edges, max_arity=2)
         c.set_hasher(hasher)
-        # print hasher((1,2,1, 1))
+        self.data = np.zeros([num_edges])
+        c.set_data(self.data)
 
         # Add terminal nodes.
-
         for s in range(n):
             for d in [Right, Left]:
-                for sh in [Trap, Tri]:
-                    c.init(NodeType(sh, d, s, s))
+                for sh in [Tri]:
+                    c.init(q(sh, d, s, s))
 
-        # id = lambda a, b: a
-        # c = defaultdict(lambda :0)
         for k in range(1, n):
             for s in range(n):
                 t = k + s
@@ -345,30 +343,34 @@ class FirstOrderDecoder(DependencyDecoder):
 
                 # First create incomplete items.
                 if s != 0:
-                    arc = Arc(t, s)
-                    c.set(NodeType(Trap, Left, s, t),
-                          [(((Tri, Right, s, r), (Tri, Left, r+1, t)), arc)
-                           for r in range(s, t)])
+                    arc_score = scorer.arc_score(t, s)
+                    c.set(q(Trap, Left, s, t),
+                          [((q(Tri, Right, s, r),
+                             q(Tri, Left, r+1, t)), arc_score)
+                           for r in xrange(s, t)])
 
-                arc = Arc(s, t)
-                c.set(NodeType(Trap, Right, s, t),
-                      [(((Tri, Right, s, r), (Tri, Left, r+1, t)), arc)
-                       for r in range(s, t)])
+                arc_score = scorer.arc_score(s, t)
+                c.set(q(Trap, Right, s, t),
+                      [((q(Tri, Right, s, r),
+                         q(Tri, Left, r+1, t)), arc_score)
+                       for r in xrange(s, t)])
 
                 if s != 0:
-                    c.set(NodeType(Tri, Left, s, t),
-                          [(((Tri, Left, s, r), (Trap, Left, r, t)), None)
-                           for r in range(s, t)])
+                    c.set(q(Tri, Left, s, t),
+                          [((q(Tri, Left, s, r),
+                             q(Trap, Left, r, t)), 0.0)
+                           for r in xrange(s, t)])
 
-                c.set(NodeType(Tri, Right, s, t),
-                      [(((Trap, Right, s, r), (Tri, Right, r, t)), None)
-                       for r in range(s + 1, t + 1)])
+                c.set(q(Tri, Right, s, t),
+                      [((q(Trap, Right, s, r),
+                         q(Tri, Right, r, t)), 0.0)
+                       for r in xrange(s + 1, t + 1)])
 
 
 class SecondOrderDecoder(DependencyDecoder):
     def dynamic_program(self, c, problem):
         n = problem.size + 1
-        hasher = ph.SizedTupleHasher([3, 2, n, n])
+        # hasher = ph.SizedTupleHasher([3, 2, n, n])
         c.set_hasher(hasher)
 
         # Initialize the chart.

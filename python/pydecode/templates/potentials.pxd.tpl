@@ -147,6 +147,15 @@ cdef class {{S.type}}Value:
 
 {% endfor %}
 
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h":
+    CHyperpath *ccount_constrained_viterbi "count_constrained_viterbi<LogViterbiPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphLogViterbiPotentials theta,
+        const CHypergraphCountingPotentials count,
+        int limit) except +
+
+
 cdef extern from "Hypergraph/Potentials.h":
     void cpairwise_dot "pairwise_dot"(
         const CHypergraphSparseVectorPotentials sparse_potentials,

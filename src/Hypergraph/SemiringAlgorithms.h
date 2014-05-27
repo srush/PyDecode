@@ -114,6 +114,13 @@ void general_viterbi(
     Chart<SemiringType> *chart,
     BackPointers *back);
 
+template<typename S>
+Hyperpath *count_constrained_viterbi(
+    const Hypergraph *graph,
+    const HypergraphPotentials<S> &weight_potentials,
+    const HypergraphPotentials<CountingPotential> &count_potentials,
+    int limit);
+
 template<typename SemiringType>
 class Marginals {
     typedef SemiringType S;

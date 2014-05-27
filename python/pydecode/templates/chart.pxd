@@ -9,9 +9,22 @@ cdef class DPChartBuilder:
     cdef bool _debug
     cdef bool _strict
     cdef _hasher
-
-
+    cdef int _max_arity
+    cdef _data
 
 cdef class SizedTupleHasher:
     cdef vector[int] _multipliers
     cdef int _max_size
+    cdef _np_multi
+    cpdef hasher(self, t)
+
+cdef class Quartet:
+    cdef int a
+    cdef int b
+    cdef int c
+    cdef int d
+
+cdef class QuartetHash:
+    cdef Quartet _multipliers
+    cdef int _max_size
+    cpdef int hasher(self, Quartet t)

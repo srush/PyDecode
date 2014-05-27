@@ -17,6 +17,7 @@ cdef extern from "Hypergraph/Hypergraph.h":
 
     cdef cppclass CHypergraph "Hypergraph":
         CHypergraph(bool)
+        void set_expected_size(int, int, int)
         const CHypernode *root()
         int tail_nodes(int)
         const CHypernode *tail_node(int, int)
@@ -27,9 +28,11 @@ cdef extern from "Hypergraph/Hypergraph.h":
         int id()
         int new_id(int)
         int add_edge(vector[const CHypernode *]) except +
-        void finish() except +
+        void finish(bool reconstruct) except +
         vector[const CHypernode *] nodes()
         vector[int ] edges()
+
+
 
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,

@@ -720,6 +720,24 @@ def pairwise_dot(SparseVectorPotentials potentials,
         rvec.push_back(<double>i)
     cpairwise_dot(deref(potentials.thisptr), rvec, weights.thisptr)
 
+
+def count_constrained_viterbi(Hypergraph graph,
+                              LogViterbiPotentials potentials,
+                              CountingPotentials counts,
+                              int limit):
+    """
+    DEPRECATED
+    """
+
+    cdef CHyperpath *path = \
+        ccount_constrained_viterbi(graph.thisptr,
+                                   deref(potentials.thisptr),
+                                   deref(counts.thisptr),
+                                   limit)
+
+    return Path().init(path, graph)
+
+
 def extend_hypergraph_by_count(Hypergraph graph,
                                CountingPotentials potentials,
                                int lower_limit,

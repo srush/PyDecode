@@ -1,4 +1,5 @@
 #cython: embedsignature=True
+
 from cython.operator cimport dereference as deref
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -208,7 +209,7 @@ cdef class GraphBuilder:
         if exception:
             return False
         self.started = False
-        self.thisptr.finish()
+        self.thisptr.finish(True)
         final_edge_labels = [None] * self.thisptr.edges().size()
         final_node_labels = [None] * self.thisptr.nodes().size()
 
