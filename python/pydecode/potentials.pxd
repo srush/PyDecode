@@ -174,6 +174,7 @@ cdef class SizedTupleHasher:
     cdef _np_multi
     cpdef hasher(self, t)
 
+cdef make_quartet(int a, int b, int c, int d)
 cdef class Quartet:
     cdef int a
     cdef int b

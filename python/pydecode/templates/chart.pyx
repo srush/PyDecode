@@ -124,6 +124,8 @@ cdef class DPChartBuilder:
         return deref(self._chart)[h] != NULL
 
 
+cdef make_quartet(int a, int b, int c, int d):
+    return Quartet(a, b, c, d)
 
 cdef class Quartet:
     def __cinit__(self, int a, int b, int c, int d):
