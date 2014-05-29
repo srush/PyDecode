@@ -17,6 +17,15 @@ semirings:
       Real-valued max log-probability potentials.
 
       Uses the operations :math:`(+, *) = (\max, *)`.
+
+  - type: LogProb
+    cvalue: double
+    format: d
+    npvalue: np.double
+    viterbi: False
+    description:
+      Real-valued inside log-probability potentials.
+
   - type: Inside
     cvalue: double
     npvalue: np.double

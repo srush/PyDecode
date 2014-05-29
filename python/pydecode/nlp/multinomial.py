@@ -56,17 +56,18 @@ def em(distribution_table, label_map, hypergraph, base=None,
 
     ll = []
     for i in range(epochs):
-        potentials = ph.InsidePotentials(hypergraph).from_array(
-            base_potentials * distribution_table.to_array(hypergraph, label_map))
+        print "epoch:", i
+        potentials = ph.LogProbPotentials(hypergraph).from_array(
+            base_potentials + np.log(distribution_table.to_array(hypergraph, label_map)))
 
-
+        print "start"
         margs = ph.compute_marginals(hypergraph, potentials)
-
+        print "stop"
         for node in hypergraph.nodes:
             distribution_table.inc(
                 label_map(node.label),
-                margs[node] / margs[hypergraph.root])
+                math.exp(margs[node] - margs[hypergraph.root]))
         distribution_table.reestimate()
-        print math.log(margs[hypergraph.root])
+        print margs[hypergraph.root]
         ll.append(margs[hypergraph.root])
     return ll

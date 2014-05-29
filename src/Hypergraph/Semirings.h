@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 #include <set>
+#include <cmath>
 
 #include "Hypergraph/Factory.h"
 #include "Hypergraph/Hypergraph.h"
@@ -77,6 +78,7 @@ class LogViterbiPotential : public ViterbiPotential {
     static inline ValType randValue() { return dRand(-INF, 0.0); }
 };
 
+
 class InsidePotential : public ViterbiPotential {
   public:
     static inline ValType add(ValType lhs, const ValType &rhs) {
@@ -88,6 +90,42 @@ class InsidePotential : public ViterbiPotential {
         lhs += rhs;
         return InsidePotential::normalize(lhs);
     }
+};
+
+
+class LogProbPotential : public ViterbiPotential {
+  public:
+    static inline ValType times(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return lhs;
+    }
+    static inline ValType zero() { return -INF; }
+    static inline ValType one() { return 0.0; }
+
+    static inline ValType add(ValType lhs, const ValType &rhs) {
+        ValType pi = max(lhs, rhs);
+        ValType pi2 = min(lhs, rhs);
+        lhs = pi + log(1 + exp(pi2 - pi));
+        return lhs;
+    }
+
+    static inline ValType safe_add(ValType lhs, const ValType &rhs) {
+        ValType pi = max(lhs, rhs);
+        ValType pi2 = min(lhs, rhs);
+        lhs = pi + log(1 + exp(pi2 - pi));
+        return LogProbPotential::normalize(lhs);
+    }
+    static inline ValType safe_times(ValType lhs, const ValType &rhs) {
+        lhs += rhs;
+        return LogProbPotential::normalize(lhs);
+    }
+
+
+    static inline ValType &normalize(ValType &val) {
+        return val = val < -INF ? -INF : val;
+    }
+
+    static inline ValType randValue() { return dRand(-INF, 0.0); }
 };
 
 class RealPotential {
@@ -474,7 +512,7 @@ class BinaryVectorPotential {
 class AlphabetPotential {
   public:
     typedef vector<int> ValType;
-    static const int kSize = 26;
+    static const int kSize = 54;
     static inline ValType add(ValType lhs, const ValType& rhs) {
         // not used.
         return lhs;
@@ -513,11 +551,11 @@ class AlphabetPotential {
             if (lhs[i] != -1 && rhs[i] != -1 && lhs[i] != rhs[i]) {
                 return false;
             }
-            for (int j = 0; j < kSize; ++j) {
-                if (i != j && lhs[j] != -1 && rhs[i] != -1 && lhs[j] == rhs[i]) {
-                    return false;
-                }
-            }
+            /* for (int j = 0; j < kSize; ++j) { */
+            /*     if (i != j && lhs[j] != -1 && rhs[i] != -1 && lhs[j] == rhs[i]) { */
+            /*         return false; */
+            /*     } */
+            /* } */
         }
         return true;
     }

@@ -532,6 +532,117 @@ cdef class LogViterbiValue:
 # Type identifiers.
 
 cdef extern from "Hypergraph/SemiringAlgorithms.h":
+    CLogProbChart *inside_LogProb "general_inside<LogProbPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphLogProbPotentials theta) except +
+
+    CLogProbChart *outside_LogProb "general_outside<LogProbPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphLogProbPotentials theta,
+        CLogProbChart inside_chart) except +
+
+    void viterbi_LogProb"general_viterbi<LogProbPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphLogProbPotentials theta,
+        CLogProbChart * chart,
+        CBackPointers *back
+        ) except +
+
+    cdef cppclass CLogProbMarginals "Marginals<LogProbPotential>":
+        double marginal(int edge)
+        double marginal(const CHypernode *node)
+        CHypergraphBoolPotentials *threshold(
+            const double &threshold)
+        const CHypergraph *hypergraph()
+        vector[double] node_marginals()
+
+    cdef cppclass CLogProbChart "Chart<LogProbPotential>":
+        CLogProbChart(const CHypergraph *graph)
+        double get(const CHypernode *node)
+        void insert(const CHypernode& node, const double& val)
+        vector[double] chart()
+
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<LogProbPotential>":
+    CLogProbMarginals *LogProb_compute "Marginals<LogProbPotential>::compute" (
+                           const CHypergraph *hypergraph,
+                           const CHypergraphLogProbPotentials *potentials)
+
+cdef extern from "Hypergraph/Semirings.h":
+    cdef cppclass LogProbPotential:
+        pass
+
+
+cdef extern from "Hypergraph/Potentials.h":
+    cdef cppclass CHypergraphLogProbPotentials "HypergraphPotentials<LogProbPotential>":
+        double dot(const CHyperpath &path) except +
+        double score(int edge)
+        CHypergraphLogProbPotentials *times(
+            const CHypergraphLogProbPotentials &potentials)
+        CHypergraphLogProbPotentials *project_potentials(
+            const CHypergraphMap)
+        CHypergraphLogProbPotentials(
+            const CHypergraph *hypergraph,
+            const vector[double] potentials,
+            double bias) except +
+        double bias()
+        vector[double] &potentials()
+        CHypergraphLogProbPotentials *clone() const
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<LogProbPotential>":
+    CHypergraphLogProbPotentials *cmake_potentials_LogProb "HypergraphSparsePotentials<LogProbPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const c_map.map[int, int] map_potentials,
+        const vector[double] potentials,
+        double bias) except +
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<LogProbPotential>":
+    CHypergraphLogProbPotentials *cmake_potentials_LogProb "HypergraphVectorPotentials<LogProbPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const vector[double] *potentials,
+        double bias,
+        bool copy) except +
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<LogProbPotential>":
+    CHypergraphLogProbPotentials *cmake_projected_potentials_LogProb "HypergraphMappedPotentials<LogProbPotential>::make_potentials" (
+        CHypergraphLogProbPotentials *base_potentials,
+        const CHypergraphMap *projection) except +
+
+
+cdef extern from "Hypergraph/Semirings.h" namespace "LogProbPotential":
+    double LogProb_one "LogProbPotential::one" ()
+    double LogProb_zero "LogProbPotential::zero" ()
+    double LogProb_add "LogProbPotential::add" (double, const double&)
+    double LogProb_times "LogProbPotential::times" (double, const double&)
+    double LogProb_safeadd "LogProbPotential::safe_add" (double, const double&)
+    double LogProb_safetimes "LogProbPotential::safe_times" (double, const double&)
+    double LogProb_normalize "LogProbPotential::normalize" (double&)
+
+
+cdef class LogProbPotentials(Potentials):
+    cdef CHypergraphLogProbPotentials *thisptr
+    cdef HypergraphMap projection
+
+    cdef init(self, CHypergraphLogProbPotentials *ptr,
+              HypergraphMap projection)
+
+    cdef double _bias(self, bias)
+
+cdef class LogProbChart(Chart):
+    cdef CLogProbChart *chart
+    cdef kind
+
+cdef class LogProbValue:
+    cdef double thisval
+    cdef LogProbValue init(self, double val)
+
+
+
+# Type identifiers.
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h":
     CInsideChart *inside_Inside "general_inside<InsidePotential>" (
         const CHypergraph *graph,
         const CHypergraphInsidePotentials theta) except +

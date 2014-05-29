@@ -2070,6 +2070,338 @@ class LogViterbi:
 
 
 
+cdef class LogProbPotentials(Potentials):
+    r"""
+    Real-valued inside log-probability potentials.
+
+    Potentials associated with the edges of a hypergraph.
+
+    Potential vector :math:`\theta \in R^{|{\cal E}|}` associated
+    with a hypergraph.
+
+    Acts as a dictionary::
+
+       >> print potentials[edge]
+
+    """
+
+    def __cinit__(self, Hypergraph graph):
+        """
+        Build the potential vector for a hypergraph.
+
+        :param hypergraph: The underlying hypergraph.
+        """
+        self.hypergraph = graph
+        self.kind = LogProb
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+        self.thisptr = NULL
+
+    def times(self, LogProbPotentials other):
+        cdef CHypergraphLogProbPotentials *new_potentials = \
+            self.thisptr.times(deref(other.thisptr))
+        return LogProbPotentials(self.hypergraph).init(new_potentials, None)
+
+    def clone(self):
+        return LogProbPotentials(self.hypergraph).init(self.thisptr.clone(),
+                                                          None)
+
+    def project(self, Hypergraph graph, HypergraphMap projection):
+        cdef CHypergraphLogProbPotentials *ptr = \
+            self.thisptr.project_potentials(deref(projection.thisptr))
+        return LogProbPotentials(graph).init(ptr, None)
+
+    def up_project(self, Hypergraph graph, HypergraphMap projection):
+        cdef CHypergraphLogProbPotentials *ptr = \
+            cmake_projected_potentials_LogProb(self.thisptr,
+                                                  projection.thisptr)
+        return LogProbPotentials(graph).init(ptr, projection)
+
+    property bias:
+        def __get__(self):
+            return _LogProb_from_cpp(self.thisptr.bias())
+
+    # def build(self, fn, bias=None):
+    #     """
+    #     build(fn)
+
+    #     Build the potential vector for a hypergraph.
+
+    #     :param fn: A function from edge labels to potentials.
+    #     """
+    #     cdef double my_bias
+    #     if bias is None:
+    #         my_bias = LogProb_one()
+    #     else:
+    #         my_bias = _LogProb_to_cpp(bias)
+
+    #     cdef vector[double] potentials = \
+    #          vector[double](self.hypergraph.thisptr.edges().size(),
+    #          LogProb_zero())
+    #     # cdef d result
+    #     for i, ty in enumerate(self.hypergraph.labeling.edge_labels):
+    #         result = fn(ty)
+    #         if result is None: potentials[i] = LogProb_zero()
+    #         potentials[i] = _LogProb_to_cpp(result)
+    #     self.thisptr =  \
+    #         cmake_potentials_LogProb(self.hypergraph.thisptr,
+    #                                    potentials, my_bias)
+    #     return self
+
+    def from_potentials(self, other_potentials):
+        cdef vector[double] *potentials = \
+            new vector[double](self.hypergraph.thisptr.edges().size())
+
+        for i, edge in enumerate(self.hypergraph.edges):
+            deref(potentials)[i] = _LogProb_to_cpp(other_potentials[edge])
+
+        self.thisptr =  \
+            cmake_potentials_LogProb(self.hypergraph.thisptr,
+                                        potentials,
+                                        _LogProb_to_cpp(other_potentials.bias),
+                                        False)
+
+        return self
+
+    def from_vector(self, in_vec, bias=None):
+        cdef double my_bias = self._bias(bias)
+
+        cdef vector[double] *potentials = \
+            new vector[double](self.hypergraph.thisptr.edges().size())
+
+        for i, v in enumerate(in_vec):
+            deref(potentials)[i] = _LogProb_to_cpp(v)
+
+        self.thisptr =  \
+            cmake_potentials_LogProb(self.hypergraph.thisptr,
+                                        potentials,
+                                        my_bias,
+                                        False)
+        return self
+
+    def from_map(self, in_map, bias=None):
+        cdef double my_bias = self._bias(bias)
+        cdef c_map.map[int, int] map_potentials
+        cdef vector[double] potentials = \
+            vector[double](len(in_map))
+
+        for j, (key, v) in enumerate(in_map.iteritems()):
+            map_potentials[key] = j
+            potentials[j] = _LogProb_to_cpp(v)
+
+        self.thisptr =  \
+            cmake_potentials_LogProb(self.hypergraph.thisptr,
+                                        map_potentials,
+                                        potentials,
+                                        my_bias)
+        return self
+
+    cdef double _bias(self, bias):
+        if bias is None:
+            return LogProb_one()
+        else:
+            return _LogProb_to_cpp(bias)
+
+    
+    def from_array(self, double [:] X,
+                   bias=None):
+        cdef double my_bias = self._bias(bias)
+        cdef int s = self.hypergraph.thisptr.edges().size()
+
+        cdef vector[double] *vec= \
+            new vector[double]()
+        vec.assign(&X[0], (&X[0]) + s)
+
+        self.thisptr =  \
+            cmake_potentials_LogProb(self.hypergraph.thisptr,
+                                        vec, my_bias, False)
+        return self
+
+    def as_array(self):
+        return _LogProbvector_to_numpy(self.thisptr.potentials())
+    
+
+
+    cdef init(self, CHypergraphLogProbPotentials *ptr,
+              HypergraphMap projection):
+        self.thisptr = ptr
+        self.projection = projection
+        return self
+
+    def __getitem__(self, Edge edge not None):
+        return _LogProb_from_cpp(self.thisptr.score(edge.edgeptr))
+
+    def dot(self, Path path not None):
+        r"""
+        Take the dot product with `path` :math:`\theta^{\top} y`.
+        """
+        return _LogProb_from_cpp(self.thisptr.dot(deref(path.thisptr)))
+
+
+cdef class LogProbValue:
+    cdef LogProbValue init(self, double val):
+        self.thisval = val
+        return self
+
+    @staticmethod
+    def from_value(double val):
+        created = LogProbValue()
+        created.thisval = _LogProb_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _LogProb_from_cpp(LogProb_zero())
+
+    @staticmethod
+    def one_raw():
+        return _LogProb_from_cpp(LogProb_one())
+
+    @staticmethod
+    def zero():
+        return LogProbValue().init(LogProb_zero())
+
+    @staticmethod
+    def one():
+        return LogProbValue().init(LogProb_one())
+
+    def __add__(LogProbValue self, LogProbValue other):
+        return LogProbValue().init(LogProb_add(self.thisval,
+                                                  other.thisval))
+
+    def __mul__(LogProbValue self, LogProbValue other):
+        return LogProbValue().init(LogProb_times(self.thisval,
+                                                    other.thisval))
+
+    property value:
+        def __get__(self):
+            return _LogProb_from_cpp(self.thisval)
+
+
+cdef double _LogProb_to_cpp(double val):
+    return val
+
+
+cdef _LogProb_from_cpp(double val):
+    
+    return val
+    
+
+
+
+cdef class LogProbChart(Chart):
+    def __init__(self, Hypergraph graph=None):
+        self.kind = LogProb
+        self.chart = NULL
+        if graph is not None:
+            self.chart = new CLogProbChart(graph.thisptr)
+
+    def __getitem__(self, Vertex node):
+        return _LogProb_from_cpp(self.chart.get(node.nodeptr))
+
+    def __dealloc__(self):
+        del self.chart
+        self.chart = NULL
+
+    
+    def as_array(self):
+        return _LogProbvector_to_numpy(self.chart.chart())
+    
+
+
+cdef _LogProbvector_to_numpy(const vector[double] &vec):
+    cdef view.array my_array = \
+        view.array(shape=(vec.size(),),
+                   itemsize=sizeof(double),
+                   format="d",
+                   mode="c", allocate_buffer=False)
+    my_array.data = <char *> vec.data()
+    cdef double [:] my_view = my_array
+    return np.asarray(my_view)
+
+
+cdef class _LogProbMarginals(Marginals):
+    cdef const CLogProbMarginals *thisptr
+    cdef Hypergraph graph
+
+    def __init__(self):
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    cdef init(self, const CLogProbMarginals *ptr, Hypergraph graph):
+        self.thisptr = ptr
+        self.graph = graph
+        return self
+
+    def __getitem__(self, obj):
+        if isinstance(obj, Edge):
+            return _LogProb_from_cpp(
+                self.thisptr.marginal((<Edge>obj).edgeptr))
+        elif isinstance(obj, Vertex):
+            return _LogProb_from_cpp(
+                self.thisptr.marginal((<Vertex>obj).nodeptr))
+        else:
+            raise HypergraphAccessException(
+                "Only nodes and edges have LogProb marginal values." +
+                "Passed %s." % obj)
+
+    
+    def as_array(self):
+        return _LogProbvector_to_numpy(self.thisptr.node_marginals())
+    
+
+
+    
+
+
+class LogProb:
+    Chart = LogProbChart
+    Marginals = _LogProbMarginals
+    #Semi = _LogProb
+    Potentials = LogProbPotentials
+
+    @staticmethod
+    def inside(Hypergraph graph,
+               LogProbPotentials potentials):
+        cdef LogProbChart chart = LogProbChart()
+        chart.chart = inside_LogProb(graph.thisptr,
+                                        deref(potentials.thisptr))
+        return chart
+
+    @staticmethod
+    def outside(Hypergraph graph,
+                LogProbPotentials potentials,
+                LogProbChart inside_chart):
+        cdef LogProbChart out_chart = LogProbChart()
+        out_chart.chart = outside_LogProb(graph.thisptr,
+                                             deref(potentials.thisptr),
+                                             deref(inside_chart.chart))
+        return out_chart
+
+    
+
+    @staticmethod
+    def compute_marginals(Hypergraph graph,
+                          LogProbPotentials potentials):
+        cdef const CLogProbMarginals *marginals = \
+            LogProb_compute(graph.thisptr, potentials.thisptr)
+        return _LogProbMarginals().init(marginals, graph)
+
+    @staticmethod
+    def prune_hypergraph(Hypergraph graph,
+                         LogProbPotentials potentials,
+                         threshold):
+        marginals = compute_marginals(graph, potentials)
+        bool_potentials = marginals.threshold(threshold)
+        return make_pruning_projections(graph, bool_potentials)
+
+
+
+
 cdef class InsidePotentials(Potentials):
     r"""
     Real-valued probability potentials.
