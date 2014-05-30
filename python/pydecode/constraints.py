@@ -57,6 +57,7 @@ class Constraints:
                 constraint = self.by_label[name]
                 semi.append((constraint, coeff))
                 self.all_constraints[constraint].append((coeff, edge))
+            semi.sort()
             final.append(semi)
 
         self.potentials.from_vector(final, bias=self.bias)

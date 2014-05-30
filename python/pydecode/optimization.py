@@ -145,7 +145,6 @@ class ConstrainedHypergraphSubgradientGenerator:
         subgradient = np.zeros(len(x))
         for i, j in constraint_vector:
             subgradient[i] = j
-
         return path, subgradient, dual_score
 
 
