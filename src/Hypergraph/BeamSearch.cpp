@@ -441,10 +441,31 @@ void BeamChart<BVP>::finish(int group) {
     assert(group == current_group_);
     Beam *b = beam_[group];
     int beam_size = groups_->group_limit(group);
+
+    int size = min(static_cast<int>(b->size()), beam_size);
+    vector<bool> seen(size, false);
+
     typename Beam::iterator iter = b->begin();
-    for (int i = 0; i < min(static_cast<int>(b->size()), beam_size); ++i) {
-        BeamPointers &bp = beam_nodes_[iter->node->id()];
-        bp.push_back(&(*iter));
+    for (int i = 0; i < size; ++i) {
+        typename Beam::iterator iter2 = b->begin();
+        for (int j = 0; j < size; ++j) {
+
+            if (j > i &&
+                iter->node == iter2->node &&
+                iter->sig == iter2->sig) {
+                seen[j] = true;
+            }
+            iter2++;
+        }
+        iter++;
+    }
+
+    iter = b->begin();
+    for (int i = 0; i < size; ++i) {
+        if (!seen[i]) {
+            BeamPointers &bp = beam_nodes_[iter->node->id()];
+            bp.push_back(&(*iter));
+        }
         iter++;
     }
     current_group_++;

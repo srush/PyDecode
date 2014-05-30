@@ -518,6 +518,11 @@ class AlphabetPotential {
         return lhs;
     }
 
+    /* static inline bool equals(const ValType &lhs, const ValType &rhs) { */
+    /*     // not used. */
+    /*     return lhs; */
+    /* } */
+
     static inline ValType times(ValType value, const ValType& rhs) {
         for (int i = 0; i < kSize; ++i) {
             if (rhs[i] != -1)
@@ -560,6 +565,7 @@ class AlphabetPotential {
         return true;
     }
 };
+
 
 
 bool valid_binary_vectors(const bitset<BITMAPSIZE> &lhs,
