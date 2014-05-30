@@ -168,7 +168,7 @@ def polyak(t, f_x, f_x_best, g):
       Current subgradient vector.
     """
     if norm(g * g) > 0:
-        return (f_x - f_x_best + 1.0/(t+1)) / (g * g)
+        return (f_x - f_x_best) / norm(g * g) ** 2
     else:
         return 0.0
 
