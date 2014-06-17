@@ -13,7 +13,7 @@ from libcpp cimport bool
 #from libhypergraph cimport *
 #import libhypergraph as py_hypergraph
 
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
+cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CBackPointers "BackPointers":
         CBackPointers(CHypergraph *graph)
         int get(const CHypernode *node)
@@ -38,7 +38,7 @@ cdef class _Potentials:
 
 # Type identifiers.
 
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
+cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     void inside_{{S.type}} "general_inside<{{S.ctype}}>" (
         const CHypergraph *graph,
         const CHypergraph{{S.type}}Potentials theta,
@@ -88,17 +88,17 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
 cdef convert_to_sparse(vector[int] positions)
 cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
 
-# cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<{{S.ctype}}>":
+# cdef extern from "Hypergraph/SemiringAlgorithms.hh" namespace "Marginals<{{S.ctype}}>":
 #     C{{S.type}}Marginals *{{S.type}}_compute "Marginals<{{S.ctype}}>::compute" (
 #                            const CHypergraph *hypergraph,
 #                            const CHypergraph{{S.type}}Potentials *potentials)
 
-# cdef extern from "Hypergraph/Semirings.h":
+# cdef extern from "Hypergraph/Semirings.hh":
 #     cdef cppclass {{S.ctype}}:
 #         pass
 
 
-cdef extern from "Hypergraph/Potentials.h":
+cdef extern from "Hypergraph/Potentials.hh":
     cdef cppclass CHypergraph{{S.type}}Potentials "HypergraphPotentials<{{S.ctype}}>":
         {{S.cvalue}} dot(const CHyperpath &path) except +
         {{S.cvalue}} score(int edge)
@@ -114,31 +114,31 @@ cdef extern from "Hypergraph/Potentials.h":
         CHypergraph{{S.type}}Potentials *clone() const
 
 
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<{{S.ctype}}>":
+cdef extern from "Hypergraph/Potentials.hh" namespace "HypergraphSparsePotentials<{{S.ctype}}>":
     CHypergraph{{S.type}}Potentials *cmake_potentials_{{S.type}} "HypergraphSparsePotentials<{{S.ctype}}>::make_potentials" (
         const CHypergraph *hypergraph,
         const c_map.map[int, int] map_potentials,
         const vector[{{S.cvalue}}] potentials) except +
 
 
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<{{S.ctype}}>":
+cdef extern from "Hypergraph/Potentials.hh" namespace "HypergraphVectorPotentials<{{S.ctype}}>":
     CHypergraph{{S.type}}Potentials *cmake_potentials_{{S.type}} "HypergraphVectorPotentials<{{S.ctype}}>::make_potentials" (
         const CHypergraph *hypergraph,
         const vector[{{S.cvalue}}] *potentials,
         bool copy) except +
 
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphPointerPotentials<{{S.ctype}}>":
+cdef extern from "Hypergraph/Potentials.hh" namespace "HypergraphPointerPotentials<{{S.ctype}}>":
     CHypergraph{{S.type}}Potentials *cmake_pointer_potentials_{{S.type}} "HypergraphPointerPotentials<{{S.ctype}}>::make_potentials" (
         const CHypergraph *hypergraph,
         {{S.cvalue}} *potentials) except +
 
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<{{S.ctype}}>":
+cdef extern from "Hypergraph/Potentials.hh" namespace "HypergraphMappedPotentials<{{S.ctype}}>":
     CHypergraph{{S.type}}Potentials *cmake_projected_potentials_{{S.type}} "HypergraphMappedPotentials<{{S.ctype}}>::make_potentials" (
         CHypergraph{{S.type}}Potentials *base_potentials,
         const CHypergraphMap *projection) except +
 
 
-cdef extern from "Hypergraph/Semirings.h" namespace "{{S.ctype}}":
+cdef extern from "Hypergraph/Semirings.hh" namespace "{{S.ctype}}":
     {{S.cvalue}} {{S.type}}_one "{{S.ctype}}::one" ()
     {{S.cvalue}} {{S.type}}_zero "{{S.ctype}}::zero" ()
     {{S.cvalue}} {{S.type}}_add "{{S.ctype}}::add" ({{S.cvalue}}, const {{S.cvalue}}&)
@@ -168,7 +168,7 @@ cdef class {{S.type}}Value:
 {% endfor %}
 
 
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
+cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     CHyperpath *ccount_constrained_viterbi "count_constrained_viterbi<LogViterbiPotential>" (
         const CHypergraph *graph,
         const CHypergraphLogViterbiPotentials theta,
@@ -176,18 +176,18 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         int limit) except +
 
 
-# cdef extern from "Hypergraph/Potentials.h":
+# cdef extern from "Hypergraph/Potentials.hh":
 #     void cpairwise_dot "pairwise_dot"(
 #         const CHypergraphSparseVectorPotentials sparse_potentials,
 #         const vector[double] vec,
 #         CHypergraphLogViterbiPotentials *)
 
-# cdef extern from "Hypergraph/Semirings.h":
+# cdef extern from "Hypergraph/Semirings.hh":
 #     bool cvalid_binary_vectors "valid_binary_vectors" (cbitset lhs,
 #                                                        cbitset rhs)
 
 
-cdef extern from "Hypergraph/Algorithms.h":
+cdef extern from "Hypergraph/Algorithms.hh":
     CHypergraphMap *cextend_hypergraph_by_count "extend_hypergraph_by_count" (
         CHypergraph *graph,
         CHypergraphCountingPotentials potentials,

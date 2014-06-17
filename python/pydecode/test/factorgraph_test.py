@@ -1,5 +1,5 @@
-import pydecode.factorgraph as fg
-import pydecode.hyper as ph
+import pydecode.ext.factorgraph as fg
+import pydecode
 import random
 import numpy as np
 
@@ -20,11 +20,11 @@ def make_simple_factor_graph():
     return graph
 
 def make_hypergraph_factor_graph():
-    hypergraph = ph.make_lattice(2, 3, [[0, 1 ,2]] * 3)
+    hypergraph = pydecode.make_lattice(2, 3, [[0, 1 ,2]] * 3)
 
-    weights = ph.LogViterbiPotentials(hypergraph) \
+    weights = pydecode.LogViterbiPotentials(hypergraph) \
         .from_array(np.random.random(len(hypergraph.edges)))
-    labels_pot = ph.SparseVectorPotentials(hypergraph) \
+    labels_pot = pydecode.SparseVectorPotentials(hypergraph) \
         .from_vector([[(edge.tail[0].label.i, edge.tail[0].label.j + 1)]
                       for edge in hypergraph.edges])
 
@@ -41,12 +41,12 @@ def make_hypergraph_factor_graph():
     return graph
 
 def make_decipher_factorgraph():
-    hypergraph = ph.make_lattice(5, 3, [[0, 1 ,2]] * 3)
+    hypergraph = pydecode.make_lattice(5, 3, [[0, 1 ,2]] * 3)
 
-    weights = ph.LogViterbiPotentials(hypergraph) \
+    weights = pydecode.LogViterbiPotentials(hypergraph) \
         .from_array(np.random.random(len(hypergraph.edges)))
 
-    labels_pot = ph.SparseVectorPotentials(hypergraph) \
+    labels_pot = pydecode.SparseVectorPotentials(hypergraph) \
         .from_vector([[(edge.tail[0].label.i, edge.tail[0].label.j + 1)]
                       for edge in hypergraph.edges])
 

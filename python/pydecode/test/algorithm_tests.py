@@ -1,4 +1,4 @@
-import pydecode.hyper as ph
+import pydecode
 import pydecode.test.utils as utils
 from collections import defaultdict
 import nose.tools as nt
@@ -27,14 +27,14 @@ def check_best_path_matrix(graph):
     Test viterbi path finding using matrix representation.
     """
     scores = numpy.random.random(len(graph.edges))
-    path = ph.best_path(graph, scores)
+    path = pydecode.best_path(graph, scores)
     path.v
 
 def check_best_path(graph, max_potentials):
     """
     Test viterbi path finding.
     """
-    path = ph.best_path(graph, max_potentials)
+    path = pydecode.best_path(graph, max_potentials)
     nt.assert_not_equal(max_potentials.T * path.v, 0.0)
     utils.valid_path(graph, path)
     same = False
@@ -49,7 +49,7 @@ def check_inside(graph, pot):
     """
     Test inside chart gen.
     """
-    inside = ph.inside(graph, pot)
+    inside = pydecode.inside(graph, pot)
 
 
 def check_outside(graph, pot):
@@ -57,15 +57,15 @@ def check_outside(graph, pot):
     Test outside chart properties.
     """
     print graph
-    path = ph.best_path(graph, pot)
-    chart = ph.inside(graph, pot)
+    path = pydecode.best_path(graph, pot)
+    chart = pydecode.inside(graph, pot)
     print pot.shape, path.v.shape
     best = pot.T * path.v
     print best
     nt.assert_almost_equal(best, chart[graph.root.id])
     nt.assert_not_equal(best, 0.0)
 
-    out_chart = ph.outside(graph, pot, chart)
+    out_chart = pydecode.outside(graph, pot, chart)
 
     # Array-form
     for vertex in graph.vertices:
@@ -95,7 +95,7 @@ def check_posteriors(graph, pot):
     Check the posteriors by enumeration.
     """
 
-    node_marg = ph.marginals(graph, pot)
+    node_marg = pydecode.marginals(graph, pot)
 
     paths = utils.all_paths(graph)
     m = defaultdict(lambda: 0.0)
@@ -121,14 +121,14 @@ def check_max_marginals(graph, pot):
     Test that max-marginals are correct.
     """
 
-    path = ph.best_path(graph, pot)
+    path = pydecode.best_path(graph, pot)
     best = pot.T * path.v
     # print "BEST"
     # print "\n".join(["%20s : %s" % (edge.label, pot[edge.id])
     #                  for edge in path.edges])
     # print best
     nt.assert_not_equal(best, 0.0)
-    max_marginals = ph.marginals(graph, pot)
+    max_marginals = pydecode.marginals(graph, pot)
 
     # Array-form.
     for node in graph.nodes:
@@ -150,12 +150,12 @@ def check_semirings(graph):
     weights = [10.0] * len(graph.edges)
     weights2 = [0.5] * len(graph.edges)
     potentials = np.array(weights)
-    node_marg, edge_marg = ph.marginals(graph, potentials, kind=ph.Viterbi)
+    node_marg, edge_marg = pydecode.marginals(graph, potentials, kind=pydecode.Viterbi)
 
     log_potentials = np.array(weights)
     potentials = np.array(weights)
-    chart = ph.inside(graph, log_potentials)
-    chart2 = ph.inside(graph, potentials)
+    chart = pydecode.inside(graph, log_potentials)
+    chart2 = pydecode.inside(graph, potentials)
 
     # Array-form.
     for node in graph.nodes:
@@ -166,8 +166,8 @@ def check_semirings(graph):
         chart, chart2, decimal=4)
 
 
-    marg = ph.marginals(graph, log_potentials)
-    marg2 = ph.marginals(graph, potentials)
+    marg = pydecode.marginals(graph, log_potentials)
+    marg2 = pydecode.marginals(graph, potentials)
 
     for edge in graph.edges:
         nt.assert_almost_equal(marg[1][edge.id], marg2[1][edge.id])

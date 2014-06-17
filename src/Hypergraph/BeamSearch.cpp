@@ -9,7 +9,7 @@
 #include <vector>
 #include <queue>
 #include "./common.h"
-#include "Hypergraph/Semirings.h"
+#include "Hypergraph/Semirings.hh"
 #include <boost/intrusive/rbtree.hpp>
 
 using namespace boost::intrusive;
@@ -429,7 +429,6 @@ void BeamChart<BVP>::insert(HNode node,
         b->erase(iter.base());
         // Pruned;
         exact = false;
-
     }
 
     // iter = lower_bound(b.begin(), b.end(), element, comp<BVP>);

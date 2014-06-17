@@ -14,7 +14,7 @@ cdef class Bitset:
     cdef cbitset data
     cdef init(self, cbitset data)
 
-cdef extern from "Hypergraph/BeamSearch.h":
+cdef extern from "Hypergraph/BeamSearch.hh":
 
     cdef cppclass CBeamGroups "BeamGroups":
         CBeamGroups(const CHypergraph *graph,
@@ -24,7 +24,7 @@ cdef extern from "Hypergraph/BeamSearch.h":
 
 {% for S in semirings %}
 
-cdef extern from "Hypergraph/BeamSearch.h" namespace "BeamChart<{{S.type}}>":
+cdef extern from "Hypergraph/BeamSearch.hh" namespace "BeamChart<{{S.type}}>":
     cdef cppclass CBeamHyp{{S.type}} "BeamChart<{{S.type}}>::BeamHyp":
         {{S.cvalue}} sig
         double current_score
@@ -49,7 +49,7 @@ cdef extern from "Hypergraph/BeamSearch.h" namespace "BeamChart<{{S.type}}>":
             bool recombine) except +
 
 
-cdef extern from "Hypergraph/BeamSearch.h":
+cdef extern from "Hypergraph/BeamSearch.hh":
     cdef cppclass CBeamChart{{S.type}} "BeamChart<{{S.type}}>":
         CHyperpath *get_path(int result)
         vector[CBeamHyp{{S.type}} *] get_beam(const CHypernode *node)

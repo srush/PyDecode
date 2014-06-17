@@ -17,6 +17,7 @@ cdef class _Potentials:
             return self.kind
 
 
+
 ############# This is the templated semiring part. ##############
 
 {% for S in semirings %}

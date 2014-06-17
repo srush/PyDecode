@@ -2,7 +2,7 @@
 Tests for hypergraph mapping and pruning.
 """
 
-import pydecode.hyper as ph
+import pydecode
 import pydecode.test.utils as utils
 import nose.tools as nt
 import numpy as np
@@ -13,17 +13,17 @@ def test_pruning():
     for h in utils.hypergraphs():
         w = numpy.random.random(len(h.edges))
 
-        original_path = ph.best_path(h, w)
-        marginals = ph.marginals(h, w)
+        original_path = pydecode.best_path(h, w)
+        marginals = pydecode.marginals(h, w)
         best = w.T * original_path.v
         print marginals[1]
         a = np.array(marginals[1] > 0.99* best, dtype=np.int8)
 
-        _, project, new_hyper = ph.project(h, a)
+        _, project, new_hyper = pydecode.project(h, a)
         print project.shape, w.shape
         print project.todense()
         new_potentials = project * w
-        prune_path = ph.best_path(new_hyper, new_potentials)
+        prune_path = pydecode.best_path(new_hyper, new_potentials)
         assert len(original_path.edges) > 0
 
 

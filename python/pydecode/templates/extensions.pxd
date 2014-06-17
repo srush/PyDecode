@@ -1,4 +1,4 @@
-cdef extern from "Hypergraph/Automaton.h":
+cdef extern from "Hypergraph/Automaton.hh":
     cdef cppclass CDFA "DFA":
         CDFA(int num_states, int num_symbols,
             const vector[map[int, int] ] &transition,
@@ -8,7 +8,7 @@ cdef extern from "Hypergraph/Automaton.h":
         int valid_transition(int state, int symbol)
 
 
-cdef extern from "Hypergraph/Algorithms.h":
+cdef extern from "Hypergraph/Algorithms.hh":
     CHypergraph *cmake_lattice "make_lattice"(
         int width, int height,
         const vector[vector[int] ] transitions,

@@ -70,14 +70,14 @@ env.Alias("pytest", [pytests, pytests2])
 env.Command(["python/pydecode/potentials.pyx",],
             ["python/pydecode/templates/potentials.pyx.tpl",
              "python/pydecode/templates/potentials.pxd.tpl",
+             "python/pydecode/templates/chart.pyx.tpl",
+             "python/pydecode/templates/beam.pyx.tpl",
              "python/pydecode/templates/cython_jinja.py"],
             "python python/pydecode/templates/cython_jinja.py")
 
-py_lib = env.Command(["python/pydecode/templates/hyper.so"],
+py_lib = env.Command(["python/pydecode/potentials.so"],
             ["build/debug/src/libdecoding.a",
              "python/pydecode/potentials.pyx",
-             "python/pydecode/templates/libhypergraph.pyx",
-             "python/pydecode/templates/chart.pyx",
-             "python/pydecode/templates/beam.pyx.tpl"],
+             "python/pydecode/templates/libhypergraph.pyx"],
             "CC='ccache g++' python setup.py build_ext --inplace --verbose --cython --debug")
 env.Alias("pylib", [py_lib])

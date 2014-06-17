@@ -1,5 +1,5 @@
 import random
-import pydecode.hyper as ph
+import pydecode
 import pydecode.test.utils as utils
 from collections import defaultdict
 import nose.tools as nt
@@ -15,9 +15,7 @@ def test_main():
 def check_lattice():
     width = random.randint(1, 10)
     height = random.randint(1, 10)
-    lattice = ph.make_lattice(width, height, [range(height) for h in range(height)])
-    lattice.labeling = ph.Labeling(lattice, [1 for node in lattice.nodes])
+    lattice = pydecode.make_lattice(width, height, [range(height) for h in range(height)])
+    lattice.labeling = pydecode.Labeling(lattice, [1 for node in lattice.nodes])
     for node in lattice.nodes:
         assert node.label == 1
-    
-    

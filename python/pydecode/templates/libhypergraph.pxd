@@ -4,7 +4,7 @@ from libcpp.map cimport map
 from libcpp.set cimport set
 from libcpp cimport bool
 
-cdef extern from "Hypergraph/Hypergraph.h":
+cdef extern from "Hypergraph/Hypergraph.hh":
     cdef cppclass CHypernode "Hypernode":
         int id()
         vector[int ] edges()
@@ -78,7 +78,7 @@ cdef class Path:
     cdef Path init(self, const CHyperpath *path, Hypergraph graph)
     cdef public equal(Path self, Path other)
 
-cdef extern from "Hypergraph/Map.h":
+cdef extern from "Hypergraph/Map.hh":
     cdef cppclass CHypergraphMap "HypergraphMap":
         int map(int)
         const CHypernode *map(const CHypernode *node)

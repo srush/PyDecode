@@ -1,8 +1,7 @@
-import pydecode.hyper as ph
+import pydecode
 import random
 import itertools
 from collections import defaultdict
-from pydecode.hyper import EdgeDesc
 import numpy as np
 
 def check_fully_connected(graph):
@@ -75,7 +74,7 @@ def simple_hypergraph():
     Create a simple hypergraph.
     """
 
-    c = ph.ChartBuilder(item_set=ph.IndexSet(10))
+    c = pydecode.ChartBuilder(item_set=pydecode.IndexSet(10))
 
     for i in range(4):
         c[i] = c.init()
@@ -93,7 +92,7 @@ def simple_hypergraph():
 
 
 def complete_hypergraph(size):
-    hypergraph = ph.Hypergraph()
+    hypergraph = pydecode.Hypergraph()
 
 
 def random_hypergraph(size=50):
@@ -109,7 +108,7 @@ def random_hypergraph(size=50):
     # complete_reference_set = range(0, size)
     reference_sets = defaultdict(lambda: set())
 
-    c = ph.ChartBuilder(item_set=ph.IndexSet(2*size))
+    c = pydecode.ChartBuilder(item_set=pydecode.IndexSet(2*size))
 
 
     for i in range(size):
@@ -142,7 +141,7 @@ def chain_hypergraph(size=100):
     graph : Hypergraph
        The chain hypergraph.
     """
-    hypergraph = ph.Hypergraph()
+    hypergraph = pydecode.Hypergraph()
     with hypergraph.builder() as b:
         term = b.add_node()
         last_node = term
@@ -216,7 +215,7 @@ def all_paths(graph):
                 t = [paths(node) for node in edge.tail]
                 for below in itertools.product(*t):
                     yield (edge,) + sum(below, ())
-    paths = [ph.Path(graph, list(edges)) for edges in paths(graph.root)]
+    paths = [pydecode.Path(graph, list(edges)) for edges in paths(graph.root)]
     return paths
 
 
@@ -244,7 +243,7 @@ def random_path(graph):
                 edges += random_path_edges(t)
         return edges
     edges = random_path_edges(graph.root)
-    return ph.Path(graph, edges)
+    return pydecode.Path(graph, edges)
 
 
 # def random_inside_potentials(hypergraph):

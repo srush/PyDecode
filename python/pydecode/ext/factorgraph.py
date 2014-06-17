@@ -1,4 +1,4 @@
-import pydecode.hyper as ph
+import pydecode
 import numpy as np
 import itertools
 
@@ -92,11 +92,11 @@ class HypergraphFactor(Factor):
         s = set(enumerate(labels))
         score = 0.0
 
-        binary = ph.BoolPotentials(self.hypergraph)\
+        binary = pydecode.BoolPotentials(self.hypergraph)\
             .from_vector([1 if all((l in s for l in self.labels[edge])) else 0
                           for edge in self.hypergraph.edges])
 
-        path = ph.best_path(self.hypergraph, binary)
+        path = pydecode.best_path(self.hypergraph, binary)
             # if all((l in s for l in self.labels[edge])):
             #     score += self.weights[edge]
             #     for l in self.labels[edge]:
@@ -107,7 +107,7 @@ class HypergraphFactor(Factor):
         return self.weights.dot(path)
 
     def _reparam(self, reparams):
-        pot = ph.LogViterbiPotentials(self.hypergraph)\
+        pot = pydecode.LogViterbiPotentials(self.hypergraph)\
             .from_vector([sum((reparams[l]
                                for l in self.labels[edge]))
                           for edge in self.hypergraph.edges])
@@ -116,7 +116,7 @@ class HypergraphFactor(Factor):
 
     def argmax(self, reparams):
         new_pot = self._reparam(reparams)
-        path = ph.best_path(self.hypergraph, new_pot)
+        path = pydecode.best_path(self.hypergraph, new_pot)
 
         labels = self.labels.dot(path)
         # for edge in path.edges:
@@ -135,7 +135,7 @@ class HypergraphFactor(Factor):
         new_pot = self._reparam(reparams)
         # print [self.weights[edge] for edge in self.hypergraph.edges]
         # print [new_pot[edge] for edge in self.hypergraph.edges]
-        marginals = ph.compute_marginals(self.hypergraph, new_pot)
+        marginals = pydecode.compute_marginals(self.hypergraph, new_pot)
         mm = np.zeros((self.num_variables, self.max_labels))
 
         best = [-1e9] * self.num_variables

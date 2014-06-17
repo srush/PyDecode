@@ -65,22 +65,22 @@ The toolkit contains a collection of algorithms for working with hypergraphs.
    project
    binarize
 
-Potentials
-============
+.. Potentials
+.. ============
 
-There are several types of potentials implemented.
+.. There are several types of potentials implemented.
 
-.. automodule:: pydecode.potentials
-   :no-members:
-   :no-inherited-members:
+.. .. automodule:: pydecode.potentials
+..    :no-members:
+..    :no-inherited-members:
 
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
+.. .. autosummary::
+..    :toctree: generated/
+..    :template: class.rst
 
-   LogViterbi
-   Inside
-   Bool
+..    LogViterbi
+..    Inside
+..    Bool
 
 
 .. Potentials

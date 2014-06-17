@@ -2,7 +2,7 @@
 Tests for hypergraph construction and basic data structures.
 """
 
-import pydecode.hyper as ph
+import pydecode
 import pydecode.test.utils as utils
 import pydecode.io
 import nose.tools as nt
@@ -73,26 +73,26 @@ def check_serialization(graph):
 def test_diff_potentials_fail():
     h1, w1 = utils.random_hypergraph()
     h2, w2 = utils.random_hypergraph()
-    ph.best_path(h1, w2)
+    pydecode.best_path(h1, w2)
 
 
 @nt.raises(Exception)
 def test_outside_fail():
     h1, w1 = utils.random_hypergraph()
     h2, w2 = utils.random_hypergraph()
-    ph.outside_path(h1, w2)
+    pydecode.outside_path(h1, w2)
 
 
 @nt.raises(Exception)
 def test_builder():
-    h = ph.Hypergraph()
+    h = pydecode.Hypergraph()
     b = h.builder()
     b.add_node([])
 
 
 @nt.raises(Exception)
 def test_bad_edge():
-    h = ph.Hypergraph()
+    h = pydecode.Hypergraph()
     with h.builder() as b:
         n1 = b.add_node()
         b.add_node(([n1],))

@@ -1,5 +1,5 @@
 
-import pydecode.hyper as ph
+import pydecode
 import random
 
 # class SizedTupleHasher:

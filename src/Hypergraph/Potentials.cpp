@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Hypergraph/Potentials.h"
+#include "Hypergraph/Potentials.hh"
 
 #define SPECIALIZE_HYPER_FOR_SEMI(X)\
     template class HypergraphPotentials<X>;\

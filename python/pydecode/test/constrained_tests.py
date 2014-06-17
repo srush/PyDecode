@@ -2,7 +2,7 @@
 Tests for constrained hypergraph optimization.
 """
 
-import pydecode.hyper as ph
+import pydecode
 import pydecode.test.utils as utils
 import nose.tools as nt
 import pydecode.constraints as cons
@@ -57,7 +57,7 @@ def test_subgradient():
     for h in utils.hypergraphs():
         w = numpy.random.random(len(h.edges))
         constraints, edge = random_have_constraint(h)
-        path = ph.best_path(h, w)
+        path = pydecode.best_path(h, w)
         match = constraints.check(path)
         if edge not in path:
             nt.assert_equal(match[0], "have")
@@ -76,7 +76,7 @@ def check_lp(hypergraph):
     g = lp.HypergraphLP.make_lp(hypergraph, w)
     g.solve()
     path = g.path
-    opath = ph.best_path(hypergraph, w)
+    opath = pydecode.best_path(hypergraph, w)
 
     nt.assert_almost_equal(w.T * path.v, w.T * opath.v)
     for edge in path.edges:
@@ -174,7 +174,7 @@ def random_constraint_trans(hypergraph):
 
     def build_variables(label):
         if label == l:
-            b = ph.Bitset()
+            b = pydecode.Bitset()
             b[0] = 1
             return b
         return None
