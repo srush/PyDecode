@@ -16,11 +16,14 @@
     <includedby refid="src_2Hypergraph_2Algorithms_8h" local="yes">src/Hypergraph/Algorithms.h</includedby>
     <includedby refid="src_2Hypergraph_2BeamSearch_8cpp" local="yes">src/Hypergraph/BeamSearch.cpp</includedby>
     <includedby refid="src_2Hypergraph_2BeamSearch_8h" local="yes">src/Hypergraph/BeamSearch.h</includedby>
+    <includedby refid="BeamSearch__flymake_8h" local="yes">src/Hypergraph/BeamSearch_flymake.h</includedby>
     <includedby refid="src_2Hypergraph_2Factory_8h" local="yes">src/Hypergraph/Factory.h</includedby>
     <includedby refid="src_2Hypergraph_2Hypergraph_8h" local="yes">src/Hypergraph/Hypergraph.h</includedby>
+    <includedby refid="Hypergraph__flymake_8h" local="yes">src/Hypergraph/Hypergraph_flymake.h</includedby>
     <includedby refid="src_2Hypergraph_2Potentials_8h" local="yes">src/Hypergraph/Potentials.h</includedby>
     <includedby refid="src_2Hypergraph_2SemiringAlgorithms_8h" local="yes">src/Hypergraph/SemiringAlgorithms.h</includedby>
     <includedby refid="src_2Hypergraph_2Semirings_8h" local="yes">src/Hypergraph/Semirings.h</includedby>
+    <includedby refid="Semirings__flymake_8h" local="yes">src/Hypergraph/Semirings_flymake.h</includedby>
     <includedby refid="src_2Tests_8cpp" local="yes">src/Tests.cpp</includedby>
     <incdepgraph>
       <node id="8">
@@ -45,9 +48,21 @@
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="22">
+      <node id="26">
+        <label>src/Hypergraph/Semirings_flymake.h</label>
+        <link refid="Semirings__flymake_8h_source"/>
+      </node>
+      <node id="23">
         <label>pydecode-0.1.27/src/Hypergraph/Map.h</label>
         <link refid="pydecode-0_81_827_2src_2Hypergraph_2Map_8h_source"/>
+      </node>
+      <node id="28">
+        <label>src/Hypergraph/Hypergraph_flymake.h</label>
+        <link refid="Hypergraph__flymake_8h_source"/>
+      </node>
+      <node id="19">
+        <label>src/Hypergraph/BeamSearch_flymake.h</label>
+        <link refid="BeamSearch__flymake_8h_source"/>
       </node>
       <node id="11">
         <label>pydecode-0.1.27/src/Hypergraph/BeamSearch.h</label>
@@ -57,15 +72,17 @@
         <label>pydecode-0.1.27/src/Hypergraph/Potentials.h</label>
         <link refid="pydecode-0_81_827_2src_2Hypergraph_2Potentials_8h_source"/>
       </node>
-      <node id="19">
+      <node id="20">
         <label>src/Hypergraph/Factory.h</label>
         <link refid="src_2Hypergraph_2Factory_8h_source"/>
         <childnode refid="16" relation="include">
         </childnode>
-        <childnode refid="20" relation="include">
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
         </childnode>
       </node>
-      <node id="20">
+      <node id="21">
         <label>src/Hypergraph/Semirings.h</label>
         <link refid="src_2Hypergraph_2Semirings_8h_source"/>
         <childnode refid="10" relation="include">
@@ -80,9 +97,11 @@
         </childnode>
         <childnode refid="18" relation="include">
         </childnode>
-        <childnode refid="21" relation="include">
+        <childnode refid="19" relation="include">
         </childnode>
-        <childnode refid="24" relation="include">
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
         </childnode>
       </node>
       <node id="12">
@@ -93,7 +112,7 @@
         <label>pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h</label>
         <link refid="pydecode-0_81_827_2src_2Hypergraph_2SemiringAlgorithms_8h_source"/>
       </node>
-      <node id="24">
+      <node id="25">
         <label>src/Hypergraph/SemiringAlgorithms.h</label>
         <link refid="src_2Hypergraph_2SemiringAlgorithms_8h_source"/>
         <childnode refid="10" relation="include">
@@ -108,21 +127,23 @@
         </childnode>
         <childnode refid="18" relation="include">
         </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
       </node>
-      <node id="21">
+      <node id="22">
         <label>src/Hypergraph/Potentials.h</label>
         <link refid="src_2Hypergraph_2Potentials_8h_source"/>
         <childnode refid="10" relation="include">
         </childnode>
-        <childnode refid="22" relation="include">
+        <childnode refid="23" relation="include">
         </childnode>
         <childnode refid="15" relation="include">
         </childnode>
         <childnode refid="17" relation="include">
         </childnode>
-        <childnode refid="23" relation="include">
-        </childnode>
         <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
         </childnode>
       </node>
       <node id="18">
@@ -156,24 +177,30 @@
         </childnode>
         <childnode refid="19" relation="include">
         </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
         <childnode refid="25" relation="include">
         </childnode>
         <childnode refid="21" relation="include">
         </childnode>
-        <childnode refid="24" relation="include">
-        </childnode>
-        <childnode refid="20" relation="include">
+        <childnode refid="26" relation="include">
         </childnode>
       </node>
-      <node id="23">
+      <node id="24">
         <label>src/Hypergraph/Map.h</label>
         <link refid="src_2Hypergraph_2Map_8h_source"/>
         <childnode refid="14" relation="include">
         </childnode>
-        <childnode refid="21" relation="include">
+        <childnode refid="22" relation="include">
         </childnode>
       </node>
-      <node id="25">
+      <node id="27">
         <label>src/Hypergraph/Hypergraph.h</label>
         <link refid="src_2Hypergraph_2Hypergraph_8h_source"/>
         <childnode refid="10" relation="include">
@@ -182,7 +209,7 @@
         </childnode>
         <childnode refid="12" relation="include">
         </childnode>
-        <childnode refid="22" relation="include">
+        <childnode refid="23" relation="include">
         </childnode>
         <childnode refid="14" relation="include">
         </childnode>
@@ -196,13 +223,17 @@
         </childnode>
         <childnode refid="19" relation="include">
         </childnode>
-        <childnode refid="23" relation="include">
-        </childnode>
-        <childnode refid="21" relation="include">
+        <childnode refid="20" relation="include">
         </childnode>
         <childnode refid="24" relation="include">
         </childnode>
-        <childnode refid="20" relation="include">
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
         </childnode>
       </node>
       <node id="10">

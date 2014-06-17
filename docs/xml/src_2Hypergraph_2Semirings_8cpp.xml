@@ -6,23 +6,23 @@
     <includes local="no">utility</includes>
     <includes local="no">vector</includes>
     <incdepgraph>
-      <node id="314">
+      <node id="337">
         <label>Hypergraph/Semirings.h</label>
       </node>
-      <node id="316">
+      <node id="339">
         <label>vector</label>
       </node>
-      <node id="315">
+      <node id="338">
         <label>utility</label>
       </node>
-      <node id="313">
+      <node id="336">
         <label>src/Hypergraph/Semirings.cpp</label>
         <link refid="src/Hypergraph/Semirings.cpp"/>
-        <childnode refid="314" relation="include">
+        <childnode refid="337" relation="include">
         </childnode>
-        <childnode refid="315" relation="include">
+        <childnode refid="338" relation="include">
         </childnode>
-        <childnode refid="316" relation="include">
+        <childnode refid="339" relation="include">
         </childnode>
       </node>
     </incdepgraph>

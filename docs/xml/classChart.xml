@@ -76,11 +76,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="64" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="64" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="65" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="65" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classChart_1a72448cf1c778ed48c5b861eadf56ed10" prot="protected" static="no" mutable="no">
+      <memberdef kind="variable" id="classChart_1a43ea441445632066899bb0b5300df888" prot="protected" static="no" mutable="no">
         <type>vector&lt; V &gt;</type>
-        <definition>vector&lt; V &gt; Chart&lt; SemiringType &gt;::chart_</definition>
+        <definition>vector&lt;V&gt; Chart&lt; SemiringType &gt;::chart_</definition>
         <argsstring></argsstring>
         <name>chart_</name>
         <briefdescription>
@@ -89,7 +89,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="65" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="65" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="66" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classChart_1abb1771b8547011ee5334d477c9edbaa0" prot="protected" static="no" mutable="no">
+        <type>V *</type>
+        <definition>V* Chart&lt; SemiringType &gt;::chart_</definition>
+        <argsstring></argsstring>
+        <name>chart_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="75" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="75" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -197,7 +210,7 @@
         <argsstring>(HEdge edge, const V &amp;start)</argsstring>
         <name>compute_edge_score</name>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>edge</declname>
         </param>
         <param>
@@ -229,6 +242,19 @@
         </inbodydescription>
         <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="57" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="57" bodyend="61"/>
       </memberdef>
+      <memberdef kind="function" id="classChart_1a066a7f054c99f042d172177a4aed6f07" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>vector&lt; V &gt;</type>
+        <definition>vector&lt;V&gt; Chart&lt; SemiringType &gt;::chart</definition>
+        <argsstring>()</argsstring>
+        <name>chart</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="63" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="63" bodyend="63"/>
+      </memberdef>
       <memberdef kind="function" id="classChart_1ae8fc605d95b89e3355bd896c9f0de2cb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>Chart&lt; SemiringType &gt;::Chart</definition>
@@ -244,7 +270,28 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="29" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="27" bodyend="29"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="28" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="27" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classChart_1ae064ab3a5bf284194176733f153992fc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Chart&lt; SemiringType &gt;::Chart</definition>
+        <argsstring>(const Hypergraph *graph, V *chart)</argsstring>
+        <name>Chart</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>V *</type>
+          <declname>chart</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="34" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="33" bodyend="36"/>
       </memberdef>
       <memberdef kind="function" id="classChart_1a691f0be4efa4897cd0181d25b44ceb51" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -257,7 +304,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="31" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="31" bodyend="31"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="38" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="38" bodyend="38"/>
       </memberdef>
       <memberdef kind="function" id="classChart_1a9a1c9bf9445ee0c784d355952315c83d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -270,7 +317,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="33" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="33" bodyend="39"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="40" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="40" bodyend="46"/>
       </memberdef>
       <memberdef kind="function" id="classChart_1a2810c596b2113c0ad439c4df9184a602" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>V</type>
@@ -287,7 +334,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="42" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="42" bodyend="42"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="49" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="49" bodyend="49"/>
       </memberdef>
       <memberdef kind="function" id="classChart_1a1fae81b4fffaa950569e9f066b2fe98d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>V</type>
@@ -304,7 +351,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="44" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="44" bodyend="44"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="51" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="51" bodyend="51"/>
       </memberdef>
       <memberdef kind="function" id="classChart_1ac6347a23ab414796a4dc2985f13a3090" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -325,7 +372,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="45" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="45" bodyend="47"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="52" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="52" bodyend="54"/>
       </memberdef>
       <memberdef kind="function" id="classChart_1a477b3d7f68748df61656a7436154cfb1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>V</type>
@@ -333,7 +380,7 @@
         <argsstring>(HEdge edge, const V &amp;start)</argsstring>
         <name>compute_edge_score</name>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>edge</declname>
         </param>
         <param>
@@ -346,7 +393,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="49" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="49" bodyend="55"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="56" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="56" bodyend="63"/>
       </memberdef>
       <memberdef kind="function" id="classChart_1ac4e257f137cf8f2be63aaaae91ba0c69" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -363,7 +410,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="57" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="57" bodyend="61"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="65" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="65" bodyend="69"/>
+      </memberdef>
+      <memberdef kind="function" id="classChart_1a131be5ba55a98e9cd07a33549856af33" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>V *</type>
+        <definition>V* Chart&lt; SemiringType &gt;::chart</definition>
+        <argsstring>()</argsstring>
+        <name>chart</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="71" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="71" bodyend="71"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -371,23 +431,27 @@
     <detaileddescription>
 <para>A dynamic programming chart for SemiringType. A templated vector over hypergraph nodes. </para>    </detaileddescription>
     <collaborationgraph>
-      <node id="28">
+      <node id="35">
         <label>Chart&lt; SemiringType &gt;</label>
         <link refid="classChart"/>
-        <childnode refid="29" relation="usage">
+        <childnode refid="36" relation="usage">
           <edgelabel>graph_</edgelabel>
         </childnode>
       </node>
-      <node id="29">
+      <node id="36">
         <label>Hypergraph</label>
         <link refid="classHypergraph"/>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="22" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="22" bodyend="66"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="22" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="22" bodyend="67"/>
     <listofallmembers>
       <member refid="classChart_1ae8fc605d95b89e3355bd896c9f0de2cb" prot="public" virt="non-virtual"><scope>Chart</scope><name>Chart</name></member>
       <member refid="classChart_1ae8fc605d95b89e3355bd896c9f0de2cb" prot="public" virt="non-virtual"><scope>Chart</scope><name>Chart</name></member>
-      <member refid="classChart_1a72448cf1c778ed48c5b861eadf56ed10" prot="protected" virt="non-virtual"><scope>Chart</scope><name>chart_</name></member>
+      <member refid="classChart_1ae064ab3a5bf284194176733f153992fc" prot="public" virt="non-virtual"><scope>Chart</scope><name>Chart</name></member>
+      <member refid="classChart_1a066a7f054c99f042d172177a4aed6f07" prot="public" virt="non-virtual"><scope>Chart</scope><name>chart</name></member>
+      <member refid="classChart_1a131be5ba55a98e9cd07a33549856af33" prot="public" virt="non-virtual"><scope>Chart</scope><name>chart</name></member>
+      <member refid="classChart_1a43ea441445632066899bb0b5300df888" prot="protected" virt="non-virtual"><scope>Chart</scope><name>chart_</name></member>
+      <member refid="classChart_1abb1771b8547011ee5334d477c9edbaa0" prot="protected" virt="non-virtual"><scope>Chart</scope><name>chart_</name></member>
       <member refid="classChart_1ac4e257f137cf8f2be63aaaae91ba0c69" prot="public" virt="non-virtual"><scope>Chart</scope><name>check</name></member>
       <member refid="classChart_1ac4e257f137cf8f2be63aaaae91ba0c69" prot="public" virt="non-virtual"><scope>Chart</scope><name>check</name></member>
       <member refid="classChart_1a691f0be4efa4897cd0181d25b44ceb51" prot="public" virt="non-virtual"><scope>Chart</scope><name>clear</name></member>

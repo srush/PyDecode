@@ -1,0 +1,490 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structBeamChart_1_1BeamHyp" kind="struct" prot="public">
+    <compoundname>BeamChart::BeamHyp</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">set_base_hook&lt;&gt;</basecompoundref>
+    <basecompoundref prot="public" virt="non-virtual">set_base_hook&lt;&gt;</basecompoundref>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structBeamChart_1_1BeamHyp_1ae37a995eee04c37a77b52ec09b4954e1" prot="public" static="no" mutable="no">
+        <type>HEdge</type>
+        <definition>HEdge BeamChart&lt; BVP &gt;::BeamHyp::edge</definition>
+        <argsstring></argsstring>
+        <name>edge</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="90" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamChart_1_1BeamHyp_1a4b7cffa9fb310188f885ffa255c0e14e" prot="public" static="no" mutable="no">
+        <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+        <definition>HNode BeamChart&lt; BVP &gt;::BeamHyp::node</definition>
+        <argsstring></argsstring>
+        <name>node</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="91" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamChart_1_1BeamHyp_1af15788794b9956e94dfc556e049742a9" prot="public" static="no" mutable="no">
+        <type>BVP::ValType</type>
+        <definition>BVP::ValType BeamChart&lt; BVP &gt;::BeamHyp::sig</definition>
+        <argsstring></argsstring>
+        <name>sig</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="92" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamChart_1_1BeamHyp_1adc165ebaa76925e4109d63fb85b0e89a" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double BeamChart&lt; BVP &gt;::BeamHyp::current_score</definition>
+        <argsstring></argsstring>
+        <name>current_score</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="93" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamChart_1_1BeamHyp_1aaedb0a6b8886096dcc2b047f8f3899ee" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double BeamChart&lt; BVP &gt;::BeamHyp::future_score</definition>
+        <argsstring></argsstring>
+        <name>future_score</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="94" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamChart_1_1BeamHyp_1acd62d6fca70006b7507eed20b699037f" prot="public" static="no" mutable="no">
+        <type>vector&lt; int &gt;</type>
+        <definition>vector&lt;int&gt; BeamChart&lt; BVP &gt;::BeamHyp::back_position</definition>
+        <argsstring></argsstring>
+        <name>back_position</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="97" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamChart_1_1BeamHyp_1acf9d010de9322ca0ac9df39bca365c21" prot="public" static="no" mutable="no">
+        <type>set_member_hook</type>
+        <definition>set_member_hook BeamChart&lt; BVP &gt;::BeamHyp::member_hook_</definition>
+        <argsstring></argsstring>
+        <name>member_hook_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="84" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamChart_1_1BeamHyp_1a775eb51a085ecacedaefdecba73f1a0f" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double BeamChart&lt; BVP &gt;::BeamHyp::total_score</definition>
+        <argsstring></argsstring>
+        <name>total_score</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="129" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="129" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamChart_1_1BeamHyp_1ac26beeb191f2c7fb7a9da8ffb723cca1" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BeamChart&lt; BVP &gt;::BeamHyp::back_position_left</definition>
+        <argsstring></argsstring>
+        <name>back_position_left</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="132" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="132" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structBeamChart_1_1BeamHyp_1a53edef5d5cc29b1c7ccfcaaf909f28be" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BeamChart&lt; BVP &gt;::BeamHyp::back_position_right</definition>
+        <argsstring></argsstring>
+        <name>back_position_right</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="133" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="133" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1a7c08b0a2f5272a241e7081c29d9345a5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BeamChart&lt; BVP &gt;::BeamHyp::BeamHyp</definition>
+        <argsstring>()</argsstring>
+        <name>BeamHyp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="74" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="74" bodyend="74"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1a523ef2b0b61bb9b71aa236bc1312c338" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BeamChart&lt; BVP &gt;::BeamHyp::BeamHyp</definition>
+        <argsstring>(HEdge _edge, HNode _node, typename BVP::ValType _sig, double _cs, double _fs, const vector&lt; int &gt; &amp;_bp)</argsstring>
+        <name>BeamHyp</name>
+        <param>
+          <type>HEdge</type>
+          <declname>_edge</declname>
+        </param>
+        <param>
+          <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+          <declname>_node</declname>
+        </param>
+        <param>
+          <type>typename BVP::ValType</type>
+          <declname>_sig</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_cs</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_fs</declname>
+        </param>
+        <param>
+          <type>const vector&lt; int &gt; &amp;</type>
+          <declname>_bp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="84" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="75" bodyend="84"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1af48f7da488f8bae958d2713dea303c93" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double BeamChart&lt; BVP &gt;::BeamHyp::total_score</definition>
+        <argsstring>() const </argsstring>
+        <name>total_score</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="86" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="86" bodyend="88"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1a7c08b0a2f5272a241e7081c29d9345a5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BeamChart&lt; BVP &gt;::BeamHyp::BeamHyp</definition>
+        <argsstring>()</argsstring>
+        <name>BeamHyp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="87" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="87" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1ac095cf50d4f6e5d8b48fd019113c7ad1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BeamChart&lt; BVP &gt;::BeamHyp::BeamHyp</definition>
+        <argsstring>(HEdge _edge, HNode _node, typename BVP::ValType _sig, double _cs, double _fs, int _bp_left, int _bp_right)</argsstring>
+        <name>BeamHyp</name>
+        <param>
+          <type>HEdge</type>
+          <declname>_edge</declname>
+        </param>
+        <param>
+          <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+          <declname>_node</declname>
+        </param>
+        <param>
+          <type>typename BVP::ValType</type>
+          <declname>_sig</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_cs</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_fs</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>_bp_left</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>_bp_right</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="101" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="89" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1a882d9cb661472bf9567989a5366d3092" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void BeamChart&lt; BVP &gt;::BeamHyp::reset</definition>
+        <argsstring>(HEdge _edge, HNode _node, typename BVP::ValType _sig, double _cs, double _fs, int _bp_left, int _bp_right)</argsstring>
+        <name>reset</name>
+        <param>
+          <type>HEdge</type>
+          <declname>_edge</declname>
+        </param>
+        <param>
+          <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+          <declname>_node</declname>
+        </param>
+        <param>
+          <type>typename BVP::ValType</type>
+          <declname>_sig</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_cs</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_fs</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>_bp_left</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>_bp_right</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="109" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="103" bodyend="118"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1a329e1bb9fc5dc22a2ce57f9ee7032a16" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool BeamChart&lt; BVP &gt;::BeamHyp::operator&lt;</definition>
+        <argsstring>(const BeamHyp &amp;other) const </argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>const <ref refid="structBeamChart_1_1BeamHyp" kindref="compound">BeamHyp</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" line="120" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch.h" bodystart="120" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1a7c08b0a2f5272a241e7081c29d9345a5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BeamChart&lt; BVP &gt;::BeamHyp::BeamHyp</definition>
+        <argsstring>()</argsstring>
+        <name>BeamHyp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch_flymake.h" line="86" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch_flymake.h" bodystart="86" bodyend="86"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1ac095cf50d4f6e5d8b48fd019113c7ad1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BeamChart&lt; BVP &gt;::BeamHyp::BeamHyp</definition>
+        <argsstring>(HEdge _edge, HNode _node, typename BVP::ValType _sig, double _cs, double _fs, int _bp_left, int _bp_right)</argsstring>
+        <name>BeamHyp</name>
+        <param>
+          <type>HEdge</type>
+          <declname>_edge</declname>
+        </param>
+        <param>
+          <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+          <declname>_node</declname>
+        </param>
+        <param>
+          <type>typename BVP::ValType</type>
+          <declname>_sig</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_cs</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_fs</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>_bp_left</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>_bp_right</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch_flymake.h" line="100" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch_flymake.h" bodystart="88" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1a882d9cb661472bf9567989a5366d3092" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void BeamChart&lt; BVP &gt;::BeamHyp::reset</definition>
+        <argsstring>(HEdge _edge, HNode _node, typename BVP::ValType _sig, double _cs, double _fs, int _bp_left, int _bp_right)</argsstring>
+        <name>reset</name>
+        <param>
+          <type>HEdge</type>
+          <declname>_edge</declname>
+        </param>
+        <param>
+          <type><ref refid="classHypernode" kindref="compound">HNode</ref></type>
+          <declname>_node</declname>
+        </param>
+        <param>
+          <type>typename BVP::ValType</type>
+          <declname>_sig</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_cs</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_fs</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>_bp_left</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>_bp_right</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch_flymake.h" line="108" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch_flymake.h" bodystart="102" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="structBeamChart_1_1BeamHyp_1a329e1bb9fc5dc22a2ce57f9ee7032a16" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool BeamChart&lt; BVP &gt;::BeamHyp::operator&lt;</definition>
+        <argsstring>(const BeamHyp &amp;other) const </argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>const <ref refid="structBeamChart_1_1BeamHyp" kindref="compound">BeamHyp</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch_flymake.h" line="119" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/BeamSearch_flymake.h" bodystart="119" bodyend="121"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="25">
+        <label>BeamChart&lt; BVP &gt;::BeamHyp</label>
+        <link refid="structBeamChart_1_1BeamHyp"/>
+        <childnode refid="26" relation="public-inheritance">
+        </childnode>
+        <childnode refid="26" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>set_base_hook&lt;&gt;</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="29">
+        <label>Hypernode</label>
+        <link refid="classHypernode"/>
+      </node>
+      <node id="27">
+        <label>BeamChart&lt; BVP &gt;::BeamHyp</label>
+        <link refid="structBeamChart_1_1BeamHyp"/>
+        <childnode refid="28" relation="public-inheritance">
+        </childnode>
+        <childnode refid="28" relation="public-inheritance">
+        </childnode>
+        <childnode refid="29" relation="usage">
+          <edgelabel>node</edgelabel>
+        </childnode>
+      </node>
+      <node id="28">
+        <label>set_base_hook&lt;&gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" line="73" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/BeamSearch.h" bodystart="73" bodyend="98"/>
+    <listofallmembers>
+      <member refid="structBeamChart_1_1BeamHyp_1acd62d6fca70006b7507eed20b699037f" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>back_position</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1ac26beeb191f2c7fb7a9da8ffb723cca1" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>back_position_left</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a53edef5d5cc29b1c7ccfcaaf909f28be" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>back_position_right</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a7c08b0a2f5272a241e7081c29d9345a5" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>BeamHyp</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a523ef2b0b61bb9b71aa236bc1312c338" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>BeamHyp</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a7c08b0a2f5272a241e7081c29d9345a5" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>BeamHyp</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1ac095cf50d4f6e5d8b48fd019113c7ad1" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>BeamHyp</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a7c08b0a2f5272a241e7081c29d9345a5" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>BeamHyp</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1ac095cf50d4f6e5d8b48fd019113c7ad1" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>BeamHyp</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1adc165ebaa76925e4109d63fb85b0e89a" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>current_score</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1ae37a995eee04c37a77b52ec09b4954e1" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>edge</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1aaedb0a6b8886096dcc2b047f8f3899ee" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>future_score</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1acf9d010de9322ca0ac9df39bca365c21" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>member_hook_</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a4b7cffa9fb310188f885ffa255c0e14e" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>node</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a329e1bb9fc5dc22a2ce57f9ee7032a16" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>operator&lt;</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a329e1bb9fc5dc22a2ce57f9ee7032a16" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>operator&lt;</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a882d9cb661472bf9567989a5366d3092" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>reset</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a882d9cb661472bf9567989a5366d3092" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>reset</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1af15788794b9956e94dfc556e049742a9" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>sig</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1a775eb51a085ecacedaefdecba73f1a0f" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>total_score</name></member>
+      <member refid="structBeamChart_1_1BeamHyp_1af48f7da488f8bae958d2713dea303c93" prot="public" virt="non-virtual"><scope>BeamChart::BeamHyp</scope><name>total_score</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

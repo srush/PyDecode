@@ -37,16 +37,16 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="4">
+      <node id="6">
         <label>boost::foreach_detail::auto_any_base</label>
         <link refid="structboost_1_1foreach__detail_1_1auto__any__base"/>
       </node>
-      <node id="5">
+      <node id="7">
         <label>boost::foreach_detail::auto_any&lt; T &gt;</label>
         <link refid="structboost_1_1foreach__detail_1_1auto__any"/>
-        <childnode refid="4" relation="public-inheritance">
+        <childnode refid="6" relation="public-inheritance">
         </childnode>
-        <childnode refid="4" relation="public-inheritance">
+        <childnode refid="6" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>

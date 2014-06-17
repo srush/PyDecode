@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classDFA" kind="class" prot="public">
+    <compoundname>DFA</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classDFA_1ac10f826c24af489219eec0333cbe4acd" prot="private" static="no" mutable="no">
+        <type>vector&lt; int &gt;</type>
+        <definition>vector&lt;int&gt; DFA::states_</definition>
+        <argsstring></argsstring>
+        <name>states_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" line="45" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classDFA_1aef072d6faa1be134193af1e3a10d643d" prot="private" static="no" mutable="no">
+        <type>const vector&lt; map&lt; int, int &gt; &gt;</type>
+        <definition>const vector&lt;map&lt;int, int&gt; &gt; DFA::transition_</definition>
+        <argsstring></argsstring>
+        <name>transition_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" line="46" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classDFA_1abadb72731798151bbff32916cf272780" prot="private" static="no" mutable="no">
+        <type>const set&lt; int &gt;</type>
+        <definition>const set&lt;int&gt; DFA::final_</definition>
+        <argsstring></argsstring>
+        <name>final_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" line="47" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classDFA_1aa89ff680ea4a536eef96f0334a4df4bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>DFA::DFA</definition>
+        <argsstring>(int num_states, int num_symbols, const vector&lt; map&lt; int, int &gt; &gt; &amp;transition, const set&lt; int &gt; &amp;final)</argsstring>
+        <name>DFA</name>
+        <param>
+          <type>int</type>
+          <declname>num_states</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_symbols</declname>
+        </param>
+        <param>
+          <type>const vector&lt; map&lt; int, int &gt; &gt; &amp;</type>
+          <declname>transition</declname>
+        </param>
+        <param>
+          <type>const set&lt; int &gt; &amp;</type>
+          <declname>final</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" line="18" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" bodystart="13" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classDFA_1a3ea54ceb760f3aefd260c6b7a2f3dab6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const vector&lt; int &gt; &amp;</type>
+        <definition>const vector&lt;int&gt;&amp; DFA::states</definition>
+        <argsstring>() const </argsstring>
+        <name>states</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" line="26" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" bodystart="26" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classDFA_1ab4b6cbc40c543efd561fd0c8cbea5a5e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int DFA::transition</definition>
+        <argsstring>(int state, int symbol) const </argsstring>
+        <name>transition</name>
+        <param>
+          <type>int</type>
+          <declname>state</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>symbol</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" line="30" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" bodystart="30" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classDFA_1a832bc272502ccf4bdba3f9da9de1d5a8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int DFA::valid_transition</definition>
+        <argsstring>(int state, int symbol) const </argsstring>
+        <name>valid_transition</name>
+        <param>
+          <type>int</type>
+          <declname>state</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>symbol</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" line="34" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" bodystart="34" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classDFA_1a023a4b4307d9d0afc0e56f93feac40da" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int DFA::final</definition>
+        <argsstring>(int state) const </argsstring>
+        <name>final</name>
+        <param>
+          <type>int</type>
+          <declname>state</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" line="38" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" bodystart="38" bodyend="40"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" line="11" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Automaton.h" bodystart="11" bodyend="48"/>
+    <listofallmembers>
+      <member refid="classDFA_1aa89ff680ea4a536eef96f0334a4df4bd" prot="public" virt="non-virtual"><scope>DFA</scope><name>DFA</name></member>
+      <member refid="classDFA_1a023a4b4307d9d0afc0e56f93feac40da" prot="public" virt="non-virtual"><scope>DFA</scope><name>final</name></member>
+      <member refid="classDFA_1abadb72731798151bbff32916cf272780" prot="private" virt="non-virtual"><scope>DFA</scope><name>final_</name></member>
+      <member refid="classDFA_1a3ea54ceb760f3aefd260c6b7a2f3dab6" prot="public" virt="non-virtual"><scope>DFA</scope><name>states</name></member>
+      <member refid="classDFA_1ac10f826c24af489219eec0333cbe4acd" prot="private" virt="non-virtual"><scope>DFA</scope><name>states_</name></member>
+      <member refid="classDFA_1ab4b6cbc40c543efd561fd0c8cbea5a5e" prot="public" virt="non-virtual"><scope>DFA</scope><name>transition</name></member>
+      <member refid="classDFA_1aef072d6faa1be134193af1e3a10d643d" prot="private" virt="non-virtual"><scope>DFA</scope><name>transition_</name></member>
+      <member refid="classDFA_1a832bc272502ccf4bdba3f9da9de1d5a8" prot="public" virt="non-virtual"><scope>DFA</scope><name>valid_transition</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

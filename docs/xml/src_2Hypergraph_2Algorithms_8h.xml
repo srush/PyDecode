@@ -6,6 +6,7 @@
     <includes local="no">set</includes>
     <includes local="no">vector</includes>
     <includes local="yes">./common.h</includes>
+    <includes refid="Automaton_8h" local="yes">Hypergraph/Automaton.h</includes>
     <includes local="yes">Hypergraph/Hypergraph.h</includes>
     <includes local="yes">Hypergraph/Semirings.h</includes>
     <includes local="yes">Hypergraph/SemiringAlgorithms.h</includes>
@@ -15,72 +16,94 @@
     <includedby refid="pydecode-0_81_827_2src_2Hypergraph_2SemiringAlgorithms_8cpp" local="yes">pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.cpp</includedby>
     <includedby refid="src_2Hypergraph_2Algorithms_8cpp" local="yes">src/Hypergraph/Algorithms.cpp</includedby>
     <includedby refid="src_2Hypergraph_2BeamSearch_8h" local="yes">src/Hypergraph/BeamSearch.h</includedby>
+    <includedby refid="BeamSearch__flymake_8h" local="yes">src/Hypergraph/BeamSearch_flymake.h</includedby>
     <includedby refid="src_2Hypergraph_2SemiringAlgorithms_8cpp" local="yes">src/Hypergraph/SemiringAlgorithms.cpp</includedby>
     <incdepgraph>
-      <node id="83">
+      <node id="89">
         <label>queue</label>
       </node>
-      <node id="87">
+      <node id="95">
         <label>Hypergraph/Hypergraph.h</label>
       </node>
-      <node id="86">
+      <node id="92">
         <label>./common.h</label>
       </node>
-      <node id="88">
+      <node id="94">
+        <label>map</label>
+      </node>
+      <node id="96">
         <label>Hypergraph/Semirings.h</label>
       </node>
-      <node id="82">
+      <node id="88">
         <label>src/Hypergraph/Algorithms.h</label>
         <link refid="src/Hypergraph/Algorithms.h"/>
-        <childnode refid="83" relation="include">
-        </childnode>
-        <childnode refid="84" relation="include">
-        </childnode>
-        <childnode refid="85" relation="include">
-        </childnode>
-        <childnode refid="86" relation="include">
-        </childnode>
-        <childnode refid="87" relation="include">
-        </childnode>
-        <childnode refid="88" relation="include">
-        </childnode>
         <childnode refid="89" relation="include">
         </childnode>
         <childnode refid="90" relation="include">
         </childnode>
-      </node>
-      <node id="85">
-        <label>vector</label>
-      </node>
-      <node id="90">
-        <label>Hypergraph/Potentials.h</label>
-      </node>
-      <node id="89">
-        <label>Hypergraph/SemiringAlgorithms.h</label>
-      </node>
-      <node id="84">
-        <label>set</label>
-      </node>
-    </incdepgraph>
-    <invincdepgraph>
-      <node id="92">
-        <label>pydecode-0.1.27/src/Hypergraph/BeamSearch.h</label>
-        <link refid="pydecode-0_81_827_2src_2Hypergraph_2BeamSearch_8h_source"/>
-      </node>
-      <node id="91">
-        <label>src/Hypergraph/Algorithms.h</label>
-        <link refid="src/Hypergraph/Algorithms.h"/>
+        <childnode refid="91" relation="include">
+        </childnode>
         <childnode refid="92" relation="include">
         </childnode>
         <childnode refid="93" relation="include">
         </childnode>
+        <childnode refid="95" relation="include">
+        </childnode>
+        <childnode refid="96" relation="include">
+        </childnode>
+        <childnode refid="97" relation="include">
+        </childnode>
+        <childnode refid="98" relation="include">
+        </childnode>
+      </node>
+      <node id="91">
+        <label>vector</label>
+      </node>
+      <node id="98">
+        <label>Hypergraph/Potentials.h</label>
+      </node>
+      <node id="97">
+        <label>Hypergraph/SemiringAlgorithms.h</label>
       </node>
       <node id="93">
+        <label>Hypergraph/Automaton.h</label>
+        <link refid="Automaton_8h_source"/>
+        <childnode refid="91" relation="include">
+        </childnode>
+        <childnode refid="94" relation="include">
+        </childnode>
+      </node>
+      <node id="90">
+        <label>set</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="102">
+        <label>src/Hypergraph/BeamSearch_flymake.h</label>
+        <link refid="BeamSearch__flymake_8h_source"/>
+      </node>
+      <node id="100">
+        <label>pydecode-0.1.27/src/Hypergraph/BeamSearch.h</label>
+        <link refid="pydecode-0_81_827_2src_2Hypergraph_2BeamSearch_8h_source"/>
+      </node>
+      <node id="99">
+        <label>src/Hypergraph/Algorithms.h</label>
+        <link refid="src/Hypergraph/Algorithms.h"/>
+        <childnode refid="100" relation="include">
+        </childnode>
+        <childnode refid="101" relation="include">
+        </childnode>
+        <childnode refid="102" relation="include">
+        </childnode>
+      </node>
+      <node id="101">
         <label>src/Hypergraph/BeamSearch.h</label>
         <link refid="src_2Hypergraph_2BeamSearch_8h_source"/>
       </node>
     </invincdepgraph>
     <innerclass refid="structIdComparator" prot="public">IdComparator</innerclass>
+    <innerclass refid="structDFANode" prot="public">DFANode</innerclass>
+    <innerclass refid="structLatticeLabel" prot="public">LatticeLabel</innerclass>
       <sectiondef kind="func">
       <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1a4ed2e2683464989ca9bde5c758c85fe2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>vector&lt; set&lt; int &gt; &gt; *</type>
@@ -97,7 +120,36 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="18" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="264" bodyend="276"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="19" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="264" bodyend="276"/>
+      </memberdef>
+      <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1ac25b71925e39c1a98b112850306ca3d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref> *</type>
+        <definition>HypergraphMap* extend_with_dfa</definition>
+        <argsstring>(Hypergraph *graph, const HypergraphPotentials&lt; CountingPotential &gt; &amp;potentials, const DFA &amp;dfa, vector&lt; DFANode &gt; *labels)</argsstring>
+        <name>extend_with_dfa</name>
+        <param>
+          <type><ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>graph</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; <ref refid="classCountingPotential" kindref="compound">CountingPotential</ref> &gt; &amp;</type>
+          <declname>potentials</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classDFA" kindref="compound">DFA</ref> &amp;</type>
+          <declname>dfa</declname>
+        </param>
+        <param>
+          <type>vector&lt; <ref refid="structDFANode" kindref="compound">DFANode</ref> &gt; *</type>
+          <declname>labels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="47" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="56" bodyend="193"/>
       </memberdef>
       <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1a0397a98980947009dfd51e95522f21af" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref> *</type>
@@ -130,41 +182,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="31" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="100" bodyend="206"/>
-      </memberdef>
-      <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1a9f3f68cd5b3eb07b0a80e5c379693a8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type><ref refid="classChart" kindref="compound">Chart</ref>&lt; <ref refid="classSetPotential" kindref="compound">SetPotential</ref> &gt; *</type>
-        <definition>Chart&lt;SetPotential&gt;* edge_domination</definition>
-        <argsstring>(const Hypergraph &amp;graph)</argsstring>
-        <name>edge_domination</name>
-        <param>
-          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> &amp;</type>
-          <declname>graph</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="33" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="208" bodyend="218"/>
-      </memberdef>
-      <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1aaf7b3a6c4efc5e3e74c7227274eabd1e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type><ref refid="classChart" kindref="compound">Chart</ref>&lt; <ref refid="classSetPotential" kindref="compound">SetPotential</ref> &gt; *</type>
-        <definition>Chart&lt;SetPotential&gt;* node_domination</definition>
-        <argsstring>(const Hypergraph &amp;graph)</argsstring>
-        <name>node_domination</name>
-        <param>
-          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> &amp;</type>
-          <declname>graph</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="34" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="220" bodyend="232"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="54" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="100" bodyend="206"/>
       </memberdef>
       <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1a48f6caa2a3e75176243889f7779d5b7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -193,7 +211,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="37" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="20" bodyend="42"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="60" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="20" bodyend="42"/>
       </memberdef>
       <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1a60a135f63bb7f93d7bfaca2ef15bb39e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>vector&lt; set&lt; int &gt; &gt; *</type>
@@ -214,7 +232,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="41" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="234" bodyend="248"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="64" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="234" bodyend="248"/>
       </memberdef>
       <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1a836a839027944938f43d92ebbef0dd2c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>set&lt; int &gt; *</type>
@@ -239,7 +257,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="46" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="250" bodyend="262"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="69" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="250" bodyend="262"/>
       </memberdef>
       <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1a496fb998bc358c00a53f1f282094f2b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref> *</type>
@@ -260,7 +278,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="51" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="279" bodyend="329"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="74" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="279" bodyend="329"/>
       </memberdef>
       <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1aa770dcae81759f8ca0032565bface051" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref> *</type>
@@ -277,7 +295,36 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="53" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="331" bodyend="384"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="76" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="331" bodyend="384"/>
+      </memberdef>
+      <memberdef kind="function" id="src_2Hypergraph_2Algorithms_8h_1ad74e822c1c102f7005250f9f893ec789" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+        <definition>Hypergraph* make_lattice</definition>
+        <argsstring>(int width, int height, const vector&lt; vector&lt; int &gt; &gt; &amp;transitions, vector&lt; LatticeLabel &gt; *labels)</argsstring>
+        <name>make_lattice</name>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>const vector&lt; vector&lt; int &gt; &gt; &amp;</type>
+          <declname>transitions</declname>
+        </param>
+        <param>
+          <type>vector&lt; <ref refid="structLatticeLabel" kindref="compound">LatticeLabel</ref> &gt; *</type>
+          <declname>labels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="86" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="477" bodyend="513"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -296,50 +343,86 @@
 <codeline lineno="9"><highlight class="normal"></highlight></codeline>
 <codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;./common.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="11"><highlight class="normal"></highlight></codeline>
-<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Hypergraph.h&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Semirings.h&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/SemiringAlgorithms.h&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Potentials.h&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="16"><highlight class="normal"></highlight></codeline>
-<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Compute<sp/>tail<sp/>node<sp/>set<sp/>for<sp/>each<sp/>hypergraph<sp/>node.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="18"><highlight class="normal">vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>*children_nodes(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>&amp;graph);</highlight></codeline>
-<codeline lineno="19"><highlight class="normal"></highlight></codeline>
-<codeline lineno="20"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structIdComparator" kindref="compound">IdComparator</ref><sp/>{</highlight></codeline>
-<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>operator()(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge1,<sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge2)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>edge1-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>()<sp/>&lt;<sp/>edge2-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>();</highlight></codeline>
-<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="24"><highlight class="normal">};</highlight></codeline>
-<codeline lineno="25"><highlight class="normal"></highlight></codeline>
-<codeline lineno="26"><highlight class="normal"><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref><sp/>*extend_hypergraph_by_count(</highlight></codeline>
-<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;CountingPotential&gt;</ref><sp/>&amp;potentials,</highlight></codeline>
-<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>lower_limit,</highlight></codeline>
-<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>upper_limit,</highlight></codeline>
-<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>goal);</highlight></codeline>
-<codeline lineno="32"><highlight class="normal"></highlight></codeline>
-<codeline lineno="33"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;SetPotential&gt;</ref><sp/>*edge_domination(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>&amp;graph);</highlight></codeline>
-<codeline lineno="34"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;SetPotential&gt;</ref><sp/>*node_domination(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>&amp;graph);</highlight></codeline>
-<codeline lineno="35"><highlight class="normal"></highlight></codeline>
-<codeline lineno="36"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Set1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Set2&gt;</highlight></codeline>
-<codeline lineno="37"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>is_disjoint(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Set1<sp/>&amp;set1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Set2<sp/>&amp;set2);</highlight></codeline>
-<codeline lineno="38"><highlight class="normal"></highlight></codeline>
-<codeline lineno="39"><highlight class="normal">vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>*children_sparse(</highlight></codeline>
-<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SparseVectorPotential&gt;</ref><sp/>&amp;potentials);</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Automaton.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Hypergraph.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Semirings.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/SemiringAlgorithms.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Hypergraph/Potentials.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Compute<sp/>tail<sp/>node<sp/>set<sp/>for<sp/>each<sp/>hypergraph<sp/>node.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal">vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>*children_nodes(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>&amp;graph);</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structIdComparator" kindref="compound">IdComparator</ref><sp/>{</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>operator()(HEdge<sp/>edge1,<sp/>HEdge<sp/>edge2)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>edge1<sp/>&lt;<sp/>edge2;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="25"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27" refid="structDFANode" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structDFANode" kindref="compound">DFANode</ref><sp/>{</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><ref refid="structDFANode" kindref="compound">DFANode</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>_left_state,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>_right_state,</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>_node,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>_id)<sp/>:</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/>left_state(_left_state),</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>right_state(_right_state),</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>node(_node),</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>id(_id)<sp/>{}</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structDFANode" kindref="compound">DFANode</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>left_state;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>right_state;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>id;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="42"><highlight class="normal"></highlight></codeline>
-<codeline lineno="43"><highlight class="normal">set&lt;int&gt;<sp/>*updated_nodes(</highlight></codeline>
-<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
-<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>&amp;children,</highlight></codeline>
-<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>set&lt;int&gt;<sp/>&amp;updated);</highlight></codeline>
-<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref><sp/>*extend_with_dfa(</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;CountingPotential&gt;</ref><sp/>&amp;potentials,</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classDFA" kindref="compound">DFA</ref><sp/>&amp;dfa,</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;DFANode&gt;<sp/>*labels);</highlight></codeline>
 <codeline lineno="48"><highlight class="normal"></highlight></codeline>
-<codeline lineno="49"><highlight class="normal"><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref><sp/>*project_hypergraph(</highlight></codeline>
-<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph,</highlight></codeline>
-<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;BoolPotential&gt;</ref><sp/>&amp;edge_mask);</highlight></codeline>
-<codeline lineno="52"><highlight class="normal"></highlight></codeline>
-<codeline lineno="53"><highlight class="normal"><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref><sp/>*binarize(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph);</highlight></codeline>
-<codeline lineno="54"><highlight class="normal"></highlight></codeline>
-<codeline lineno="55"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/><sp/>//<sp/>HYPERGRAPH_ALGORITHMS_H_</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref><sp/>*extend_hypergraph_by_count(</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;CountingPotential&gt;</ref><sp/>&amp;potentials,</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>lower_limit,</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>upper_limit,</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>goal);</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>Chart&lt;SetPotential&gt;<sp/>*edge_domination(const<sp/>Hypergraph<sp/>&amp;graph);<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>Chart&lt;SetPotential&gt;<sp/>*node_domination(const<sp/>Hypergraph<sp/>&amp;graph);<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Set1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Set2&gt;</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>is_disjoint(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Set1<sp/>&amp;set1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Set2<sp/>&amp;set2);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal">vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>*children_sparse(</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;SparseVectorPotential&gt;</ref><sp/>&amp;potentials);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal">set&lt;int&gt;<sp/>*updated_nodes(</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*graph,</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>&amp;children,</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>set&lt;int&gt;<sp/>&amp;updated);</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref><sp/>*project_hypergraph(</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph,</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials&lt;BoolPotential&gt;</ref><sp/>&amp;edge_mask);</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref><sp/>*binarize(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph);</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structLatticeLabel" kindref="compound">LatticeLabel</ref><sp/>{</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structLatticeLabel" kindref="compound">LatticeLabel</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><ref refid="structLatticeLabel" kindref="compound">LatticeLabel</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i_,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j_)<sp/>:<sp/>i(i_),<sp/>j(j_)<sp/>{}</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i,<sp/>j;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*make_lattice(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>width,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>height,</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;vector&lt;int&gt;<sp/>&gt;<sp/>&amp;transitions,</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;LatticeLabel&gt;<sp/>*labels);</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/><sp/>//<sp/>HYPERGRAPH_ALGORITHMS_H_</highlight></codeline>
     </programlisting>
     <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h"/>
   </compounddef>

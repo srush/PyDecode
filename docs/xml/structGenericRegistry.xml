@@ -53,30 +53,30 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="40">
+      <node id="53">
         <label>BaseRegistry&lt; B * &gt;</label>
         <link refid="classBaseRegistry"/>
       </node>
-      <node id="39">
+      <node id="52">
         <label>GenericRegistry&lt; T, B &gt;</label>
         <link refid="structGenericRegistry"/>
-        <childnode refid="40" relation="public-inheritance">
+        <childnode refid="53" relation="public-inheritance">
         </childnode>
-        <childnode refid="40" relation="public-inheritance">
+        <childnode refid="53" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="42">
+      <node id="55">
         <label>BaseRegistry&lt; B * &gt;</label>
         <link refid="classBaseRegistry"/>
       </node>
-      <node id="41">
+      <node id="54">
         <label>GenericRegistry&lt; T, B &gt;</label>
         <link refid="structGenericRegistry"/>
-        <childnode refid="42" relation="public-inheritance">
+        <childnode refid="55" relation="public-inheritance">
         </childnode>
-        <childnode refid="42" relation="public-inheritance">
+        <childnode refid="55" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

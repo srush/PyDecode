@@ -13,141 +13,156 @@
     <includedby refid="pydecode-0_81_827_2src_2Hypergraph_2Semirings_8h" local="yes">pydecode-0.1.27/src/Hypergraph/Semirings.h</includedby>
     <includedby refid="src_2Hypergraph_2Factory_8cpp" local="yes">src/Hypergraph/Factory.cpp</includedby>
     <includedby refid="src_2Hypergraph_2Semirings_8h" local="yes">src/Hypergraph/Semirings.h</includedby>
+    <includedby refid="Semirings__flymake_8h" local="yes">src/Hypergraph/Semirings_flymake.h</includedby>
     <incdepgraph>
-      <node id="147">
+      <node id="163">
         <label>Hypergraph/Hypergraph.h</label>
       </node>
-      <node id="144">
+      <node id="160">
         <label>string</label>
       </node>
-      <node id="148">
+      <node id="164">
         <label>./common.h</label>
       </node>
-      <node id="143">
+      <node id="159">
         <label>map</label>
       </node>
-      <node id="141">
+      <node id="157">
         <label>src/Hypergraph/Factory.h</label>
         <link refid="src/Hypergraph/Factory.h"/>
-        <childnode refid="142" relation="include">
-        </childnode>
-        <childnode refid="143" relation="include">
-        </childnode>
-        <childnode refid="144" relation="include">
-        </childnode>
-        <childnode refid="145" relation="include">
-        </childnode>
-        <childnode refid="146" relation="include">
-        </childnode>
-        <childnode refid="147" relation="include">
-        </childnode>
-        <childnode refid="148" relation="include">
-        </childnode>
-      </node>
-      <node id="146">
-        <label>vector</label>
-      </node>
-      <node id="145">
-        <label>utility</label>
-      </node>
-      <node id="142">
-        <label>iostream</label>
-      </node>
-    </incdepgraph>
-    <invincdepgraph>
-      <node id="159">
-        <label>pydecode-0.1.27/src/Hypergraph/Map.h</label>
-        <link refid="pydecode-0_81_827_2src_2Hypergraph_2Map_8h_source"/>
-      </node>
-      <node id="153">
-        <label>pydecode-0.1.27/src/Hypergraph/BeamSearch.h</label>
-        <link refid="pydecode-0_81_827_2src_2Hypergraph_2BeamSearch_8h_source"/>
-      </node>
-      <node id="154">
-        <label>pydecode-0.1.27/src/Hypergraph/Potentials.h</label>
-        <link refid="pydecode-0_81_827_2src_2Hypergraph_2Potentials_8h_source"/>
-      </node>
-      <node id="149">
-        <label>src/Hypergraph/Factory.h</label>
-        <link refid="src/Hypergraph/Factory.h"/>
-        <childnode refid="150" relation="include">
-        </childnode>
-        <childnode refid="151" relation="include">
-        </childnode>
-      </node>
-      <node id="151">
-        <label>src/Hypergraph/Semirings.h</label>
-        <link refid="src_2Hypergraph_2Semirings_8h_source"/>
-        <childnode refid="152" relation="include">
-        </childnode>
-        <childnode refid="153" relation="include">
-        </childnode>
-        <childnode refid="154" relation="include">
-        </childnode>
-        <childnode refid="155" relation="include">
-        </childnode>
-        <childnode refid="156" relation="include">
-        </childnode>
-        <childnode refid="157" relation="include">
-        </childnode>
         <childnode refid="158" relation="include">
         </childnode>
-        <childnode refid="161" relation="include">
-        </childnode>
-      </node>
-      <node id="155">
-        <label>pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h</label>
-        <link refid="pydecode-0_81_827_2src_2Hypergraph_2SemiringAlgorithms_8h_source"/>
-      </node>
-      <node id="161">
-        <label>src/Hypergraph/SemiringAlgorithms.h</label>
-        <link refid="src_2Hypergraph_2SemiringAlgorithms_8h_source"/>
-        <childnode refid="152" relation="include">
-        </childnode>
-        <childnode refid="156" relation="include">
-        </childnode>
-      </node>
-      <node id="156">
-        <label>src/Hypergraph/Algorithms.h</label>
-        <link refid="src_2Hypergraph_2Algorithms_8h_source"/>
-        <childnode refid="153" relation="include">
-        </childnode>
-        <childnode refid="157" relation="include">
-        </childnode>
-      </node>
-      <node id="158">
-        <label>src/Hypergraph/Potentials.h</label>
-        <link refid="src_2Hypergraph_2Potentials_8h_source"/>
-        <childnode refid="152" relation="include">
-        </childnode>
         <childnode refid="159" relation="include">
-        </childnode>
-        <childnode refid="155" relation="include">
-        </childnode>
-        <childnode refid="156" relation="include">
         </childnode>
         <childnode refid="160" relation="include">
         </childnode>
         <childnode refid="161" relation="include">
         </childnode>
+        <childnode refid="162" relation="include">
+        </childnode>
+        <childnode refid="163" relation="include">
+        </childnode>
+        <childnode refid="164" relation="include">
+        </childnode>
       </node>
-      <node id="157">
+      <node id="162">
+        <label>vector</label>
+      </node>
+      <node id="161">
+        <label>utility</label>
+      </node>
+      <node id="158">
+        <label>iostream</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="179">
+        <label>src/Hypergraph/Semirings_flymake.h</label>
+        <link refid="Semirings__flymake_8h_source"/>
+      </node>
+      <node id="176">
+        <label>pydecode-0.1.27/src/Hypergraph/Map.h</label>
+        <link refid="pydecode-0_81_827_2src_2Hypergraph_2Map_8h_source"/>
+      </node>
+      <node id="174">
+        <label>src/Hypergraph/BeamSearch_flymake.h</label>
+        <link refid="BeamSearch__flymake_8h_source"/>
+      </node>
+      <node id="169">
+        <label>pydecode-0.1.27/src/Hypergraph/BeamSearch.h</label>
+        <link refid="pydecode-0_81_827_2src_2Hypergraph_2BeamSearch_8h_source"/>
+      </node>
+      <node id="170">
+        <label>pydecode-0.1.27/src/Hypergraph/Potentials.h</label>
+        <link refid="pydecode-0_81_827_2src_2Hypergraph_2Potentials_8h_source"/>
+      </node>
+      <node id="165">
+        <label>src/Hypergraph/Factory.h</label>
+        <link refid="src/Hypergraph/Factory.h"/>
+        <childnode refid="166" relation="include">
+        </childnode>
+        <childnode refid="167" relation="include">
+        </childnode>
+        <childnode refid="179" relation="include">
+        </childnode>
+      </node>
+      <node id="167">
+        <label>src/Hypergraph/Semirings.h</label>
+        <link refid="src_2Hypergraph_2Semirings_8h_source"/>
+        <childnode refid="168" relation="include">
+        </childnode>
+        <childnode refid="169" relation="include">
+        </childnode>
+        <childnode refid="170" relation="include">
+        </childnode>
+        <childnode refid="171" relation="include">
+        </childnode>
+        <childnode refid="172" relation="include">
+        </childnode>
+        <childnode refid="173" relation="include">
+        </childnode>
+        <childnode refid="174" relation="include">
+        </childnode>
+        <childnode refid="175" relation="include">
+        </childnode>
+        <childnode refid="178" relation="include">
+        </childnode>
+      </node>
+      <node id="171">
+        <label>pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h</label>
+        <link refid="pydecode-0_81_827_2src_2Hypergraph_2SemiringAlgorithms_8h_source"/>
+      </node>
+      <node id="178">
+        <label>src/Hypergraph/SemiringAlgorithms.h</label>
+        <link refid="src_2Hypergraph_2SemiringAlgorithms_8h_source"/>
+        <childnode refid="168" relation="include">
+        </childnode>
+        <childnode refid="172" relation="include">
+        </childnode>
+      </node>
+      <node id="172">
+        <label>src/Hypergraph/Algorithms.h</label>
+        <link refid="src_2Hypergraph_2Algorithms_8h_source"/>
+        <childnode refid="169" relation="include">
+        </childnode>
+        <childnode refid="173" relation="include">
+        </childnode>
+        <childnode refid="174" relation="include">
+        </childnode>
+      </node>
+      <node id="175">
+        <label>src/Hypergraph/Potentials.h</label>
+        <link refid="src_2Hypergraph_2Potentials_8h_source"/>
+        <childnode refid="168" relation="include">
+        </childnode>
+        <childnode refid="176" relation="include">
+        </childnode>
+        <childnode refid="171" relation="include">
+        </childnode>
+        <childnode refid="172" relation="include">
+        </childnode>
+        <childnode refid="177" relation="include">
+        </childnode>
+        <childnode refid="178" relation="include">
+        </childnode>
+      </node>
+      <node id="173">
         <label>src/Hypergraph/BeamSearch.h</label>
         <link refid="src_2Hypergraph_2BeamSearch_8h_source"/>
       </node>
-      <node id="160">
+      <node id="177">
         <label>src/Hypergraph/Map.h</label>
         <link refid="src_2Hypergraph_2Map_8h_source"/>
-        <childnode refid="154" relation="include">
+        <childnode refid="170" relation="include">
         </childnode>
-        <childnode refid="158" relation="include">
+        <childnode refid="175" relation="include">
         </childnode>
       </node>
-      <node id="152">
+      <node id="168">
         <label>pydecode-0.1.27/src/Hypergraph/Algorithms.h</label>
         <link refid="pydecode-0_81_827_2src_2Hypergraph_2Algorithms_8h_source"/>
       </node>
-      <node id="150">
+      <node id="166">
         <label>pydecode-0.1.27/src/Hypergraph/Semirings.h</label>
         <link refid="pydecode-0_81_827_2src_2Hypergraph_2Semirings_8h_source"/>
       </node>

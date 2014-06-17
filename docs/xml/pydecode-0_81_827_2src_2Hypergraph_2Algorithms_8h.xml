@@ -11,52 +11,53 @@
     <includes local="yes">Hypergraph/SemiringAlgorithms.h</includes>
     <includes local="yes">Hypergraph/Potentials.h</includes>
     <incdepgraph>
-      <node id="73">
+      <node id="79">
         <label>queue</label>
       </node>
-      <node id="77">
+      <node id="83">
         <label>Hypergraph/Hypergraph.h</label>
       </node>
-      <node id="76">
+      <node id="82">
         <label>./common.h</label>
       </node>
-      <node id="78">
+      <node id="84">
         <label>Hypergraph/Semirings.h</label>
       </node>
-      <node id="75">
+      <node id="81">
         <label>vector</label>
       </node>
-      <node id="80">
+      <node id="86">
         <label>Hypergraph/Potentials.h</label>
       </node>
-      <node id="79">
+      <node id="85">
         <label>Hypergraph/SemiringAlgorithms.h</label>
       </node>
-      <node id="74">
+      <node id="80">
         <label>set</label>
       </node>
-      <node id="72">
+      <node id="78">
         <label>pydecode-0.1.27/src/Hypergraph/Algorithms.h</label>
         <link refid="pydecode-0.1.27/src/Hypergraph/Algorithms.h"/>
-        <childnode refid="73" relation="include">
-        </childnode>
-        <childnode refid="74" relation="include">
-        </childnode>
-        <childnode refid="75" relation="include">
-        </childnode>
-        <childnode refid="76" relation="include">
-        </childnode>
-        <childnode refid="77" relation="include">
-        </childnode>
-        <childnode refid="78" relation="include">
-        </childnode>
         <childnode refid="79" relation="include">
         </childnode>
         <childnode refid="80" relation="include">
         </childnode>
+        <childnode refid="81" relation="include">
+        </childnode>
+        <childnode refid="82" relation="include">
+        </childnode>
+        <childnode refid="83" relation="include">
+        </childnode>
+        <childnode refid="84" relation="include">
+        </childnode>
+        <childnode refid="85" relation="include">
+        </childnode>
+        <childnode refid="86" relation="include">
+        </childnode>
       </node>
     </incdepgraph>
     <innerclass refid="structIdComparator" prot="public">IdComparator</innerclass>
+    <innerclass refid="structLatticeLabel" prot="public">LatticeLabel</innerclass>
       <sectiondef kind="func">
       <memberdef kind="function" id="pydecode-0_81_827_2src_2Hypergraph_2Algorithms_8h_1a4ed2e2683464989ca9bde5c758c85fe2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>vector&lt; set&lt; int &gt; &gt; *</type>
@@ -255,6 +256,35 @@
         </inbodydescription>
         <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.h" line="53" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="331" bodyend="384"/>
       </memberdef>
+      <memberdef kind="function" id="pydecode-0_81_827_2src_2Hypergraph_2Algorithms_8h_1ad74e822c1c102f7005250f9f893ec789" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+        <definition>Hypergraph* make_lattice</definition>
+        <argsstring>(int width, int height, const vector&lt; vector&lt; int &gt; &gt; &amp;transitions, vector&lt; LatticeLabel &gt; *labels)</argsstring>
+        <name>make_lattice</name>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>const vector&lt; vector&lt; int &gt; &gt; &amp;</type>
+          <declname>transitions</declname>
+        </param>
+        <param>
+          <type>vector&lt; <ref refid="structLatticeLabel" kindref="compound">LatticeLabel</ref> &gt; *</type>
+          <declname>labels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.h" line="63" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="477" bodyend="513"/>
+      </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
@@ -281,8 +311,8 @@
 <codeline lineno="18"><highlight class="normal">vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>*children_nodes(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>&amp;graph);</highlight></codeline>
 <codeline lineno="19"><highlight class="normal"></highlight></codeline>
 <codeline lineno="20" refid="structIdComparator" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structIdComparator" kindref="compound">IdComparator</ref><sp/>{</highlight></codeline>
-<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>operator()(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge1,<sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge2)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>edge1-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>()<sp/>&lt;<sp/>edge2-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>();</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>operator()(HEdge<sp/>edge1,<sp/>HEdge<sp/>edge2)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>edge1-&gt;id()<sp/>&lt;<sp/>edge2-&gt;id();</highlight></codeline>
 <codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="24"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="25"><highlight class="normal"></highlight></codeline>
@@ -315,7 +345,20 @@
 <codeline lineno="52"><highlight class="normal"></highlight></codeline>
 <codeline lineno="53"><highlight class="normal"><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref><sp/>*binarize(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*hypergraph);</highlight></codeline>
 <codeline lineno="54"><highlight class="normal"></highlight></codeline>
-<codeline lineno="55"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/><sp/>//<sp/>HYPERGRAPH_ALGORITHMS_H_</highlight></codeline>
+<codeline lineno="55" refid="structLatticeLabel" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structLatticeLabel" kindref="compound">LatticeLabel</ref><sp/>{</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structLatticeLabel" kindref="compound">LatticeLabel</ref>()<sp/>{}</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><ref refid="structLatticeLabel" kindref="compound">LatticeLabel</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i_,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j_)<sp/>:<sp/>i(i_),<sp/>j(j_)<sp/>{}</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i,<sp/>j;</highlight></codeline>
+<codeline lineno="59"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>*make_lattice(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>width,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>height,</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>vector&lt;vector&lt;int&gt;<sp/>&gt;<sp/>&amp;transitions,</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;LatticeLabel&gt;<sp/>*labels);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/><sp/>//<sp/>HYPERGRAPH_ALGORITHMS_H_</highlight></codeline>
     </programlisting>
     <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.h"/>
   </compounddef>

@@ -14,11 +14,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="93" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="93" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="94" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="94" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classBackPointers_1af74668f804df8d06e0407559e9d4adea" prot="protected" static="no" mutable="no">
-        <type>vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt;</type>
-        <definition>vector&lt; HEdge &gt; BackPointers::chart_</definition>
+      <memberdef kind="variable" id="classBackPointers_1aec00391960833e69fc51d8aeee5ca4e6" prot="protected" static="no" mutable="no">
+        <type>vector&lt; HEdge &gt;</type>
+        <definition>vector&lt;HEdge&gt; BackPointers::chart_</definition>
         <argsstring></argsstring>
         <name>chart_</name>
         <briefdescription>
@@ -27,7 +27,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="94" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="94" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="95" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classBackPointers_1a50d7fca44b36809e912ff0b0ce2c025e" prot="protected" static="no" mutable="no">
+        <type>HEdge *</type>
+        <definition>HEdge* BackPointers::chart_</definition>
+        <argsstring></argsstring>
+        <name>chart_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="108" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="108" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -46,10 +59,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="72" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="70" bodyend="72"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="73" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="71" bodyend="73"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1ae11ee23308b11405416ecfacbb325441" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+        <type>HEdge</type>
         <definition>HEdge BackPointers::operator[]</definition>
         <argsstring>(HNode node) const </argsstring>
         <name>operator[]</name>
@@ -63,10 +76,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="74" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="74" bodyend="76"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="75" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="75" bodyend="77"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1a9b9aee2d0aa44abfbca0e0e8c56b9f61" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+        <type>HEdge</type>
         <definition>HEdge BackPointers::get</definition>
         <argsstring>(HNode node) const </argsstring>
         <name>get</name>
@@ -80,7 +93,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="78" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="78" bodyend="78"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="79" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="79" bodyend="79"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1a97ea315a253ffe1c35ec6ca7535e42cb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -92,7 +105,7 @@
           <declname>node</declname>
         </param>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>val</declname>
         </param>
         <briefdescription>
@@ -101,7 +114,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="79" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="79" bodyend="81"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="80" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="80" bodyend="82"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1abd9b96838680dc7f7fb37702bed29f64" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -118,7 +131,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="83" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="83" bodyend="88"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="84" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="84" bodyend="89"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1ac4a621fc10e2e7b2ebf83401b2fa30ec" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classHyperpath" kindref="compound">Hyperpath</ref> *</type>
@@ -131,7 +144,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="90" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.cpp" bodystart="119" bodyend="139"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="91" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.cpp" bodystart="117" bodyend="137"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1ac08402e6a7b2633473adca72be591214" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -148,10 +161,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="72" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="70" bodyend="72"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="81" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="80" bodyend="86"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1ae11ee23308b11405416ecfacbb325441" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+        <type>HEdge</type>
         <definition>HEdge BackPointers::operator[]</definition>
         <argsstring>(HNode node) const </argsstring>
         <name>operator[]</name>
@@ -165,10 +178,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="74" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="74" bodyend="76"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="88" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="88" bodyend="90"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1a9b9aee2d0aa44abfbca0e0e8c56b9f61" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+        <type>HEdge</type>
         <definition>HEdge BackPointers::get</definition>
         <argsstring>(HNode node) const </argsstring>
         <name>get</name>
@@ -182,7 +195,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="78" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="78" bodyend="78"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="92" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="92" bodyend="92"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1a97ea315a253ffe1c35ec6ca7535e42cb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -194,7 +207,7 @@
           <declname>node</declname>
         </param>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>val</declname>
         </param>
         <briefdescription>
@@ -203,7 +216,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="79" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="79" bodyend="81"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="93" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="93" bodyend="95"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1abd9b96838680dc7f7fb37702bed29f64" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -220,7 +233,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="83" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="83" bodyend="88"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="97" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" bodystart="97" bodyend="102"/>
       </memberdef>
       <memberdef kind="function" id="classBackPointers_1aaebff6b90e3b01318584cdf6b93c96bd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classHyperpath" kindref="compound">Hyperpath</ref> *</type>
@@ -233,7 +246,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="90"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.h" line="104"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -241,23 +254,24 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="8">
+      <node id="10">
         <label>BackPointers</label>
         <link refid="classBackPointers"/>
-        <childnode refid="9" relation="usage">
+        <childnode refid="11" relation="usage">
           <edgelabel>graph_</edgelabel>
         </childnode>
       </node>
-      <node id="9">
+      <node id="11">
         <label>Hypergraph</label>
         <link refid="classHypergraph"/>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="68" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="68" bodyend="95"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" line="69" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/SemiringAlgorithms.h" bodystart="69" bodyend="96"/>
     <listofallmembers>
       <member refid="classBackPointers_1ac08402e6a7b2633473adca72be591214" prot="public" virt="non-virtual"><scope>BackPointers</scope><name>BackPointers</name></member>
       <member refid="classBackPointers_1ac08402e6a7b2633473adca72be591214" prot="public" virt="non-virtual"><scope>BackPointers</scope><name>BackPointers</name></member>
-      <member refid="classBackPointers_1af74668f804df8d06e0407559e9d4adea" prot="protected" virt="non-virtual"><scope>BackPointers</scope><name>chart_</name></member>
+      <member refid="classBackPointers_1aec00391960833e69fc51d8aeee5ca4e6" prot="protected" virt="non-virtual"><scope>BackPointers</scope><name>chart_</name></member>
+      <member refid="classBackPointers_1a50d7fca44b36809e912ff0b0ce2c025e" prot="protected" virt="non-virtual"><scope>BackPointers</scope><name>chart_</name></member>
       <member refid="classBackPointers_1abd9b96838680dc7f7fb37702bed29f64" prot="public" virt="non-virtual"><scope>BackPointers</scope><name>check</name></member>
       <member refid="classBackPointers_1abd9b96838680dc7f7fb37702bed29f64" prot="public" virt="non-virtual"><scope>BackPointers</scope><name>check</name></member>
       <member refid="classBackPointers_1ac4a621fc10e2e7b2ebf83401b2fa30ec" prot="public" virt="non-virtual"><scope>BackPointers</scope><name>construct_path</name></member>

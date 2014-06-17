@@ -23,7 +23,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="253" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="253" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="288" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="288" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classCompPotential_1a06cfdec71e4521d878df68bf2884054b" prot="public" static="no">
         <type>std::pair&lt; typename SemiringFirst::ValType, typename SemiringSecond::ValType &gt;</type>
@@ -36,7 +36,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="253" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="253" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="329" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="329" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classCompPotential_1a06cfdec71e4521d878df68bf2884054b" prot="public" static="no">
+        <type>std::pair&lt; typename SemiringFirst::ValType, typename SemiringSecond::ValType &gt;</type>
+        <definition>typedef std::pair&lt;typename SemiringFirst::ValType, typename SemiringSecond::ValType&gt; CompPotential&lt; SemiringFirst, SemiringSecond &gt;::ValType</definition>
+        <argsstring></argsstring>
+        <name>ValType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="329" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="329" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
@@ -59,7 +72,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="255" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="255" bodyend="258"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="290" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="290" bodyend="293"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1ac8eccf72b1954a0b316a2d5789fe085d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -80,7 +93,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="259" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="259" bodyend="263"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="294" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="294" bodyend="298"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1ae7d11fecaf382f15e5699c1e5047fc3f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -101,7 +114,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="265" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="265" bodyend="268"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="300" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="300" bodyend="303"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1ac9e8f37e13c0bb60b37b92eaf00a8341" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -122,7 +135,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="269" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="269" bodyend="273"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="304" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="304" bodyend="308"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1a4def6ad8a6dbea531e3f175986ba9e46" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -135,7 +148,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="275" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="275" bodyend="277"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="310" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="310" bodyend="312"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1a633579f978b10af5c84399d4fb6e242c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -148,7 +161,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="278" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="278" bodyend="280"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="313" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="313" bodyend="315"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1a1345bed6be44a52fa9b84fd429fbeb78" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType &amp;</type>
@@ -165,7 +178,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="282" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="282" bodyend="286"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="317" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="317" bodyend="321"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1ac1315289a7c1809392ccd6de1ae8c3e4" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -178,7 +191,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="288" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="288" bodyend="290"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="323" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="323" bodyend="325"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1ad3f34e7e1aa70a68649a67435297e765" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -199,7 +212,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="255" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="255" bodyend="258"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="331" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="331" bodyend="334"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1ac8eccf72b1954a0b316a2d5789fe085d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -220,7 +233,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="259" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="259" bodyend="263"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="335" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="335" bodyend="339"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1ae7d11fecaf382f15e5699c1e5047fc3f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -241,7 +254,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="265" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="265" bodyend="268"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="341" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="341" bodyend="344"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1ac9e8f37e13c0bb60b37b92eaf00a8341" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -262,7 +275,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="269" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="269" bodyend="273"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="345" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="345" bodyend="349"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1a4def6ad8a6dbea531e3f175986ba9e46" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -275,7 +288,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="275" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="275" bodyend="277"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="351" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="351" bodyend="353"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1a633579f978b10af5c84399d4fb6e242c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -288,7 +301,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="278" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="278" bodyend="280"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="354" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="354" bodyend="356"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1a1345bed6be44a52fa9b84fd429fbeb78" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType &amp;</type>
@@ -305,7 +318,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="282" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="282" bodyend="286"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="358" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="358" bodyend="362"/>
       </memberdef>
       <memberdef kind="function" id="classCompPotential_1ac1315289a7c1809392ccd6de1ae8c3e4" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -318,31 +331,180 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="288" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="288" bodyend="290"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="364" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="364" bodyend="366"/>
+      </memberdef>
+      <memberdef kind="function" id="classCompPotential_1ad3f34e7e1aa70a68649a67435297e765" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CompPotential&lt; SemiringFirst, SemiringSecond &gt;::add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="331" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="331" bodyend="334"/>
+      </memberdef>
+      <memberdef kind="function" id="classCompPotential_1ac8eccf72b1954a0b316a2d5789fe085d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CompPotential&lt; SemiringFirst, SemiringSecond &gt;::times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>times</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="335" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="335" bodyend="339"/>
+      </memberdef>
+      <memberdef kind="function" id="classCompPotential_1ae7d11fecaf382f15e5699c1e5047fc3f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CompPotential&lt; SemiringFirst, SemiringSecond &gt;::safe_add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="341" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="341" bodyend="344"/>
+      </memberdef>
+      <memberdef kind="function" id="classCompPotential_1ac9e8f37e13c0bb60b37b92eaf00a8341" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CompPotential&lt; SemiringFirst, SemiringSecond &gt;::safe_times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_times</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="345" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="345" bodyend="349"/>
+      </memberdef>
+      <memberdef kind="function" id="classCompPotential_1a4def6ad8a6dbea531e3f175986ba9e46" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CompPotential&lt; SemiringFirst, SemiringSecond &gt;::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="351" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="351" bodyend="353"/>
+      </memberdef>
+      <memberdef kind="function" id="classCompPotential_1a633579f978b10af5c84399d4fb6e242c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CompPotential&lt; SemiringFirst, SemiringSecond &gt;::zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="354" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="354" bodyend="356"/>
+      </memberdef>
+      <memberdef kind="function" id="classCompPotential_1a1345bed6be44a52fa9b84fd429fbeb78" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType &amp;</type>
+        <definition>static ValType&amp; CompPotential&lt; SemiringFirst, SemiringSecond &gt;::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type>ValType &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="358" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="358" bodyend="362"/>
+      </memberdef>
+      <memberdef kind="function" id="classCompPotential_1ac1315289a7c1809392ccd6de1ae8c3e4" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CompPotential&lt; SemiringFirst, SemiringSecond &gt;::randValue</definition>
+        <argsstring>()</argsstring>
+        <name>randValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="364" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="364" bodyend="366"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Comparison pair. <emphasis>Experimental</emphasis> Type (s, t) op (s&apos;, t&apos;) +: if (s &gt; s&apos;) then (s, t) else (s&apos;, t&apos;) *: (s * s&apos;, t * t&apos;) 0: (0, 0) 1: (1, 1) </para>    </detaileddescription>
-    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="250" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="250" bodyend="291"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="285" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="285" bodyend="326"/>
     <listofallmembers>
       <member refid="classCompPotential_1ad3f34e7e1aa70a68649a67435297e765" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>add</name></member>
       <member refid="classCompPotential_1ad3f34e7e1aa70a68649a67435297e765" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>add</name></member>
+      <member refid="classCompPotential_1ad3f34e7e1aa70a68649a67435297e765" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>add</name></member>
+      <member refid="classCompPotential_1a1345bed6be44a52fa9b84fd429fbeb78" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>normalize</name></member>
       <member refid="classCompPotential_1a1345bed6be44a52fa9b84fd429fbeb78" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>normalize</name></member>
       <member refid="classCompPotential_1a1345bed6be44a52fa9b84fd429fbeb78" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>normalize</name></member>
       <member refid="classCompPotential_1a4def6ad8a6dbea531e3f175986ba9e46" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>one</name></member>
       <member refid="classCompPotential_1a4def6ad8a6dbea531e3f175986ba9e46" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>one</name></member>
+      <member refid="classCompPotential_1a4def6ad8a6dbea531e3f175986ba9e46" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>one</name></member>
+      <member refid="classCompPotential_1ac1315289a7c1809392ccd6de1ae8c3e4" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>randValue</name></member>
       <member refid="classCompPotential_1ac1315289a7c1809392ccd6de1ae8c3e4" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>randValue</name></member>
       <member refid="classCompPotential_1ac1315289a7c1809392ccd6de1ae8c3e4" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>randValue</name></member>
       <member refid="classCompPotential_1ae7d11fecaf382f15e5699c1e5047fc3f" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>safe_add</name></member>
       <member refid="classCompPotential_1ae7d11fecaf382f15e5699c1e5047fc3f" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>safe_add</name></member>
+      <member refid="classCompPotential_1ae7d11fecaf382f15e5699c1e5047fc3f" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>safe_add</name></member>
+      <member refid="classCompPotential_1ac9e8f37e13c0bb60b37b92eaf00a8341" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>safe_times</name></member>
       <member refid="classCompPotential_1ac9e8f37e13c0bb60b37b92eaf00a8341" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>safe_times</name></member>
       <member refid="classCompPotential_1ac9e8f37e13c0bb60b37b92eaf00a8341" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>safe_times</name></member>
       <member refid="classCompPotential_1ac8eccf72b1954a0b316a2d5789fe085d" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>times</name></member>
       <member refid="classCompPotential_1ac8eccf72b1954a0b316a2d5789fe085d" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>times</name></member>
+      <member refid="classCompPotential_1ac8eccf72b1954a0b316a2d5789fe085d" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>times</name></member>
       <member refid="classCompPotential_1a06cfdec71e4521d878df68bf2884054b" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>ValType</name></member>
       <member refid="classCompPotential_1a06cfdec71e4521d878df68bf2884054b" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>ValType</name></member>
+      <member refid="classCompPotential_1a06cfdec71e4521d878df68bf2884054b" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>ValType</name></member>
+      <member refid="classCompPotential_1a633579f978b10af5c84399d4fb6e242c" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>zero</name></member>
       <member refid="classCompPotential_1a633579f978b10af5c84399d4fb6e242c" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>zero</name></member>
       <member refid="classCompPotential_1a633579f978b10af5c84399d4fb6e242c" prot="public" virt="non-virtual"><scope>CompPotential</scope><name>zero</name></member>
     </listofallmembers>

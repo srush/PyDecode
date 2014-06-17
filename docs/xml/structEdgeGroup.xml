@@ -4,7 +4,7 @@
     <compoundname>EdgeGroup</compoundname>
       <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structEdgeGroup_1ab9b156dc31d37bdf23e601281609568e" prot="public" static="no" mutable="no">
-        <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+        <type>HEdge</type>
         <definition>HEdge EdgeGroup::edge</definition>
         <argsstring></argsstring>
         <name>edge</name>
@@ -37,7 +37,7 @@
         <argsstring>(HEdge _edge, int back_left, int back_right)</argsstring>
         <name>EdgeGroup</name>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>_edge</declname>
         </param>
         <param>
@@ -62,7 +62,7 @@
         <argsstring>(HEdge _edge, int back_left, int back_right)</argsstring>
         <name>EdgeGroup</name>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>_edge</declname>
         </param>
         <param>
@@ -79,26 +79,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="82" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="81" bodyend="85"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="46" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="45" bodyend="49"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <collaborationgraph>
-      <node id="38">
-        <label>Hyperedge</label>
-        <link refid="classHyperedge"/>
-      </node>
-      <node id="37">
-        <label>EdgeGroup</label>
-        <link refid="structEdgeGroup"/>
-        <childnode refid="38" relation="usage">
-          <edgelabel>edge</edgelabel>
-        </childnode>
-      </node>
-    </collaborationgraph>
     <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" line="80" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="80" bodyend="88"/>
     <listofallmembers>
       <member refid="structEdgeGroup_1a2e3e121ef3cafdb5cb39aef0016274d9" prot="public" virt="non-virtual"><scope>EdgeGroup</scope><name>back</name></member>

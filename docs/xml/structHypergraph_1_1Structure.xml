@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structHypergraph_1_1Structure" kind="struct" prot="private">
+    <compoundname>Hypergraph::Structure</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structHypergraph_1_1Structure_1a41abf6b8b32c8880f131e3281db8d41a" prot="public" static="no" mutable="no">
+        <type>vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt;</type>
+        <definition>vector&lt; HNode &gt; Hypergraph::Structure::nodes_</definition>
+        <argsstring></argsstring>
+        <name>nodes_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="266" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="266" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structHypergraph_1_1Structure_1ae4897fc4e68deb0cc9917d9f747caeae" prot="public" static="no" mutable="no">
+        <type>vector&lt; HEdge &gt;</type>
+        <definition>vector&lt; HEdge &gt; Hypergraph::Structure::edges_</definition>
+        <argsstring></argsstring>
+        <name>edges_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="268" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="268" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structHypergraph_1_1Structure_1aac9016b11319c7bbe71a3a6c39c4aa07" prot="public" static="no" mutable="no">
+        <type>vector&lt; vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; &gt;</type>
+        <definition>vector&lt; vector&lt; HNode &gt; &gt; Hypergraph::Structure::edge_tails_</definition>
+        <argsstring></argsstring>
+        <name>edge_tails_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="269" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="269" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structHypergraph_1_1Structure_1a0d1fd834cf2afeeb7b99f877847aa390" prot="public" static="no" mutable="no">
+        <type>vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt;</type>
+        <definition>vector&lt; HNode &gt; Hypergraph::Structure::edge_tails_unary_</definition>
+        <argsstring></argsstring>
+        <name>edge_tails_unary_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="270" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="270" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structHypergraph_1_1Structure_1a2998572bd22cebff6cb29c0fdbf0def5" prot="public" static="no" mutable="no">
+        <type>vector&lt; pair&lt; <ref refid="classHypernode" kindref="compound">HNode</ref>, <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; &gt;</type>
+        <definition>vector&lt; pair&lt; HNode, HNode &gt; &gt; Hypergraph::Structure::edge_tails_binary_</definition>
+        <argsstring></argsstring>
+        <name>edge_tails_binary_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="271" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="271" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structHypergraph_1_1Structure_1a1eec9ec3dba338ee89c123e59a98a9e0" prot="public" static="no" mutable="no">
+        <type>vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt;</type>
+        <definition>vector&lt; HNode &gt; Hypergraph::Structure::edge_heads_</definition>
+        <argsstring></argsstring>
+        <name>edge_heads_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="272" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="272" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structHypergraph_1_1Structure_1a48ff43c746d6458c84093c6af50372af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Hypergraph::Structure::Structure</definition>
+        <argsstring>(int num_nodes, int num_edges, int max_arity)</argsstring>
+        <name>Structure</name>
+        <param>
+          <type>int</type>
+          <declname>num_nodes</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_edges</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>max_arity</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="254" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="254" bodyend="263"/>
+      </memberdef>
+      <memberdef kind="function" id="structHypergraph_1_1Structure_1a1c68b8cc4c6b580a49413fdeb302d0d3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Hypergraph::Structure::Structure</definition>
+        <argsstring>()</argsstring>
+        <name>Structure</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="264" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="264" bodyend="264"/>
+      </memberdef>
+      <memberdef kind="function" id="structHypergraph_1_1Structure_1a48ff43c746d6458c84093c6af50372af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Hypergraph::Structure::Structure</definition>
+        <argsstring>(int num_nodes, int num_edges, int max_arity)</argsstring>
+        <name>Structure</name>
+        <param>
+          <type>int</type>
+          <declname>num_nodes</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_edges</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>max_arity</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph_flymake.h" line="254" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph_flymake.h" bodystart="254" bodyend="263"/>
+      </memberdef>
+      <memberdef kind="function" id="structHypergraph_1_1Structure_1a1c68b8cc4c6b580a49413fdeb302d0d3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Hypergraph::Structure::Structure</definition>
+        <argsstring>()</argsstring>
+        <name>Structure</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph_flymake.h" line="264" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph_flymake.h" bodystart="264" bodyend="264"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" line="253" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Hypergraph.h" bodystart="253" bodyend="273"/>
+    <listofallmembers>
+      <member refid="structHypergraph_1_1Structure_1a1eec9ec3dba338ee89c123e59a98a9e0" prot="public" virt="non-virtual"><scope>Hypergraph::Structure</scope><name>edge_heads_</name></member>
+      <member refid="structHypergraph_1_1Structure_1aac9016b11319c7bbe71a3a6c39c4aa07" prot="public" virt="non-virtual"><scope>Hypergraph::Structure</scope><name>edge_tails_</name></member>
+      <member refid="structHypergraph_1_1Structure_1a2998572bd22cebff6cb29c0fdbf0def5" prot="public" virt="non-virtual"><scope>Hypergraph::Structure</scope><name>edge_tails_binary_</name></member>
+      <member refid="structHypergraph_1_1Structure_1a0d1fd834cf2afeeb7b99f877847aa390" prot="public" virt="non-virtual"><scope>Hypergraph::Structure</scope><name>edge_tails_unary_</name></member>
+      <member refid="structHypergraph_1_1Structure_1ae4897fc4e68deb0cc9917d9f747caeae" prot="public" virt="non-virtual"><scope>Hypergraph::Structure</scope><name>edges_</name></member>
+      <member refid="structHypergraph_1_1Structure_1a41abf6b8b32c8880f131e3281db8d41a" prot="public" virt="non-virtual"><scope>Hypergraph::Structure</scope><name>nodes_</name></member>
+      <member refid="structHypergraph_1_1Structure_1a48ff43c746d6458c84093c6af50372af" prot="public" virt="non-virtual"><scope>Hypergraph::Structure</scope><name>Structure</name></member>
+      <member refid="structHypergraph_1_1Structure_1a1c68b8cc4c6b580a49413fdeb302d0d3" prot="public" virt="non-virtual"><scope>Hypergraph::Structure</scope><name>Structure</name></member>
+      <member refid="structHypergraph_1_1Structure_1a48ff43c746d6458c84093c6af50372af" prot="public" virt="non-virtual"><scope>Hypergraph::Structure</scope><name>Structure</name></member>
+      <member refid="structHypergraph_1_1Structure_1a1c68b8cc4c6b580a49413fdeb302d0d3" prot="public" virt="non-virtual"><scope>Hypergraph::Structure</scope><name>Structure</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

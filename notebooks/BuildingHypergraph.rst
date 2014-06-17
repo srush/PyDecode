@@ -58,8 +58,8 @@ defining a function to map labels to potentials.
         if "Second" in label: return 5
         if "Third" in label: return 5
         return 0
-    potentials = ph.Potentials(hyper1).from_vector([build_potentials(edge.label) 
-                                                    for edge in hyper1.edges])
+    potentials = ph.LogViterbiPotentials(hyper1).from_vector((build_potentials(edge.label) 
+                                                    for edge in hyper1.edges))
 .. code:: python
 
     for edge in hyper1.edges:

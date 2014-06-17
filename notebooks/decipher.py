@@ -3,7 +3,7 @@
 
 # This is a note on running decipherment.
 
-# In[101]:
+# In[41]:
 
 from nltk.util import ngrams
 from nltk.model.ngram import NgramModel
@@ -31,7 +31,7 @@ simple_problem = Problem("ababacabac ")
 simple_problem.make_cipher("abac")
 
 
-# In[102]:
+# In[42]:
 
 import pydecode.hyper as hyper
 import pydecode.display as display
@@ -39,7 +39,7 @@ import pydecode.constraints as cons
 from collections import namedtuple        
 
 
-# In[103]:
+# In[43]:
 
 class Conversion(namedtuple("Conversion", ["i", "cipherletter", "prevletter", "letter"])):
     __slots__ = ()
@@ -51,7 +51,7 @@ class Node(namedtuple("Node", ["i", "cipherletter", "letter"])):
         return "%s %s %s"%(self.i, self.cipherletter, self.letter)
 
 
-# In[104]:
+# In[44]:
 
 def build_cipher_graph(problem):
     ciphertext = problem.ciphertext
@@ -77,12 +77,12 @@ def build_cipher_graph(problem):
     return hypergraph
 
 
-# In[105]:
+# In[45]:
 
 hyper1 = build_cipher_graph(simple_problem)
 
 
-# In[106]:
+# In[46]:
 
 class CipherFormat(display.HypergraphPathFormatter):
     def hypernode_attrs(self, node):
@@ -97,11 +97,11 @@ class CipherFormat(display.HypergraphPathFormatter):
 CipherFormat(hyper1, []).to_ipython()
 
 
-# Out[106]:
+# Out[46]:
 
-#     <IPython.core.display.Image at 0x33a4f90>
+#     <IPython.core.display.Image at 0x491cd50>
 
-# In[106]:
+# In[46]:
 
 
 
@@ -110,7 +110,7 @@ CipherFormat(hyper1, []).to_ipython()
 # 
 # l^2 constraints
 
-# In[107]:
+# In[47]:
 
 def build_constraints(hypergraph, problem):
     ciphertext = problem.ciphertext
@@ -141,36 +141,36 @@ def build_constraints(hypergraph, problem):
 constraints = build_constraints(hyper1, simple_problem)
 
 
-# In[108]:
+# In[48]:
 
 def build_potentials(edge):
     return random.random()
-potentials = hyper.Potentials(hyper1).from_vector([build_potentials(node.label) 
+potentials = hyper.LogViterbiPotentials(hyper1).from_vector([build_potentials(node.label) 
                                                    for node in hyper1.nodes])
 
 
-# In[109]:
+# In[49]:
 
 for edge in hyper1.edges:
     print potentials[edge]
 
 
-# Out[109]:
+# Out[49]:
 
-#     0.18738485935
-#     0.472104200234
-#     0.601083619451
-#     0.926199823358
-#     0.472726063032
-#     0.272371839332
-#     0.6717332954
-#     0.919803900784
-#     0.400676874512
-#     0.319032345118
-#     0.0858441054396
-#     0.17732106776
-#     0.166267944361
-#     0.677231007635
+#     0.0764546410063
+#     0.627081863809
+#     0.0661244842873
+#     0.311587044669
+#     0.836643013106
+#     0.0962409740027
+#     0.0366856407542
+#     0.608319172251
+#     0.0415800024809
+#     0.190480334343
+#     0.44535181756
+#     0.365934762998
+#     0.619941764689
+#     0.358337453464
 #     0.0
 #     0.0
 #     0.0
@@ -192,74 +192,74 @@ for edge in hyper1.edges:
 #     0.0
 # 
 
-# In[110]:
+# In[50]:
 
 path = hyper.best_path(hyper1, potentials)
 potentials.dot(path)
 
 
-# Out[110]:
+# Out[50]:
 
-#     2.0691391086535877
+#     2.083666641604527
 
-# In[111]:
+# In[51]:
 
 import pydecode.optimization as opt
 cpath = opt.best_constrained_path(hyper1, potentials, constraints)
 
 
-# In[112]:
+# In[52]:
 
 CipherFormat(hyper1, [cpath]).to_ipython()
 
 
-# Out[112]:
+# Out[52]:
 
-#     <IPython.core.display.Image at 0x34180d0>
+#     <IPython.core.display.Image at 0x2df9290>
 
-# In[113]:
+# In[53]:
 
 print potentials.dot(cpath)
 constraints.check(cpath)
 
 
-# Out[113]:
+# Out[53]:
 
-#     0.0
+#     1.46372487692
 # 
 
 #     []
 
 # Real Problem
 
-# In[114]:
+# In[54]:
 
 complicated_problem = Problem("this is the president calling blah blah abadadf adfadf")
 complicated_problem.make_cipher("this is the president calling")
 
 
-# In[115]:
+# In[55]:
 
 hyper2 = build_cipher_graph(complicated_problem)
 
 
-# In[116]:
+# In[56]:
 
 
-potentials2 = hyper.Potentials(hyper2).from_vector([math.log(complicated_problem.lm.prob(edge.label.letter, edge.label.prevletter)) for edge in hyper2.edges])
+potentials2 = hyper.LogViterbiPotentials(hyper2).from_vector([math.log(complicated_problem.lm.prob(edge.label.letter, edge.label.prevletter)) for edge in hyper2.edges])
 
 
-# In[117]:
+# In[57]:
 
 print len(hyper2.edges)
 
 
-# Out[117]:
+# Out[57]:
 
 #     4650
 # 
 
-# In[118]:
+# In[58]:
 
 path2 = hyper.best_path(hyper2, potentials2)
 
@@ -269,7 +269,7 @@ for edge in path2.edges:
 potentials2.dot(path2)
 
 
-# Out[118]:
+# Out[58]:
 
 #     11
 #     -2.07941654387
@@ -335,31 +335,31 @@ potentials2.dot(path2)
 
 #     -21.751856464057795
 
-# In[119]:
+# In[59]:
 
 # new_hyper, new_potentials = hyper.prune_hypergraph(hyper2, potentials2, 0.2)
 # constraints2 = build_constraints(new_hyper, complicated_problem)
 
 
-# In[120]:
+# In[60]:
 
 # print hyper2.edges_size
 # new_hyper.edges_size
 
 
-# In[121]:
+# In[61]:
 
 # display.report(duals)
 
 
-# In[122]:
+# In[62]:
 
 # path2, duals = hyper.best_constrained(new_hyper, new_potentials, constraints2)
 
 
 # Potentials are the bigram language model scores.
 
-# In[123]:
+# In[63]:
 
 # path2 = hyper.best_path(hyper2, potentials2)
 # print potentials2.dot(path2)

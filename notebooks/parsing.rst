@@ -5,107 +5,109 @@ Tutorial 4: Dependency Parsing
 
 .. code:: python
 
-    sentence = "the man walked to the park"
-.. code:: python
-
     import pydecode.hyper as ph
     import pydecode.display as display
-    from collections import namedtuple, defaultdict
-    import random
+    import numpy as np
+    import numpy.random
+    import pandas as pd
     random.seed(0)
 .. code:: python
 
-    Tri = "tri"
-    Trap = "trap"
-    Right = "right"
-    Left = "left"
-    class NodeType(namedtuple("NodeType", ["type", "dir", "span"])):
-        def __str__(self):
-            return "%s %s %d-%d"%(self.type, self.dir, self.span[0], self.span[1])
+    Tri = 0; Trap = 1
+    Right = 0; Left = 1
     
-    class Arc(namedtuple("Arc", ["head_index", "modifier_index"])):
-        pass
+    def item_set(n):
+        return ph.IndexSet((2, 2, n+1, n+1))
+    
+    def output_set(n):
+        return ph.IndexSet((n+1, n+1))
+
 .. code:: python
 
-    def first_order(sentence, c):
-        tokens = ["*"] + sentence.split()
-        n = len(tokens)
+    def eisner_first_order(n):
+        outputs = output_set(n)
+        items = item_set(n)
+        c = ph.ChartBuilder(
+            output_set=outputs,
+            item_set=items)
     
         # Add terminal nodes.
-        [c.init(NodeType(sh, d, (s, s)))
-         for s in range(n) 
-         for d in [Right, Left]
-         for sh in [Trap, Tri]]
-        
+        for s in range(n):
+            for d in [Right, Left]:
+                for sh in [Tri]:
+                    if s == 0 and d == Left: continue
+                    c[sh, d, s, s] = c.init()
+    
         for k in range(1, n):
             for s in range(n):
                 t = k + s
                 if t >= n: break
-                span = (s, t)
-                
-                # First create incomplete items.            
-                c[NodeType(Trap, Left, span)] = \
-                    c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))] * c.sr(Arc(r, s))
-                           for r in range(s, t)])
     
-                c[NodeType(Trap, Right, span)] = \
-                    c.sum([c[NodeType(Tri, Right, (s, r))] * c[NodeType(Tri, Left, (r+1, t))] * c.sr(Arc(head_index=s, modifier_index=r))
-                           for r in range(s, t)])
-                
-                # Second create complete items.
-                c[NodeType(Tri, Left, span)] = \
-                    c.sum([c[NodeType(Tri, Left, (s, r))] * c[NodeType(Trap, Left, (r, t))]
-                           for r in range(s, t)])
+                # First create incomplete items.
+                if s != 0:
+                    c[Trap, Left, s, t] = \
+                          [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
+                           values=[(t, s)])
+                           for r in range(s, t)]
     
-                c[NodeType(Tri, Right, span)] = \
-                    c.sum([c[NodeType(Trap, Right, (s, r))] * c[NodeType(Tri, Right, (r, t))]
-                           for r in range(s + 1, t + 1)])
+                c[Trap, Right, s, t] = \
+                      [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
+                               values=[(s, t)])
+                       for r in range(s, t)]
+    
+                if s != 0:
+                    c[Tri, Left, s, t] = \
+                        [c.merge((Tri, Left, s, r), (Trap, Left, r, t),
+                                 values=[])
+                         for r in range(s, t)]
+    
+                c[Tri, Right, s, t] = \
+                      [c.merge((Trap, Right, s, r), (Tri, Right, r, t),
+                               values=[])
+                       for r in range(s + 1, t + 1)]
+    
         return c
-    import pydecode.chart as chart
+.. code:: python
+
+    chart = eisner_first_order(3)
+    hypergraph = chart.finish()
+    output_mat = chart.matrix()
+    item_mat = chart.item_matrix()
+    items = item_set(3)
+    outputs = output_set(3)
+.. code:: python
+
     sentence = "fans went wild"
-    c = chart.ChartBuilder(lambda a: a, 
-                           chart.HypergraphSemiRing, 
-                           build_hypergraph = True, strict=False)
-    the_chart = first_order(sentence, c)
-    hypergraph = the_chart.finish()
-.. code:: python
-
-    
-    potentials = ph.Potentials(hypergraph).from_vector([random.random() 
-                                                        for i in range(len(hypergraph.edges))])
-.. code:: python
-
+    potentials = np.random.random(len(hypergraph.edges))
     path = ph.best_path(hypergraph, potentials)
-    best = potentials.dot(path)
-    maxmarginals = ph.compute_marginals(hypergraph, potentials)
-    avg = 0.0
-    for edge in hypergraph.edges:
-        avg += float(maxmarginals[edge])
-    avg = avg / float(len(hypergraph.edges))
-    thres = ((0.9) * best + (0.1) * avg)
-    
-    kept = set()
-    for edge in hypergraph.edges:
-        score = float(maxmarginals[edge])
-        if score >= thres:
-            kept.add(edge.id)
+    best = potentials.T * path.v
+    print map(outputs.element, (output_mat * path.v).nonzero()[0])
+
+.. parsed-literal::
+
+    [(1, 2), (0, 1)]
+
+
 .. code:: python
 
-    potentials = ph.InsidePotentials(hypergraph).\
-                    from_vector([random.random() 
-                                 for i in range(len(hypergraph.edges))])
-    marginals = ph.compute_marginals(hypergraph, potentials)
-    base = marginals[hypergraph.root]
+    mat = np.reshape(output_mat *  edge_marginals, (4, 4)).T
+    plt.pcolor(mat.T)
+    plt.yticks(np.arange(0.5, len(df.index), 1), ["*"] + sentence.split())
+    plt.xticks(np.arange(0.5, len(df.columns), 1), ["*"] + sentence.split())
+    None
+
+
+.. image:: parsing_files/parsing_6_0.png
+
+
 .. code:: python
 
-    projection = ph.prune_hypergraph(hypergraph, potentials, 0.1)
-    phyper = projection[hypergraph]
-    ppotentials = projection[potentials]
-.. code:: python
-
-    import pydecode.lp as lp
-    hyperlp = lp.HypergraphLP.make_lp(phyper, ppotentials)
-    hyperlp.lp.writeLP("parse.lp")
+    node_marginals, edge_marginals = ph.marginals(hypergraph, potentials)
+    avg = np.sum(edge_marginals) / len(hypergraph.edges)
+    thres = 0.4 * best + 0.6 * avg
+    edge_filter = np.array(edge_marginals >=thres, dtype=np.int8)
+    _, projection, pruned_hyper = ph.project(hypergraph, edge_filter)
+    pruned_potentials = projection * potentials
 .. code:: python
 
     class ParseFormat(display.HypergraphPathFormatter):
@@ -118,20 +120,20 @@ Tutorial 4: Dependency Parsing
         def hypernode_attrs(self, node):
             label = node.label
             return {"image": 
-                    ("triangle" if label.type == Tri else "trap") + "-" + 
-                    ("right" if label.dir == Right else "left") + ".png",
+                    ("triangle" if label[0] == Tri else "trap") + "-" + 
+                    ("right" if label[1] == Right else "left") + ".png",
                     "labelloc": "t",
                     "shape": "rect",
                     "style" : "dashed",
-                    "label": "%d-%d"%(label.span[0], label.span[1]) 
-                    if label.span[0] != label.span[1] else 
-                    (["*"] + sentence.split())[label.span[0]],
+                    "label": "%d-%d"%(label[2], label[3]) 
+                    if label[2] != label[3] else 
+                    (["*"] + sentence.split())[label[2]],
     
                     }
         def hypernode_subgraph(self, node):
             label = node.label
-            if label.span[0] == label.span[1]:
-                return [("clust_terminals", label.span[0] + (0.5 if label.dir == Right else 0))]
+            if label[2] == label[3]:
+                return [("clust_terminals", label[2] + (0.5 if label[1] == Right else 0))]
             return []
         def subgraph_format(self, subgraph):
             return {"rank": "same"}
@@ -146,18 +148,6 @@ Tutorial 4: Dependency Parsing
 
 
 
-.. image:: parsing_files/parsing_10_0.png
+.. image:: parsing_files/parsing_8_0.png
 
 
-
-.. code:: python
-
-    import networkx as nx
-    from networkx.readwrite import json_graph
-    import json
-    G = ParseFormat(hypergraph, sentence, path).to_graphviz()
-    G2 = nx.from_agraph(G)
-    d = json_graph.node_link_data(G2) # node-link format to serialize
-    # write json 
-    json.dump(d, open('force.json','w'))
-    #nx.write_gexf(G2, "test_graph.gexf")

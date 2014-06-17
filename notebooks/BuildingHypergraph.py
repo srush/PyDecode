@@ -1,12 +1,12 @@
 
 ## Hypergraph Interface
 
-# In[5]:
+# In[8]:
 
 import pydecode.hyper as ph
 
 
-# In[6]:
+# In[9]:
 
 hyper1 = ph.Hypergraph()
 
@@ -18,7 +18,7 @@ hyper1 = ph.Hypergraph()
 #    * A list of tail nodes for that edge. 
 #    * A label for that edge. 
 
-# In[7]:
+# In[10]:
 
 with hyper1.builder() as b:
     node_a = b.add_node(label = "a")
@@ -34,27 +34,27 @@ with hyper1.builder() as b:
 
 # We can also display the hypergraph to see our work.
 
-# In[8]:
+# In[11]:
 
 import pydecode.display as display
 display.HypergraphFormatter(hyper1).to_ipython()
 
 
-# Out[8]:
+# Out[11]:
 
-#     <IPython.core.display.Image at 0x29fe810>
+#     <IPython.core.display.Image at 0x2b86b10>
 
 # After creating the hypergraph we can assign additional property information. One useful property is to add potentials. We do this by defining a function to map labels to potentials.
 
-# In[11]:
+# In[12]:
 
 def build_potentials(label):
     if "First" in label: return 1
     if "Second" in label: return 5
     if "Third" in label: return 5
     return 0
-potentials = ph.Potentials(hyper1).from_vector([build_potentials(edge.label) 
-                                                for edge in hyper1.edges])
+potentials = ph.LogViterbiPotentials(hyper1).from_vector((build_potentials(edge.label) 
+                                                for edge in hyper1.edges))
 
 
 # In[13]:
@@ -94,4 +94,4 @@ display.HypergraphFormatter(hyper1).to_ipython()
 
 # Out[16]:
 
-#     <IPython.core.display.Image at 0x29e6610>
+#     <IPython.core.display.Image at 0x269ef10>

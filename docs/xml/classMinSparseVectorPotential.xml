@@ -4,6 +4,7 @@
     <compoundname>MinSparseVectorPotential</compoundname>
     <basecompoundref refid="classSparseVectorPotential" prot="public" virt="non-virtual">SparseVectorPotential</basecompoundref>
     <basecompoundref refid="classSparseVectorPotential" prot="public" virt="non-virtual">SparseVectorPotential</basecompoundref>
+    <basecompoundref refid="classSparseVectorPotential" prot="public" virt="non-virtual">SparseVectorPotential</basecompoundref>
       <sectiondef kind="public-type">
       <memberdef kind="typedef" id="classMinSparseVectorPotential_1a0d3ee2adf59eceeb693e3edbaecb0abf" prot="public" static="no">
         <type>SparseVector</type>
@@ -16,7 +17,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="368" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="368" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="403" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="403" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classMinSparseVectorPotential_1a0d3ee2adf59eceeb693e3edbaecb0abf" prot="public" static="no">
         <type>SparseVector</type>
@@ -29,7 +30,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="368" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="368" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="444" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="444" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classMinSparseVectorPotential_1a0d3ee2adf59eceeb693e3edbaecb0abf" prot="public" static="no">
+        <type>SparseVector</type>
+        <definition>typedef SparseVector MinSparseVectorPotential::ValType</definition>
+        <argsstring></argsstring>
+        <name>ValType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="444" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="444" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
@@ -52,7 +66,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="370" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="370" bodyend="374"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="405" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="405" bodyend="409"/>
       </memberdef>
       <memberdef kind="function" id="classMinSparseVectorPotential_1a652aeedbfc8a3891dd114e3d2a1ecf3c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -73,7 +87,28 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="370" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="370" bodyend="374"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="446" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="446" bodyend="450"/>
+      </memberdef>
+      <memberdef kind="function" id="classMinSparseVectorPotential_1a652aeedbfc8a3891dd114e3d2a1ecf3c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType MinSparseVectorPotential::add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="446" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="446" bodyend="450"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -81,49 +116,61 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="126">
+      <node id="151">
         <label>SparseVectorPotential</label>
         <link refid="classSparseVectorPotential"/>
       </node>
-      <node id="125">
+      <node id="150">
         <label>MinSparseVectorPotential</label>
         <link refid="classMinSparseVectorPotential"/>
-        <childnode refid="126" relation="public-inheritance">
+        <childnode refid="151" relation="public-inheritance">
         </childnode>
-        <childnode refid="126" relation="public-inheritance">
+        <childnode refid="151" relation="public-inheritance">
+        </childnode>
+        <childnode refid="151" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="128">
+      <node id="153">
         <label>SparseVectorPotential</label>
         <link refid="classSparseVectorPotential"/>
       </node>
-      <node id="127">
+      <node id="152">
         <label>MinSparseVectorPotential</label>
         <link refid="classMinSparseVectorPotential"/>
-        <childnode refid="128" relation="public-inheritance">
+        <childnode refid="153" relation="public-inheritance">
         </childnode>
-        <childnode refid="128" relation="public-inheritance">
+        <childnode refid="153" relation="public-inheritance">
+        </childnode>
+        <childnode refid="153" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="366" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="366" bodyend="375"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="401" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="401" bodyend="410"/>
     <listofallmembers>
       <member refid="classMinSparseVectorPotential_1a652aeedbfc8a3891dd114e3d2a1ecf3c" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>add</name></member>
       <member refid="classMinSparseVectorPotential_1a652aeedbfc8a3891dd114e3d2a1ecf3c" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>add</name></member>
+      <member refid="classMinSparseVectorPotential_1a652aeedbfc8a3891dd114e3d2a1ecf3c" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>add</name></member>
+      <member refid="classSparseVectorPotential_1a16ccf51e36b67d9b1bbc9e917205cdba" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>is_zero</name></member>
       <member refid="classSparseVectorPotential_1a16ccf51e36b67d9b1bbc9e917205cdba" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>is_zero</name></member>
       <member refid="classSparseVectorPotential_1a16ccf51e36b67d9b1bbc9e917205cdba" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>is_zero</name></member>
       <member refid="classSparseVectorPotential_1a7f92f5738f8d90c0dc59beb7af9e608a" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>normalize</name></member>
       <member refid="classSparseVectorPotential_1a7f92f5738f8d90c0dc59beb7af9e608a" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>normalize</name></member>
+      <member refid="classSparseVectorPotential_1a7f92f5738f8d90c0dc59beb7af9e608a" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>normalize</name></member>
+      <member refid="classSparseVectorPotential_1a2f70b3437d37150fc9945eb9ef0fa004" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>one</name></member>
       <member refid="classSparseVectorPotential_1a2f70b3437d37150fc9945eb9ef0fa004" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>one</name></member>
       <member refid="classSparseVectorPotential_1a2f70b3437d37150fc9945eb9ef0fa004" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>one</name></member>
       <member refid="classSparseVectorPotential_1a2428365f64570caba9d6e4c78b0598fb" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>randValue</name></member>
       <member refid="classSparseVectorPotential_1a2428365f64570caba9d6e4c78b0598fb" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>randValue</name></member>
+      <member refid="classSparseVectorPotential_1a2428365f64570caba9d6e4c78b0598fb" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>randValue</name></member>
+      <member refid="classSparseVectorPotential_1a93ef31582eb4a6ce954d5cf406f2474d" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>times</name></member>
       <member refid="classSparseVectorPotential_1a93ef31582eb4a6ce954d5cf406f2474d" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>times</name></member>
       <member refid="classSparseVectorPotential_1a93ef31582eb4a6ce954d5cf406f2474d" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>times</name></member>
       <member refid="classMinSparseVectorPotential_1a0d3ee2adf59eceeb693e3edbaecb0abf" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>ValType</name></member>
       <member refid="classMinSparseVectorPotential_1a0d3ee2adf59eceeb693e3edbaecb0abf" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>ValType</name></member>
+      <member refid="classMinSparseVectorPotential_1a0d3ee2adf59eceeb693e3edbaecb0abf" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>ValType</name></member>
+      <member refid="classSparseVectorPotential_1a8967755207f8cccdef02de50430ebca6" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>zero</name></member>
       <member refid="classSparseVectorPotential_1a8967755207f8cccdef02de50430ebca6" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>zero</name></member>
       <member refid="classSparseVectorPotential_1a8967755207f8cccdef02de50430ebca6" prot="public" virt="non-virtual"><scope>MinSparseVectorPotential</scope><name>zero</name></member>
     </listofallmembers>

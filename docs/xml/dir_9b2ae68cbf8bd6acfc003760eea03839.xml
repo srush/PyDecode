@@ -4,12 +4,15 @@
     <compoundname>src/Hypergraph</compoundname>
     <innerfile refid="src_2Hypergraph_2Algorithms_8cpp">Algorithms.cpp</innerfile>
     <innerfile refid="src_2Hypergraph_2Algorithms_8h">Algorithms.h</innerfile>
+    <innerfile refid="Automaton_8h">Automaton.h</innerfile>
     <innerfile refid="src_2Hypergraph_2BeamSearch_8cpp">BeamSearch.cpp</innerfile>
     <innerfile refid="src_2Hypergraph_2BeamSearch_8h">BeamSearch.h</innerfile>
+    <innerfile refid="BeamSearch__flymake_8h">BeamSearch_flymake.h</innerfile>
     <innerfile refid="src_2Hypergraph_2Factory_8cpp">Factory.cpp</innerfile>
     <innerfile refid="src_2Hypergraph_2Factory_8h">Factory.h</innerfile>
     <innerfile refid="src_2Hypergraph_2Hypergraph_8cpp">Hypergraph.cpp</innerfile>
     <innerfile refid="src_2Hypergraph_2Hypergraph_8h">Hypergraph.h</innerfile>
+    <innerfile refid="Hypergraph__flymake_8h">Hypergraph_flymake.h</innerfile>
     <innerfile refid="src_2Hypergraph_2Map_8cpp">Map.cpp</innerfile>
     <innerfile refid="src_2Hypergraph_2Map_8h">Map.h</innerfile>
     <innerfile refid="src_2Hypergraph_2Potentials_8cpp">Potentials.cpp</innerfile>
@@ -18,6 +21,7 @@
     <innerfile refid="src_2Hypergraph_2SemiringAlgorithms_8h">SemiringAlgorithms.h</innerfile>
     <innerfile refid="src_2Hypergraph_2Semirings_8cpp">Semirings.cpp</innerfile>
     <innerfile refid="src_2Hypergraph_2Semirings_8h">Semirings.h</innerfile>
+    <innerfile refid="Semirings__flymake_8h">Semirings_flymake.h</innerfile>
     <briefdescription>
     </briefdescription>
     <detaileddescription>

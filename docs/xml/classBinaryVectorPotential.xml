@@ -15,7 +15,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="401" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="401" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="436" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="436" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classBinaryVectorPotential_1af0816d5ce69117dc7d354da32fe08596" prot="public" static="no">
         <type>bitset&lt; BITMAPSIZE &gt;</type>
@@ -28,7 +28,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="401" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="401" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="477" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="477" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classBinaryVectorPotential_1af0816d5ce69117dc7d354da32fe08596" prot="public" static="no">
+        <type>bitset&lt; BITMAPSIZE &gt;</type>
+        <definition>typedef bitset&lt;BITMAPSIZE&gt; BinaryVectorPotential::ValType</definition>
+        <argsstring></argsstring>
+        <name>ValType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="477" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="477" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
@@ -51,7 +64,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="403" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="403" bodyend="406"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="438" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="438" bodyend="441"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1a7c5b0f23936dc8b08b299b08e3c52b2c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -72,7 +85,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="408" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="408" bodyend="411"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="443" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="443" bodyend="446"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1a782d488fbc7f62e5fb7e1bcf961051ef" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -85,7 +98,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="413" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="413" bodyend="416"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="448" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="448" bodyend="451"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1a754c2dddf8c3c29c7c4ca3d5a7f8f95b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -98,7 +111,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="418" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="418" bodyend="422"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="453" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="453" bodyend="457"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1a01ff24fe1d2eb30794406364bda10d96" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -111,7 +124,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="424" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="424" bodyend="426"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="459" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="459" bodyend="461"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1a85f4315e53ef75f76dbf1cab8a726510" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType &amp;</type>
@@ -128,7 +141,28 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="428" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="428" bodyend="430"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="463" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="463" bodyend="465"/>
+      </memberdef>
+      <memberdef kind="function" id="classBinaryVectorPotential_1ad099bf979b6415827f1c8d56b6fed465" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool BinaryVectorPotential::valid</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>valid</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="468" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="467" bodyend="470"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1aa03468c7efdad05fc2c53f44c8c79f88" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -149,7 +183,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="403" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="403" bodyend="406"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="479" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="479" bodyend="482"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1a7c5b0f23936dc8b08b299b08e3c52b2c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -170,7 +204,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="408" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="408" bodyend="411"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="484" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="484" bodyend="487"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1a782d488fbc7f62e5fb7e1bcf961051ef" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -183,7 +217,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="413" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="413" bodyend="416"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="489" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="489" bodyend="492"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1a754c2dddf8c3c29c7c4ca3d5a7f8f95b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -196,7 +230,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="418" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="418" bodyend="422"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="494" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="494" bodyend="498"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1a01ff24fe1d2eb30794406364bda10d96" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -209,7 +243,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="424" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="424" bodyend="426"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="500" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="500" bodyend="502"/>
       </memberdef>
       <memberdef kind="function" id="classBinaryVectorPotential_1a85f4315e53ef75f76dbf1cab8a726510" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType &amp;</type>
@@ -226,27 +260,177 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="428" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="428" bodyend="430"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="504" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="504" bodyend="506"/>
+      </memberdef>
+      <memberdef kind="function" id="classBinaryVectorPotential_1ad099bf979b6415827f1c8d56b6fed465" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool BinaryVectorPotential::valid</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>valid</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="509" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="508" bodyend="511"/>
+      </memberdef>
+      <memberdef kind="function" id="classBinaryVectorPotential_1aa03468c7efdad05fc2c53f44c8c79f88" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BinaryVectorPotential::add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="479" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="479" bodyend="482"/>
+      </memberdef>
+      <memberdef kind="function" id="classBinaryVectorPotential_1a7c5b0f23936dc8b08b299b08e3c52b2c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BinaryVectorPotential::times</definition>
+        <argsstring>(ValType value, const ValType &amp;rhs)</argsstring>
+        <name>times</name>
+        <param>
+          <type>ValType</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="484" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="484" bodyend="487"/>
+      </memberdef>
+      <memberdef kind="function" id="classBinaryVectorPotential_1a782d488fbc7f62e5fb7e1bcf961051ef" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BinaryVectorPotential::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="489" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="489" bodyend="492"/>
+      </memberdef>
+      <memberdef kind="function" id="classBinaryVectorPotential_1a754c2dddf8c3c29c7c4ca3d5a7f8f95b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BinaryVectorPotential::zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="494" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="494" bodyend="498"/>
+      </memberdef>
+      <memberdef kind="function" id="classBinaryVectorPotential_1a01ff24fe1d2eb30794406364bda10d96" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType BinaryVectorPotential::randValue</definition>
+        <argsstring>()</argsstring>
+        <name>randValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="500" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="500" bodyend="502"/>
+      </memberdef>
+      <memberdef kind="function" id="classBinaryVectorPotential_1a85f4315e53ef75f76dbf1cab8a726510" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType &amp;</type>
+        <definition>static ValType&amp; BinaryVectorPotential::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type>ValType &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="504" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="504" bodyend="506"/>
+      </memberdef>
+      <memberdef kind="function" id="classBinaryVectorPotential_1ad099bf979b6415827f1c8d56b6fed465" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool BinaryVectorPotential::valid</definition>
+        <argsstring>(const ValType &amp;lhs, const ValType &amp;rhs)</argsstring>
+        <name>valid</name>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="509" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="508" bodyend="511"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Binary vector. <emphasis>Experimental</emphasis></para><para>+: Bitwise AND. *: Bitwise OR. 0: All one bitset. 1: All zero bitset. </para>    </detaileddescription>
-    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="399" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="399" bodyend="431"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" line="434" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Semirings.h" bodystart="434" bodyend="471"/>
     <listofallmembers>
       <member refid="classBinaryVectorPotential_1aa03468c7efdad05fc2c53f44c8c79f88" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>add</name></member>
       <member refid="classBinaryVectorPotential_1aa03468c7efdad05fc2c53f44c8c79f88" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>add</name></member>
+      <member refid="classBinaryVectorPotential_1aa03468c7efdad05fc2c53f44c8c79f88" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>add</name></member>
+      <member refid="classBinaryVectorPotential_1a85f4315e53ef75f76dbf1cab8a726510" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>normalize</name></member>
       <member refid="classBinaryVectorPotential_1a85f4315e53ef75f76dbf1cab8a726510" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>normalize</name></member>
       <member refid="classBinaryVectorPotential_1a85f4315e53ef75f76dbf1cab8a726510" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>normalize</name></member>
       <member refid="classBinaryVectorPotential_1a782d488fbc7f62e5fb7e1bcf961051ef" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>one</name></member>
       <member refid="classBinaryVectorPotential_1a782d488fbc7f62e5fb7e1bcf961051ef" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>one</name></member>
+      <member refid="classBinaryVectorPotential_1a782d488fbc7f62e5fb7e1bcf961051ef" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>one</name></member>
+      <member refid="classBinaryVectorPotential_1a01ff24fe1d2eb30794406364bda10d96" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>randValue</name></member>
       <member refid="classBinaryVectorPotential_1a01ff24fe1d2eb30794406364bda10d96" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>randValue</name></member>
       <member refid="classBinaryVectorPotential_1a01ff24fe1d2eb30794406364bda10d96" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>randValue</name></member>
       <member refid="classBinaryVectorPotential_1a7c5b0f23936dc8b08b299b08e3c52b2c" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>times</name></member>
       <member refid="classBinaryVectorPotential_1a7c5b0f23936dc8b08b299b08e3c52b2c" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>times</name></member>
+      <member refid="classBinaryVectorPotential_1a7c5b0f23936dc8b08b299b08e3c52b2c" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>times</name></member>
+      <member refid="classBinaryVectorPotential_1ad099bf979b6415827f1c8d56b6fed465" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>valid</name></member>
+      <member refid="classBinaryVectorPotential_1ad099bf979b6415827f1c8d56b6fed465" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>valid</name></member>
+      <member refid="classBinaryVectorPotential_1ad099bf979b6415827f1c8d56b6fed465" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>valid</name></member>
       <member refid="classBinaryVectorPotential_1af0816d5ce69117dc7d354da32fe08596" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>ValType</name></member>
       <member refid="classBinaryVectorPotential_1af0816d5ce69117dc7d354da32fe08596" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>ValType</name></member>
+      <member refid="classBinaryVectorPotential_1af0816d5ce69117dc7d354da32fe08596" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>ValType</name></member>
+      <member refid="classBinaryVectorPotential_1a754c2dddf8c3c29c7c4ca3d5a7f8f95b" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>zero</name></member>
       <member refid="classBinaryVectorPotential_1a754c2dddf8c3c29c7c4ca3d5a7f8f95b" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>zero</name></member>
       <member refid="classBinaryVectorPotential_1a754c2dddf8c3c29c7c4ca3d5a7f8f95b" prot="public" virt="non-virtual"><scope>BinaryVectorPotential</scope><name>zero</name></member>
     </listofallmembers>

@@ -71,7 +71,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="91" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="91" bodyend="94"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="197" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="197" bodyend="200"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -79,14 +79,14 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="130">
+      <node id="155">
         <label>NodeCount</label>
         <link refid="structNodeCount"/>
-        <childnode refid="131" relation="usage">
+        <childnode refid="156" relation="usage">
           <edgelabel>node</edgelabel>
         </childnode>
       </node>
-      <node id="131">
+      <node id="156">
         <label>Hypernode</label>
         <link refid="classHypernode"/>
       </node>

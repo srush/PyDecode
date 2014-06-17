@@ -27,7 +27,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="209" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="209" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="250" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="250" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classCountingPotential_1a2ed1837e2d43715bd6c7caf6d2afd62d" prot="public" static="no">
+        <type>int</type>
+        <definition>typedef int CountingPotential::ValType</definition>
+        <argsstring></argsstring>
+        <name>ValType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="250" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="250" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
@@ -190,7 +203,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="211" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="211" bodyend="214"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="252" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="252" bodyend="255"/>
       </memberdef>
       <memberdef kind="function" id="classCountingPotential_1a7b4498e962e58e5c21807f5fc4b9069c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -211,7 +224,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="215" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="215" bodyend="218"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="256" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="256" bodyend="259"/>
       </memberdef>
       <memberdef kind="function" id="classCountingPotential_1aa41fea42a411c6fb6397a52a5afeb300" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -232,7 +245,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="220" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="220" bodyend="223"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="261" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="261" bodyend="264"/>
       </memberdef>
       <memberdef kind="function" id="classCountingPotential_1a50a29a96f58536402c998df2523c13bf" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -253,7 +266,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="224" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="224" bodyend="227"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="265" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="265" bodyend="268"/>
       </memberdef>
       <memberdef kind="function" id="classCountingPotential_1abc7326c56f614c8c3a2851b9c059e277" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const ValType &amp;</type>
@@ -270,7 +283,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="229" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="229" bodyend="231"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="270" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="270" bodyend="272"/>
       </memberdef>
       <memberdef kind="function" id="classCountingPotential_1ac6e15e0d8eb7589dd8bd5a0d250dfa3a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -283,7 +296,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="233" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="233" bodyend="233"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="274" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="274" bodyend="274"/>
       </memberdef>
       <memberdef kind="function" id="classCountingPotential_1aa3dc15a948a950c10cd05a0988c5f5c4" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -296,7 +309,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="234" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="234" bodyend="234"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="275" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="275" bodyend="275"/>
       </memberdef>
       <memberdef kind="function" id="classCountingPotential_1aa1c29a8a0b614af536286ac7177ff4c7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>ValType</type>
@@ -309,7 +322,147 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="236" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="236" bodyend="238"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" line="277" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings.h" bodystart="277" bodyend="279"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1ab21c428c65b241fbb1c6c821b2893490" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CountingPotential::add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="252" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="252" bodyend="255"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1a7b4498e962e58e5c21807f5fc4b9069c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CountingPotential::times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>times</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="256" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="256" bodyend="259"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1aa41fea42a411c6fb6397a52a5afeb300" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CountingPotential::safe_add</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_add</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="261" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="261" bodyend="264"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1a50a29a96f58536402c998df2523c13bf" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CountingPotential::safe_times</definition>
+        <argsstring>(ValType lhs, const ValType &amp;rhs)</argsstring>
+        <name>safe_times</name>
+        <param>
+          <type>ValType</type>
+          <declname>lhs</declname>
+        </param>
+        <param>
+          <type>const ValType &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="265" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="265" bodyend="268"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1abc7326c56f614c8c3a2851b9c059e277" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>const ValType &amp;</type>
+        <definition>static const ValType&amp; CountingPotential::normalize</definition>
+        <argsstring>(ValType &amp;val)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type>ValType &amp;</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="270" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="270" bodyend="272"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1ac6e15e0d8eb7589dd8bd5a0d250dfa3a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CountingPotential::one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="274" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="274" bodyend="274"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1aa3dc15a948a950c10cd05a0988c5f5c4" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CountingPotential::zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="275" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="275" bodyend="275"/>
+      </memberdef>
+      <memberdef kind="function" id="classCountingPotential_1aa1c29a8a0b614af536286ac7177ff4c7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValType</type>
+        <definition>static ValType CountingPotential::randValue</definition>
+        <argsstring>()</argsstring>
+        <name>randValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" line="277" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Semirings_flymake.h" bodystart="277" bodyend="279"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -320,20 +473,29 @@
     <listofallmembers>
       <member refid="classCountingPotential_1ab21c428c65b241fbb1c6c821b2893490" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>add</name></member>
       <member refid="classCountingPotential_1ab21c428c65b241fbb1c6c821b2893490" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>add</name></member>
+      <member refid="classCountingPotential_1ab21c428c65b241fbb1c6c821b2893490" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>add</name></member>
+      <member refid="classCountingPotential_1abc7326c56f614c8c3a2851b9c059e277" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>normalize</name></member>
       <member refid="classCountingPotential_1abc7326c56f614c8c3a2851b9c059e277" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>normalize</name></member>
       <member refid="classCountingPotential_1abc7326c56f614c8c3a2851b9c059e277" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>normalize</name></member>
       <member refid="classCountingPotential_1ac6e15e0d8eb7589dd8bd5a0d250dfa3a" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>one</name></member>
       <member refid="classCountingPotential_1ac6e15e0d8eb7589dd8bd5a0d250dfa3a" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>one</name></member>
+      <member refid="classCountingPotential_1ac6e15e0d8eb7589dd8bd5a0d250dfa3a" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>one</name></member>
+      <member refid="classCountingPotential_1aa1c29a8a0b614af536286ac7177ff4c7" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>randValue</name></member>
       <member refid="classCountingPotential_1aa1c29a8a0b614af536286ac7177ff4c7" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>randValue</name></member>
       <member refid="classCountingPotential_1aa1c29a8a0b614af536286ac7177ff4c7" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>randValue</name></member>
       <member refid="classCountingPotential_1aa41fea42a411c6fb6397a52a5afeb300" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>safe_add</name></member>
       <member refid="classCountingPotential_1aa41fea42a411c6fb6397a52a5afeb300" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>safe_add</name></member>
+      <member refid="classCountingPotential_1aa41fea42a411c6fb6397a52a5afeb300" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>safe_add</name></member>
+      <member refid="classCountingPotential_1a50a29a96f58536402c998df2523c13bf" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>safe_times</name></member>
       <member refid="classCountingPotential_1a50a29a96f58536402c998df2523c13bf" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>safe_times</name></member>
       <member refid="classCountingPotential_1a50a29a96f58536402c998df2523c13bf" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>safe_times</name></member>
       <member refid="classCountingPotential_1a7b4498e962e58e5c21807f5fc4b9069c" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>times</name></member>
       <member refid="classCountingPotential_1a7b4498e962e58e5c21807f5fc4b9069c" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>times</name></member>
+      <member refid="classCountingPotential_1a7b4498e962e58e5c21807f5fc4b9069c" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>times</name></member>
       <member refid="classCountingPotential_1a2ed1837e2d43715bd6c7caf6d2afd62d" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>ValType</name></member>
       <member refid="classCountingPotential_1a2ed1837e2d43715bd6c7caf6d2afd62d" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>ValType</name></member>
+      <member refid="classCountingPotential_1a2ed1837e2d43715bd6c7caf6d2afd62d" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>ValType</name></member>
+      <member refid="classCountingPotential_1aa3dc15a948a950c10cd05a0988c5f5c4" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>zero</name></member>
       <member refid="classCountingPotential_1aa3dc15a948a950c10cd05a0988c5f5c4" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>zero</name></member>
       <member refid="classCountingPotential_1aa3dc15a948a950c10cd05a0988c5f5c4" prot="public" virt="non-virtual"><scope>CountingPotential</scope><name>zero</name></member>
     </listofallmembers>

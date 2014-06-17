@@ -13,33 +13,21 @@
     <includes local="yes">Hypergraph/Algorithms.h</includes>
     <includes local="yes">Hypergraph/Potentials.h</includes>
     <incdepgraph>
-      <node id="53">
+      <node id="59">
         <label>queue</label>
       </node>
-      <node id="50">
+      <node id="56">
         <label>cassert</label>
       </node>
-      <node id="51">
+      <node id="57">
         <label>exception</label>
       </node>
-      <node id="57">
+      <node id="63">
         <label>Hypergraph/Algorithms.h</label>
       </node>
-      <node id="48">
+      <node id="54">
         <label>pydecode-0.1.27/src/Hypergraph/Algorithms.cpp</label>
         <link refid="pydecode-0.1.27/src/Hypergraph/Algorithms.cpp"/>
-        <childnode refid="49" relation="include">
-        </childnode>
-        <childnode refid="50" relation="include">
-        </childnode>
-        <childnode refid="51" relation="include">
-        </childnode>
-        <childnode refid="52" relation="include">
-        </childnode>
-        <childnode refid="53" relation="include">
-        </childnode>
-        <childnode refid="54" relation="include">
-        </childnode>
         <childnode refid="55" relation="include">
         </childnode>
         <childnode refid="56" relation="include">
@@ -48,23 +36,35 @@
         </childnode>
         <childnode refid="58" relation="include">
         </childnode>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="61" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="63" relation="include">
+        </childnode>
+        <childnode refid="64" relation="include">
+        </childnode>
       </node>
-      <node id="56">
+      <node id="62">
         <label>vector</label>
       </node>
-      <node id="55">
+      <node id="61">
         <label>utility</label>
       </node>
-      <node id="52">
+      <node id="58">
         <label>iostream</label>
       </node>
-      <node id="58">
+      <node id="64">
         <label>Hypergraph/Potentials.h</label>
       </node>
-      <node id="54">
+      <node id="60">
         <label>set</label>
       </node>
-      <node id="49">
+      <node id="55">
         <label>algorithm</label>
       </node>
     </incdepgraph>
@@ -329,7 +329,7 @@
 <codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>back(0),</highlight></codeline>
 <codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>score(StatSem::zero())<sp/>{}</highlight></codeline>
 <codeline lineno="53"><highlight class="normal"></highlight></codeline>
-<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structNodeScore" kindref="compound">NodeScore</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>_count,<sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>_edge,</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structNodeScore" kindref="compound">NodeScore</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>_count,<sp/>HEdge<sp/>_edge,</highlight></codeline>
 <codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>StatSem::ValType<sp/>_score)</highlight></codeline>
 <codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:</highlight></codeline>
 <codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>count(_count),</highlight></codeline>
@@ -337,7 +337,7 @@
 <codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>back(0),</highlight></codeline>
 <codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>score(_score)<sp/>{}</highlight></codeline>
 <codeline lineno="61"><highlight class="normal"></highlight></codeline>
-<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structNodeScore" kindref="compound">NodeScore</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>_count,<sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>_edge,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j,</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structNodeScore" kindref="compound">NodeScore</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>_count,<sp/>HEdge<sp/>_edge,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j,</highlight></codeline>
 <codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>StatSem::ValType<sp/>_score)</highlight></codeline>
 <codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:</highlight></codeline>
 <codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>count(_count),</highlight></codeline>
@@ -349,19 +349,19 @@
 <codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="72"><highlight class="normal"></highlight></codeline>
 <codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>count;</highlight></codeline>
-<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/>HEdge<sp/>edge;</highlight></codeline>
 <codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;int&gt;<sp/>back;</highlight></codeline>
 <codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>StatSem::ValType<sp/>score;</highlight></codeline>
 <codeline lineno="77"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="78"><highlight class="normal"></highlight></codeline>
 <codeline lineno="79"><highlight class="normal"></highlight></codeline>
 <codeline lineno="80" refid="structEdgeGroup" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structEdgeGroup" kindref="compound">EdgeGroup</ref><sp/>{</highlight></codeline>
-<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structEdgeGroup" kindref="compound">EdgeGroup</ref>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>_edge,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>back_left,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>back_right)</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structEdgeGroup" kindref="compound">EdgeGroup</ref>(HEdge<sp/>_edge,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>back_left,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>back_right)</highlight></codeline>
 <codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>edge(_edge),<sp/>back(2)<sp/>{</highlight></codeline>
 <codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>back[0]<sp/>=<sp/>back_left;</highlight></codeline>
 <codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>back[1]<sp/>=<sp/>back_right;</highlight></codeline>
 <codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge;</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/>HEdge<sp/>edge;</highlight></codeline>
 <codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;int&gt;<sp/>back;</highlight></codeline>
 <codeline lineno="88"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="89"><highlight class="normal"></highlight></codeline>
@@ -400,10 +400,10 @@
 <codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Bucket<sp/>edges.</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;vector&lt;EdgeGroup&gt;<sp/>&gt;<sp/>counts(limit<sp/>+<sp/>1);</highlight></codeline>
-<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>node-&gt;<ref refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>unary<sp/>=<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>().size()<sp/>==<sp/>1;</highlight></codeline>
-<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>assert(edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>().size()<sp/>&lt;=<sp/>2);</highlight></codeline>
-<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>left_node<sp/>=<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>()[0];</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(HEdge<sp/>edge,<sp/>node-&gt;<ref refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>unary<sp/>=<sp/>edge-&gt;tail_nodes().size()<sp/>==<sp/>1;</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>assert(edge-&gt;tail_nodes().size()<sp/>&lt;=<sp/>2);</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>left_node<sp/>=<sp/>edge-&gt;tail_nodes()[0];</highlight></codeline>
 <codeline lineno="129"><highlight class="normal"></highlight></codeline>
 <codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>score<sp/>=<sp/>potentials.score(edge);</highlight></codeline>
 <codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;NodeCount&gt;<sp/>&amp;base<sp/>=<sp/>new_nodes[left_node-&gt;id()];</highlight></codeline>
@@ -416,7 +416,7 @@
 <codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>counts[total<sp/>-<sp/>lower_limit].push_back(</highlight></codeline>
 <codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structEdgeGroup" kindref="compound">EdgeGroup</ref>(edge,<sp/>i,<sp/>0));</highlight></codeline>
 <codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>right_node<sp/>=<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>()[1];</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>right_node<sp/>=<sp/>edge-&gt;tail_nodes()[1];</highlight></codeline>
 <codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>right_size<sp/>=<sp/>new_nodes[right_node-&gt;id()].size();</highlight></codeline>
 <codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j<sp/>=<sp/>0;<sp/>j<sp/>&lt;<sp/>right_size;<sp/>++j)<sp/>{</highlight></codeline>
 <codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>total<sp/>=</highlight></codeline>
@@ -442,14 +442,14 @@
 <codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_graph-&gt;start_node()));</highlight></codeline>
 <codeline lineno="165"><highlight class="normal"></highlight></codeline>
 <codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="structEdgeGroup" kindref="compound">EdgeGroup</ref><sp/>edge_group,<sp/>counts[count])<sp/>{</highlight></codeline>
-<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge<sp/>=<sp/>edge_group.edge;</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>HEdge<sp/>edge<sp/>=<sp/>edge_group.edge;</highlight></codeline>
 <codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;HNode&gt;<sp/>tails;</highlight></codeline>
-<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>().size();<sp/>++i)<sp/>{</highlight></codeline>
-<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tails.push_back(new_nodes[edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>()[i]-&gt;id()]</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>edge-&gt;tail_nodes().size();<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tails.push_back(new_nodes[edge-&gt;tail_nodes()[i]-&gt;id()]</highlight></codeline>
 <codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>[edge_group.back[i]].node);</highlight></codeline>
 <codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>new_edge<sp/>=<sp/>new_graph-&gt;add_edge(tails);</highlight></codeline>
-<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>reverse_edge_map[edge-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>()].push_back(new_edge);</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>HEdge<sp/>new_edge<sp/>=<sp/>new_graph-&gt;add_edge(tails);</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>reverse_edge_map[edge-&gt;id()].push_back(new_edge);</highlight></codeline>
 <codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(new_graph-&gt;<ref refid="classHypergraph_1af6474ea50a210bb4fb2055d0539c0033" kindref="member">end_node</ref>())<sp/>{</highlight></codeline>
 <codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>reverse_node_map[node-&gt;id()].push_back(</highlight></codeline>
@@ -473,10 +473,10 @@
 <codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*node_map)[new_node-&gt;id()]<sp/>=<sp/>node;</highlight></codeline>
 <codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>hypergraph-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>new_edge,<sp/>reverse_edge_map[edge-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>()])<sp/>{</highlight></codeline>
-<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(new_edge-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>()<sp/>==<sp/>-1)<sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
-<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*edge_map)[new_edge-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>()]<sp/>=<sp/>edge;</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(HEdge<sp/>edge,<sp/>hypergraph-&gt;<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(HEdge<sp/>new_edge,<sp/>reverse_edge_map[edge-&gt;id()])<sp/>{</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(new_edge-&gt;id()<sp/>==<sp/>-1)<sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*edge_map)[new_edge-&gt;id()]<sp/>=<sp/>edge;</highlight></codeline>
 <codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref>(new_graph,<sp/>hypergraph,</highlight></codeline>
@@ -484,27 +484,27 @@
 <codeline lineno="206"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="207"><highlight class="normal"></highlight></codeline>
 <codeline lineno="208"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;SetPotential&gt;</ref><sp/>*edge_domination(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>&amp;graph)<sp/>{</highlight></codeline>
-<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>v(graph.<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>().size());</highlight></codeline>
-<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>graph.<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>v[edge-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>()].insert(edge-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>());</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>*v<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;(graph.<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>().size());</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(HEdge<sp/>edge,<sp/>graph.<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*v)[edge-&gt;id()].insert(edge-&gt;id());</highlight></codeline>
 <codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="213"><highlight class="normal"></highlight></codeline>
 <codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypergraphVectorPotentials" kindref="compound">HypergraphVectorPotentials&lt;SetPotential&gt;</ref><sp/>potentials(</highlight></codeline>
-<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&amp;graph,<sp/>v,<sp/>set&lt;int&gt;());</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&amp;graph,<sp/>v,<sp/>set&lt;int&gt;(),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">/*<sp/>copy<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;SetPotential&gt;</ref><sp/>*chart<sp/>=<sp/>general_inside(&amp;graph,<sp/>potentials);</highlight></codeline>
 <codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart;</highlight></codeline>
 <codeline lineno="218"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="219"><highlight class="normal"></highlight></codeline>
 <codeline lineno="220"><highlight class="normal"><ref refid="classChart" kindref="compound">Chart&lt;SetPotential&gt;</ref><sp/>*node_domination(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classHypergraph" kindref="compound">Hypergraph</ref><sp/>&amp;graph)<sp/>{</highlight></codeline>
-<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>v(graph.<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>().size());</highlight></codeline>
-<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>graph.<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>v[edge-&gt;<ref refid="classHyperedge_1ac91530ad31342ab5519e43680b112fe9" kindref="member">id</ref>()].insert(node-&gt;id());</highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>*v<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;(graph.<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>().size());</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(HEdge<sp/>edge,<sp/>graph.<ref refid="classHypergraph_1abf51be949d9e736679a4b51594b4de08" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>edge-&gt;tail_nodes())<sp/>{</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*v)[edge-&gt;id()].insert(node-&gt;id());</highlight></codeline>
 <codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="226"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="227"><highlight class="normal"></highlight></codeline>
 <codeline lineno="228"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classHypergraphVectorPotentials" kindref="compound">HypergraphVectorPotentials&lt;SetPotential&gt;</ref><sp/>potentials(</highlight></codeline>
-<codeline lineno="229"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&amp;graph,<sp/>v,<sp/>set&lt;int&gt;());</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&amp;graph,<sp/>v,<sp/>set&lt;int&gt;(),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">/*<sp/>copy<sp/>*/</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classChart" kindref="compound">Chart&lt;SetPotential&gt;</ref><sp/>*chart<sp/>=<sp/>general_inside(&amp;graph,<sp/>potentials);</highlight></codeline>
 <codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>chart;</highlight></codeline>
 <codeline lineno="232"><highlight class="normal">}</highlight></codeline>
@@ -515,7 +515,7 @@
 <codeline lineno="237"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>*children<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;(graph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>().size());</highlight></codeline>
 <codeline lineno="238"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>graph-&gt;<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>())<sp/>{</highlight></codeline>
 <codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>set&lt;int&gt;<sp/>&amp;vec<sp/>=<sp/>(*children)[node-&gt;id()];</highlight></codeline>
-<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>node-&gt;<ref refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(HEdge<sp/>edge,<sp/>node-&gt;<ref refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
 <codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SparseVector<sp/>&amp;v<sp/>=<sp/>potentials.score(edge);</highlight></codeline>
 <codeline lineno="242"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SparsePair<sp/>&amp;pair,<sp/>v)<sp/>{</highlight></codeline>
 <codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vec.insert(pair.first);</highlight></codeline>
@@ -543,8 +543,8 @@
 <codeline lineno="265"><highlight class="normal"><sp/><sp/><sp/><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;<sp/>*children<sp/>=</highlight></codeline>
 <codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>vector&lt;set&lt;int&gt;<sp/>&gt;(graph.<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>().size());</highlight></codeline>
 <codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>node,<sp/>graph.<ref refid="classHypergraph_1a6ac40aa4309b5d828bee31fc03ebde0a" kindref="member">nodes</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>node-&gt;<ref refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
-<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>tail,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(HEdge<sp/>edge,<sp/>node-&gt;<ref refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>tail,<sp/>edge-&gt;tail_nodes())<sp/>{</highlight></codeline>
 <codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*children)[node-&gt;id()].insert(tail-&gt;id());</highlight></codeline>
 <codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
@@ -572,7 +572,7 @@
 <codeline lineno="294"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*node_map)[node-&gt;id()]<sp/>=<sp/>new_graph-&gt;start_node();</highlight></codeline>
 <codeline lineno="295"><highlight class="normal"></highlight></codeline>
 <codeline lineno="296"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Try<sp/>to<sp/>add<sp/>each<sp/>of<sp/>the<sp/>edges<sp/>of<sp/>the<sp/>node.</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="297"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>node-&gt;<ref refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="297"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(HEdge<sp/>edge,<sp/>node-&gt;<ref refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
 <codeline lineno="298"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!static_cast&lt;bool&gt;(edge_mask[edge]))<sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
 <codeline lineno="299"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;HNode&gt;<sp/>tails;</highlight></codeline>
 <codeline lineno="300"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>all_tails_exist<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
@@ -587,7 +587,7 @@
 <codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="310"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="311"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(all_tails_exist)<sp/>{</highlight></codeline>
-<codeline lineno="312"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>new_edge<sp/>=<sp/>new_graph-&gt;add_edge(tails);</highlight></codeline>
+<codeline lineno="312"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>HEdge<sp/>new_edge<sp/>=<sp/>new_graph-&gt;add_edge(tails);</highlight></codeline>
 <codeline lineno="313"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*edge_map)[edge-&gt;id()]<sp/>=<sp/>new_edge;</highlight></codeline>
 <codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="315"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
@@ -619,24 +619,24 @@
 <codeline lineno="341"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
 <codeline lineno="342"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="343"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;vector&lt;HNode&gt;<sp/>&gt;<sp/>new_edges;</highlight></codeline>
-<codeline lineno="344"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHyperedge" kindref="compound">HEdge</ref><sp/>edge,<sp/>node-&gt;<ref refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="344"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(HEdge<sp/>edge,<sp/>node-&gt;<ref refid="classHypernode_1a184e44f2d637bae3f28d556c51411ba4" kindref="member">edges</ref>())<sp/>{</highlight></codeline>
 <codeline lineno="345"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;HNode&gt;<sp/>new_edge(2);</highlight></codeline>
-<codeline lineno="346"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>().size()<sp/>&lt;=<sp/>2)<sp/>{</highlight></codeline>
+<codeline lineno="346"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(edge-&gt;tail_nodes().size()<sp/>&lt;=<sp/>2)<sp/>{</highlight></codeline>
 <codeline lineno="347"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;HNode&gt;<sp/>new_tail;</highlight></codeline>
-<codeline lineno="348"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>tnode,<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="348"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">foreach</highlight><highlight class="normal"><sp/>(<ref refid="classHypernode" kindref="compound">HNode</ref><sp/>tnode,<sp/>edge-&gt;tail_nodes())<sp/>{</highlight></codeline>
 <codeline lineno="349"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_tail.push_back((*nodes)[tnode-&gt;id()]);</highlight></codeline>
 <codeline lineno="350"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="351"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edges.push_back(new_tail);</highlight></codeline>
 <codeline lineno="352"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
 <codeline lineno="353"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline lineno="354"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edge[0]<sp/>=<sp/>(*nodes)[edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>()[0]-&gt;id()];</highlight></codeline>
-<codeline lineno="355"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edge[1]<sp/>=<sp/>(*nodes)[edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>()[1]-&gt;id()];</highlight></codeline>
+<codeline lineno="354"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edge[0]<sp/>=<sp/>(*nodes)[edge-&gt;tail_nodes()[0]-&gt;id()];</highlight></codeline>
+<codeline lineno="355"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edge[1]<sp/>=<sp/>(*nodes)[edge-&gt;tail_nodes()[1]-&gt;id()];</highlight></codeline>
 <codeline lineno="356"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>new_node<sp/>=<sp/>range_hyper-&gt;start_node();</highlight></codeline>
 <codeline lineno="357"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>range_hyper-&gt;add_edge(new_edge);</highlight></codeline>
 <codeline lineno="358"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>range_hyper-&gt;<ref refid="classHypergraph_1af6474ea50a210bb4fb2055d0539c0033" kindref="member">end_node</ref>();</highlight></codeline>
 <codeline lineno="359"><highlight class="normal"></highlight></codeline>
-<codeline lineno="360"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>2;<sp/>i<sp/>&lt;<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>().size()<sp/>-<sp/>1;<sp/>++i)<sp/>{</highlight></codeline>
-<codeline lineno="361"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>tnode<sp/>=<sp/>edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>()[i];</highlight></codeline>
+<codeline lineno="360"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>2;<sp/>i<sp/>&lt;<sp/>edge-&gt;tail_nodes().size()<sp/>-<sp/>1;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="361"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>tnode<sp/>=<sp/>edge-&gt;tail_nodes()[i];</highlight></codeline>
 <codeline lineno="362"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classHypernode" kindref="compound">HNode</ref><sp/>tmp<sp/>=<sp/>range_hyper-&gt;start_node();</highlight></codeline>
 <codeline lineno="363"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edge[0]<sp/>=<sp/>new_node;</highlight></codeline>
 <codeline lineno="364"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edge[1]<sp/>=<sp/>(*nodes)[tnode-&gt;id()];</highlight></codeline>
@@ -645,7 +645,7 @@
 <codeline lineno="367"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_node<sp/>=<sp/>tmp;</highlight></codeline>
 <codeline lineno="368"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="369"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edge[0]<sp/>=<sp/>new_node;</highlight></codeline>
-<codeline lineno="370"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edge[1]<sp/>=<sp/>(*nodes)[edge-&gt;<ref refid="classHyperedge_1a9ad54ba23e0bffb64bdf5285a38c13fa" kindref="member">tail_nodes</ref>().back()-&gt;id()];</highlight></codeline>
+<codeline lineno="370"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edge[1]<sp/>=<sp/>(*nodes)[edge-&gt;tail_nodes().back()-&gt;id()];</highlight></codeline>
 <codeline lineno="371"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>new_edges.push_back(new_edge);</highlight></codeline>
 <codeline lineno="372"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="373"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*nodes)[node-&gt;id()]<sp/>=<sp/>range_hyper-&gt;start_node();</highlight></codeline>

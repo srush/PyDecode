@@ -9,11 +9,11 @@
         <argsstring>(HEdge edge1, HEdge edge2) const </argsstring>
         <name>operator()</name>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>edge1</declname>
         </param>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>edge2</declname>
         </param>
         <briefdescription>
@@ -30,11 +30,11 @@
         <argsstring>(HEdge edge1, HEdge edge2) const </argsstring>
         <name>operator()</name>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>edge1</declname>
         </param>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>edge2</declname>
         </param>
         <briefdescription>
@@ -43,7 +43,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="21" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="21" bodyend="23"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" line="22" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.h" bodystart="22" bodyend="24"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

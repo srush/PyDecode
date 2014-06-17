@@ -1,7 +1,7 @@
 
 ## Simple Hypergraph Example
 
-# In[1]:
+# In[3]:
 
 import pydecode.hyper as ph
 import pydecode.display as display
@@ -20,7 +20,7 @@ with hyp.builder() as b:
 
 def build_potentials(label):
      return {"edge1" : 3, "edge2" : 1, "edge3" : 1}[label]
-potentials = ph.Potentials(hyp).from_vector([build_potentials(edge.label) for edge in hyp.edges])
+potentials = ph.LogViterbiPotentials(hyp).from_vector([build_potentials(edge.label) for edge in hyp.edges])
 
 
 # Draw the graph
@@ -32,7 +32,7 @@ display.HypergraphPotentialFormatter(hyp, potentials).to_ipython()
 
 # Out[5]:
 
-#     <IPython.core.display.Image at 0x2b58d10>
+#     <IPython.core.display.Image at 0x33b6f10>
 
 # In[6]:
 
@@ -42,4 +42,4 @@ display.HypergraphPathFormatter(hyp, [path]).to_ipython()
 
 # Out[6]:
 
-#     <IPython.core.display.Image at 0x2b403d0>
+#     <IPython.core.display.Image at 0x2de4910>

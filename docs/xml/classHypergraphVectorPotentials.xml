@@ -49,7 +49,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="78" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="78" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="72" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="72" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classHypergraphVectorPotentials_1abbcec6398a80a2d78d8c9ff393a94d04" prot="private" static="no">
         <type>SemiringType::ValType</type>
@@ -62,13 +62,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="79" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="79" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="73" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="73" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-attrib">
-      <memberdef kind="variable" id="classHypergraphVectorPotentials_1a092cae639c1a6ed8c1d71064abd7c0a8" prot="protected" static="no" mutable="no">
-        <type>vector&lt; V &gt;</type>
-        <definition>vector&lt; V &gt; HypergraphVectorPotentials&lt; SemiringType &gt;::potentials_</definition>
+      <memberdef kind="variable" id="classHypergraphVectorPotentials_1abe75f1feda479748cc319f82b60470ee" prot="protected" static="no" mutable="no">
+        <type>vector&lt; V &gt; *</type>
+        <definition>vector&lt; V &gt; * HypergraphVectorPotentials&lt; SemiringType &gt;::potentials_</definition>
         <argsstring></argsstring>
         <name>potentials_</name>
         <briefdescription>
@@ -77,26 +77,44 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="134" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="134" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="148" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="148" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classHypergraphVectorPotentials_1a4f21df812f4d019cf38e2fddaa64fa06" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool HypergraphVectorPotentials&lt; SemiringType &gt;::owned_</definition>
+        <argsstring></argsstring>
+        <name>owned_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="151" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="151" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classHypergraphVectorPotentials_1ad7668a650461fff7d3a3ba8082bf104d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classHypergraphVectorPotentials_1a5f9ed133c2c44f36d74b9098d1f1a07e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>HypergraphVectorPotentials&lt; SemiringType &gt;::HypergraphVectorPotentials</definition>
-        <argsstring>(const Hypergraph *hypergraph, const vector&lt; V &gt; &amp;potentials, V bias)</argsstring>
+        <argsstring>(const Hypergraph *hypergraph, vector&lt; V &gt; *potentials, V bias, bool copy=true)</argsstring>
         <name>HypergraphVectorPotentials</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>hypergraph</declname>
         </param>
         <param>
-          <type>const vector&lt; V &gt; &amp;</type>
+          <type>vector&lt; V &gt; *</type>
           <declname>potentials</declname>
         </param>
         <param>
           <type>V</type>
           <declname>bias</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>copy</declname>
+          <defval>true</defval>
         </param>
         <briefdescription>
         </briefdescription>
@@ -104,7 +122,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="86" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="82" bodyend="88"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="87" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="82" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphVectorPotentials_1a69155d0db9e9077bf2a2871cdec5db91" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>HypergraphVectorPotentials&lt; SemiringType &gt;::~HypergraphVectorPotentials</definition>
+        <argsstring>()</argsstring>
+        <name>~HypergraphVectorPotentials</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="96" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="96" bodyend="98"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1ae28abed1e7fc15ffc1530e7906f3d61c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
         <type>vector&lt; V &gt; &amp;</type>
@@ -118,7 +149,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="89" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="89" bodyend="89"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="100" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="100" bodyend="100"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1a99428de1e777fb08aee8e7d0cae27a5d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
         <type>const vector&lt; V &gt; &amp;</type>
@@ -132,7 +163,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="90" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="90" bodyend="90"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="101" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="101" bodyend="101"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1ae577addf2a41a247e58677a4fc884efd" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -149,7 +180,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="95" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="92" bodyend="95"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="105" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="103" bodyend="108"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1a6190214afb8c0b8533ea50beba2597bc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
         <type>V</type>
@@ -167,7 +198,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="105" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="105" bodyend="113"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="119" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="119" bodyend="127"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1ae4e1f8fc43f0635cc08f1f1967b4f154" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
         <type>V</type>
@@ -176,7 +207,7 @@
         <name>score</name>
         <reimplements refid="classHypergraphPotentials_1a7be9dacc6cba10e28f13de4ff70fb7c5">score</reimplements>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>edge</declname>
         </param>
         <briefdescription>
@@ -185,7 +216,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="115" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="115" bodyend="115"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="129" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="129" bodyend="129"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1a8f7e631a4199b99dc41d3dbe8ea1cd91" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
         <type>V</type>
@@ -194,7 +225,7 @@
         <name>operator[]</name>
         <reimplements refid="classHypergraphPotentials_1ad01e7645a00166e85b1562e44023810a">operator[]</reimplements>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>edge</declname>
         </param>
         <briefdescription>
@@ -203,7 +234,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="116" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="116" bodyend="118"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="130" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="130" bodyend="132"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1a6cc03f8dbe7acc03995f363d2d7d7ddb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -211,7 +242,7 @@
         <argsstring>(const HEdge &amp;edge, const V &amp;val)</argsstring>
         <name>insert</name>
         <param>
-          <type>const <ref refid="classHyperedge" kindref="compound">HEdge</ref> &amp;</type>
+          <type>const HEdge &amp;</type>
           <declname>edge</declname>
         </param>
         <param>
@@ -224,7 +255,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="120" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="120" bodyend="122"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="134" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="134" bodyend="136"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1ae963eaa55d90077a3dedeb38aaf10c0c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
         <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; *</type>
@@ -243,7 +274,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="125" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.cpp" bodystart="16" bodyend="30"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="139" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.cpp" bodystart="16" bodyend="33"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1ac56c58668337ad288d88c452a3693139" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
         <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; *</type>
@@ -257,24 +288,25 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="127" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="127" bodyend="131"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="141" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="141" bodyend="145"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphVectorPotentials_1ad7668a650461fff7d3a3ba8082bf104d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classHypergraphVectorPotentials_1a5062584fad5869f30c2dfa2b6f6b7ecf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>HypergraphVectorPotentials&lt; SemiringType &gt;::HypergraphVectorPotentials</definition>
-        <argsstring>(const Hypergraph *hypergraph, const vector&lt; V &gt; &amp;potentials, V bias)</argsstring>
+        <argsstring>(const Hypergraph *hypergraph, vector&lt; V &gt; *potentials, bool copy=true)</argsstring>
         <name>HypergraphVectorPotentials</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>hypergraph</declname>
         </param>
         <param>
-          <type>const vector&lt; V &gt; &amp;</type>
+          <type>vector&lt; V &gt; *</type>
           <declname>potentials</declname>
         </param>
         <param>
-          <type>V</type>
-          <declname>bias</declname>
+          <type>bool</type>
+          <declname>copy</declname>
+          <defval>true</defval>
         </param>
         <briefdescription>
         </briefdescription>
@@ -282,35 +314,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="86" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="82" bodyend="88"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="80" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="76" bodyend="87"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphVectorPotentials_1ae28abed1e7fc15ffc1530e7906f3d61c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
-        <type>vector&lt; V &gt; &amp;</type>
-        <definition>vector&lt;V&gt;&amp; HypergraphVectorPotentials&lt; SemiringType &gt;::potentials</definition>
+      <memberdef kind="function" id="classHypergraphVectorPotentials_1a69155d0db9e9077bf2a2871cdec5db91" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>HypergraphVectorPotentials&lt; SemiringType &gt;::~HypergraphVectorPotentials</definition>
         <argsstring>()</argsstring>
-        <name>potentials</name>
-        <reimplements refid="classHypergraphPotentials_1a96ed02967ac4213e2ce8cd709aaf0850">potentials</reimplements>
+        <name>~HypergraphVectorPotentials</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="89" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="89" bodyend="89"/>
-      </memberdef>
-      <memberdef kind="function" id="classHypergraphVectorPotentials_1a99428de1e777fb08aee8e7d0cae27a5d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
-        <type>const vector&lt; V &gt; &amp;</type>
-        <definition>const vector&lt;V&gt;&amp; HypergraphVectorPotentials&lt; SemiringType &gt;::potentials</definition>
-        <argsstring>() const </argsstring>
-        <name>potentials</name>
-        <reimplements refid="classHypergraphPotentials_1a64bc162e3d6ceaaedc2097a683d21f11">potentials</reimplements>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="90" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="90" bodyend="90"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="89" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="89" bodyend="91"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1ae577addf2a41a247e58677a4fc884efd" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -327,7 +344,35 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="95" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="92" bodyend="95"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="95" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="94" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphVectorPotentials_1a0548e4710c7fb9ca65eb2d6eba107d7c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>V *</type>
+        <definition>V* HypergraphVectorPotentials&lt; SemiringType &gt;::potentials</definition>
+        <argsstring>()</argsstring>
+        <name>potentials</name>
+        <reimplements refid="classHypergraphPotentials_1a96ed02967ac4213e2ce8cd709aaf0850">potentials</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="100" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="100" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphVectorPotentials_1ac53693c0c02007e090a59e9a64921c41" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>const V *</type>
+        <definition>const V* HypergraphVectorPotentials&lt; SemiringType &gt;::potentials</definition>
+        <argsstring>() const </argsstring>
+        <name>potentials</name>
+        <reimplements refid="classHypergraphPotentials_1a64bc162e3d6ceaaedc2097a683d21f11">potentials</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="101" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="101" bodyend="101"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1a6190214afb8c0b8533ea50beba2597bc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
         <type>V</type>
@@ -345,7 +390,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="105" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="105" bodyend="113"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="111" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="111" bodyend="119"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1ae4e1f8fc43f0635cc08f1f1967b4f154" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
         <type>V</type>
@@ -354,7 +399,7 @@
         <name>score</name>
         <reimplements refid="classHypergraphPotentials_1a7be9dacc6cba10e28f13de4ff70fb7c5">score</reimplements>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>edge</declname>
         </param>
         <briefdescription>
@@ -363,7 +408,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="115" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="115" bodyend="115"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="121" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="121" bodyend="121"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1a8f7e631a4199b99dc41d3dbe8ea1cd91" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
         <type>V</type>
@@ -372,7 +417,7 @@
         <name>operator[]</name>
         <reimplements refid="classHypergraphPotentials_1ad01e7645a00166e85b1562e44023810a">operator[]</reimplements>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>edge</declname>
         </param>
         <briefdescription>
@@ -381,7 +426,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="116" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="116" bodyend="118"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="122" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="122" bodyend="124"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1a6cc03f8dbe7acc03995f363d2d7d7ddb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -389,7 +434,7 @@
         <argsstring>(const HEdge &amp;edge, const V &amp;val)</argsstring>
         <name>insert</name>
         <param>
-          <type>const <ref refid="classHyperedge" kindref="compound">HEdge</ref> &amp;</type>
+          <type>const HEdge &amp;</type>
           <declname>edge</declname>
         </param>
         <param>
@@ -402,26 +447,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="120" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="120" bodyend="122"/>
-      </memberdef>
-      <memberdef kind="function" id="classHypergraphVectorPotentials_1ae38173941f88828339a905217b4f45ed" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
-        <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; *</type>
-        <definition>HypergraphPotentials&lt;S&gt;* HypergraphVectorPotentials&lt; SemiringType &gt;::times</definition>
-        <argsstring>(const HypergraphPotentials&lt; S &gt; &amp;potentials) const </argsstring>
-        <name>times</name>
-        <reimplements refid="classHypergraphPotentials_1a6d5d55f2a618244f078af54734d2e9c2">times</reimplements>
-        <param>
-          <type>const <ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; &amp;</type>
-          <declname>potentials</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Pairwise &quot;times&quot; with another set of potentials.</para><para><simplesect kind="return"><para>New hypergraph potentials. </para></simplesect>
-</para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="125"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="126" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="126" bodyend="128"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphVectorPotentials_1ac56c58668337ad288d88c452a3693139" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
         <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; S &gt; *</type>
@@ -435,26 +461,31 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="127" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="127" bodyend="131"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="133" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="133" bodyend="136"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
-      <memberdef kind="function" id="classHypergraphVectorPotentials_1ac5d429ffcf9509545348f0136207f0fd" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classHypergraphVectorPotentials_1a8eac82cffeb98f902cec997a650b7d35" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; *</type>
         <definition>static HypergraphPotentials&lt;SemiringType&gt;* HypergraphVectorPotentials&lt; SemiringType &gt;::make_potentials</definition>
-        <argsstring>(const Hypergraph *hypergraph, const vector&lt; V &gt; &amp;potentials, V bias)</argsstring>
+        <argsstring>(const Hypergraph *hypergraph, vector&lt; V &gt; *potentials, V bias, bool copy=true)</argsstring>
         <name>make_potentials</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>hypergraph</declname>
         </param>
         <param>
-          <type>const vector&lt; V &gt; &amp;</type>
+          <type>vector&lt; V &gt; *</type>
           <declname>potentials</declname>
         </param>
         <param>
           <type>V</type>
           <declname>bias</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>copy</declname>
+          <defval>true</defval>
         </param>
         <briefdescription>
         </briefdescription>
@@ -462,24 +493,25 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="100" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="98" bodyend="103"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="114" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="111" bodyend="117"/>
       </memberdef>
-      <memberdef kind="function" id="classHypergraphVectorPotentials_1ac5d429ffcf9509545348f0136207f0fd" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classHypergraphVectorPotentials_1aa768fd3e5db9736da0cc290a50297ab9" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classHypergraphPotentials" kindref="compound">HypergraphPotentials</ref>&lt; SemiringType &gt; *</type>
         <definition>static HypergraphPotentials&lt;SemiringType&gt;* HypergraphVectorPotentials&lt; SemiringType &gt;::make_potentials</definition>
-        <argsstring>(const Hypergraph *hypergraph, const vector&lt; V &gt; &amp;potentials, V bias)</argsstring>
+        <argsstring>(const Hypergraph *hypergraph, vector&lt; V &gt; *potentials, bool copy=true)</argsstring>
         <name>make_potentials</name>
         <param>
           <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
           <declname>hypergraph</declname>
         </param>
         <param>
-          <type>const vector&lt; V &gt; &amp;</type>
+          <type>vector&lt; V &gt; *</type>
           <declname>potentials</declname>
         </param>
         <param>
-          <type>V</type>
-          <declname>bias</declname>
+          <type>bool</type>
+          <declname>copy</declname>
+          <defval>true</defval>
         </param>
         <briefdescription>
         </briefdescription>
@@ -487,7 +519,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="100" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="98" bodyend="103"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" line="106" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Potentials.h" bodystart="104" bodyend="109"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -495,44 +527,42 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="93">
+      <node id="110">
         <label>HypergraphPotentials&lt; SemiringType &gt;</label>
         <link refid="classHypergraphPotentials"/>
       </node>
-      <node id="92">
+      <node id="109">
         <label>HypergraphVectorPotentials&lt; SemiringType &gt;</label>
         <link refid="classHypergraphVectorPotentials"/>
-        <childnode refid="93" relation="public-inheritance">
+        <childnode refid="110" relation="public-inheritance">
         </childnode>
-        <childnode refid="93" relation="public-inheritance">
+        <childnode refid="110" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="95">
+      <node id="112">
         <label>HypergraphPotentials&lt; SemiringType &gt;</label>
         <link refid="classHypergraphPotentials"/>
-        <childnode refid="96" relation="usage">
+        <childnode refid="113" relation="usage">
           <edgelabel>hypergraph_</edgelabel>
         </childnode>
       </node>
-      <node id="94">
+      <node id="111">
         <label>HypergraphVectorPotentials&lt; SemiringType &gt;</label>
         <link refid="classHypergraphVectorPotentials"/>
-        <childnode refid="95" relation="public-inheritance">
+        <childnode refid="112" relation="public-inheritance">
         </childnode>
-        <childnode refid="95" relation="public-inheritance">
+        <childnode refid="112" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="96">
+      <node id="113">
         <label>Hypergraph</label>
         <link refid="classHypergraph"/>
       </node>
     </collaborationgraph>
-    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="77" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="76" bodyend="135"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" line="77" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Potentials.h" bodystart="76" bodyend="152"/>
     <listofallmembers>
-      <member refid="classHypergraphPotentials_1aa03f0c679761024a11939ad95c10f133" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>bias</name></member>
-      <member refid="classHypergraphPotentials_1a923fb6fd75d27df641823faf092c6c3d" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>bias</name></member>
       <member refid="classHypergraphPotentials_1aa03f0c679761024a11939ad95c10f133" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>bias</name></member>
       <member refid="classHypergraphPotentials_1a923fb6fd75d27df641823faf092c6c3d" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>bias</name></member>
       <member refid="classHypergraphPotentials_1ad38c0fa80d8d23b9c00e5a9135708a21" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>bias_</name></member>
@@ -546,22 +576,23 @@
       <member refid="classHypergraphVectorPotentials_1a6190214afb8c0b8533ea50beba2597bc" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>dot</name></member>
       <member refid="classHypergraphPotentials_1a80d4213c5e22e3c1766ff2bdacfad6e5" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>hypergraph_</name></member>
       <member refid="classHypergraphPotentials_1a9ddbd087ab0ce4327d08eddb6a14ee0d" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>HypergraphPotentials</name></member>
-      <member refid="classHypergraphPotentials_1a9ddbd087ab0ce4327d08eddb6a14ee0d" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>HypergraphPotentials</name></member>
-      <member refid="classHypergraphVectorPotentials_1ad7668a650461fff7d3a3ba8082bf104d" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>HypergraphVectorPotentials</name></member>
+      <member refid="classHypergraphPotentials_1a6df95733ad2c2e221adb8c208d2f7b94" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>HypergraphPotentials</name></member>
+      <member refid="classHypergraphVectorPotentials_1a5f9ed133c2c44f36d74b9098d1f1a07e" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>HypergraphVectorPotentials</name></member>
       <member refid="classHypergraphVectorPotentials_1ae577addf2a41a247e58677a4fc884efd" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>HypergraphVectorPotentials</name></member>
-      <member refid="classHypergraphVectorPotentials_1ad7668a650461fff7d3a3ba8082bf104d" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>HypergraphVectorPotentials</name></member>
+      <member refid="classHypergraphVectorPotentials_1a5062584fad5869f30c2dfa2b6f6b7ecf" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>HypergraphVectorPotentials</name></member>
       <member refid="classHypergraphVectorPotentials_1ae577addf2a41a247e58677a4fc884efd" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>HypergraphVectorPotentials</name></member>
       <member refid="classHypergraphVectorPotentials_1a6cc03f8dbe7acc03995f363d2d7d7ddb" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>insert</name></member>
       <member refid="classHypergraphVectorPotentials_1a6cc03f8dbe7acc03995f363d2d7d7ddb" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>insert</name></member>
-      <member refid="classHypergraphVectorPotentials_1ac5d429ffcf9509545348f0136207f0fd" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>make_potentials</name></member>
-      <member refid="classHypergraphVectorPotentials_1ac5d429ffcf9509545348f0136207f0fd" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>make_potentials</name></member>
+      <member refid="classHypergraphVectorPotentials_1a8eac82cffeb98f902cec997a650b7d35" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>make_potentials</name></member>
+      <member refid="classHypergraphVectorPotentials_1aa768fd3e5db9736da0cc290a50297ab9" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>make_potentials</name></member>
       <member refid="classHypergraphVectorPotentials_1a8f7e631a4199b99dc41d3dbe8ea1cd91" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>operator[]</name></member>
       <member refid="classHypergraphVectorPotentials_1a8f7e631a4199b99dc41d3dbe8ea1cd91" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>operator[]</name></member>
+      <member refid="classHypergraphVectorPotentials_1a4f21df812f4d019cf38e2fddaa64fa06" prot="protected" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>owned_</name></member>
       <member refid="classHypergraphVectorPotentials_1ae28abed1e7fc15ffc1530e7906f3d61c" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>potentials</name></member>
       <member refid="classHypergraphVectorPotentials_1a99428de1e777fb08aee8e7d0cae27a5d" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>potentials</name></member>
-      <member refid="classHypergraphVectorPotentials_1ae28abed1e7fc15ffc1530e7906f3d61c" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>potentials</name></member>
-      <member refid="classHypergraphVectorPotentials_1a99428de1e777fb08aee8e7d0cae27a5d" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>potentials</name></member>
-      <member refid="classHypergraphVectorPotentials_1a092cae639c1a6ed8c1d71064abd7c0a8" prot="protected" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>potentials_</name></member>
+      <member refid="classHypergraphVectorPotentials_1a0548e4710c7fb9ca65eb2d6eba107d7c" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>potentials</name></member>
+      <member refid="classHypergraphVectorPotentials_1ac53693c0c02007e090a59e9a64921c41" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>potentials</name></member>
+      <member refid="classHypergraphVectorPotentials_1abe75f1feda479748cc319f82b60470ee" prot="protected" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>potentials_</name></member>
       <member refid="classHypergraphPotentials_1a69ed586632bb08cde5a63e8eb90a5223" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>project_potentials</name></member>
       <member refid="classHypergraphPotentials_1ab4ddac4b2a36758aaf7ab9dfe57f2f71" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>project_potentials</name></member>
       <member refid="classHypergraphVectorPotentials_1af0491e45b0958e9ffdebc47506c626ce" prot="private" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>S</name></member>
@@ -569,11 +600,12 @@
       <member refid="classHypergraphVectorPotentials_1ae4e1f8fc43f0635cc08f1f1967b4f154" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>score</name></member>
       <member refid="classHypergraphVectorPotentials_1ae4e1f8fc43f0635cc08f1f1967b4f154" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>score</name></member>
       <member refid="classHypergraphVectorPotentials_1ae963eaa55d90077a3dedeb38aaf10c0c" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>times</name></member>
-      <member refid="classHypergraphVectorPotentials_1ae38173941f88828339a905217b4f45ed" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>times</name></member>
       <member refid="classHypergraphVectorPotentials_1abbcec6398a80a2d78d8c9ff393a94d04" prot="private" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>V</name></member>
       <member refid="classHypergraphVectorPotentials_1abbcec6398a80a2d78d8c9ff393a94d04" prot="private" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>V</name></member>
       <member refid="classHypergraphPotentials_1aa1912ccb54f4a3d66022ee6d44d7db9b" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>~HypergraphPotentials</name></member>
       <member refid="classHypergraphPotentials_1aa1912ccb54f4a3d66022ee6d44d7db9b" prot="public" virt="virtual"><scope>HypergraphVectorPotentials</scope><name>~HypergraphPotentials</name></member>
+      <member refid="classHypergraphVectorPotentials_1a69155d0db9e9077bf2a2871cdec5db91" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>~HypergraphVectorPotentials</name></member>
+      <member refid="classHypergraphVectorPotentials_1a69155d0db9e9077bf2a2871cdec5db91" prot="public" virt="non-virtual"><scope>HypergraphVectorPotentials</scope><name>~HypergraphVectorPotentials</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

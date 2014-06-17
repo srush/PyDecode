@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="54" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="54" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="84" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="84" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHypergraphMap_1a3865b83478b55cb58704a2c82001de8e" prot="private" static="no" mutable="no">
         <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
@@ -27,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="55" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="55" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="85" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="85" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHypergraphMap_1acef2a6f1e181b34d1d31f5455d25ca17" prot="private" static="no" mutable="no">
         <type>const vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; *</type>
@@ -40,10 +40,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="58" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="58" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="88" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="88" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHypergraphMap_1a894b39a63fd5d9052b28bd436b12d565" prot="private" static="no" mutable="no">
-        <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt; *</type>
+        <type>const vector&lt; HEdge &gt; *</type>
         <definition>const vector&lt; HEdge &gt; * HypergraphMap::edge_map_</definition>
         <argsstring></argsstring>
         <name>edge_map_</name>
@@ -53,7 +53,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="59" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="59" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="89" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="89" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classHypergraphMap_1acd176015fe7a6fa0546f3a1ddf635f1b" prot="private" static="no" mutable="no">
         <type>bool</type>
@@ -66,7 +66,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="61" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="61" bodyend="-1"/>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="91" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="91" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -88,7 +88,7 @@
           <declname>node_map</declname>
         </param>
         <param>
-          <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt; *</type>
+          <type>const vector&lt; HEdge &gt; *</type>
           <declname>edge_map</declname>
         </param>
         <param>
@@ -164,12 +164,12 @@
         <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="26" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="26" bodyend="33"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphMap_1a036b3d70d6ab89366c978a3148bdb543" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+        <type>HEdge</type>
         <definition>HEdge HypergraphMap::map</definition>
         <argsstring>(HEdge original) const </argsstring>
         <name>map</name>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>original</declname>
         </param>
         <briefdescription>
@@ -241,7 +241,7 @@
           <declname>node_map</declname>
         </param>
         <param>
-          <type>const vector&lt; <ref refid="classHyperedge" kindref="compound">HEdge</ref> &gt; *</type>
+          <type>const vector&lt; HEdge &gt; *</type>
           <declname>edge_map</declname>
         </param>
         <param>
@@ -317,12 +317,12 @@
         <location file="/home/srush/Projects/decoding/src/Hypergraph/Map.h" line="26" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Map.h" bodystart="26" bodyend="33"/>
       </memberdef>
       <memberdef kind="function" id="classHypergraphMap_1a036b3d70d6ab89366c978a3148bdb543" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+        <type>HEdge</type>
         <definition>HEdge HypergraphMap::map</definition>
         <argsstring>(HEdge original) const </argsstring>
         <name>map</name>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>original</declname>
         </param>
         <briefdescription>
@@ -376,12 +376,98 @@
         </inbodydescription>
         <location file="/home/srush/Projects/decoding/src/Hypergraph/Map.h" line="49" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Map.h" bodystart="49" bodyend="51"/>
       </memberdef>
+      <memberdef kind="function" id="classHypergraphMap_1ad9d4dab809db74202098f840c087d3cd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const vector&lt; int &gt; &amp;</type>
+        <definition>const vector&lt;int&gt;&amp; HypergraphMap::edge_map</definition>
+        <argsstring>() const </argsstring>
+        <name>edge_map</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Map.h" line="83" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Map.h" bodystart="83" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphMap_1ae7b22a2cac426d5dfb56295289cee45b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; &amp;</type>
+        <definition>const vector&lt;HNode&gt;&amp; HypergraphMap::node_map</definition>
+        <argsstring>() const </argsstring>
+        <name>node_map</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Map.h" line="87" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Map.h" bodystart="87" bodyend="89"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classHypergraphMap_1a30ae1bc915bceee2a3f38356327c6484" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref> *</type>
+        <definition>static HypergraphMap* HypergraphMap::make_reverse_map</definition>
+        <argsstring>(const Hypergraph *domain_graph, const Hypergraph *range_graph, const vector&lt; vector&lt; HNode &gt; &gt; &amp;reverse_node_map, const vector&lt; vector&lt; HEdge &gt; &gt; &amp;reverse_edge_map)</argsstring>
+        <name>make_reverse_map</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>domain_graph</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>range_graph</declname>
+        </param>
+        <param>
+          <type>const vector&lt; vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; &gt; &amp;</type>
+          <declname>reverse_node_map</declname>
+        </param>
+        <param>
+          <type>const vector&lt; vector&lt; HEdge &gt; &gt; &amp;</type>
+          <declname>reverse_edge_map</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="57" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="53" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="classHypergraphMap_1a30ae1bc915bceee2a3f38356327c6484" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classHypergraphMap" kindref="compound">HypergraphMap</ref> *</type>
+        <definition>static HypergraphMap* HypergraphMap::make_reverse_map</definition>
+        <argsstring>(const Hypergraph *domain_graph, const Hypergraph *range_graph, const vector&lt; vector&lt; HNode &gt; &gt; &amp;reverse_node_map, const vector&lt; vector&lt; HEdge &gt; &gt; &amp;reverse_edge_map)</argsstring>
+        <name>make_reverse_map</name>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>domain_graph</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classHypergraph" kindref="compound">Hypergraph</ref> *</type>
+          <declname>range_graph</declname>
+        </param>
+        <param>
+          <type>const vector&lt; vector&lt; <ref refid="classHypernode" kindref="compound">HNode</ref> &gt; &gt; &amp;</type>
+          <declname>reverse_node_map</declname>
+        </param>
+        <param>
+          <type>const vector&lt; vector&lt; HEdge &gt; &gt; &amp;</type>
+          <declname>reverse_edge_map</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/Map.h" line="57" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Map.h" bodystart="53" bodyend="80"/>
+      </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="12" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="12" bodyend="62"/>
+    <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" line="12" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Map.h" bodystart="12" bodyend="92"/>
     <listofallmembers>
       <member refid="classHypergraphMap_1acd176015fe7a6fa0546f3a1ddf635f1b" prot="private" virt="non-virtual"><scope>HypergraphMap</scope><name>bidirectional_</name></member>
       <member refid="classHypergraphMap_1ad368602097c578f1cdb181141facceac" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>compose</name></member>
@@ -389,17 +475,21 @@
       <member refid="classHypergraphMap_1a207e30a3d72f08a1f8947b3c606a107f" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>domain_graph</name></member>
       <member refid="classHypergraphMap_1a207e30a3d72f08a1f8947b3c606a107f" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>domain_graph</name></member>
       <member refid="classHypergraphMap_1a6a961027b87f79ea31e7ab6d7319bacd" prot="private" virt="non-virtual"><scope>HypergraphMap</scope><name>domain_graph_</name></member>
+      <member refid="classHypergraphMap_1ad9d4dab809db74202098f840c087d3cd" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>edge_map</name></member>
       <member refid="classHypergraphMap_1a894b39a63fd5d9052b28bd436b12d565" prot="private" virt="non-virtual"><scope>HypergraphMap</scope><name>edge_map_</name></member>
       <member refid="classHypergraphMap_1af2f98c87d580c5d18793d9816dcbae65" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>HypergraphMap</name></member>
       <member refid="classHypergraphMap_1af2f98c87d580c5d18793d9816dcbae65" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>HypergraphMap</name></member>
       <member refid="classHypergraphMap_1a49cec47e7e9cd4b80eb6b1ba55a434d0" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>invert</name></member>
       <member refid="classHypergraphMap_1a50f1ff7b000cf2d71439523d8a0aaaae" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>invert</name></member>
+      <member refid="classHypergraphMap_1a30ae1bc915bceee2a3f38356327c6484" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>make_reverse_map</name></member>
+      <member refid="classHypergraphMap_1a30ae1bc915bceee2a3f38356327c6484" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>make_reverse_map</name></member>
       <member refid="classHypergraphMap_1a6b3e001a145a679e1e0de3c86e462e1c" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>map</name></member>
       <member refid="classHypergraphMap_1a036b3d70d6ab89366c978a3148bdb543" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>map</name></member>
       <member refid="classHypergraphMap_1ae46fc783b3758a1cc1d50f64f62f8364" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>map</name></member>
       <member refid="classHypergraphMap_1a6b3e001a145a679e1e0de3c86e462e1c" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>map</name></member>
       <member refid="classHypergraphMap_1a036b3d70d6ab89366c978a3148bdb543" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>map</name></member>
       <member refid="classHypergraphMap_1ae46fc783b3758a1cc1d50f64f62f8364" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>map</name></member>
+      <member refid="classHypergraphMap_1ae7b22a2cac426d5dfb56295289cee45b" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>node_map</name></member>
       <member refid="classHypergraphMap_1acef2a6f1e181b34d1d31f5455d25ca17" prot="private" virt="non-virtual"><scope>HypergraphMap</scope><name>node_map_</name></member>
       <member refid="classHypergraphMap_1a76464dd3e46972200cdfbc952c616572" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>range_graph</name></member>
       <member refid="classHypergraphMap_1a76464dd3e46972200cdfbc952c616572" prot="public" virt="non-virtual"><scope>HypergraphMap</scope><name>range_graph</name></member>

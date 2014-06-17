@@ -22,7 +22,7 @@
         <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" line="73" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="73" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structNodeScore_1a9ebd51a98f32ca1ef60f126c0b6ba564" prot="public" static="no" mutable="no">
-        <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+        <type>HEdge</type>
         <definition>HEdge NodeScore&lt; StatSem &gt;::edge</definition>
         <argsstring></argsstring>
         <name>edge</name>
@@ -85,7 +85,7 @@
           <declname>_count</declname>
         </param>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>_edge</declname>
         </param>
         <param>
@@ -110,7 +110,7 @@
           <declname>_count</declname>
         </param>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>_edge</declname>
         </param>
         <param>
@@ -144,7 +144,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="52" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="47" bodyend="52"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.cpp" line="200" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.cpp" bodystart="195" bodyend="200"/>
       </memberdef>
       <memberdef kind="function" id="structNodeScore_1a62cfe9ab55ad443be48bb33d26a847ae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -156,7 +156,7 @@
           <declname>_count</declname>
         </param>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>_edge</declname>
         </param>
         <param>
@@ -169,7 +169,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="60" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="54" bodyend="60"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.cpp" line="208" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.cpp" bodystart="202" bodyend="208"/>
       </memberdef>
       <memberdef kind="function" id="structNodeScore_1a988dccad50149dcaf415d086fc94b46d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -181,7 +181,7 @@
           <declname>_count</declname>
         </param>
         <param>
-          <type><ref refid="classHyperedge" kindref="compound">HEdge</ref></type>
+          <type>HEdge</type>
           <declname>_edge</declname>
         </param>
         <param>
@@ -202,26 +202,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" line="68" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/Algorithms.cpp" bodystart="62" bodyend="71"/>
+        <location file="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.cpp" line="216" bodyfile="/home/srush/Projects/decoding/src/Hypergraph/SemiringAlgorithms.cpp" bodystart="210" bodyend="219"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <collaborationgraph>
-      <node id="134">
-        <label>Hyperedge</label>
-        <link refid="classHyperedge"/>
-      </node>
-      <node id="133">
-        <label>NodeScore&lt; StatSem &gt;</label>
-        <link refid="structNodeScore"/>
-        <childnode refid="134" relation="usage">
-          <edgelabel>edge</edgelabel>
-        </childnode>
-      </node>
-    </collaborationgraph>
     <location file="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" line="46" bodyfile="/home/srush/Projects/decoding/pydecode-0.1.27/src/Hypergraph/Algorithms.cpp" bodystart="46" bodyend="77"/>
     <listofallmembers>
       <member refid="structNodeScore_1aea1109ed5a4c3091af9eb98c504ff37c" prot="public" virt="non-virtual"><scope>NodeScore</scope><name>back</name></member>

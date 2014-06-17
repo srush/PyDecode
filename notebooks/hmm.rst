@@ -3,16 +3,10 @@
 
     import pydecode.hyper as ph
     import pydecode.display as display
-    from collections import namedtuple
-    
-    import pydecode.chart as chart
-    import pydecode.optimization as opt
-    import pydecode.constraints as cons
-    import pydecode.semiring as semi
     import pandas as pd
-
-Tutorial 3: HMM Tagger (with constraints)
-=========================================
+    import matplotlib.pyplot as plt
+Tutorial 3: HMM Tagger
+======================
 
 
 We begin by constructing the HMM probabilities.
@@ -20,6 +14,9 @@ We begin by constructing the HMM probabilities.
 .. code:: python
 
     # The emission probabilities.
+    
+    tags = ["ROOT", "D", "N", "V", "END"]
+    
     emission = {'ROOT' : {'ROOT' : 1.0},
                 'the' :  {'D': 0.8, 'N': 0.1, 'V': 0.1},
                 'dog' :  {'D': 0.1, 'N': 0.8, 'V': 0.1},
@@ -30,9 +27,10 @@ We begin by constructing the HMM probabilities.
     
     # The transition probabilities.
     transition = {'D' :    {'D' : 0.1, 'N' : 0.8, 'V' : 0.1, 'END' : 0},
-                  'N' :    {'D' : 0.1, 'N' : 0.1, 'V' : 0.8, 'END' : 0},
-                  'V' :    {'D' : 0.4, 'N' : 0.3, 'V' : 0.3, 'END' : 0},
-                  'ROOT' : {'D' : 0.4, 'N' : 0.3, 'V' : 0.3}}
+                  'N' :    {'D' : 0.1, 'N' : 0.1, 'V' : 0.6, 'END' : 0.2},
+                  'V' :    {'D' : 0.4, 'N' : 0.3, 'V' : 0.2, 'END' : 0.1},
+                  'ROOT' : {'D' : 0.4, 'N' : 0.3, 'V' : 0.3},
+                  'END': {'END' : 1.0}}
 .. code:: python
 
     pd.DataFrame(transition).fillna(0) 
@@ -47,6 +45,7 @@ We begin by constructing the HMM probabilities.
         <tr style="text-align: right;">
           <th></th>
           <th>D</th>
+          <th>END</th>
           <th>N</th>
           <th>ROOT</th>
           <th>V</th>
@@ -56,6 +55,7 @@ We begin by constructing the HMM probabilities.
         <tr>
           <th>D</th>
           <td> 0.1</td>
+          <td> 0</td>
           <td> 0.1</td>
           <td> 0.4</td>
           <td> 0.4</td>
@@ -63,13 +63,15 @@ We begin by constructing the HMM probabilities.
         <tr>
           <th>END</th>
           <td> 0.0</td>
+          <td> 1</td>
+          <td> 0.2</td>
           <td> 0.0</td>
-          <td> 0.0</td>
-          <td> 0.0</td>
+          <td> 0.1</td>
         </tr>
         <tr>
           <th>N</th>
           <td> 0.8</td>
+          <td> 0</td>
           <td> 0.1</td>
           <td> 0.3</td>
           <td> 0.3</td>
@@ -77,9 +79,10 @@ We begin by constructing the HMM probabilities.
         <tr>
           <th>V</th>
           <td> 0.1</td>
-          <td> 0.8</td>
+          <td> 0</td>
+          <td> 0.6</td>
           <td> 0.3</td>
-          <td> 0.3</td>
+          <td> 0.2</td>
         </tr>
       </tbody>
     </table>
@@ -168,225 +171,139 @@ We begin by constructing the HMM probabilities.
 
 Next we specify the labels for the transitions.
 
-.. code:: python
-
-    class Bigram(namedtuple("Bigram", ["word", "tag", "prevtag"])):
-        def __str__(self): return "%s -> %s"%(self.prevtag, self.tag)
-    
-    class Tagged(namedtuple("Tagged", ["position", "word", "tag"])):
-        def __str__(self): return "%s %s"%(self.word, self.tag)
-    
-
 And the scoring function.
 
 .. code:: python
 
-    def bigram_potential(bigram):
-        return transition[bigram.prevtag][bigram.tag] + \
-        emission[bigram.word][bigram.tag] 
-Now we write out dynamic program.
-
+    def item_set(n):
+        return ph.IndexSet((n, len(tags)))
+    
+    def output_set(n):
+        return ph.IndexSet((n, len(tags), len(tags)))
 .. code:: python
 
-    def viterbi(chart):
-        words = ["ROOT"] + sentence.strip().split(" ") + ["END"]
-        c.init(Tagged(0, "ROOT", "ROOT"))    
-        for i, word in enumerate(words[1:], 1):
-            prev_tags = emission[words[i-1]].keys()
-            for tag in emission[word].iterkeys():
-                c[Tagged(i, word, tag)] = \
-                    c.sum([c[key] * c.sr(Bigram(word, tag, prev)) 
-                           for prev in prev_tags 
-                           for key in [Tagged(i - 1, words[i - 1], prev)] 
-                           if key in c])
+    def scores(words):
+        n = len(words)
+        outputs = output_set(n)
+        scores = np.zeros(len(outputs))
+        for j, (i, tag, prev_tag) in outputs.iter_items():
+            scores[j] = transition[tags[prev_tag]].get(tags[tag], 0.0) * \
+                emission[words[i]].get(tags[tag], 0.0)
+        return scores
+.. code:: python
+
+    def viterbi(n):
+        c = ph.ChartBuilder(item_set=item_set(n), 
+                            output_set=output_set(n))
+        for tag in range(len(tags)):
+            c[0, tag] = c.init()
+        for i in range(1, n-1):
+            for tag in range(len(tags)):
+                c[i, tag] = \
+                    [c.merge((i-1, prev), values=[(i, tag, prev)])
+                     for prev in range(len(tags))]
+    
+        c[n-1, 0] = [c.merge((n-2, prev), values=[(n-1, len(tags)-1, prev)]) 
+                     for prev in range(len(tags))]
         return c
+Now we write out dynamic program.
+
 Now we are ready to build the structure itself.
 
 .. code:: python
 
     # The sentence to be tagged.
-    sentence = 'the dog walked in the park'
+    sentence = 'ROOT the dog walked in the park END'.split()
 .. code:: python
 
-    # Create a chart using to compute the probability of the sentence.
-    c = chart.ChartBuilder(bigram_potential)
-    viterbi(c).finish()
-
-
-
-.. parsed-literal::
-
-    9.600000381469727
-
-
-
+    score_vector = scores(sentence)
 .. code:: python
 
-    # Create a chart to compute the max paths.
-    c = chart.ChartBuilder(bigram_potential, 
-                           ph._InsideW)
-    viterbi(c).finish()
+    chart = viterbi(len(sentence))
+    hypergraph = chart.finish()
+    outputs = chart.matrix()
+    item_mat = chart.item_matrix()
+    output_ = output_set(len(sentence))
+    items = item_set(len(sentence))
+.. code:: python
 
-
-
-.. parsed-literal::
-
-    9.087200164794922
-
-
-
-But even better we can construct the entrire search space.
+    theta = score_vector * outputs
+    path = ph.best_path(hypergraph, theta, kind=ph.Inside)
+But even better we can construct the entrire search space. We can also
+output the path itself. We can also use a custom fancier formatter.
+These attributes are from graphviz
+(http://www.graphviz.org/content/attrs)
 
 .. code:: python
 
-    c = chart.ChartBuilder(lambda a:a, semi.HypergraphSemiRing, 
-                           build_hypergraph = True)
-    hypergraph = viterbi(c).finish()
+    node_marg, edge_marg = ph.marginals(hypergraph, theta, kind=ph.Inside)
+    normalized_marg = node_marg / node_marg[hypergraph.root.id]
 .. code:: python
 
-    potentials = ph.Potentials(hypergraph).build(bigram_potential)
+    m = min(normalized_marg)
+    M = max(normalized_marg)
     
-    # Find the best path.
-    path = ph.best_path(hypergraph, potentials)
-    print potentials.dot(path)
-
-::
-
-
-    ---------------------------------------------------------------------------
-    AttributeError                            Traceback (most recent call last)
-
-    <ipython-input-59-5d9224c40bbb> in <module>()
-    ----> 1 potentials = ph.Potentials(hypergraph).build(bigram_potential)
-          2 
-          3 # Find the best path.
-          4 path = ph.best_path(hypergraph, potentials)
-          5 print potentials.dot(path)
-
-
-    /home/srush/Projects/decoding/python/pydecode/hyper.so in pydecode.hyper._LogViterbiPotentials.build (python/pydecode/hyper.cpp:10448)()
-
-
-    <ipython-input-53-fc220ccbeda4> in bigram_potential(bigram)
-          1 def bigram_potential(bigram):
-    ----> 2     return transition[bigram.prevtag][bigram.tag] +     emission[bigram.word][bigram.tag]
-    
-
-    AttributeError: 'NoneType' object has no attribute 'prevtag'
-
-
-We can also output the path itself.
-
-.. code:: python
-
-    print [hypergraph.label(edge) for edge in path.edges]
-.. code:: python
-
-    display.HypergraphPathFormatter(hypergraph, [path]).to_ipython()
-
-::
-
-
-    ---------------------------------------------------------------------------
-    NameError                                 Traceback (most recent call last)
-
-    <ipython-input-60-66085a6e7465> in <module>()
-    ----> 1 display.HypergraphPathFormatter(hypergraph, [path]).to_ipython()
-    
-
-    NameError: name 'path' is not defined
-
-
-We can also use a custom fancier formatter. These attributes are from
-graphviz (http://www.graphviz.org/content/attrs)
-
-.. code:: python
-
     class HMMFormat(display.HypergraphPathFormatter):
-        def hypernode_attrs(self, node):
-            label = self.hypergraph.node_label(node)
-            return {"label": label.tag, "shape": ""}
+        def label(self, label):
+            return "%d %s"%(label[0], tags[label[1]])
         def hyperedge_node_attrs(self, edge):
             return {"color": "pink", "shape": "point"}
         def hypernode_subgraph(self, node):
-            label = self.hypergraph.node_label(node)
-            return [("cluster_" + str(label.position), None)]
+            return [("cluster_" + str(node.label[0]), None)]
         def subgraph_format(self, subgraph):
-            return {"label": (["ROOT"] + sentence.split() + ["END"])[int(subgraph.split("_")[1])],
+            return {"label": (sentence + ["END"])[int(subgraph.split("_")[1])],
                     "rank" : "same"}
         def graph_attrs(self): return {"rankdir":"RL"}
     
-    HMMFormat(hypergraph, [path]).to_ipython()
-PyDecode also allows you to add extra constraints to the problem. As an
-example we can add constraints to enfore that the tag of "dog" is the
-same tag as "park".
-
-.. code:: python
-
-    def cons_name(tag): return "tag_%s"%tag
-    
-    def build_constraints(bigram):
-        if bigram.word == "dog":
-            return [(cons_name(bigram.tag), 1)]
-        elif bigram.word == "park":
-            return [(cons_name(bigram.tag), -1)]
-        return []
-    
-    constraints = \
-        cons.Constraints(hypergraph, [(cons_name(tag), 0) for tag in ["D", "V", "N"]]).build( 
-                       build_constraints)
-This check fails because the tags do not agree.
-
-.. code:: python
-
-    print "check", constraints.check(path)
-Solve instead using subgradient.
-
-.. code:: python
-
-    gpath = opt.best_constrained_path(hypergraph, potentials, constraints)
-.. code:: python
-
-    import pydecode.lp as lp
-    hypergraph_lp = lp.HypergraphLP.make_lp(hypergraph, potentials)
-    hypergraph_lp.solve()
-    path = hypergraph_lp.path
-.. code:: python
-
-    # Output the path.
-    for edge in gpath.edges:
-        print hypergraph.label(edge)
-.. code:: python
-
-    print "check", constraints.check(gpath)
-    print "score", potentials.dot(gpath)
-.. code:: python
-
-    HMMFormat(hypergraph, [path, gpath]).to_ipython()
-
-.. code:: python
-
-    class HMMConstraintFormat(display.HypergraphConstraintFormatter):
         def hypernode_attrs(self, node):
-            label = self.hypergraph.node_label(node)
-            return {"label": label.tag, "shape": ""}
-        def hyperedge_node_attrs(self, edge):
-            return {"color": "pink", "shape": "point"}
-        def hypernode_subgraph(self, node):
-            label = self.hypergraph.node_label(node)
-            return [("cluster_" + str(label.position), None)]
-        def subgraph_format(self, subgraph):
-            return {"label": (["ROOT"] + sentence.split() + ["END"])[int(subgraph.split("_")[1])]}
+            return {"shape": "",
+                    "label": self.label(node.label),
+                    "style": "filled",
+                    "fillcolor": "#FFFF%d"%(int(((normalized_marg[node.id] - m) / (M-m)) * 100))}
     
-    #HMMConstraintFormat(hypergraph, constraints).to_ipython()
-Pruning
+    HMMFormat(hypergraph, [path]).to_ipython()
+
+
+
+.. image:: hmm_files/hmm_19_0.png
+
+
 
 .. code:: python
 
-    pruned_hypergraph, pruned_potentials = ph.prune_hypergraph(hypergraph, potentials, 0.8)
+    for i in range(len(sentence)):
+        z = items.item_vector([(i, t) for t in range(len(tags))])
+        print normalized_marg  * (item_mat.T * z)
+
+.. parsed-literal::
+
+    [ 1.]
+    [ 1.]
+    [ 1.]
+    [ 1.]
+    [ 1.]
+    [ 1.]
+    [ 1.]
+    [ 1.]
+
+
 .. code:: python
 
-    HMMFormat(pruned_hypergraph, []).to_ipython()
+    mat = np.zeros([len(sentence), len(tags)])
+    for i, (j, t) in items.iter_items():
+        c = item_mat.T * items.item_vector([(j,t)])
+        if not c.nonzero()[0]: continue
+        mat[j, t] = normalized_marg[c.nonzero()[0][0]]
 .. code:: python
 
-    very_pruned_hypergraph, _ = ph.prune_hypergraph(hypergraph, potentials, 0.9)
+    df = pd.DataFrame(mat.T)
+    df.columns=sentence
+    df.index=tags
+    plt.pcolor(df)
+    plt.yticks(np.arange(0.5, len(df.index), 1), df.index)
+    plt.xticks(np.arange(0.5, len(df.columns), 1), df.columns)
+    plt.show()
+
+
+.. image:: hmm_files/hmm_22_0.png
+

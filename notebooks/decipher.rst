@@ -135,7 +135,7 @@ l^2 constraints
 
     def build_potentials(edge):
         return random.random()
-    potentials = hyper.Potentials(hyper1).from_vector([build_potentials(node.label) 
+    potentials = hyper.LogViterbiPotentials(hyper1).from_vector([build_potentials(node.label) 
                                                        for node in hyper1.nodes])
 .. code:: python
 
@@ -144,20 +144,20 @@ l^2 constraints
 
 .. parsed-literal::
 
-    0.18738485935
-    0.472104200234
-    0.601083619451
-    0.926199823358
-    0.472726063032
-    0.272371839332
-    0.6717332954
-    0.919803900784
-    0.400676874512
-    0.319032345118
-    0.0858441054396
-    0.17732106776
-    0.166267944361
-    0.677231007635
+    0.0764546410063
+    0.627081863809
+    0.0661244842873
+    0.311587044669
+    0.836643013106
+    0.0962409740027
+    0.0366856407542
+    0.608319172251
+    0.0415800024809
+    0.190480334343
+    0.44535181756
+    0.365934762998
+    0.619941764689
+    0.358337453464
     0.0
     0.0
     0.0
@@ -188,7 +188,7 @@ l^2 constraints
 
 .. parsed-literal::
 
-    2.0691391086535877
+    2.083666641604527
 
 
 
@@ -213,7 +213,7 @@ l^2 constraints
 
 .. parsed-literal::
 
-    0.0
+    1.46372487692
 
 
 
@@ -236,7 +236,7 @@ Real Problem
 .. code:: python
 
     
-    potentials2 = hyper.Potentials(hyper2).from_vector([math.log(complicated_problem.lm.prob(edge.label.letter, edge.label.prevletter)) for edge in hyper2.edges])
+    potentials2 = hyper.LogViterbiPotentials(hyper2).from_vector([math.log(complicated_problem.lm.prob(edge.label.letter, edge.label.prevletter)) for edge in hyper2.edges])
 
 .. code:: python
 

@@ -1,1 +1,1 @@
-[Bigram(position=0, prevtag='<t>', tag='NOUN'), Bigram(position=1, prevtag='NOUN', tag='NOUN'), Bigram(position=2, prevtag='NOUN', tag='VERB'), Bigram(position=3, prevtag='VERB', tag='NOUN'), Bigram(position=4, prevtag='NOUN', tag='.'), Bigram(position=5, prevtag='.', tag='</t>')]
+[Bigram(position=0, prevtag='<t>', tag='D'), Bigram(position=1, prevtag='D', tag='N'), Bigram(position=2, prevtag='N', tag='V'), Bigram(position=3, prevtag='V', tag='</t>')]

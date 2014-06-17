@@ -65,20 +65,6 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="1">
-        <label>boost::foreach_detail::auto_any_base</label>
-        <link refid="structboost_1_1foreach__detail_1_1auto__any__base"/>
-      </node>
-      <node id="0">
-        <label>boost::foreach_detail::auto_any&lt; T &gt;</label>
-        <link refid="structboost_1_1foreach__detail_1_1auto__any"/>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
       <node id="3">
         <label>boost::foreach_detail::auto_any_base</label>
         <link refid="structboost_1_1foreach__detail_1_1auto__any__base"/>
@@ -89,6 +75,20 @@
         <childnode refid="3" relation="public-inheritance">
         </childnode>
         <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="5">
+        <label>boost::foreach_detail::auto_any_base</label>
+        <link refid="structboost_1_1foreach__detail_1_1auto__any__base"/>
+      </node>
+      <node id="4">
+        <label>boost::foreach_detail::auto_any&lt; T &gt;</label>
+        <link refid="structboost_1_1foreach__detail_1_1auto__any"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+        <childnode refid="5" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
