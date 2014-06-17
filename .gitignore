@@ -78,3 +78,5 @@ build_config.py
 
 generated/
 auto/
+
+*_flymake.h
