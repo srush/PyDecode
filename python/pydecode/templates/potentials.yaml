@@ -1,4 +1,13 @@
 semirings:
+  - type: Bool
+    npvalue: np.int8
+    cvalue: char
+    format: i
+    viterbi: Yes
+    description:
+      Boolean-valued logical potentials.
+
+      Uses the operations :math:`(+, *) = (\land, \lor)`.
   - type: Viterbi
     cvalue: double
     format: d
@@ -6,8 +15,18 @@ semirings:
     viterbi: Yes
     description:
       Real-valued max probability potentials.
-
       Uses the operations :math:`(+, *) = (\max, *)`.
+  - type: Counting
+    cvalue: int
+    format: i
+    npvalue: np.int32
+    viterbi: False,
+    description:
+      Natural-valued counting potentials.
+
+      Uses the operations :math:`(+, *) = (+, *)`.
+
+
   - type: LogViterbi
     cvalue: double
     format: d
@@ -35,6 +54,7 @@ semirings:
       Real-valued probability potentials.
 
       Uses the operations :math:`(+, *) = (+, *)`.
+
   - type: MinMax
     cvalue: double
     npvalue: np.double
@@ -44,12 +64,6 @@ semirings:
       Real-valued min value potentials.
 
       Uses the operations :math:`(+, *) = (\min, \max)`.
-  - type: SparseVector
-    ctype: SparseVectorPotential
-    cvalue: vector[pair[int, int]]
-    viterbi: No
-    description:
-      Sparse-vector valued weights.
 
   - type: Alphabet
     ctype: AlphabetPotential
@@ -58,31 +72,8 @@ semirings:
     description:
       Alphabet valued weights.
 
-  - type: MinSparseVector
-    cvalue: vector[pair[int, int]]
-    viterbi : False
 
-  - type: MaxSparseVector
-    cvalue: vector[pair[int, int]]
-    viterbi : No
 
-  - type: Counting
-    cvalue: int
-    format: i
-    npvalue: np.int8
-    viterbi: False,
-    description:
-      Natural-valued counting potentials.
-
-      Uses the operations :math:`(+, *) = (+, *)`.
-
-  - type: Bool
-    cvalue: bool
-    viterbi: Yes
-    description:
-      Boolean-valued logical potentials.
-
-      Uses the operations :math:`(+, *) = (\land, \lor)`.
 
   - type: BinaryVector
     cvalue: cbitset
@@ -92,3 +83,18 @@ semirings:
     viterbi: No
     description:
       Binary vector potentials.
+
+  # - type: MinSparseVector
+  #   cvalue: vector[pair[int, int]]
+  #   viterbi : False
+
+  # - type: MaxSparseVector
+  #   cvalue: vector[pair[int, int]]
+  #   viterbi : No
+
+  # - type: SparseVector
+  #   ctype: SparseVectorPotential
+  #   cvalue: vector[pair[int, int]]
+  #   viterbi: No
+  #   description:
+  #     Sparse-vector valued weights.

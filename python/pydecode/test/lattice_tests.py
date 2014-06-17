@@ -13,8 +13,8 @@ def test_main():
 
 
 def check_lattice():
-    width = random.randint(0, 10)
-    height = random.randint(0, 10)
+    width = random.randint(1, 10)
+    height = random.randint(1, 10)
     lattice = ph.make_lattice(width, height, [range(height) for h in range(height)])
     lattice.labeling = ph.Labeling(lattice, [1 for node in lattice.nodes])
     for node in lattice.nodes:

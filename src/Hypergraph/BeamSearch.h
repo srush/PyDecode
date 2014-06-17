@@ -7,6 +7,7 @@
 #include <stack>
 #include <deque>
 #include <vector>
+#include <queue>
 #include <boost/intrusive/rbtree.hpp>
 
 
@@ -143,9 +144,14 @@ class BeamChart {
 
     BeamChart(const Hypergraph *hypergraph,
               const BeamGroups *groups,
+              const HypergraphPotentials<LogViterbiPotential> * potentials,
+              const HypergraphPotentials<BVP> *constraints,
               const Chart<LogViterbiPotential> *future,
-              double lower_bound)
+              double lower_bound,
+              bool recombine)
             : hypergraph_(hypergraph),
+            potentials_(potentials),
+            constraints_(constraints),
             future_(future),
             lower_bound_(lower_bound),
             groups_(groups),
@@ -153,13 +159,46 @@ class BeamChart {
             beam_(groups->groups_size()),
             beam_size_(groups->groups_size(), 0),
             beam_nodes_(hypergraph->nodes().size()),
-            exact(true) {
+            exact(true),
+            recombine_(recombine) {
         for (int i = 0; i < groups->groups_size(); ++i) {
             beam_[i] = new Beam();
         }
     }
 
     ~BeamChart();
+
+    //
+    bool queue_up(HNode node, HEdge edge,
+                  int bp_left, int bp_right,
+                  priority_queue<BeamHyp> *queue) {
+
+        double cur_score = potentials_->score(edge);
+        const typename BVP::ValType &sig =
+                constraints_->score(edge);
+
+        HNode node_left = hypergraph_->tail_node(edge, 0);
+        const BeamHyp *p_left = get_beam(node_left)[bp_left];
+        cur_score += p_left->current_score;
+        if (!BVP::valid(sig, p_left->sig)) return false;
+        typename BVP::ValType mid_sig = BVP::times(sig, p_left->sig);
+
+        bool unary = hypergraph_->tail_nodes(edge) == 1;
+        if (!unary) {
+            HNode node_right = hypergraph_->tail_node(edge, 1);
+            const BeamHyp *p_right = get_beam(node_right)[bp_right];
+            cur_score += p_right->current_score;
+            if (!BVP::valid(mid_sig, p_right->sig)) return false;
+            mid_sig = BVP::times(mid_sig, p_right->sig);
+        }
+        double future_score = (*future_)[node];
+        BeamHyp hyp(edge, node, mid_sig,
+                    cur_score, future_score,
+                    bp_left, (!unary ? bp_right : -1));
+        queue->push(hyp);
+        return true;
+    }
+
 
     // Insert an a hypothesis into the chart.
     //
@@ -184,7 +223,17 @@ class BeamChart {
             const HypergraphPotentials<BVP> &constraints,
             const Chart<LogViterbiPotential> &outside,
             double lower_bound,
-            const BeamGroups &groups);
+            const BeamGroups &groups,
+            bool recombine);
+
+    static BeamChart<BVP> *cube_pruning(
+        const Hypergraph *graph,
+        const HypergraphPotentials<LogViterbiPotential> &potentials,
+        const HypergraphPotentials<BVP> &constraints,
+        const Chart<LogViterbiPotential> &future,
+        double lower_bound,
+        const BeamGroups &groups,
+        bool recombine);
 
     Hyperpath *get_path(int result);
 
@@ -201,6 +250,8 @@ class BeamChart {
 
     // The (upper bound) future score and a lower bound of total score.
     const Chart<LogViterbiPotential> *future_;
+    const HypergraphPotentials<LogViterbiPotential> *potentials_;
+    const HypergraphPotentials<BVP> *constraints_;
     double lower_bound_;
 
     vector<Beam *> beam_;
@@ -213,6 +264,7 @@ class BeamChart {
 
     stack<BeamHyp *> hyp_pool_;
 
+    bool recombine_;
 };
 
 

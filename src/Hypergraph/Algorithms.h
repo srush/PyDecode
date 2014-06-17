@@ -53,8 +53,8 @@ HypergraphMap *extend_hypergraph_by_count(
     int upper_limit,
     int goal);
 
-Chart<SetPotential> *edge_domination(const Hypergraph &graph);
-Chart<SetPotential> *node_domination(const Hypergraph &graph);
+/* Chart<SetPotential> *edge_domination(const Hypergraph &graph); */
+/* Chart<SetPotential> *node_domination(const Hypergraph &graph); */
 
 template<class Set1, class Set2>
 bool is_disjoint(const Set1 &set1, const Set2 &set2);

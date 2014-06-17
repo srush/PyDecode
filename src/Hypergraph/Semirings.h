@@ -75,6 +75,9 @@ class LogViterbiPotential : public ViterbiPotential {
         return val = val < -INF ? -INF : val;
     }
 
+    static inline bool valid(const ValType& lhs,
+                             const ValType& rhs) {return true;}
+
     static inline ValType randValue() { return dRand(-INF, 0.0); }
 };
 
@@ -190,7 +193,7 @@ class TropicalPotential : public RealPotential {
 
 class BoolPotential {
   public:
-    typedef bool ValType;
+    typedef char ValType;
 
     static inline ValType add(const ValType& lhs, const ValType &rhs) {
         return lhs || rhs;

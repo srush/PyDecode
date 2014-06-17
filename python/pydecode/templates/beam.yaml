@@ -5,3 +5,6 @@ semirings:
   - type: AlphabetPotential
     from: Alphabet
     cvalue: vector[int]
+  - type: LogViterbiPotential
+    from: LogViterbi
+    cvalue: float

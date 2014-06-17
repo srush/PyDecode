@@ -1,1 +1,1 @@
-find python/ | grep .py\$ | xargs pep8
+find python/ | grep .py\$ | xargs pylint

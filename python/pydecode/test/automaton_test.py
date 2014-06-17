@@ -7,7 +7,7 @@ import random
 
 def lat(label):
     return str(label.i) + " " + str(label.j)
-def test_main():
+def here_main():
 
     hypergraph = ph.make_lattice(5, 3, [[0, 1 ,2]] * 3)
     dfa =ph.DFA(4, 4, [{0:0, 1:1, 2:2} , {0:1, 1:1, 3:3}, {0:2, 2: 2, 3:3}], [3])
@@ -17,7 +17,8 @@ def test_main():
     vec[-1] = 3
     vec[-2] = 3
     vec[-3] = 3
-    counts = ph.CountingPotentials(hypergraph).from_vector(vec)
+    counts = ph.CountingPotentials(hypergraph)\
+        .from_array(np.array(vec, dtype=np.int32))
     hmap = ph.extend_hypergraph_by_dfa(hypergraph, counts, dfa)
     # for n in hmap.domain_hypergraph.nodes:
     #     print lat(n.label.core), n.label.left_state, n.label.right_state

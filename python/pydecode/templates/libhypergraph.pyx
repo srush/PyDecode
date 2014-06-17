@@ -1,9 +1,11 @@
 #cython: embedsignature=True
 
 from cython.operator cimport dereference as deref
+import scipy.sparse
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
+import numpy as np
 
 cdef _hypergraph_registry_counts = {}
 
@@ -26,13 +28,11 @@ cdef class Labeling:
                     "There is no node labeling.")
             return self.node_labels[obj.id]
 
-
-
 cdef class _LazyEdges:
     def __init__(self, graph):
         self._graph = graph
 
-    cdef init(self, vector[int ] edges):
+    cdef init(self, vector[int] edges):
         self._edges = edges
         return self
 
@@ -66,23 +66,26 @@ cdef class Hypergraph:
     r"""
     The search space of a dynamic program.
 
-    Hypergraph consisting of a set of nodes :math:`{\cal V}`,
-    hyperedges :math:`{\cal E}`, and a root vertex.
+    Hypergraph consisting of a set of M nodes :math:`{\cal V}`,
+    N hyperedges :math:`{\cal E}`, and a root vertex :math:`v_0 \in {\cal V}`.
+
+    Warning: Direct use of this interface is relatively slow and is mainly
+    designed for prototyping and debugging.
 
     Attributes
     -----------
 
-    edges : list of :py:class:`Edge`
-      List of edge set :math:`{\cal E}` in topological order.
+    vertices : list of :py:class:`Vertex` of length M
+      List of vertices :math:`{\cal V}` in topological order.
+
+    edges : list of :py:class:`Edge` of length N
+      List of hyperedges :math:`{\cal E}` in topological order.
 
     root : :py:class:`Vertex`
-      Root vertex in :math:`{\cal V}`.
-
-    vertices : list of :py:class:`Vertex`
-      List of vertex set :math:`{\cal V}` in topological order.
+      Root vertex in :math:`v_0 \in {\cal V}`.
 
     labeling : :py:class:`Labeling`
-      The labels associated with vertices and edges.
+      The labels associated with vertices and edges. (For debugging.)
 
     """
     def __cinit__(Hypergraph self, bool unary=False):
@@ -112,11 +115,11 @@ cdef class Hypergraph:
         self.labeling = labeling
         return self
 
-    def builder(self):
-        self.thisptr = new CHypergraph(self.unary)
-        #_hypergraph_registry[self.thisptr.id()] = self
-        _hypergraph_registry_counts[self.thisptr.id()] = 1
-        return GraphBuilder().init(self, self.thisptr)
+    # def builder(self):
+    #     self.thisptr = new CHypergraph(self.unary)
+    #     #_hypergraph_registry[self.thisptr.id()] = self
+    #     _hypergraph_registry_counts[self.thisptr.id()] = 1
+    #     return GraphBuilder().init(self, self.thisptr)
 
     property vertices:
         def __get__(self):
@@ -141,23 +144,23 @@ cdef class Hypergraph:
         def __set__(self, labeling):
             self.labeling = labeling
 
-    def head_labels(self):
-        for i in range(self.thisptr.edges().size()):
-            edge_num = self.thisptr.edges()[i]
-            label = self.labeling.node_labels[self.thisptr.head(edge_num).id()]
-            if label is not None:
-                yield edge_num, label
+    # def head_labels(self):
+    #     for i in range(self.thisptr.edges().size()):
+    #         edge_num = self.thisptr.edges()[i]
+    #         label = self.labeling.node_labels[self.thisptr.head(edge_num).id()]
+    #         if label is not None:
+    #             yield edge_num, label
 
-    def node_labels(self):
-        for i in range(self.thisptr.edges().size()):
-            edge_num = self.thisptr.edges()[i]
-            label = self.labeling.node_labels[self.thisptr.head(edge_num).id()]
-            tail_labels = [self.labeling.node_labels[self.thisptr.tail_node(edge_num, tail).id()]
-                           for tail in range(self.thisptr.tail_nodes(edge_num))]
-            if label is not None:
-                yield edge_num, label, tail_labels
+    # def node_labels(self):
+    #     for i in range(self.thisptr.edges().size()):
+    #         edge_num = self.thisptr.edges()[i]
+    #         label = self.labeling.node_labels[self.thisptr.head(edge_num).id()]
+    #         tail_labels = [self.labeling.node_labels[self.thisptr.tail_node(edge_num, tail).id()]
+    #                        for tail in range(self.thisptr.tail_nodes(edge_num))]
+    #         if label is not None:
+    #             yield edge_num, label, tail_labels
 
-    def __str__(self):
+    def summarize(self):
         s = "Hypergraph: Edges: %s Vertices: %s" % (len(self.edges),
                                                  len(self.nodes)) + "\n"
         s += "Root %s" % (self.root.id) + "\n"
@@ -169,112 +172,14 @@ cdef class Hypergraph:
             s += "\n"
         return s
 
-cdef class GraphBuilder:
-    r"""
-    Direct constructor for hypergraphs.
 
-    Usage ::
-
-           >> hypergraph = Hypergraph()
-           >> with hypergraph.builder() as b:
-           >>    b.add_node()
-    """
-
-    def __init__(self):
-        ""
-        pass
-
-    cdef GraphBuilder init(self, Hypergraph hyper, CHypergraph *ptr):
-        self.thisptr = ptr
-        self.graph = hyper
-        self.edge_labels = []
-        self.node_labels = []
-        self.started = False
-        return self
-
-    def __enter__(self):
-        # """
-        # Start building the hypergraph.
-
-        # Use as with hypergraph.builder() as b:
-        # """
-        self.started = True
-        return self
-
-    def __exit__(self, exception, b, c):
-        # """End building the hypergraph
-
-        # Automatically called when exiting with block.
-        # """
-        if exception:
-            return False
-        self.started = False
-        self.thisptr.finish(True)
-        final_edge_labels = [None] * self.thisptr.edges().size()
-        final_node_labels = [None] * self.thisptr.nodes().size()
-
-        for node, t in self.node_labels:
-            if not node._removed():
-                final_node_labels[node.id] = t
-
-        for edge, t in self.edge_labels:
-            if not edge._removed():
-                final_edge_labels[edge.id] = t
-        self.graph.labeling = Labeling(self.graph, final_node_labels,
-                                       final_edge_labels)
-
-    def add_node(self, edges=[], label=None):
-        """
-        Add a node to the hypergraph.
-
-        Parameters
-        ------------
-
-        edges :
-           An iterator where each of the items is of the form
-           ([v_2, v_3..], label)  where v_2 ... are :py:class:`Vertex` s and
-           label is an edge label of any type.
-
-        label : any
-           Optional label for the node.
-
-
-        Returns
-        --------------
-        :py:class:`Vertex`
-        """
-
-        if not self.started:
-            raise HypergraphConstructionException(
-                "Must constuct graph in 'with' block.")
-
-        cdef const CHypernode *nodeptr
-        cdef vector[const CHypernode *] tail_node_ptrs
-        cdef int edgeptr
-        if edges == []:
-            nodeptr = self.thisptr.add_terminal_node()
-        else:
-            nodeptr = self.thisptr.start_node()
-            for edge_cons in edges:
-                try:
-                    tail_nodes, t = edge_cons
-                except:
-                    raise HypergraphConstructionException(
-                        "Edges must be pairs of the form (tail_nodes, label)."
-                        + "Received %s" % (edge_cons))
-                if len(tail_nodes) == 0:
-                    raise HypergraphConstructionException(
-                        "An edge must have at least one tail node.")
-
-                tail_node_ptrs.clear()
-                for tail_node in tail_nodes:
-                    tail_node_ptrs.push_back((<Vertex> tail_node).nodeptr)
-                edgeptr = self.thisptr.add_edge(tail_node_ptrs)
-                self.edge_labels.append((Edge().init(edgeptr, self.graph, True), t))
-            self.thisptr.end_node()
-        cdef Vertex node = Vertex().init(nodeptr, self.graph)
-        self.node_labels.append((node, label))
-        return node
+cdef int_cmp(int first, int second, int cmp_type):
+    if cmp_type == 0: return first <  second
+    if cmp_type == 2: return first == second
+    if cmp_type == 4: return first >  second
+    if cmp_type == 1: return first <= second
+    if cmp_type == 3: return first != second
+    if cmp_type == 5: return first >= second
 
 cdef class Vertex:
     r"""
@@ -317,8 +222,11 @@ cdef class Vertex:
     def __hash__(self):
         return self.id
 
+    def __richcmp__(self, Vertex other, int cmp_type):
+        return int_cmp(self.id, other.id, cmp_type)
+
     def __repr__(self):
-        return "NODE:%d" % (self.nodeptr.id())
+        return "Vertex:%d" % (self.nodeptr.id())
 
     property id:
         def __get__(self):
@@ -401,6 +309,12 @@ cdef class Edge:
     def __repr__(self):
         return "EDGE:%d" % (self.edgeptr)
 
+    def __hash__(self):
+        return self.id
+
+    def __richcmp__(self, Edge other, int cmp_type):
+        return int_cmp(self.id, other.id, cmp_type)
+
     property tail:
         def __get__(self):
             return [Vertex().init(self.graph.thisptr.tail_node(self.id, i), self.graph)
@@ -450,12 +364,6 @@ cdef class Path:
 
     We represent a path as an ordered list of edges and vertices
 
-    Usage:
-
-    To check if an edge is in a path ::
-
-       >> edge in path
-
     Attributes
     -----------
 
@@ -463,7 +371,11 @@ cdef class Path:
         The hyperedges in the path :math:`y_e = 1` in topological order.
 
     vertices : iterator of :py:class:`Vertex`
-        The vertices in the path :math:`y_v = 1` in topological order.
+        The vertices in the path in topological order.
+
+    v : sparse Nx1 column vector
+        Indicator of hyperedges in the hyperpath.
+
     """
 
     def __dealloc__(self):
@@ -480,10 +392,23 @@ cdef class Path:
             for edge in edges:
                 cedges.push_back((<Edge>edge).id)
             self.thisptr = new CHyperpath(graph.thisptr, cedges)
+            self._make_vector()
+
+    def _make_vector(self):
+        data = []
+        indices = []
+        for edge in self.edges:
+            indices.append(edge.id)
+            data.append(1)
+        self.vector = scipy.sparse.csc_matrix(
+            (data, indices, [0, len(data)]),
+            shape=(len(self.graph.edges),1),
+            dtype=np.uint16)
 
     cdef Path init(self, const CHyperpath *path, Hypergraph graph):
         self.thisptr = path
         self.graph = graph
+        self._make_vector()
         return self
 
     def __str__(self):
@@ -520,6 +445,9 @@ cdef class Path:
         def __get__(self):
             return self.vertices
 
+    property v:
+        def __get__(self):
+            return self.vector
 
 class HypergraphAccessException(Exception):
     def __init__(self, value):
@@ -528,283 +456,9 @@ class HypergraphAccessException(Exception):
     def __str__(self):
         return repr(self.value)
 
-
 class HypergraphConstructionException(Exception):
     def __init__(self, value):
         self.value = value
 
     def __str__(self):
         return repr(self.value)
-
-
-cdef class HypergraphMap:
-    """
-    Map between two hypergraphs.
-
-    It is often useful to indicate the relationship between edges
-    in multiple hypergraphs. Say we have two hypergraphs
-    :math:`({\cal V}, {\cal E})` and :math:`({\cal V}', {\cal E}')`.
-    This class represents a function :math:`m : {\cal V} \cup {\cal E} \mapsto {\cal V}' \cup {\cal E}'`.
-
-
-    Usage:
-
-    To map a vertex or edge ::
-
-       >> hypergraph_map[edge]
-
-       >> hypergraph_map[vertex]
-
-    It can also be used to map objects over a hypergraph, for instance ::
-
-       >> hypergraph_map[potentials]
-
-    Attributes
-    -----------
-    domain_hypergraph : :py:class:`Hypergraph`
-      Hypergraph in the domain  of the map :math:`({\cal V}, {\cal E})`
-
-    range_hypergraph : :py:class:`Hypergraph`
-      Hypergraph in the range of the map :math:`({\cal V}', {\cal E})'`
-    """
-    def __cinit__(self):
-        self.thisptr = NULL
-
-    cdef HypergraphMap init(self,
-                            const CHypergraphMap *thisptr,
-                            Hypergraph domain_graph,
-                            Hypergraph range_graph):
-
-        self.thisptr = thisptr
-        assert thisptr.domain_graph().id() >= 0
-        assert thisptr.range_graph().id() >= 0
-        if range_graph is None:
-            self.domain_graph = domain_graph
-            assert self.domain_graph.thisptr.id() == \
-                self.thisptr.domain_graph().id()
-            self.range_graph = self._build_range_hypergraph()
-        elif domain_graph is None:
-            self.range_graph = range_graph
-            assert self.range_graph.thisptr.id() == \
-                self.thisptr.range_graph().id()
-            self.domain_graph = self._build_domain_hypergraph()
-        else:
-            self.domain_graph = domain_graph
-            self.range_graph = range_graph
-            assert self.range_graph.thisptr.id() == \
-                self.thisptr.range_graph().id()
-            assert self.domain_graph.thisptr.id() == \
-                self.thisptr.domain_graph().id()
-
-        return self
-
-    def compose(self, HypergraphMap other):
-        """
-        Compose two hypergraph maps.
-
-        Parameters
-        -----------
-        other : :py:class:`HypergraphMap`
-          A map of type :math:`m' : {\cal V}' \cup {\cal E}' \mapsto {\cal V}'' \cup {\cal E}''`
-
-        Returns
-        ---------
-        composed_map : :py:class:`HypergraphMap`
-          A map of type :math:`m'' : {\cal V} \cup {\cal E} \mapsto {\cal V}'' \cup {\cal E}''`
-
-
-        """
-        cdef CHypergraphMap *newptr = \
-            self.thisptr.compose(deref(other.thisptr))
-        return HypergraphMap().init(newptr,
-                                    other.domain_graph,
-                                    self.range_graph)
-
-    def invert(self):
-        """
-        TODO: fill in
-        """
-        cdef CHypergraphMap *newptr = self.thisptr.invert()
-        return HypergraphMap().init(newptr,
-                                    self.range_graph,
-                                    self.domain_graph)
-
-    property domain_hypergraph:
-        def __get__(self):
-            return self.domain_graph
-
-    property range_hypergraph:
-        def __get__(self):
-            return self.range_graph
-
-    def __dealloc__(self):
-        if self.thisptr is not NULL:
-            del self.thisptr
-            self.thisptr = NULL
-
-    def __getitem__(self, obj):
-        cdef int edge
-        cdef const CHypernode *node
-        if isinstance(obj, Edge):
-            edge = self.thisptr.map(<int>((<Edge>obj).id))
-            # assert edge.id() >= 0
-            # assert edge.id() == self.range_graph.edges[edge.id()].id
-            if edge >= 0:
-                return self.range_graph.edges[edge]
-            else:
-                return None
-        if isinstance(obj, Vertex):
-            node = self.thisptr.map((<Vertex>obj).nodeptr)
-            if node != NULL and node.id() >= 0:
-                return self.range_graph.nodes[node.id()]
-            else:
-                return None
-
-        if isinstance(obj, Hypergraph):
-            assert obj.thisptr.id() == self.domain_hypergraph.thisptr.id()
-            return self.range_hypergraph
-
-        return obj.project(self.range_graph, self)
-
-    def _build_range_hypergraph(self):
-        cdef const CHypergraphMap *projection = self.thisptr
-
-        # Map nodes.
-        node_labels = [None] * projection.range_graph().nodes().size()
-        edge_labels = [None] * projection.range_graph().edges().size()
-        cdef vector[const CHypernode*] old_nodes = \
-            projection.domain_graph().nodes()
-        cdef vector[int] old_edges = \
-            projection.domain_graph().edges()
-
-        cdef const CHypernode *node
-        cdef int edge
-
-        for i in range(old_nodes.size()):
-            node = self.thisptr.map(old_nodes[i])
-            if node != NULL and node.id() >= 0:
-                node_labels[node.id()] = \
-                    self.domain_graph.labeling.node_labels[i]
-
-        if self.domain_graph.labeling.edge_labels:
-            for i in range(old_edges.size()):
-                edge = self.thisptr.map(old_edges[i])
-                if edge >= 0:
-                    edge_labels[edge] = \
-                        self.domain_graph.labeling.edge_labels[i]
-
-        cdef Hypergraph h = Hypergraph()
-        return h.init(projection.range_graph(),
-                      Labeling(h, node_labels, edge_labels))
-
-    def _build_domain_hypergraph(self):
-        cdef const CHypergraph *graph = self.thisptr.domain_graph()
-        assert graph.id() >= 0
-        node_labels = [None] * graph.nodes().size()
-        edge_labels = [None] * graph.edges().size()
-        cdef const CHypernode *node
-        cdef int edge
-
-        for i in range(graph.nodes().size()):
-            node = self.thisptr.map(graph.nodes()[i])
-            if node != NULL and node.id() >= 0:
-                node_labels[i] = \
-                    self.range_graph.labeling.node_labels[node.id()]
-
-        if self.range_graph.labeling.edge_labels:
-            for i in range(graph.edges().size()):
-                edge = self.thisptr.map(graph.edges()[i])
-                if  edge >= 0:
-                    edge_labels[i] = \
-                        self.range_graph.labeling.edge_labels[edge]
-
-        cdef Hypergraph h = Hypergraph()
-        return h.init(graph, Labeling(h, node_labels, edge_labels))
-
-
-# For finite-state automaton construction.
-
-cdef class DFA:
-    def __init__(self, int num_states,
-                 int num_symbols, transitions,
-                 final):
-        cdef vector[map[int, int]] ctransitions
-        ctransitions.resize(num_states)
-        for i, m in enumerate(transitions):
-            for k in m:
-                ctransitions[i][k] = m[k]
-
-        cdef set[int] cfinals
-        for f in final:
-            cfinals.insert(f)
-
-        self.thisptr = new CDFA(num_states, num_symbols,
-                                ctransitions, cfinals)
-
-    def is_final(self, int state):
-        return self.thisptr.final(state)
-
-    def transition(self, int state, int symbol):
-        return self.thisptr.transition(state, symbol)
-
-    def valid_transition(self, int state, int symbol):
-        return self.thisptr.valid_transition(state, symbol)
-
-cdef class DFALabel:
-    cdef init(self, CDFALabel label, core):
-        self.label = label
-        self._core = core
-        return self
-
-    property left_state:
-        def __get__(self):
-            return self.label.left_state
-
-    property right_state:
-        def __get__(self):
-            return self.label.right_state
-
-    property core:
-        def __get__(self):
-            return self._core
-
-    def __str__(self):
-        return str(self.core) + " " + str(self.label.left_state) + " " + str(self.label.right_state)
-
-
-# For lattice construction.
-
-cdef class LatticeLabel:
-    cdef init(self, CLatticeLabel label):
-        self.label = label
-        return self
-
-    property i:
-        def __get__(self):
-            return self.label.i
-
-    property j:
-        def __get__(self):
-            return self.label.j
-
-    def __str__(self):
-        return str(self.i) + " " + str(self.j)
-
-def make_lattice(int width, int height, transitions):
-    cdef vector[vector[int] ] ctrans
-    cdef vector[int] tmp
-    for i in range(len(transitions)):
-        for j in range(len(transitions[i])):
-            tmp.push_back(transitions[i][j])
-        ctrans.push_back(tmp)
-        tmp.clear()
-    cdef Hypergraph h = Hypergraph()
-
-    cdef vector[CLatticeLabel] clabels
-    cdef CHypergraph *chyper = cmake_lattice(width, height, ctrans, &clabels)
-
-    node_labels = [LatticeLabel().init(clabels[i])
-                   for i in range(clabels.size())]
-    assert(chyper.nodes().size() == len(node_labels))
-    return h.init(chyper,
-                  Labeling(h, node_labels, None))

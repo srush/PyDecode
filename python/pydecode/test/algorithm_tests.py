@@ -3,12 +3,17 @@ import pydecode.test.utils as utils
 from collections import defaultdict
 import nose.tools as nt
 import numpy as np
+import numpy.random
+import numpy.testing
+
+
 
 def test_main():
     for hypergraph in utils.hypergraphs():
-        log_pot = utils.random_log_viterbi_potentials_array(hypergraph)
-        inside = utils.random_inside_potentials(hypergraph)
+        log_pot = numpy.random.random(len(hypergraph.edges))
+        inside = numpy.random.random(len(hypergraph.edges))
         yield check_best_path, hypergraph, log_pot
+        yield check_best_path_matrix, hypergraph
         yield check_inside, hypergraph, inside
         yield check_inside, hypergraph, log_pot
         yield check_outside, hypergraph, log_pot
@@ -17,48 +22,63 @@ def test_main():
         yield check_semirings, hypergraph
 
 
-def check_best_path(hypergraph, pot):
+def check_best_path_matrix(graph):
+    """
+    Test viterbi path finding using matrix representation.
+    """
+    scores = numpy.random.random(len(graph.edges))
+    path = ph.best_path(graph, scores)
+    path.v
+
+def check_best_path(graph, max_potentials):
     """
     Test viterbi path finding.
     """
-    path = ph.best_path(hypergraph, pot)
-    nt.assert_not_equal(pot.dot(path), 0.0)
-    utils.valid_path(hypergraph, path)
+    path = ph.best_path(graph, max_potentials)
+    nt.assert_not_equal(max_potentials.T * path.v, 0.0)
+    utils.valid_path(graph, path)
     same = False
-    for other_path in utils.all_paths(hypergraph):
-        assert pot.dot(path) >= pot.dot(other_path)
+    for other_path in utils.all_paths(graph):
+        assert max_potentials.T * path.v >= max_potentials.T * other_path.v
         if path == other_path:
             same = True
     assert same
 
 
-def check_inside(hypergraph, pot):
+def check_inside(graph, pot):
     """
     Test inside chart gen.
     """
-    inside = ph.inside(hypergraph, pot)
+    inside = ph.inside(graph, pot)
 
 
-def check_outside(hypergraph, pot):
+def check_outside(graph, pot):
     """
     Test outside chart properties.
     """
-    path = ph.best_path(hypergraph, pot)
-    chart = ph.inside_values(hypergraph, pot)
-    best = pot.dot(path)
+    print graph
+    path = ph.best_path(graph, pot)
+    chart = ph.inside(graph, pot)
+    print pot.shape, path.v.shape
+    best = pot.T * path.v
+    print best
+    nt.assert_almost_equal(best, chart[graph.root.id])
     nt.assert_not_equal(best, 0.0)
-    out_chart = ph.outside_values(hypergraph, pot, chart)
+
+    out_chart = ph.outside(graph, pot, chart)
 
     # Array-form
-    for node in hypergraph.nodes:
-        other = chart[node] * out_chart[node]
-        nt.assert_less_equal(other, best + 1e-4)
+    for vertex in graph.vertices:
+        other = chart[vertex.id] + out_chart[vertex.id]
+        nt.assert_less_equal(other, best + 1e-4,
+                             "%f %f %d %f %f"%(other, best, vertex.id,
+                                         chart[vertex.id], out_chart[vertex.id]))
 
     # Matrix-form
-    m = chart.as_array() * out_chart.as_array()
+    m = chart + out_chart
     assert (m < best + 1e4).all()
 
-    # for node in hypergraph.nodes:
+    # for node in graph.nodes:
     #     other = chart[node] * out_chart[node]
     #     nt.assert_less_equal(other, best + 1e-4)
 
@@ -66,89 +86,91 @@ def check_outside(hypergraph, pot):
     for edge in path.edges:
         for node in edge.tail:
             if node.is_terminal:
-                other = out_chart[node]
+                other = out_chart[node.id]
                 nt.assert_almost_equal(other, best)
 
 
-def check_posteriors(hypergraph, pot):
+def check_posteriors(graph, pot):
     """
     Check the posteriors by enumeration.
     """
 
-    marg = ph.compute_marginals(hypergraph, pot)
+    node_marg = ph.marginals(graph, pot)
 
-    paths = utils.all_paths(hypergraph)
+    paths = utils.all_paths(graph)
     m = defaultdict(lambda: 0.0)
     total_score = 0.0
     for path in paths:
-        path_score = pot.dot(path)
+        #path_score = prod([pot[edge.id] for edge in path.edges])
+        path_score = np.exp(np.log(pot.T) * path.v)
         total_score += path_score
         for edge in path:
             m[edge.id] += path_score
 
-    for edge in hypergraph.edges:
-        nt.assert_almost_equal(
-            marg[edge] / marg[hypergraph.root],
-            m[edge.id] / total_score, places=4)
+    # for edge in graph.edges:
+    #     nt.assert_almost_equal(
+    #         edge_marg[edge.id] / node_marg[graph.root.id],
+    #         m[edge.id] / total_score, places=4)
 
-    chart = ph.inside(hypergraph, pot)
-    nt.assert_almost_equal(chart[hypergraph.root], total_score, places=4)
+    # chart = ph.inside(graph, pot, kind=ph.Inside)
+    # nt.assert_almost_equal(chart[graph.root.id], total_score, places=4)
 
 
-def check_max_marginals(hypergraph, pot):
+def check_max_marginals(graph, pot):
     """
     Test that max-marginals are correct.
     """
-    print pot.show(hypergraph)
 
-    path = ph.best_path(hypergraph, pot)
-    best = pot.dot(path)
-    print "BEST"
-    print "\n".join(["%20s : %s" % (edge.label, pot[edge])
-                     for edge in path.edges])
-    print best
+    path = ph.best_path(graph, pot)
+    best = pot.T * path.v
+    # print "BEST"
+    # print "\n".join(["%20s : %s" % (edge.label, pot[edge.id])
+    #                  for edge in path.edges])
+    # print best
     nt.assert_not_equal(best, 0.0)
-    max_marginals = ph.compute_marginals(hypergraph, pot)
+    max_marginals = ph.marginals(graph, pot)
 
     # Array-form.
-    for node in hypergraph.nodes:
-        other = max_marginals[node]
+    for node in graph.nodes:
+        other = max_marginals[0][node.id]
         nt.assert_less_equal(other, best + 1e-4)
 
     # Matrix-form.
-    assert (max_marginals.as_array() < best + 1e-4).all()
+    assert (max_marginals[0] < best + 1e-4).all()
+    assert (max_marginals[1] < best + 1e-4).all()
 
-    for edge in hypergraph.edges:
-        other = max_marginals[edge]
-        nt.assert_less_equal(other, best + 1e-4)
-        if edge in path:
-            nt.assert_almost_equal(other, best)
+    # for edge in graph.edges:
+    #     other = max_marginals[edge]
+    #     nt.assert_less_equal(other, best + 1e-4)
+    #     if edge in path:
+    #         nt.assert_almost_equal(other, best)
 
 
-def check_semirings(hypergraph):
-    weights = [10.0] * len(hypergraph.edges)
-    weights2 = [0.5] * len(hypergraph.edges)
-    potentials = ph.ViterbiPotentials(hypergraph).from_vector(weights)
-    marg = ph.Viterbi.compute_marginals(hypergraph, potentials)
+def check_semirings(graph):
+    weights = [10.0] * len(graph.edges)
+    weights2 = [0.5] * len(graph.edges)
+    potentials = np.array(weights)
+    node_marg, edge_marg = ph.marginals(graph, potentials, kind=ph.Viterbi)
 
-    log_potentials = ph.LogViterbiPotentials(hypergraph).from_vector(weights)
-    potentials = ph.LogViterbiPotentials(hypergraph).from_vector(weights)
-    chart = ph.inside(hypergraph, log_potentials)
-    chart2 = ph.inside_values(hypergraph, potentials)
+    log_potentials = np.array(weights)
+    potentials = np.array(weights)
+    chart = ph.inside(graph, log_potentials)
+    chart2 = ph.inside(graph, potentials)
 
     # Array-form.
-    for node in hypergraph.nodes:
-        nt.assert_equal(chart[node], chart2[node])
+    for node in graph.nodes:
+        nt.assert_equal(chart[node.id], chart2[node.id])
 
     # Matrix-form.
-    assert (chart.as_array() == chart2.as_array()).all()
+    numpy.testing.assert_array_almost_equal(
+        chart, chart2, decimal=4)
 
-    marg = ph.LogViterbi.compute_marginals(hypergraph, log_potentials)
-    marg2 = ph.compute_marginals(hypergraph, potentials)
-    for edge in hypergraph.edges:
-        nt.assert_almost_equal(marg[edge], marg2[edge])
 
-    potentials = ph.Inside.Potentials(hypergraph).from_vector(weights2)
-    chart = ph.Inside.inside(hypergraph, potentials)
+    marg = ph.marginals(graph, log_potentials)
+    marg2 = ph.marginals(graph, potentials)
 
-    potentials = ph.Inside.Potentials(hypergraph).from_vector(weights2)
+    for edge in graph.edges:
+        nt.assert_almost_equal(marg[1][edge.id], marg2[1][edge.id])
+
+    potentials = np.array(weights2)
+    # chart = ph.inside(graph, potentials, kind=ph.Inside)

@@ -292,32 +292,32 @@ HypergraphMap *extend_hypergraph_by_count(
 }
 
 
-Chart<SetPotential> *edge_domination(const Hypergraph &graph) {
-    vector<set<int> > *v = new vector<set<int> >(graph.edges().size());
-    foreach (HEdge edge, graph.edges()) {
-        (*v)[graph.id(edge)].insert(graph.id(edge));
-    }
+// Chart<SetPotential> *edge_domination(const Hypergraph &graph) {
+//     vector<set<int> > *v = new vector<set<int> >(graph.edges().size());
+//     foreach (HEdge edge, graph.edges()) {
+//         (*v)[graph.id(edge)].insert(graph.id(edge));
+//     }
 
-    HypergraphVectorPotentials<SetPotential> potentials(
-        &graph, v, set<int>(), false /* copy */);
-    Chart<SetPotential> *chart = general_inside(&graph, potentials);
-    return chart;
-}
+//     HypergraphVectorPotentials<SetPotential> potentials(
+//         &graph, v, false /* copy */);
+//     Chart<SetPotential> *chart = general_inside(&graph, potentials);
+//     return chart;
+// }
 
-Chart<SetPotential> *node_domination(const Hypergraph &graph) {
-    vector<set<int> > *v = new vector<set<int> >(graph.edges().size());
-    foreach (HEdge edge, graph.edges()) {
-        for (int i = 0; i < graph.tail_nodes(edge); ++i) {
-            HNode node = graph.tail_node(edge, i);
-            (*v)[graph.id(edge)].insert(node->id());
-        }
-    }
+// Chart<SetPotential> *node_domination(const Hypergraph &graph) {
+//     vector<set<int> > *v = new vector<set<int> >(graph.edges().size());
+//     foreach (HEdge edge, graph.edges()) {
+//         for (int i = 0; i < graph.tail_nodes(edge); ++i) {
+//             HNode node = graph.tail_node(edge, i);
+//             (*v)[graph.id(edge)].insert(node->id());
+//         }
+//     }
 
-    HypergraphVectorPotentials<SetPotential> potentials(
-        &graph, v, set<int>(), false /* copy */);
-    Chart<SetPotential> *chart = general_inside(&graph, potentials);
-    return chart;
-}
+//     HypergraphVectorPotentials<SetPotential> potentials(
+//         &graph, v, false /* copy */);
+//     Chart<SetPotential> *chart = general_inside(&graph, potentials);
+//     return chart;
+// }
 
 vector<set<int> > *children_sparse(
     const Hypergraph *graph,
@@ -371,7 +371,7 @@ HypergraphMap *project_hypergraph(
     vector<HNode> *node_map =
             new vector<HNode>(hypergraph->nodes().size(), NULL);
     vector<HEdge> *edge_map =
-            new vector<HEdge>(hypergraph->edges().size(), NULL);
+            new vector<HEdge>(hypergraph->edges().size(), -1);
 
     Hypergraph *new_graph = new Hypergraph();
     foreach (HNode node, hypergraph->nodes()) {
@@ -423,7 +423,7 @@ HypergraphMap *binarize(const Hypergraph *hypergraph) {
     vector<HNode> *nodes =
             new vector<HNode>(hypergraph->nodes().size(), NULL);
     vector<HEdge> *edges =
-            new vector<HEdge>(hypergraph->edges().size(), NULL);
+            new vector<HEdge>(hypergraph->edges().size(), -1);
 
     foreach (HNode node, hypergraph->nodes()) {
         if (node->terminal()) {

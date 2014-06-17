@@ -8,6 +8,7 @@
 #include <queue>
 #include <utility>
 #include <vector>
+#include <queue>
 #include "./common.h"
 #include "Hypergraph/Semirings.h"
 #include <boost/intrusive/rbtree.hpp>
@@ -31,13 +32,14 @@ BeamChart<BVP>::~BeamChart<BVP>() {
 }
 
 template<typename BVP>
-BeamChart<BVP> *BeamChart<BVP>::beam_search(
+BeamChart<BVP> *BeamChart<BVP>::cube_pruning(
     const Hypergraph *graph,
     const HypergraphPotentials<LogViterbiPotential> &potentials,
     const HypergraphPotentials<BVP> &constraints,
     const Chart<LogViterbiPotential> &future,
     double lower_bound,
-    const BeamGroups &groups) {
+    const BeamGroups &groups,
+    bool recombine) {
 
     // Check the inputs.
     potentials.check(*graph);
@@ -47,7 +49,100 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
     typedef LogViterbiPotential LVP;
 
     BeamChart<BVP> *chart = new BeamChart<BVP>(graph, &groups,
-                                               &future, lower_bound);
+                                               &potentials,
+                                               &constraints,
+                                               &future,
+                                               lower_bound,
+                                               recombine);
+
+    // 1) Initialize the chart with terminal nodes.
+    typename BVP::ValType one = BVP::one();
+
+
+    foreach (HNode node, graph->nodes()) {
+        if (node->terminal()) {
+            chart->insert(node, NULL, one, LVP::one(),
+                          -1, -1);
+            continue;
+        }
+    }
+
+    for (int group = 0; group < groups.groups_size(); ++group) {
+        priority_queue<BeamHyp> pqueue;
+        foreach (HNode node, groups.group_nodes(group)) {
+            // 2) Enumerate over each edge (in topological order).
+            foreach (HEdge edge, node->edges()) {
+                chart->queue_up(node, edge, 0, 0, &pqueue);
+            }
+            for (int i = 0; i < groups.group_limit(group); ++i) {
+                BeamHyp hyp = pqueue.top();
+                pqueue.pop();
+                bool unary = graph->tail_nodes(hyp.edge) == 1;
+                HEdge edge = hyp.edge;
+                HNode node_left = graph->tail_node(edge, 0);
+
+                stack<pair<int, int> > inner_queue;
+                inner_queue.push(pair<int, int>(hyp.back_position_left+1, hyp.back_position_right));
+                if (!unary) {
+                    inner_queue.push(pair<int, int>(hyp.back_position_left, hyp.back_position_right+1));
+                }
+
+                while (!inner_queue.empty()) {
+                    pair<int, int> pos = inner_queue.top();
+                    inner_queue.pop();
+
+                    if (pos.first < chart->get_beam(node_left).size() - 1 &&
+                        (!unary ||
+                         pos.second < chart->get_beam(graph->tail_node(edge, 1)).size() - 1)) {
+                        bool attempt = chart->queue_up(hyp.node, hyp.edge,
+                                                   pos.first,
+                                                   pos.second,
+                                                   &pqueue);
+                        if (!attempt) {
+                            inner_queue.push(pair<int, int>(pos.first+1, pos.second));
+                            if (!unary) {
+                                inner_queue.push(pair<int, int>(pos.first, pos.second+1));
+                            }
+                        }
+                    }
+                }
+
+                chart->insert(hyp.node,
+                              hyp.edge,
+                              hyp.sig,
+                              hyp.current_score,
+                              hyp.back_position_left,
+                              hyp.back_position_right);
+            }
+        }
+        chart->finish(group);
+    }
+    return chart;
+}
+
+template<typename BVP>
+BeamChart<BVP> *BeamChart<BVP>::beam_search(
+    const Hypergraph *graph,
+    const HypergraphPotentials<LogViterbiPotential> &potentials,
+    const HypergraphPotentials<BVP> &constraints,
+    const Chart<LogViterbiPotential> &future,
+    double lower_bound,
+    const BeamGroups &groups,
+    bool recombine) {
+
+    // Check the inputs.
+    potentials.check(*graph);
+    constraints.check(*graph);
+    groups.check(graph);
+
+    typedef LogViterbiPotential LVP;
+
+    BeamChart<BVP> *chart = new BeamChart<BVP>(graph, &groups,
+                                               &potentials,
+                                               &constraints,
+                                               &future,
+                                               lower_bound,
+                                               recombine);
 
     // 1) Initialize the chart with terminal nodes.
     typename BVP::ValType one = BVP::one();
@@ -445,31 +540,41 @@ void BeamChart<BVP>::finish(int group) {
     int size = min(static_cast<int>(b->size()), beam_size);
     vector<bool> seen(size, false);
 
-    typename Beam::iterator iter = b->begin();
-    for (int i = 0; i < size; ++i) {
-        typename Beam::iterator iter2 = b->begin();
-        for (int j = 0; j < size; ++j) {
+    if (recombine_) {
+        typename Beam::iterator iter = b->begin();
+        for (int i = 0; i < size; ++i) {
+            typename Beam::iterator iter2 = b->begin();
+            for (int j = 0; j < size; ++j) {
 
-            if (j > i &&
-                iter->node == iter2->node &&
-                iter->sig == iter2->sig) {
-                seen[j] = true;
+                if (j > i &&
+                    iter->node == iter2->node &&
+                    iter->sig == iter2->sig) {
+                    seen[j] = true;
+                }
+                iter2++;
             }
-            iter2++;
+            iter++;
         }
-        iter++;
-    }
 
-    iter = b->begin();
-    for (int i = 0; i < size; ++i) {
-        if (!seen[i]) {
+        iter = b->begin();
+        for (int i = 0; i < size; ++i) {
+            if (!seen[i]) {
+                BeamPointers &bp = beam_nodes_[iter->node->id()];
+                bp.push_back(&(*iter));
+            }
+            iter++;
+        }
+    } else {
+        typename Beam::iterator iter = b->begin();
+        for (int i = 0; i < size; ++i) {
             BeamPointers &bp = beam_nodes_[iter->node->id()];
             bp.push_back(&(*iter));
+            iter++;
         }
-        iter++;
     }
     current_group_++;
 }
 
 template class BeamChart<BinaryVectorPotential>;
 template class BeamChart<AlphabetPotential>;
+template class BeamChart<LogViterbiPotential>;

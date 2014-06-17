@@ -18,14 +18,10 @@ cdef class SizedTupleHasher:
     cdef _np_multi
     cpdef hasher(self, t)
 
-cdef make_quartet(int a, int b, int c, int d)
-cdef class Quartet:
-    cdef int a
-    cdef int b
-    cdef int c
-    cdef int d
+cdef class IntTuple4:
+    cdef int a, b, c, d
 
-cdef class QuartetHash:
-    cdef Quartet _multipliers
+cdef class IntTuple4Hasher:
+    cdef IntTuple4 _multipliers
     cdef int _max_size
-    cpdef int hasher(self, Quartet t)
+    cpdef int hasher(self, IntTuple4 t)

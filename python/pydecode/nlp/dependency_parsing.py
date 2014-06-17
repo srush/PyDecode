@@ -4,6 +4,7 @@ import pydecode.nlp.decoding as decoding
 import pydecode.hyper as ph
 import random
 import numpy as np
+import scipy.sparse
 
 class DependencyDecodingProblem(decoding.DecodingProblem):
     def __init__(self, size, order):
@@ -262,7 +263,7 @@ class DependencyDecoder(decoding.HypergraphDecoder):
         label = edge.head_label
 
         if label is None: return None
-        typ, d, s, t = label.unpack()
+        typ, d, s, t = label
         if typ != Trap:
             return None
         if d == Left: s, t = t, s
@@ -304,12 +305,37 @@ class DependencyDecoder(decoding.HypergraphDecoder):
 
 class FirstOrderDecoder(DependencyDecoder):
     def potentials(self, hypergraph, scorer, problem):
-        return ph.LogViterbiPotentials(hypergraph).from_array(self.data)
+        n = problem.size + 1
+        index_set = ph.IndexSet((n, n))
+        # data = []
+        # indices = []
+        # ind = [0]
+        # for i, ls in enumerate(self.data):
+        #     data += [1] * len(ls)
+        #     indices += ls
+        #     ind.append(len(data))
+        # # print data, indices, ind
+        # arcs = scipy.sparse.csc_matrix(
+        #     (data, indices, ind),
+        #     shape=(hasher.max_size(), len(hypergraph.edges)),
+        #     dtype=np.uint8)
+
+        scores = np.zeros([len(index_set)])
+        for i in range(n):
+            for j in range(n):
+                scores[index_set.index((i,j))] = scorer.arc_score(i, j)
+        # print arcs.shape
+        # print scores.shape
+        # self.data = scores * self.data
+
+        print scores.shape
+        print self.data.shape
+        return scores * self.data
 
     """
     First-order dependency parsing.
     """
-    def dynamic_program(self, c, problem, scorer):
+    def dynamic_program(self, p, problem, _):
         """
         Parameters
         -----------
@@ -322,19 +348,18 @@ class FirstOrderDecoder(DependencyDecoder):
           The finished chart.
         """
         n = problem.size + 1
-        q = ph.Quartet
         num_edges = 4 * n ** 3
-        hasher = ph.QuartetHasher(q(kShapes, kDir, n, n))
-        c.set_expected_size(hasher.max_size(), num_edges, max_arity=2)
-        c.set_hasher(hasher)
-        self.data = np.zeros([num_edges])
-        c.set_data(self.data)
+        c = ph.ChartBuilder(
+            strict=False,
+            output_set=ph.IndexSet((n, n)),
+            item_set=ph.IndexSet((kShapes, kDir, n, n)),
+            expected_size=(num_edges, 2))
 
         # Add terminal nodes.
         for s in range(n):
             for d in [Right, Left]:
                 for sh in [Tri]:
-                    c.init(q(sh, d, s, s))
+                    c[sh, d, s, s] = c.init()
 
         for k in range(1, n):
             for s in range(n):
@@ -343,29 +368,37 @@ class FirstOrderDecoder(DependencyDecoder):
 
                 # First create incomplete items.
                 if s != 0:
-                    arc_score = scorer.arc_score(t, s)
-                    c.set(q(Trap, Left, s, t),
-                          [((q(Tri, Right, s, r),
-                             q(Tri, Left, r+1, t)), arc_score)
-                           for r in xrange(s, t)])
+                    c[Trap, Left, s, t] = \
+                          [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
+                           values=[(t, s)])
+                           for r in range(s, t)]
 
-                arc_score = scorer.arc_score(s, t)
-                c.set(q(Trap, Right, s, t),
-                      [((q(Tri, Right, s, r),
-                         q(Tri, Left, r+1, t)), arc_score)
-                       for r in xrange(s, t)])
+                c[Trap, Right, s, t] = \
+                      [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
+                               values=[(s, t)])
+                       for r in range(s, t)]
 
                 if s != 0:
-                    c.set(q(Tri, Left, s, t),
-                          [((q(Tri, Left, s, r),
-                             q(Trap, Left, r, t)), 0.0)
-                           for r in xrange(s, t)])
+                    c[Tri, Left, s, t] = \
+                        [c.merge((Tri, Left, s, r), (Trap, Left, r, t),
+                                 values=[])
+                         for r in range(s, t)]
 
-                c.set(q(Tri, Right, s, t),
-                      [((q(Trap, Right, s, r),
-                         q(Tri, Right, r, t)), 0.0)
-                       for r in xrange(s + 1, t + 1)])
+                c[Tri, Right, s, t] = \
+                      [c.merge((Trap, Right, s, r), (Tri, Right, r, t),
+                               values=[])
+                       for r in range(s + 1, t + 1)]
 
+        return c
+        # hyper = c.finish(False)
+        # self.data = c.matrix()
+        # #self.data = np.zeros([num_edges])
+        # # print len(hyper.edges)
+        # # print self.data
+        # # print self.data
+        # #print c.matrix().shape
+        # #self.data = c.matrix()
+        # return hyper
 
 class SecondOrderDecoder(DependencyDecoder):
     def dynamic_program(self, c, problem):

@@ -75,7 +75,7 @@ class PermutationDecoder(decoding.ConstrainedHypergraphDecoder):
             perms[edge.head.label.i - 1] = edge.head.label.j
         return Permutation(perms)
 
-    def potentials(self, hypergraph, scorer):
+    def potentials(self, hypergraph, scorer, problem):
         def score(edge):
             return scorer.trans_score(edge.tail[0].label.j, edge.head.label.j)
 
@@ -98,7 +98,17 @@ class PermutationDecoder(decoding.ConstrainedHypergraphDecoder):
 
     def special_decode(self, method, problem, hypergraph, scores, constraints,
                        scorer):
-        if method == "BEAM":
+        if method == "CUBE":
+            groups = [node.label.i for node in hypergraph.nodes]
+            ins = ph.inside(hypergraph, scores)
+            out = ph.outside(hypergraph, scores, ins)
+
+            beam_chart = ph.beam_search_BinaryVector(
+                hypergraph, scores, constraints.to_binary_potentials(),
+                out, -10000, groups, [1000] * len(groups), cube_pruning=True)
+            return beam_chart.path(0)
+
+        elif method == "BEAM":
             groups = [node.label.i for node in hypergraph.nodes]
             ins = ph.inside(hypergraph, scores)
             out = ph.outside(hypergraph, scores, ins)

@@ -23,7 +23,7 @@ def hypergraph_to_json(graph):
         if not node.edges:
             data.append([])
         else:
-            data.append([([tail.id for tail in edge.tail], edge.label)
+            data.append([([tail.id for tail in edge.tail], None)
                          for edge in node.edges])
     return data
 
@@ -38,19 +38,13 @@ def json_to_hypergraph(obj):
     --------
     graph : Hypergraph
     """
-
-    hypergraph = ph.Hypergraph()
-    nodes = {}
-
-    with hypergraph.builder() as b:
-        for i, edge_ls in enumerate(obj):
-            if not edge_ls:
-                nodes[i] = b.add_node()
-            else:
-                nodes[i] = b.add_node(
-                    [([nodes[node_id] for node_id in edge], lab)
-                     for edge, lab in edge_ls])
-    return hypergraph
+    chart = ph.ChartBuilder(item_set=ph.IndexSet(len(obj)))
+    for i, edge_ls in enumerate(obj):
+        if not edge_ls:
+            chart[i] = chart.init()
+        else:
+            chart[i] = [chart.merge(*edge) for edge, lab in edge_ls]
+    return chart.finish()
 
 
 def json_to_potentials(s, potentials,

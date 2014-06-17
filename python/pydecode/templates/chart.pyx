@@ -123,11 +123,8 @@ cdef class DPChartBuilder:
         h = self._hasher.hasher(label)
         return deref(self._chart)[h] != NULL
 
-
-cdef make_quartet(int a, int b, int c, int d):
-    return Quartet(a, b, c, d)
-
-cdef class Quartet:
+{% for i in range(2, 6) %}
+cdef class IntTuple{{i}}:
     def __cinit__(self, int a, int b, int c, int d):
         self.a = a
         self.b = b
@@ -137,28 +134,19 @@ cdef class Quartet:
     def unpack(self):
         return (self.a, self.b, self.c, self.d)
 
-cdef class QuartetHash:
-    def __cinit__(self, Quartet t):
-        self._multipliers = Quartet(1, t.a, t.a * t.b, t.a * t.b * t.c)
+cdef class IntTuple{{i}}Hasher:
+    def __cinit__(self, IntTuple{{i}} t):
+        self._multipliers = IntTuple4(1, t.a, t.a * t.b, t.a * t.b * t.c)
         self._max_size = t.a * t.b * t.c * t.d
 
     def max_size(self):
         return self._max_size
 
-    cpdef int hasher(self, Quartet t):
+    cpdef int hasher(self, IntTuple{{i}} t):
         return t.a * self._multipliers.a + t.b * \
             self._multipliers.b + t.c * \
             self._multipliers.c + t.d * self._multipliers.d
-
-    def __dealloc__(self):
-        pass
-        # val = self._multipliers[0] * t[0]
-
-        # cdef int multiplier = 1
-        # for i in range(1, len(t)):
-        #     val += self._multipliers[i] * t[i]
-        # return val
-
+{% endfor %}
 
 cdef class SizedTupleHasher:
     """

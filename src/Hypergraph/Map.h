@@ -80,6 +80,14 @@ class HypergraphMap {
     }
 
 
+    const vector<int> &edge_map() const {
+        return *edge_map_;
+    }
+
+    const vector<HNode> &node_map() const {
+        return *node_map_;
+    }
+
  private:
     const Hypergraph *domain_graph_;
     const Hypergraph *range_graph_;

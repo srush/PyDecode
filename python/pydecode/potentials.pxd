@@ -5,12 +5,6 @@ from libcpp.set cimport set
 from libcpp cimport bool
 
 cdef extern from "Hypergraph/Hypergraph.h":
-    # cdef cppclass CHyperedge "Hyperedge":
-    #     int id()
-    #     const CHypernode *head_node()
-    #     vector[const CHypernode *] tail_nodes()
-
-
     cdef cppclass CHypernode "Hypernode":
         int id()
         vector[int ] edges()
@@ -32,8 +26,6 @@ cdef extern from "Hypergraph/Hypergraph.h":
         vector[const CHypernode *] nodes()
         vector[int ] edges()
 
-
-
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,
                    const vector[int] edges) except +
@@ -41,35 +33,6 @@ cdef extern from "Hypergraph/Hypergraph.h":
         vector[const CHypernode *] nodes()
         int has_edge(int)
         bool equal(const CHyperpath path)
-
-cdef extern from "Hypergraph/Automaton.h":
-    cdef cppclass CDFA "DFA":
-        CDFA(int num_states, int num_symbols,
-            const vector[map[int, int] ] &transition,
-            const set[int] &final)
-        bool final(int state)
-        int transition(int state, int symbol)
-        int valid_transition(int state, int symbol)
-
-
-cdef extern from "Hypergraph/Algorithms.h":
-    CHypergraph *cmake_lattice "make_lattice"(int width, int height,
-                                              const vector[vector[int] ] transitions,
-                                              vector[CLatticeLabel ] *transitions
-                                              )
-
-
-    cdef cppclass CLatticeLabel "LatticeLabel":
-        int i
-        int j
-
-    cdef cppclass CDFALabel "DFANode":
-        int left_state
-        int right_state
-
-
-
-
 
 cdef class Labeling:
     cdef edge_labels
@@ -92,16 +55,6 @@ cdef class Hypergraph:
     cdef bool unary
     cdef Hypergraph init(self, const CHypergraph *ptr, Labeling labeling)
 
-
-cdef class GraphBuilder:
-    cdef CHypergraph *thisptr
-    cdef Hypergraph graph
-    cdef edge_labels
-    cdef node_labels
-    cdef started
-
-    cdef GraphBuilder init(self, Hypergraph hyper, CHypergraph *ptr)
-
 cdef class Vertex:
     cdef const CHypernode *nodeptr
     cdef CHypergraph *graphptr
@@ -120,6 +73,7 @@ cdef class Edge:
 cdef class Path:
     cdef const CHyperpath *thisptr
     cdef Hypergraph graph
+    cdef vector
 
     cdef Path init(self, const CHyperpath *path, Hypergraph graph)
     cdef public equal(Path self, Path other)
@@ -130,16 +84,32 @@ cdef extern from "Hypergraph/Map.h":
         const CHypernode *map(const CHypernode *node)
         const CHypergraph *domain_graph()
         const CHypergraph *range_graph()
-        CHypergraphMap *invert()
-        CHypergraphMap *compose(const CHypergraphMap &)
+        const vector[int] edge_map()
 
-cdef class HypergraphMap:
-    cdef const CHypergraphMap *thisptr
-    cdef Hypergraph range_graph
-    cdef Hypergraph domain_graph
+cdef extern from "Hypergraph/Automaton.h":
+    cdef cppclass CDFA "DFA":
+        CDFA(int num_states, int num_symbols,
+            const vector[map[int, int] ] &transition,
+            const set[int] &final)
+        bool final(int state)
+        int transition(int state, int symbol)
+        int valid_transition(int state, int symbol)
 
-    cdef HypergraphMap init(self, const CHypergraphMap *thisptr,
-                            Hypergraph range_graph, Hypergraph domain_graph)
+
+cdef extern from "Hypergraph/Algorithms.h":
+    CHypergraph *cmake_lattice "make_lattice"(
+        int width, int height,
+        const vector[vector[int] ] transitions,
+        vector[CLatticeLabel ] *transitions) except +
+
+    cdef cppclass CLatticeLabel "LatticeLabel":
+        int i
+        int j
+
+    cdef cppclass CDFALabel "DFANode":
+        int left_state
+        int right_state
+
 
 cdef class DFALabel:
     cdef CDFALabel label
@@ -154,7 +124,17 @@ cdef class LatticeLabel:
     cdef CLatticeLabel label
     cdef init(LatticeLabel self, CLatticeLabel label)
 
-cdef class DPChartBuilder:
+cdef class IndexSet:
+    cdef _hasher
+    cdef int _max_size
+    cpdef int index(self, element)
+    cpdef element(self, int index)
+
+cdef class ChartEdge:
+    cdef vector[const CHypernode *] tail_ptrs
+    cdef values
+
+cdef class ChartBuilder:
     cdef CHypergraph *_hg_ptr
     cdef vector[const CHypernode *] *_chart
     cdef _label_chart
@@ -164,27 +144,87 @@ cdef class DPChartBuilder:
     cdef int _last
     cdef bool _debug
     cdef bool _strict
-    cdef _hasher
+    cdef IndexSet _item_set
+    cdef IndexSet _output_set
     cdef int _max_arity
     cdef _data
+    cdef _indices
+    cdef _ind
+
+    cdef _ndata
+    cdef _nindices
+    cdef _nind
 
 cdef class SizedTupleHasher:
     cdef vector[int] _multipliers
     cdef int _max_size
     cdef _np_multi
-    cpdef hasher(self, t)
+    cpdef int hash_item(self, t)
 
-cdef make_quartet(int a, int b, int c, int d)
-cdef class Quartet:
-    cdef int a
-    cdef int b
-    cdef int c
-    cdef int d
 
-cdef class QuartetHash:
-    cdef Quartet _multipliers
+cdef class IntTuple2:
+    cdef int a, b, c, d
+
+cdef class IntTuple2Hasher:
+    
+    cdef int _multipliers_a
+    
+    cdef int _multipliers_b
+    
     cdef int _max_size
-    cpdef int hasher(self, Quartet t)
+    cpdef int hash_item(self, int a, int b, )
+    cpdef unhash(self, int val)
+
+cdef class IntTuple3:
+    cdef int a, b, c, d
+
+cdef class IntTuple3Hasher:
+    
+    cdef int _multipliers_a
+    
+    cdef int _multipliers_b
+    
+    cdef int _multipliers_c
+    
+    cdef int _max_size
+    cpdef int hash_item(self, int a, int b, int c, )
+    cpdef unhash(self, int val)
+
+cdef class IntTuple4:
+    cdef int a, b, c, d
+
+cdef class IntTuple4Hasher:
+    
+    cdef int _multipliers_a
+    
+    cdef int _multipliers_b
+    
+    cdef int _multipliers_c
+    
+    cdef int _multipliers_d
+    
+    cdef int _max_size
+    cpdef int hash_item(self, int a, int b, int c, int d, )
+    cpdef unhash(self, int val)
+
+cdef class IntTuple5:
+    cdef int a, b, c, d
+
+cdef class IntTuple5Hasher:
+    
+    cdef int _multipliers_a
+    
+    cdef int _multipliers_b
+    
+    cdef int _multipliers_c
+    
+    cdef int _multipliers_d
+    
+    cdef int _multipliers_e
+    
+    cdef int _max_size
+    cpdef int hash_item(self, int a, int b, int c, int d, int e, )
+    cpdef unhash(self, int val)
 
 # Cython template hack.
 from cython.operator cimport dereference as deref
@@ -224,7 +264,17 @@ cdef extern from "Hypergraph/BeamSearch.h" namespace "BeamChart<BinaryVectorPote
             const CHypergraphBinaryVectorPotentials &constraints,
             const CLogViterbiChart &outside,
             double lower_bound,
-            const CBeamGroups &groups) except +
+            const CBeamGroups &groups,
+            bool recombine) except +
+
+    CBeamChartBinaryVectorPotential *ccube_pruningBinaryVectorPotential "BeamChart<BinaryVectorPotential>::cube_pruning" (
+            const CHypergraph *graph,
+            const CHypergraphLogViterbiPotentials &potentials,
+            const CHypergraphBinaryVectorPotentials &constraints,
+            const CLogViterbiChart &outside,
+            double lower_bound,
+            const CBeamGroups &groups,
+            bool recombine) except +
 
 
 cdef extern from "Hypergraph/BeamSearch.h":
@@ -253,7 +303,17 @@ cdef extern from "Hypergraph/BeamSearch.h" namespace "BeamChart<AlphabetPotentia
             const CHypergraphAlphabetPotentials &constraints,
             const CLogViterbiChart &outside,
             double lower_bound,
-            const CBeamGroups &groups) except +
+            const CBeamGroups &groups,
+            bool recombine) except +
+
+    CBeamChartAlphabetPotential *ccube_pruningAlphabetPotential "BeamChart<AlphabetPotential>::cube_pruning" (
+            const CHypergraph *graph,
+            const CHypergraphLogViterbiPotentials &potentials,
+            const CHypergraphAlphabetPotentials &constraints,
+            const CLogViterbiChart &outside,
+            double lower_bound,
+            const CBeamGroups &groups,
+            bool recombine) except +
 
 
 cdef extern from "Hypergraph/BeamSearch.h":
@@ -267,6 +327,45 @@ cdef class BeamChartAlphabetPotential:
     cdef Hypergraph graph
 
     cdef init(self, CBeamChartAlphabetPotential *chart, Hypergraph graph)
+
+
+
+cdef extern from "Hypergraph/BeamSearch.h" namespace "BeamChart<LogViterbiPotential>":
+    cdef cppclass CBeamHypLogViterbiPotential "BeamChart<LogViterbiPotential>::BeamHyp":
+        float sig
+        double current_score
+        double future_score
+
+    CBeamChartLogViterbiPotential *cbeam_searchLogViterbiPotential "BeamChart<LogViterbiPotential>::beam_search" (
+            const CHypergraph *graph,
+            const CHypergraphLogViterbiPotentials &potentials,
+            const CHypergraphLogViterbiPotentials &constraints,
+            const CLogViterbiChart &outside,
+            double lower_bound,
+            const CBeamGroups &groups,
+            bool recombine) except +
+
+    CBeamChartLogViterbiPotential *ccube_pruningLogViterbiPotential "BeamChart<LogViterbiPotential>::cube_pruning" (
+            const CHypergraph *graph,
+            const CHypergraphLogViterbiPotentials &potentials,
+            const CHypergraphLogViterbiPotentials &constraints,
+            const CLogViterbiChart &outside,
+            double lower_bound,
+            const CBeamGroups &groups,
+            bool recombine) except +
+
+
+cdef extern from "Hypergraph/BeamSearch.h":
+    cdef cppclass CBeamChartLogViterbiPotential "BeamChart<LogViterbiPotential>":
+        CHyperpath *get_path(int result)
+        vector[CBeamHypLogViterbiPotential *] get_beam(const CHypernode *node)
+        bool exact
+
+cdef class BeamChartLogViterbiPotential:
+    cdef CBeamChartLogViterbiPotential *thisptr
+    cdef Hypergraph graph
+
+    cdef init(self, CBeamChartLogViterbiPotential *chart, Hypergraph graph)
 
 
 #cython: embedsignature=True
@@ -290,18 +389,18 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         int get(const CHypernode *node)
         CHyperpath *construct_path()
 
-cdef class BackPointers:
-     cdef const CBackPointers *thisptr
-     cdef Hypergraph graph
-     cdef BackPointers init(self, const CBackPointers *ptr,
-                            Hypergraph graph)
+# cdef class BackPointers:
+#      cdef const CBackPointers *thisptr
+#      cdef Hypergraph graph
+#      cdef BackPointers init(self, const CBackPointers *ptr,
+#                             Hypergraph graph)
 
-cdef class Potentials:
-     cdef Hypergraph hypergraph
+cdef class _Potentials:
+     cdef Hypergraph graph
      cdef kind
 
-cdef class Chart:
-     pass
+# cdef class Chart:
+#      pass
 
 ############# This is the templated semiring part. ##############
 
@@ -310,14 +409,147 @@ cdef class Chart:
 # Type identifiers.
 
 cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CViterbiChart *inside_Viterbi "general_inside<ViterbiPotential>" (
+    void inside_Bool "general_inside<BoolPotential>" (
         const CHypergraph *graph,
-        const CHypergraphViterbiPotentials theta) except +
+        const CHypergraphBoolPotentials theta,
+        CBoolChart * chart) except +
 
-    CViterbiChart *outside_Viterbi "general_outside<ViterbiPotential>" (
+    void outside_Bool "general_outside<BoolPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphBoolPotentials theta,
+        CBoolChart inside_chart,
+        CBoolChart * chart) except +
+
+    void viterbi_Bool"general_viterbi<BoolPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphBoolPotentials theta,
+        CBoolChart * chart,
+        CBackPointers *back
+        ) except +
+
+    void node_marginals_Bool "node_marginals<BoolPotential>"(
+        const CHypergraph *graph,
+        const CBoolChart &in_chart,
+        const CBoolChart &out_chart,
+        CBoolChart * chart)
+
+    void edge_marginals_Bool "edge_marginals<BoolPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphBoolPotentials theta,
+        const CBoolChart &in_chart,
+        const CBoolChart &out_chart,
+        char *vals)
+
+    # cdef cppclass CBoolMarginals "Marginals<BoolPotential>":
+    #     char marginal(int edge)
+    #     char marginal(const CHypernode *node)
+    #     # CHypergraphBoolPotentials *threshold(
+    #     #     const char &threshold)
+    #     const CHypergraph *hypergraph()
+    #     char *node_marginals()
+    #     char *edge_marginals()
+
+    cdef cppclass CBoolChart "Chart<BoolPotential>":
+        CBoolChart(const CHypergraph *graph)
+        CBoolChart(const CHypergraph *graph, char *)
+        char get(const CHypernode *node)
+        char *chart()
+
+cdef convert_to_sparse(vector[int] positions)
+cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
+
+# cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<BoolPotential>":
+#     CBoolMarginals *Bool_compute "Marginals<BoolPotential>::compute" (
+#                            const CHypergraph *hypergraph,
+#                            const CHypergraphBoolPotentials *potentials)
+
+# cdef extern from "Hypergraph/Semirings.h":
+#     cdef cppclass BoolPotential:
+#         pass
+
+
+cdef extern from "Hypergraph/Potentials.h":
+    cdef cppclass CHypergraphBoolPotentials "HypergraphPotentials<BoolPotential>":
+        char dot(const CHyperpath &path) except +
+        char score(int edge)
+        # CHypergraphBoolPotentials *times(
+        #     const CHypergraphBoolPotentials &potentials)
+        CHypergraphBoolPotentials *project_potentials(
+            const CHypergraphMap)
+        CHypergraphBoolPotentials(
+            const CHypergraph *hypergraph,
+            const vector[char] potentials) except +
+        # char bias()
+        char *potentials()
+        CHypergraphBoolPotentials *clone() const
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<BoolPotential>":
+    CHypergraphBoolPotentials *cmake_potentials_Bool "HypergraphSparsePotentials<BoolPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const c_map.map[int, int] map_potentials,
+        const vector[char] potentials) except +
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<BoolPotential>":
+    CHypergraphBoolPotentials *cmake_potentials_Bool "HypergraphVectorPotentials<BoolPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const vector[char] *potentials,
+        bool copy) except +
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphPointerPotentials<BoolPotential>":
+    CHypergraphBoolPotentials *cmake_pointer_potentials_Bool "HypergraphPointerPotentials<BoolPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        char *potentials) except +
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<BoolPotential>":
+    CHypergraphBoolPotentials *cmake_projected_potentials_Bool "HypergraphMappedPotentials<BoolPotential>::make_potentials" (
+        CHypergraphBoolPotentials *base_potentials,
+        const CHypergraphMap *projection) except +
+
+
+cdef extern from "Hypergraph/Semirings.h" namespace "BoolPotential":
+    char Bool_one "BoolPotential::one" ()
+    char Bool_zero "BoolPotential::zero" ()
+    char Bool_add "BoolPotential::add" (char, const char&)
+    char Bool_times "BoolPotential::times" (char, const char&)
+    char Bool_safeadd "BoolPotential::safe_add" (char, const char&)
+    char Bool_safetimes "BoolPotential::safe_times" (char, const char&)
+    char Bool_normalize "BoolPotential::normalize" (char&)
+
+
+cdef class _BoolPotentials(_Potentials):
+    cdef CHypergraphBoolPotentials *thisptr
+    # cdef HypergraphMap projection
+
+    cdef init(self, CHypergraphBoolPotentials *ptr)
+              # HypergraphMap projection)
+
+    # cdef char _bias(self, bias)
+
+# cdef class BoolChart(Chart):
+#     cdef CBoolChart *chart
+#     cdef kind
+
+cdef class BoolValue:
+    cdef char thisval
+    cdef BoolValue init(self, char val)
+
+
+
+# Type identifiers.
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h":
+    void inside_Viterbi "general_inside<ViterbiPotential>" (
         const CHypergraph *graph,
         const CHypergraphViterbiPotentials theta,
-        CViterbiChart inside_chart) except +
+        CViterbiChart * chart) except +
+
+    void outside_Viterbi "general_outside<ViterbiPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphViterbiPotentials theta,
+        CViterbiChart inside_chart,
+        CViterbiChart * chart) except +
 
     void viterbi_Viterbi"general_viterbi<ViterbiPotential>"(
         const CHypergraph *graph,
@@ -326,62 +558,80 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         CBackPointers *back
         ) except +
 
-    cdef cppclass CViterbiMarginals "Marginals<ViterbiPotential>":
-        double marginal(int edge)
-        double marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const double &threshold)
-        const CHypergraph *hypergraph()
-        vector[double] node_marginals()
+    void node_marginals_Viterbi "node_marginals<ViterbiPotential>"(
+        const CHypergraph *graph,
+        const CViterbiChart &in_chart,
+        const CViterbiChart &out_chart,
+        CViterbiChart * chart)
+
+    void edge_marginals_Viterbi "edge_marginals<ViterbiPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphViterbiPotentials theta,
+        const CViterbiChart &in_chart,
+        const CViterbiChart &out_chart,
+        double *vals)
+
+    # cdef cppclass CViterbiMarginals "Marginals<ViterbiPotential>":
+    #     double marginal(int edge)
+    #     double marginal(const CHypernode *node)
+    #     # CHypergraphBoolPotentials *threshold(
+    #     #     const double &threshold)
+    #     const CHypergraph *hypergraph()
+    #     double *node_marginals()
+    #     double *edge_marginals()
 
     cdef cppclass CViterbiChart "Chart<ViterbiPotential>":
         CViterbiChart(const CHypergraph *graph)
+        CViterbiChart(const CHypergraph *graph, double *)
         double get(const CHypernode *node)
-        void insert(const CHypernode& node, const double& val)
-        vector[double] chart()
+        double *chart()
 
+cdef convert_to_sparse(vector[int] positions)
+cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
 
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<ViterbiPotential>":
-    CViterbiMarginals *Viterbi_compute "Marginals<ViterbiPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphViterbiPotentials *potentials)
+# cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<ViterbiPotential>":
+#     CViterbiMarginals *Viterbi_compute "Marginals<ViterbiPotential>::compute" (
+#                            const CHypergraph *hypergraph,
+#                            const CHypergraphViterbiPotentials *potentials)
 
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass ViterbiPotential:
-        pass
+# cdef extern from "Hypergraph/Semirings.h":
+#     cdef cppclass ViterbiPotential:
+#         pass
 
 
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphViterbiPotentials "HypergraphPotentials<ViterbiPotential>":
         double dot(const CHyperpath &path) except +
         double score(int edge)
-        CHypergraphViterbiPotentials *times(
-            const CHypergraphViterbiPotentials &potentials)
+        # CHypergraphViterbiPotentials *times(
+        #     const CHypergraphViterbiPotentials &potentials)
         CHypergraphViterbiPotentials *project_potentials(
             const CHypergraphMap)
         CHypergraphViterbiPotentials(
             const CHypergraph *hypergraph,
-            const vector[double] potentials,
-            double bias) except +
-        double bias()
-        vector[double] &potentials()
+            const vector[double] potentials) except +
+        # double bias()
+        double *potentials()
         CHypergraphViterbiPotentials *clone() const
+
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<ViterbiPotential>":
     CHypergraphViterbiPotentials *cmake_potentials_Viterbi "HypergraphSparsePotentials<ViterbiPotential>::make_potentials" (
         const CHypergraph *hypergraph,
         const c_map.map[int, int] map_potentials,
-        const vector[double] potentials,
-        double bias) except +
+        const vector[double] potentials) except +
 
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<ViterbiPotential>":
     CHypergraphViterbiPotentials *cmake_potentials_Viterbi "HypergraphVectorPotentials<ViterbiPotential>::make_potentials" (
         const CHypergraph *hypergraph,
         const vector[double] *potentials,
-        double bias,
         bool copy) except +
 
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphPointerPotentials<ViterbiPotential>":
+    CHypergraphViterbiPotentials *cmake_pointer_potentials_Viterbi "HypergraphPointerPotentials<ViterbiPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        double *potentials) except +
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<ViterbiPotential>":
     CHypergraphViterbiPotentials *cmake_projected_potentials_Viterbi "HypergraphMappedPotentials<ViterbiPotential>::make_potentials" (
@@ -399,18 +649,18 @@ cdef extern from "Hypergraph/Semirings.h" namespace "ViterbiPotential":
     double Viterbi_normalize "ViterbiPotential::normalize" (double&)
 
 
-cdef class ViterbiPotentials(Potentials):
+cdef class _ViterbiPotentials(_Potentials):
     cdef CHypergraphViterbiPotentials *thisptr
-    cdef HypergraphMap projection
+    # cdef HypergraphMap projection
 
-    cdef init(self, CHypergraphViterbiPotentials *ptr,
-              HypergraphMap projection)
+    cdef init(self, CHypergraphViterbiPotentials *ptr)
+              # HypergraphMap projection)
 
-    cdef double _bias(self, bias)
+    # cdef double _bias(self, bias)
 
-cdef class ViterbiChart(Chart):
-    cdef CViterbiChart *chart
-    cdef kind
+# cdef class ViterbiChart(Chart):
+#     cdef CViterbiChart *chart
+#     cdef kind
 
 cdef class ViterbiValue:
     cdef double thisval
@@ -421,902 +671,16 @@ cdef class ViterbiValue:
 # Type identifiers.
 
 cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CLogViterbiChart *inside_LogViterbi "general_inside<LogViterbiPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphLogViterbiPotentials theta) except +
-
-    CLogViterbiChart *outside_LogViterbi "general_outside<LogViterbiPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphLogViterbiPotentials theta,
-        CLogViterbiChart inside_chart) except +
-
-    void viterbi_LogViterbi"general_viterbi<LogViterbiPotential>"(
-        const CHypergraph *graph,
-        const CHypergraphLogViterbiPotentials theta,
-        CLogViterbiChart * chart,
-        CBackPointers *back
-        ) except +
-
-    cdef cppclass CLogViterbiMarginals "Marginals<LogViterbiPotential>":
-        double marginal(int edge)
-        double marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const double &threshold)
-        const CHypergraph *hypergraph()
-        vector[double] node_marginals()
-
-    cdef cppclass CLogViterbiChart "Chart<LogViterbiPotential>":
-        CLogViterbiChart(const CHypergraph *graph)
-        double get(const CHypernode *node)
-        void insert(const CHypernode& node, const double& val)
-        vector[double] chart()
-
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<LogViterbiPotential>":
-    CLogViterbiMarginals *LogViterbi_compute "Marginals<LogViterbiPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphLogViterbiPotentials *potentials)
-
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass LogViterbiPotential:
-        pass
-
-
-cdef extern from "Hypergraph/Potentials.h":
-    cdef cppclass CHypergraphLogViterbiPotentials "HypergraphPotentials<LogViterbiPotential>":
-        double dot(const CHyperpath &path) except +
-        double score(int edge)
-        CHypergraphLogViterbiPotentials *times(
-            const CHypergraphLogViterbiPotentials &potentials)
-        CHypergraphLogViterbiPotentials *project_potentials(
-            const CHypergraphMap)
-        CHypergraphLogViterbiPotentials(
-            const CHypergraph *hypergraph,
-            const vector[double] potentials,
-            double bias) except +
-        double bias()
-        vector[double] &potentials()
-        CHypergraphLogViterbiPotentials *clone() const
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<LogViterbiPotential>":
-    CHypergraphLogViterbiPotentials *cmake_potentials_LogViterbi "HypergraphSparsePotentials<LogViterbiPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const c_map.map[int, int] map_potentials,
-        const vector[double] potentials,
-        double bias) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<LogViterbiPotential>":
-    CHypergraphLogViterbiPotentials *cmake_potentials_LogViterbi "HypergraphVectorPotentials<LogViterbiPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const vector[double] *potentials,
-        double bias,
-        bool copy) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<LogViterbiPotential>":
-    CHypergraphLogViterbiPotentials *cmake_projected_potentials_LogViterbi "HypergraphMappedPotentials<LogViterbiPotential>::make_potentials" (
-        CHypergraphLogViterbiPotentials *base_potentials,
-        const CHypergraphMap *projection) except +
-
-
-cdef extern from "Hypergraph/Semirings.h" namespace "LogViterbiPotential":
-    double LogViterbi_one "LogViterbiPotential::one" ()
-    double LogViterbi_zero "LogViterbiPotential::zero" ()
-    double LogViterbi_add "LogViterbiPotential::add" (double, const double&)
-    double LogViterbi_times "LogViterbiPotential::times" (double, const double&)
-    double LogViterbi_safeadd "LogViterbiPotential::safe_add" (double, const double&)
-    double LogViterbi_safetimes "LogViterbiPotential::safe_times" (double, const double&)
-    double LogViterbi_normalize "LogViterbiPotential::normalize" (double&)
-
-
-cdef class LogViterbiPotentials(Potentials):
-    cdef CHypergraphLogViterbiPotentials *thisptr
-    cdef HypergraphMap projection
-
-    cdef init(self, CHypergraphLogViterbiPotentials *ptr,
-              HypergraphMap projection)
-
-    cdef double _bias(self, bias)
-
-cdef class LogViterbiChart(Chart):
-    cdef CLogViterbiChart *chart
-    cdef kind
-
-cdef class LogViterbiValue:
-    cdef double thisval
-    cdef LogViterbiValue init(self, double val)
-
-
-
-# Type identifiers.
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CLogProbChart *inside_LogProb "general_inside<LogProbPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphLogProbPotentials theta) except +
-
-    CLogProbChart *outside_LogProb "general_outside<LogProbPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphLogProbPotentials theta,
-        CLogProbChart inside_chart) except +
-
-    void viterbi_LogProb"general_viterbi<LogProbPotential>"(
-        const CHypergraph *graph,
-        const CHypergraphLogProbPotentials theta,
-        CLogProbChart * chart,
-        CBackPointers *back
-        ) except +
-
-    cdef cppclass CLogProbMarginals "Marginals<LogProbPotential>":
-        double marginal(int edge)
-        double marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const double &threshold)
-        const CHypergraph *hypergraph()
-        vector[double] node_marginals()
-
-    cdef cppclass CLogProbChart "Chart<LogProbPotential>":
-        CLogProbChart(const CHypergraph *graph)
-        double get(const CHypernode *node)
-        void insert(const CHypernode& node, const double& val)
-        vector[double] chart()
-
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<LogProbPotential>":
-    CLogProbMarginals *LogProb_compute "Marginals<LogProbPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphLogProbPotentials *potentials)
-
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass LogProbPotential:
-        pass
-
-
-cdef extern from "Hypergraph/Potentials.h":
-    cdef cppclass CHypergraphLogProbPotentials "HypergraphPotentials<LogProbPotential>":
-        double dot(const CHyperpath &path) except +
-        double score(int edge)
-        CHypergraphLogProbPotentials *times(
-            const CHypergraphLogProbPotentials &potentials)
-        CHypergraphLogProbPotentials *project_potentials(
-            const CHypergraphMap)
-        CHypergraphLogProbPotentials(
-            const CHypergraph *hypergraph,
-            const vector[double] potentials,
-            double bias) except +
-        double bias()
-        vector[double] &potentials()
-        CHypergraphLogProbPotentials *clone() const
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<LogProbPotential>":
-    CHypergraphLogProbPotentials *cmake_potentials_LogProb "HypergraphSparsePotentials<LogProbPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const c_map.map[int, int] map_potentials,
-        const vector[double] potentials,
-        double bias) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<LogProbPotential>":
-    CHypergraphLogProbPotentials *cmake_potentials_LogProb "HypergraphVectorPotentials<LogProbPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const vector[double] *potentials,
-        double bias,
-        bool copy) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<LogProbPotential>":
-    CHypergraphLogProbPotentials *cmake_projected_potentials_LogProb "HypergraphMappedPotentials<LogProbPotential>::make_potentials" (
-        CHypergraphLogProbPotentials *base_potentials,
-        const CHypergraphMap *projection) except +
-
-
-cdef extern from "Hypergraph/Semirings.h" namespace "LogProbPotential":
-    double LogProb_one "LogProbPotential::one" ()
-    double LogProb_zero "LogProbPotential::zero" ()
-    double LogProb_add "LogProbPotential::add" (double, const double&)
-    double LogProb_times "LogProbPotential::times" (double, const double&)
-    double LogProb_safeadd "LogProbPotential::safe_add" (double, const double&)
-    double LogProb_safetimes "LogProbPotential::safe_times" (double, const double&)
-    double LogProb_normalize "LogProbPotential::normalize" (double&)
-
-
-cdef class LogProbPotentials(Potentials):
-    cdef CHypergraphLogProbPotentials *thisptr
-    cdef HypergraphMap projection
-
-    cdef init(self, CHypergraphLogProbPotentials *ptr,
-              HypergraphMap projection)
-
-    cdef double _bias(self, bias)
-
-cdef class LogProbChart(Chart):
-    cdef CLogProbChart *chart
-    cdef kind
-
-cdef class LogProbValue:
-    cdef double thisval
-    cdef LogProbValue init(self, double val)
-
-
-
-# Type identifiers.
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CInsideChart *inside_Inside "general_inside<InsidePotential>" (
-        const CHypergraph *graph,
-        const CHypergraphInsidePotentials theta) except +
-
-    CInsideChart *outside_Inside "general_outside<InsidePotential>" (
-        const CHypergraph *graph,
-        const CHypergraphInsidePotentials theta,
-        CInsideChart inside_chart) except +
-
-    void viterbi_Inside"general_viterbi<InsidePotential>"(
-        const CHypergraph *graph,
-        const CHypergraphInsidePotentials theta,
-        CInsideChart * chart,
-        CBackPointers *back
-        ) except +
-
-    cdef cppclass CInsideMarginals "Marginals<InsidePotential>":
-        double marginal(int edge)
-        double marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const double &threshold)
-        const CHypergraph *hypergraph()
-        vector[double] node_marginals()
-
-    cdef cppclass CInsideChart "Chart<InsidePotential>":
-        CInsideChart(const CHypergraph *graph)
-        double get(const CHypernode *node)
-        void insert(const CHypernode& node, const double& val)
-        vector[double] chart()
-
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<InsidePotential>":
-    CInsideMarginals *Inside_compute "Marginals<InsidePotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphInsidePotentials *potentials)
-
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass InsidePotential:
-        pass
-
-
-cdef extern from "Hypergraph/Potentials.h":
-    cdef cppclass CHypergraphInsidePotentials "HypergraphPotentials<InsidePotential>":
-        double dot(const CHyperpath &path) except +
-        double score(int edge)
-        CHypergraphInsidePotentials *times(
-            const CHypergraphInsidePotentials &potentials)
-        CHypergraphInsidePotentials *project_potentials(
-            const CHypergraphMap)
-        CHypergraphInsidePotentials(
-            const CHypergraph *hypergraph,
-            const vector[double] potentials,
-            double bias) except +
-        double bias()
-        vector[double] &potentials()
-        CHypergraphInsidePotentials *clone() const
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<InsidePotential>":
-    CHypergraphInsidePotentials *cmake_potentials_Inside "HypergraphSparsePotentials<InsidePotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const c_map.map[int, int] map_potentials,
-        const vector[double] potentials,
-        double bias) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<InsidePotential>":
-    CHypergraphInsidePotentials *cmake_potentials_Inside "HypergraphVectorPotentials<InsidePotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const vector[double] *potentials,
-        double bias,
-        bool copy) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<InsidePotential>":
-    CHypergraphInsidePotentials *cmake_projected_potentials_Inside "HypergraphMappedPotentials<InsidePotential>::make_potentials" (
-        CHypergraphInsidePotentials *base_potentials,
-        const CHypergraphMap *projection) except +
-
-
-cdef extern from "Hypergraph/Semirings.h" namespace "InsidePotential":
-    double Inside_one "InsidePotential::one" ()
-    double Inside_zero "InsidePotential::zero" ()
-    double Inside_add "InsidePotential::add" (double, const double&)
-    double Inside_times "InsidePotential::times" (double, const double&)
-    double Inside_safeadd "InsidePotential::safe_add" (double, const double&)
-    double Inside_safetimes "InsidePotential::safe_times" (double, const double&)
-    double Inside_normalize "InsidePotential::normalize" (double&)
-
-
-cdef class InsidePotentials(Potentials):
-    cdef CHypergraphInsidePotentials *thisptr
-    cdef HypergraphMap projection
-
-    cdef init(self, CHypergraphInsidePotentials *ptr,
-              HypergraphMap projection)
-
-    cdef double _bias(self, bias)
-
-cdef class InsideChart(Chart):
-    cdef CInsideChart *chart
-    cdef kind
-
-cdef class InsideValue:
-    cdef double thisval
-    cdef InsideValue init(self, double val)
-
-
-
-# Type identifiers.
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CMinMaxChart *inside_MinMax "general_inside<MinMaxPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphMinMaxPotentials theta) except +
-
-    CMinMaxChart *outside_MinMax "general_outside<MinMaxPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphMinMaxPotentials theta,
-        CMinMaxChart inside_chart) except +
-
-    void viterbi_MinMax"general_viterbi<MinMaxPotential>"(
-        const CHypergraph *graph,
-        const CHypergraphMinMaxPotentials theta,
-        CMinMaxChart * chart,
-        CBackPointers *back
-        ) except +
-
-    cdef cppclass CMinMaxMarginals "Marginals<MinMaxPotential>":
-        double marginal(int edge)
-        double marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const double &threshold)
-        const CHypergraph *hypergraph()
-        vector[double] node_marginals()
-
-    cdef cppclass CMinMaxChart "Chart<MinMaxPotential>":
-        CMinMaxChart(const CHypergraph *graph)
-        double get(const CHypernode *node)
-        void insert(const CHypernode& node, const double& val)
-        vector[double] chart()
-
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<MinMaxPotential>":
-    CMinMaxMarginals *MinMax_compute "Marginals<MinMaxPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphMinMaxPotentials *potentials)
-
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass MinMaxPotential:
-        pass
-
-
-cdef extern from "Hypergraph/Potentials.h":
-    cdef cppclass CHypergraphMinMaxPotentials "HypergraphPotentials<MinMaxPotential>":
-        double dot(const CHyperpath &path) except +
-        double score(int edge)
-        CHypergraphMinMaxPotentials *times(
-            const CHypergraphMinMaxPotentials &potentials)
-        CHypergraphMinMaxPotentials *project_potentials(
-            const CHypergraphMap)
-        CHypergraphMinMaxPotentials(
-            const CHypergraph *hypergraph,
-            const vector[double] potentials,
-            double bias) except +
-        double bias()
-        vector[double] &potentials()
-        CHypergraphMinMaxPotentials *clone() const
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<MinMaxPotential>":
-    CHypergraphMinMaxPotentials *cmake_potentials_MinMax "HypergraphSparsePotentials<MinMaxPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const c_map.map[int, int] map_potentials,
-        const vector[double] potentials,
-        double bias) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<MinMaxPotential>":
-    CHypergraphMinMaxPotentials *cmake_potentials_MinMax "HypergraphVectorPotentials<MinMaxPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const vector[double] *potentials,
-        double bias,
-        bool copy) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<MinMaxPotential>":
-    CHypergraphMinMaxPotentials *cmake_projected_potentials_MinMax "HypergraphMappedPotentials<MinMaxPotential>::make_potentials" (
-        CHypergraphMinMaxPotentials *base_potentials,
-        const CHypergraphMap *projection) except +
-
-
-cdef extern from "Hypergraph/Semirings.h" namespace "MinMaxPotential":
-    double MinMax_one "MinMaxPotential::one" ()
-    double MinMax_zero "MinMaxPotential::zero" ()
-    double MinMax_add "MinMaxPotential::add" (double, const double&)
-    double MinMax_times "MinMaxPotential::times" (double, const double&)
-    double MinMax_safeadd "MinMaxPotential::safe_add" (double, const double&)
-    double MinMax_safetimes "MinMaxPotential::safe_times" (double, const double&)
-    double MinMax_normalize "MinMaxPotential::normalize" (double&)
-
-
-cdef class MinMaxPotentials(Potentials):
-    cdef CHypergraphMinMaxPotentials *thisptr
-    cdef HypergraphMap projection
-
-    cdef init(self, CHypergraphMinMaxPotentials *ptr,
-              HypergraphMap projection)
-
-    cdef double _bias(self, bias)
-
-cdef class MinMaxChart(Chart):
-    cdef CMinMaxChart *chart
-    cdef kind
-
-cdef class MinMaxValue:
-    cdef double thisval
-    cdef MinMaxValue init(self, double val)
-
-
-
-# Type identifiers.
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CSparseVectorChart *inside_SparseVector "general_inside<SparseVectorPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphSparseVectorPotentials theta) except +
-
-    CSparseVectorChart *outside_SparseVector "general_outside<SparseVectorPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphSparseVectorPotentials theta,
-        CSparseVectorChart inside_chart) except +
-
-    void viterbi_SparseVector"general_viterbi<SparseVectorPotential>"(
-        const CHypergraph *graph,
-        const CHypergraphSparseVectorPotentials theta,
-        CSparseVectorChart * chart,
-        CBackPointers *back
-        ) except +
-
-    cdef cppclass CSparseVectorMarginals "Marginals<SparseVectorPotential>":
-        vector[pair[int, int]] marginal(int edge)
-        vector[pair[int, int]] marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const vector[pair[int, int]] &threshold)
-        const CHypergraph *hypergraph()
-        vector[vector[pair[int, int]]] node_marginals()
-
-    cdef cppclass CSparseVectorChart "Chart<SparseVectorPotential>":
-        CSparseVectorChart(const CHypergraph *graph)
-        vector[pair[int, int]] get(const CHypernode *node)
-        void insert(const CHypernode& node, const vector[pair[int, int]]& val)
-        vector[vector[pair[int, int]]] chart()
-
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<SparseVectorPotential>":
-    CSparseVectorMarginals *SparseVector_compute "Marginals<SparseVectorPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphSparseVectorPotentials *potentials)
-
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass SparseVectorPotential:
-        pass
-
-
-cdef extern from "Hypergraph/Potentials.h":
-    cdef cppclass CHypergraphSparseVectorPotentials "HypergraphPotentials<SparseVectorPotential>":
-        vector[pair[int, int]] dot(const CHyperpath &path) except +
-        vector[pair[int, int]] score(int edge)
-        CHypergraphSparseVectorPotentials *times(
-            const CHypergraphSparseVectorPotentials &potentials)
-        CHypergraphSparseVectorPotentials *project_potentials(
-            const CHypergraphMap)
-        CHypergraphSparseVectorPotentials(
-            const CHypergraph *hypergraph,
-            const vector[vector[pair[int, int]]] potentials,
-            vector[pair[int, int]] bias) except +
-        vector[pair[int, int]] bias()
-        vector[vector[pair[int, int]]] &potentials()
-        CHypergraphSparseVectorPotentials *clone() const
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<SparseVectorPotential>":
-    CHypergraphSparseVectorPotentials *cmake_potentials_SparseVector "HypergraphSparsePotentials<SparseVectorPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const c_map.map[int, int] map_potentials,
-        const vector[vector[pair[int, int]]] potentials,
-        vector[pair[int, int]] bias) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<SparseVectorPotential>":
-    CHypergraphSparseVectorPotentials *cmake_potentials_SparseVector "HypergraphVectorPotentials<SparseVectorPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const vector[vector[pair[int, int]]] *potentials,
-        vector[pair[int, int]] bias,
-        bool copy) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<SparseVectorPotential>":
-    CHypergraphSparseVectorPotentials *cmake_projected_potentials_SparseVector "HypergraphMappedPotentials<SparseVectorPotential>::make_potentials" (
-        CHypergraphSparseVectorPotentials *base_potentials,
-        const CHypergraphMap *projection) except +
-
-
-cdef extern from "Hypergraph/Semirings.h" namespace "SparseVectorPotential":
-    vector[pair[int, int]] SparseVector_one "SparseVectorPotential::one" ()
-    vector[pair[int, int]] SparseVector_zero "SparseVectorPotential::zero" ()
-    vector[pair[int, int]] SparseVector_add "SparseVectorPotential::add" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] SparseVector_times "SparseVectorPotential::times" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] SparseVector_safeadd "SparseVectorPotential::safe_add" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] SparseVector_safetimes "SparseVectorPotential::safe_times" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] SparseVector_normalize "SparseVectorPotential::normalize" (vector[pair[int, int]]&)
-
-
-cdef class SparseVectorPotentials(Potentials):
-    cdef CHypergraphSparseVectorPotentials *thisptr
-    cdef HypergraphMap projection
-
-    cdef init(self, CHypergraphSparseVectorPotentials *ptr,
-              HypergraphMap projection)
-
-    cdef vector[pair[int, int]] _bias(self, bias)
-
-cdef class SparseVectorChart(Chart):
-    cdef CSparseVectorChart *chart
-    cdef kind
-
-cdef class SparseVectorValue:
-    cdef vector[pair[int, int]] thisval
-    cdef SparseVectorValue init(self, vector[pair[int, int]] val)
-
-
-
-# Type identifiers.
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CAlphabetChart *inside_Alphabet "general_inside<AlphabetPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphAlphabetPotentials theta) except +
-
-    CAlphabetChart *outside_Alphabet "general_outside<AlphabetPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphAlphabetPotentials theta,
-        CAlphabetChart inside_chart) except +
-
-    void viterbi_Alphabet"general_viterbi<AlphabetPotential>"(
-        const CHypergraph *graph,
-        const CHypergraphAlphabetPotentials theta,
-        CAlphabetChart * chart,
-        CBackPointers *back
-        ) except +
-
-    cdef cppclass CAlphabetMarginals "Marginals<AlphabetPotential>":
-        vector[int] marginal(int edge)
-        vector[int] marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const vector[int] &threshold)
-        const CHypergraph *hypergraph()
-        vector[vector[int]] node_marginals()
-
-    cdef cppclass CAlphabetChart "Chart<AlphabetPotential>":
-        CAlphabetChart(const CHypergraph *graph)
-        vector[int] get(const CHypernode *node)
-        void insert(const CHypernode& node, const vector[int]& val)
-        vector[vector[int]] chart()
-
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<AlphabetPotential>":
-    CAlphabetMarginals *Alphabet_compute "Marginals<AlphabetPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphAlphabetPotentials *potentials)
-
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass AlphabetPotential:
-        pass
-
-
-cdef extern from "Hypergraph/Potentials.h":
-    cdef cppclass CHypergraphAlphabetPotentials "HypergraphPotentials<AlphabetPotential>":
-        vector[int] dot(const CHyperpath &path) except +
-        vector[int] score(int edge)
-        CHypergraphAlphabetPotentials *times(
-            const CHypergraphAlphabetPotentials &potentials)
-        CHypergraphAlphabetPotentials *project_potentials(
-            const CHypergraphMap)
-        CHypergraphAlphabetPotentials(
-            const CHypergraph *hypergraph,
-            const vector[vector[int]] potentials,
-            vector[int] bias) except +
-        vector[int] bias()
-        vector[vector[int]] &potentials()
-        CHypergraphAlphabetPotentials *clone() const
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<AlphabetPotential>":
-    CHypergraphAlphabetPotentials *cmake_potentials_Alphabet "HypergraphSparsePotentials<AlphabetPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const c_map.map[int, int] map_potentials,
-        const vector[vector[int]] potentials,
-        vector[int] bias) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<AlphabetPotential>":
-    CHypergraphAlphabetPotentials *cmake_potentials_Alphabet "HypergraphVectorPotentials<AlphabetPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const vector[vector[int]] *potentials,
-        vector[int] bias,
-        bool copy) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<AlphabetPotential>":
-    CHypergraphAlphabetPotentials *cmake_projected_potentials_Alphabet "HypergraphMappedPotentials<AlphabetPotential>::make_potentials" (
-        CHypergraphAlphabetPotentials *base_potentials,
-        const CHypergraphMap *projection) except +
-
-
-cdef extern from "Hypergraph/Semirings.h" namespace "AlphabetPotential":
-    vector[int] Alphabet_one "AlphabetPotential::one" ()
-    vector[int] Alphabet_zero "AlphabetPotential::zero" ()
-    vector[int] Alphabet_add "AlphabetPotential::add" (vector[int], const vector[int]&)
-    vector[int] Alphabet_times "AlphabetPotential::times" (vector[int], const vector[int]&)
-    vector[int] Alphabet_safeadd "AlphabetPotential::safe_add" (vector[int], const vector[int]&)
-    vector[int] Alphabet_safetimes "AlphabetPotential::safe_times" (vector[int], const vector[int]&)
-    vector[int] Alphabet_normalize "AlphabetPotential::normalize" (vector[int]&)
-
-
-cdef class AlphabetPotentials(Potentials):
-    cdef CHypergraphAlphabetPotentials *thisptr
-    cdef HypergraphMap projection
-
-    cdef init(self, CHypergraphAlphabetPotentials *ptr,
-              HypergraphMap projection)
-
-    cdef vector[int] _bias(self, bias)
-
-cdef class AlphabetChart(Chart):
-    cdef CAlphabetChart *chart
-    cdef kind
-
-cdef class AlphabetValue:
-    cdef vector[int] thisval
-    cdef AlphabetValue init(self, vector[int] val)
-
-
-
-# Type identifiers.
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CMinSparseVectorChart *inside_MinSparseVector "general_inside<MinSparseVectorPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphMinSparseVectorPotentials theta) except +
-
-    CMinSparseVectorChart *outside_MinSparseVector "general_outside<MinSparseVectorPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphMinSparseVectorPotentials theta,
-        CMinSparseVectorChart inside_chart) except +
-
-    void viterbi_MinSparseVector"general_viterbi<MinSparseVectorPotential>"(
-        const CHypergraph *graph,
-        const CHypergraphMinSparseVectorPotentials theta,
-        CMinSparseVectorChart * chart,
-        CBackPointers *back
-        ) except +
-
-    cdef cppclass CMinSparseVectorMarginals "Marginals<MinSparseVectorPotential>":
-        vector[pair[int, int]] marginal(int edge)
-        vector[pair[int, int]] marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const vector[pair[int, int]] &threshold)
-        const CHypergraph *hypergraph()
-        vector[vector[pair[int, int]]] node_marginals()
-
-    cdef cppclass CMinSparseVectorChart "Chart<MinSparseVectorPotential>":
-        CMinSparseVectorChart(const CHypergraph *graph)
-        vector[pair[int, int]] get(const CHypernode *node)
-        void insert(const CHypernode& node, const vector[pair[int, int]]& val)
-        vector[vector[pair[int, int]]] chart()
-
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<MinSparseVectorPotential>":
-    CMinSparseVectorMarginals *MinSparseVector_compute "Marginals<MinSparseVectorPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphMinSparseVectorPotentials *potentials)
-
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass MinSparseVectorPotential:
-        pass
-
-
-cdef extern from "Hypergraph/Potentials.h":
-    cdef cppclass CHypergraphMinSparseVectorPotentials "HypergraphPotentials<MinSparseVectorPotential>":
-        vector[pair[int, int]] dot(const CHyperpath &path) except +
-        vector[pair[int, int]] score(int edge)
-        CHypergraphMinSparseVectorPotentials *times(
-            const CHypergraphMinSparseVectorPotentials &potentials)
-        CHypergraphMinSparseVectorPotentials *project_potentials(
-            const CHypergraphMap)
-        CHypergraphMinSparseVectorPotentials(
-            const CHypergraph *hypergraph,
-            const vector[vector[pair[int, int]]] potentials,
-            vector[pair[int, int]] bias) except +
-        vector[pair[int, int]] bias()
-        vector[vector[pair[int, int]]] &potentials()
-        CHypergraphMinSparseVectorPotentials *clone() const
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<MinSparseVectorPotential>":
-    CHypergraphMinSparseVectorPotentials *cmake_potentials_MinSparseVector "HypergraphSparsePotentials<MinSparseVectorPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const c_map.map[int, int] map_potentials,
-        const vector[vector[pair[int, int]]] potentials,
-        vector[pair[int, int]] bias) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<MinSparseVectorPotential>":
-    CHypergraphMinSparseVectorPotentials *cmake_potentials_MinSparseVector "HypergraphVectorPotentials<MinSparseVectorPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const vector[vector[pair[int, int]]] *potentials,
-        vector[pair[int, int]] bias,
-        bool copy) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<MinSparseVectorPotential>":
-    CHypergraphMinSparseVectorPotentials *cmake_projected_potentials_MinSparseVector "HypergraphMappedPotentials<MinSparseVectorPotential>::make_potentials" (
-        CHypergraphMinSparseVectorPotentials *base_potentials,
-        const CHypergraphMap *projection) except +
-
-
-cdef extern from "Hypergraph/Semirings.h" namespace "MinSparseVectorPotential":
-    vector[pair[int, int]] MinSparseVector_one "MinSparseVectorPotential::one" ()
-    vector[pair[int, int]] MinSparseVector_zero "MinSparseVectorPotential::zero" ()
-    vector[pair[int, int]] MinSparseVector_add "MinSparseVectorPotential::add" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] MinSparseVector_times "MinSparseVectorPotential::times" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] MinSparseVector_safeadd "MinSparseVectorPotential::safe_add" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] MinSparseVector_safetimes "MinSparseVectorPotential::safe_times" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] MinSparseVector_normalize "MinSparseVectorPotential::normalize" (vector[pair[int, int]]&)
-
-
-cdef class MinSparseVectorPotentials(Potentials):
-    cdef CHypergraphMinSparseVectorPotentials *thisptr
-    cdef HypergraphMap projection
-
-    cdef init(self, CHypergraphMinSparseVectorPotentials *ptr,
-              HypergraphMap projection)
-
-    cdef vector[pair[int, int]] _bias(self, bias)
-
-cdef class MinSparseVectorChart(Chart):
-    cdef CMinSparseVectorChart *chart
-    cdef kind
-
-cdef class MinSparseVectorValue:
-    cdef vector[pair[int, int]] thisval
-    cdef MinSparseVectorValue init(self, vector[pair[int, int]] val)
-
-
-
-# Type identifiers.
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CMaxSparseVectorChart *inside_MaxSparseVector "general_inside<MaxSparseVectorPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphMaxSparseVectorPotentials theta) except +
-
-    CMaxSparseVectorChart *outside_MaxSparseVector "general_outside<MaxSparseVectorPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphMaxSparseVectorPotentials theta,
-        CMaxSparseVectorChart inside_chart) except +
-
-    void viterbi_MaxSparseVector"general_viterbi<MaxSparseVectorPotential>"(
-        const CHypergraph *graph,
-        const CHypergraphMaxSparseVectorPotentials theta,
-        CMaxSparseVectorChart * chart,
-        CBackPointers *back
-        ) except +
-
-    cdef cppclass CMaxSparseVectorMarginals "Marginals<MaxSparseVectorPotential>":
-        vector[pair[int, int]] marginal(int edge)
-        vector[pair[int, int]] marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const vector[pair[int, int]] &threshold)
-        const CHypergraph *hypergraph()
-        vector[vector[pair[int, int]]] node_marginals()
-
-    cdef cppclass CMaxSparseVectorChart "Chart<MaxSparseVectorPotential>":
-        CMaxSparseVectorChart(const CHypergraph *graph)
-        vector[pair[int, int]] get(const CHypernode *node)
-        void insert(const CHypernode& node, const vector[pair[int, int]]& val)
-        vector[vector[pair[int, int]]] chart()
-
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<MaxSparseVectorPotential>":
-    CMaxSparseVectorMarginals *MaxSparseVector_compute "Marginals<MaxSparseVectorPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphMaxSparseVectorPotentials *potentials)
-
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass MaxSparseVectorPotential:
-        pass
-
-
-cdef extern from "Hypergraph/Potentials.h":
-    cdef cppclass CHypergraphMaxSparseVectorPotentials "HypergraphPotentials<MaxSparseVectorPotential>":
-        vector[pair[int, int]] dot(const CHyperpath &path) except +
-        vector[pair[int, int]] score(int edge)
-        CHypergraphMaxSparseVectorPotentials *times(
-            const CHypergraphMaxSparseVectorPotentials &potentials)
-        CHypergraphMaxSparseVectorPotentials *project_potentials(
-            const CHypergraphMap)
-        CHypergraphMaxSparseVectorPotentials(
-            const CHypergraph *hypergraph,
-            const vector[vector[pair[int, int]]] potentials,
-            vector[pair[int, int]] bias) except +
-        vector[pair[int, int]] bias()
-        vector[vector[pair[int, int]]] &potentials()
-        CHypergraphMaxSparseVectorPotentials *clone() const
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<MaxSparseVectorPotential>":
-    CHypergraphMaxSparseVectorPotentials *cmake_potentials_MaxSparseVector "HypergraphSparsePotentials<MaxSparseVectorPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const c_map.map[int, int] map_potentials,
-        const vector[vector[pair[int, int]]] potentials,
-        vector[pair[int, int]] bias) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<MaxSparseVectorPotential>":
-    CHypergraphMaxSparseVectorPotentials *cmake_potentials_MaxSparseVector "HypergraphVectorPotentials<MaxSparseVectorPotential>::make_potentials" (
-        const CHypergraph *hypergraph,
-        const vector[vector[pair[int, int]]] *potentials,
-        vector[pair[int, int]] bias,
-        bool copy) except +
-
-
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<MaxSparseVectorPotential>":
-    CHypergraphMaxSparseVectorPotentials *cmake_projected_potentials_MaxSparseVector "HypergraphMappedPotentials<MaxSparseVectorPotential>::make_potentials" (
-        CHypergraphMaxSparseVectorPotentials *base_potentials,
-        const CHypergraphMap *projection) except +
-
-
-cdef extern from "Hypergraph/Semirings.h" namespace "MaxSparseVectorPotential":
-    vector[pair[int, int]] MaxSparseVector_one "MaxSparseVectorPotential::one" ()
-    vector[pair[int, int]] MaxSparseVector_zero "MaxSparseVectorPotential::zero" ()
-    vector[pair[int, int]] MaxSparseVector_add "MaxSparseVectorPotential::add" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] MaxSparseVector_times "MaxSparseVectorPotential::times" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] MaxSparseVector_safeadd "MaxSparseVectorPotential::safe_add" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] MaxSparseVector_safetimes "MaxSparseVectorPotential::safe_times" (vector[pair[int, int]], const vector[pair[int, int]]&)
-    vector[pair[int, int]] MaxSparseVector_normalize "MaxSparseVectorPotential::normalize" (vector[pair[int, int]]&)
-
-
-cdef class MaxSparseVectorPotentials(Potentials):
-    cdef CHypergraphMaxSparseVectorPotentials *thisptr
-    cdef HypergraphMap projection
-
-    cdef init(self, CHypergraphMaxSparseVectorPotentials *ptr,
-              HypergraphMap projection)
-
-    cdef vector[pair[int, int]] _bias(self, bias)
-
-cdef class MaxSparseVectorChart(Chart):
-    cdef CMaxSparseVectorChart *chart
-    cdef kind
-
-cdef class MaxSparseVectorValue:
-    cdef vector[pair[int, int]] thisval
-    cdef MaxSparseVectorValue init(self, vector[pair[int, int]] val)
-
-
-
-# Type identifiers.
-
-cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CCountingChart *inside_Counting "general_inside<CountingPotential>" (
-        const CHypergraph *graph,
-        const CHypergraphCountingPotentials theta) except +
-
-    CCountingChart *outside_Counting "general_outside<CountingPotential>" (
+    void inside_Counting "general_inside<CountingPotential>" (
         const CHypergraph *graph,
         const CHypergraphCountingPotentials theta,
-        CCountingChart inside_chart) except +
+        CCountingChart * chart) except +
+
+    void outside_Counting "general_outside<CountingPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphCountingPotentials theta,
+        CCountingChart inside_chart,
+        CCountingChart * chart) except +
 
     void viterbi_Counting"general_viterbi<CountingPotential>"(
         const CHypergraph *graph,
@@ -1325,62 +689,80 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         CBackPointers *back
         ) except +
 
-    cdef cppclass CCountingMarginals "Marginals<CountingPotential>":
-        int marginal(int edge)
-        int marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const int &threshold)
-        const CHypergraph *hypergraph()
-        vector[int] node_marginals()
+    void node_marginals_Counting "node_marginals<CountingPotential>"(
+        const CHypergraph *graph,
+        const CCountingChart &in_chart,
+        const CCountingChart &out_chart,
+        CCountingChart * chart)
+
+    void edge_marginals_Counting "edge_marginals<CountingPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphCountingPotentials theta,
+        const CCountingChart &in_chart,
+        const CCountingChart &out_chart,
+        int *vals)
+
+    # cdef cppclass CCountingMarginals "Marginals<CountingPotential>":
+    #     int marginal(int edge)
+    #     int marginal(const CHypernode *node)
+    #     # CHypergraphBoolPotentials *threshold(
+    #     #     const int &threshold)
+    #     const CHypergraph *hypergraph()
+    #     int *node_marginals()
+    #     int *edge_marginals()
 
     cdef cppclass CCountingChart "Chart<CountingPotential>":
         CCountingChart(const CHypergraph *graph)
+        CCountingChart(const CHypergraph *graph, int *)
         int get(const CHypernode *node)
-        void insert(const CHypernode& node, const int& val)
-        vector[int] chart()
+        int *chart()
 
+cdef convert_to_sparse(vector[int] positions)
+cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
 
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<CountingPotential>":
-    CCountingMarginals *Counting_compute "Marginals<CountingPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphCountingPotentials *potentials)
+# cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<CountingPotential>":
+#     CCountingMarginals *Counting_compute "Marginals<CountingPotential>::compute" (
+#                            const CHypergraph *hypergraph,
+#                            const CHypergraphCountingPotentials *potentials)
 
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass CountingPotential:
-        pass
+# cdef extern from "Hypergraph/Semirings.h":
+#     cdef cppclass CountingPotential:
+#         pass
 
 
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphCountingPotentials "HypergraphPotentials<CountingPotential>":
         int dot(const CHyperpath &path) except +
         int score(int edge)
-        CHypergraphCountingPotentials *times(
-            const CHypergraphCountingPotentials &potentials)
+        # CHypergraphCountingPotentials *times(
+        #     const CHypergraphCountingPotentials &potentials)
         CHypergraphCountingPotentials *project_potentials(
             const CHypergraphMap)
         CHypergraphCountingPotentials(
             const CHypergraph *hypergraph,
-            const vector[int] potentials,
-            int bias) except +
-        int bias()
-        vector[int] &potentials()
+            const vector[int] potentials) except +
+        # int bias()
+        int *potentials()
         CHypergraphCountingPotentials *clone() const
+
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<CountingPotential>":
     CHypergraphCountingPotentials *cmake_potentials_Counting "HypergraphSparsePotentials<CountingPotential>::make_potentials" (
         const CHypergraph *hypergraph,
         const c_map.map[int, int] map_potentials,
-        const vector[int] potentials,
-        int bias) except +
+        const vector[int] potentials) except +
 
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<CountingPotential>":
     CHypergraphCountingPotentials *cmake_potentials_Counting "HypergraphVectorPotentials<CountingPotential>::make_potentials" (
         const CHypergraph *hypergraph,
         const vector[int] *potentials,
-        int bias,
         bool copy) except +
 
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphPointerPotentials<CountingPotential>":
+    CHypergraphCountingPotentials *cmake_pointer_potentials_Counting "HypergraphPointerPotentials<CountingPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        int *potentials) except +
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<CountingPotential>":
     CHypergraphCountingPotentials *cmake_projected_potentials_Counting "HypergraphMappedPotentials<CountingPotential>::make_potentials" (
@@ -1398,18 +780,18 @@ cdef extern from "Hypergraph/Semirings.h" namespace "CountingPotential":
     int Counting_normalize "CountingPotential::normalize" (int&)
 
 
-cdef class CountingPotentials(Potentials):
+cdef class _CountingPotentials(_Potentials):
     cdef CHypergraphCountingPotentials *thisptr
-    cdef HypergraphMap projection
+    # cdef HypergraphMap projection
 
-    cdef init(self, CHypergraphCountingPotentials *ptr,
-              HypergraphMap projection)
+    cdef init(self, CHypergraphCountingPotentials *ptr)
+              # HypergraphMap projection)
 
-    cdef int _bias(self, bias)
+    # cdef int _bias(self, bias)
 
-cdef class CountingChart(Chart):
-    cdef CCountingChart *chart
-    cdef kind
+# cdef class CountingChart(Chart):
+#     cdef CCountingChart *chart
+#     cdef kind
 
 cdef class CountingValue:
     cdef int thisval
@@ -1420,125 +802,671 @@ cdef class CountingValue:
 # Type identifiers.
 
 cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CBoolChart *inside_Bool "general_inside<BoolPotential>" (
+    void inside_LogViterbi "general_inside<LogViterbiPotential>" (
         const CHypergraph *graph,
-        const CHypergraphBoolPotentials theta) except +
+        const CHypergraphLogViterbiPotentials theta,
+        CLogViterbiChart * chart) except +
 
-    CBoolChart *outside_Bool "general_outside<BoolPotential>" (
+    void outside_LogViterbi "general_outside<LogViterbiPotential>" (
         const CHypergraph *graph,
-        const CHypergraphBoolPotentials theta,
-        CBoolChart inside_chart) except +
+        const CHypergraphLogViterbiPotentials theta,
+        CLogViterbiChart inside_chart,
+        CLogViterbiChart * chart) except +
 
-    void viterbi_Bool"general_viterbi<BoolPotential>"(
+    void viterbi_LogViterbi"general_viterbi<LogViterbiPotential>"(
         const CHypergraph *graph,
-        const CHypergraphBoolPotentials theta,
-        CBoolChart * chart,
+        const CHypergraphLogViterbiPotentials theta,
+        CLogViterbiChart * chart,
         CBackPointers *back
         ) except +
 
-    cdef cppclass CBoolMarginals "Marginals<BoolPotential>":
-        bool marginal(int edge)
-        bool marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const bool &threshold)
-        const CHypergraph *hypergraph()
-        vector[bool] node_marginals()
+    void node_marginals_LogViterbi "node_marginals<LogViterbiPotential>"(
+        const CHypergraph *graph,
+        const CLogViterbiChart &in_chart,
+        const CLogViterbiChart &out_chart,
+        CLogViterbiChart * chart)
 
-    cdef cppclass CBoolChart "Chart<BoolPotential>":
-        CBoolChart(const CHypergraph *graph)
-        bool get(const CHypernode *node)
-        void insert(const CHypernode& node, const bool& val)
-        vector[bool] chart()
+    void edge_marginals_LogViterbi "edge_marginals<LogViterbiPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphLogViterbiPotentials theta,
+        const CLogViterbiChart &in_chart,
+        const CLogViterbiChart &out_chart,
+        double *vals)
 
+    # cdef cppclass CLogViterbiMarginals "Marginals<LogViterbiPotential>":
+    #     double marginal(int edge)
+    #     double marginal(const CHypernode *node)
+    #     # CHypergraphBoolPotentials *threshold(
+    #     #     const double &threshold)
+    #     const CHypergraph *hypergraph()
+    #     double *node_marginals()
+    #     double *edge_marginals()
 
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<BoolPotential>":
-    CBoolMarginals *Bool_compute "Marginals<BoolPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphBoolPotentials *potentials)
+    cdef cppclass CLogViterbiChart "Chart<LogViterbiPotential>":
+        CLogViterbiChart(const CHypergraph *graph)
+        CLogViterbiChart(const CHypergraph *graph, double *)
+        double get(const CHypernode *node)
+        double *chart()
 
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass BoolPotential:
-        pass
+cdef convert_to_sparse(vector[int] positions)
+cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
+
+# cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<LogViterbiPotential>":
+#     CLogViterbiMarginals *LogViterbi_compute "Marginals<LogViterbiPotential>::compute" (
+#                            const CHypergraph *hypergraph,
+#                            const CHypergraphLogViterbiPotentials *potentials)
+
+# cdef extern from "Hypergraph/Semirings.h":
+#     cdef cppclass LogViterbiPotential:
+#         pass
 
 
 cdef extern from "Hypergraph/Potentials.h":
-    cdef cppclass CHypergraphBoolPotentials "HypergraphPotentials<BoolPotential>":
-        bool dot(const CHyperpath &path) except +
-        bool score(int edge)
-        CHypergraphBoolPotentials *times(
-            const CHypergraphBoolPotentials &potentials)
-        CHypergraphBoolPotentials *project_potentials(
+    cdef cppclass CHypergraphLogViterbiPotentials "HypergraphPotentials<LogViterbiPotential>":
+        double dot(const CHyperpath &path) except +
+        double score(int edge)
+        # CHypergraphLogViterbiPotentials *times(
+        #     const CHypergraphLogViterbiPotentials &potentials)
+        CHypergraphLogViterbiPotentials *project_potentials(
             const CHypergraphMap)
-        CHypergraphBoolPotentials(
+        CHypergraphLogViterbiPotentials(
             const CHypergraph *hypergraph,
-            const vector[bool] potentials,
-            bool bias) except +
-        bool bias()
-        vector[bool] &potentials()
-        CHypergraphBoolPotentials *clone() const
+            const vector[double] potentials) except +
+        # double bias()
+        double *potentials()
+        CHypergraphLogViterbiPotentials *clone() const
 
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<BoolPotential>":
-    CHypergraphBoolPotentials *cmake_potentials_Bool "HypergraphSparsePotentials<BoolPotential>::make_potentials" (
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<LogViterbiPotential>":
+    CHypergraphLogViterbiPotentials *cmake_potentials_LogViterbi "HypergraphSparsePotentials<LogViterbiPotential>::make_potentials" (
         const CHypergraph *hypergraph,
         const c_map.map[int, int] map_potentials,
-        const vector[bool] potentials,
-        bool bias) except +
+        const vector[double] potentials) except +
 
 
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<BoolPotential>":
-    CHypergraphBoolPotentials *cmake_potentials_Bool "HypergraphVectorPotentials<BoolPotential>::make_potentials" (
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<LogViterbiPotential>":
+    CHypergraphLogViterbiPotentials *cmake_potentials_LogViterbi "HypergraphVectorPotentials<LogViterbiPotential>::make_potentials" (
         const CHypergraph *hypergraph,
-        const vector[bool] *potentials,
-        bool bias,
+        const vector[double] *potentials,
         bool copy) except +
 
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphPointerPotentials<LogViterbiPotential>":
+    CHypergraphLogViterbiPotentials *cmake_pointer_potentials_LogViterbi "HypergraphPointerPotentials<LogViterbiPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        double *potentials) except +
 
-cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<BoolPotential>":
-    CHypergraphBoolPotentials *cmake_projected_potentials_Bool "HypergraphMappedPotentials<BoolPotential>::make_potentials" (
-        CHypergraphBoolPotentials *base_potentials,
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<LogViterbiPotential>":
+    CHypergraphLogViterbiPotentials *cmake_projected_potentials_LogViterbi "HypergraphMappedPotentials<LogViterbiPotential>::make_potentials" (
+        CHypergraphLogViterbiPotentials *base_potentials,
         const CHypergraphMap *projection) except +
 
 
-cdef extern from "Hypergraph/Semirings.h" namespace "BoolPotential":
-    bool Bool_one "BoolPotential::one" ()
-    bool Bool_zero "BoolPotential::zero" ()
-    bool Bool_add "BoolPotential::add" (bool, const bool&)
-    bool Bool_times "BoolPotential::times" (bool, const bool&)
-    bool Bool_safeadd "BoolPotential::safe_add" (bool, const bool&)
-    bool Bool_safetimes "BoolPotential::safe_times" (bool, const bool&)
-    bool Bool_normalize "BoolPotential::normalize" (bool&)
+cdef extern from "Hypergraph/Semirings.h" namespace "LogViterbiPotential":
+    double LogViterbi_one "LogViterbiPotential::one" ()
+    double LogViterbi_zero "LogViterbiPotential::zero" ()
+    double LogViterbi_add "LogViterbiPotential::add" (double, const double&)
+    double LogViterbi_times "LogViterbiPotential::times" (double, const double&)
+    double LogViterbi_safeadd "LogViterbiPotential::safe_add" (double, const double&)
+    double LogViterbi_safetimes "LogViterbiPotential::safe_times" (double, const double&)
+    double LogViterbi_normalize "LogViterbiPotential::normalize" (double&)
 
 
-cdef class BoolPotentials(Potentials):
-    cdef CHypergraphBoolPotentials *thisptr
-    cdef HypergraphMap projection
+cdef class _LogViterbiPotentials(_Potentials):
+    cdef CHypergraphLogViterbiPotentials *thisptr
+    # cdef HypergraphMap projection
 
-    cdef init(self, CHypergraphBoolPotentials *ptr,
-              HypergraphMap projection)
+    cdef init(self, CHypergraphLogViterbiPotentials *ptr)
+              # HypergraphMap projection)
 
-    cdef bool _bias(self, bias)
+    # cdef double _bias(self, bias)
 
-cdef class BoolChart(Chart):
-    cdef CBoolChart *chart
-    cdef kind
+# cdef class LogViterbiChart(Chart):
+#     cdef CLogViterbiChart *chart
+#     cdef kind
 
-cdef class BoolValue:
-    cdef bool thisval
-    cdef BoolValue init(self, bool val)
+cdef class LogViterbiValue:
+    cdef double thisval
+    cdef LogViterbiValue init(self, double val)
 
 
 
 # Type identifiers.
 
 cdef extern from "Hypergraph/SemiringAlgorithms.h":
-    CBinaryVectorChart *inside_BinaryVector "general_inside<BinaryVectorPotential>" (
+    void inside_LogProb "general_inside<LogProbPotential>" (
         const CHypergraph *graph,
-        const CHypergraphBinaryVectorPotentials theta) except +
+        const CHypergraphLogProbPotentials theta,
+        CLogProbChart * chart) except +
 
-    CBinaryVectorChart *outside_BinaryVector "general_outside<BinaryVectorPotential>" (
+    void outside_LogProb "general_outside<LogProbPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphLogProbPotentials theta,
+        CLogProbChart inside_chart,
+        CLogProbChart * chart) except +
+
+    void viterbi_LogProb"general_viterbi<LogProbPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphLogProbPotentials theta,
+        CLogProbChart * chart,
+        CBackPointers *back
+        ) except +
+
+    void node_marginals_LogProb "node_marginals<LogProbPotential>"(
+        const CHypergraph *graph,
+        const CLogProbChart &in_chart,
+        const CLogProbChart &out_chart,
+        CLogProbChart * chart)
+
+    void edge_marginals_LogProb "edge_marginals<LogProbPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphLogProbPotentials theta,
+        const CLogProbChart &in_chart,
+        const CLogProbChart &out_chart,
+        double *vals)
+
+    # cdef cppclass CLogProbMarginals "Marginals<LogProbPotential>":
+    #     double marginal(int edge)
+    #     double marginal(const CHypernode *node)
+    #     # CHypergraphBoolPotentials *threshold(
+    #     #     const double &threshold)
+    #     const CHypergraph *hypergraph()
+    #     double *node_marginals()
+    #     double *edge_marginals()
+
+    cdef cppclass CLogProbChart "Chart<LogProbPotential>":
+        CLogProbChart(const CHypergraph *graph)
+        CLogProbChart(const CHypergraph *graph, double *)
+        double get(const CHypernode *node)
+        double *chart()
+
+cdef convert_to_sparse(vector[int] positions)
+cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
+
+# cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<LogProbPotential>":
+#     CLogProbMarginals *LogProb_compute "Marginals<LogProbPotential>::compute" (
+#                            const CHypergraph *hypergraph,
+#                            const CHypergraphLogProbPotentials *potentials)
+
+# cdef extern from "Hypergraph/Semirings.h":
+#     cdef cppclass LogProbPotential:
+#         pass
+
+
+cdef extern from "Hypergraph/Potentials.h":
+    cdef cppclass CHypergraphLogProbPotentials "HypergraphPotentials<LogProbPotential>":
+        double dot(const CHyperpath &path) except +
+        double score(int edge)
+        # CHypergraphLogProbPotentials *times(
+        #     const CHypergraphLogProbPotentials &potentials)
+        CHypergraphLogProbPotentials *project_potentials(
+            const CHypergraphMap)
+        CHypergraphLogProbPotentials(
+            const CHypergraph *hypergraph,
+            const vector[double] potentials) except +
+        # double bias()
+        double *potentials()
+        CHypergraphLogProbPotentials *clone() const
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<LogProbPotential>":
+    CHypergraphLogProbPotentials *cmake_potentials_LogProb "HypergraphSparsePotentials<LogProbPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const c_map.map[int, int] map_potentials,
+        const vector[double] potentials) except +
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<LogProbPotential>":
+    CHypergraphLogProbPotentials *cmake_potentials_LogProb "HypergraphVectorPotentials<LogProbPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const vector[double] *potentials,
+        bool copy) except +
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphPointerPotentials<LogProbPotential>":
+    CHypergraphLogProbPotentials *cmake_pointer_potentials_LogProb "HypergraphPointerPotentials<LogProbPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        double *potentials) except +
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<LogProbPotential>":
+    CHypergraphLogProbPotentials *cmake_projected_potentials_LogProb "HypergraphMappedPotentials<LogProbPotential>::make_potentials" (
+        CHypergraphLogProbPotentials *base_potentials,
+        const CHypergraphMap *projection) except +
+
+
+cdef extern from "Hypergraph/Semirings.h" namespace "LogProbPotential":
+    double LogProb_one "LogProbPotential::one" ()
+    double LogProb_zero "LogProbPotential::zero" ()
+    double LogProb_add "LogProbPotential::add" (double, const double&)
+    double LogProb_times "LogProbPotential::times" (double, const double&)
+    double LogProb_safeadd "LogProbPotential::safe_add" (double, const double&)
+    double LogProb_safetimes "LogProbPotential::safe_times" (double, const double&)
+    double LogProb_normalize "LogProbPotential::normalize" (double&)
+
+
+cdef class _LogProbPotentials(_Potentials):
+    cdef CHypergraphLogProbPotentials *thisptr
+    # cdef HypergraphMap projection
+
+    cdef init(self, CHypergraphLogProbPotentials *ptr)
+              # HypergraphMap projection)
+
+    # cdef double _bias(self, bias)
+
+# cdef class LogProbChart(Chart):
+#     cdef CLogProbChart *chart
+#     cdef kind
+
+cdef class LogProbValue:
+    cdef double thisval
+    cdef LogProbValue init(self, double val)
+
+
+
+# Type identifiers.
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h":
+    void inside_Inside "general_inside<InsidePotential>" (
+        const CHypergraph *graph,
+        const CHypergraphInsidePotentials theta,
+        CInsideChart * chart) except +
+
+    void outside_Inside "general_outside<InsidePotential>" (
+        const CHypergraph *graph,
+        const CHypergraphInsidePotentials theta,
+        CInsideChart inside_chart,
+        CInsideChart * chart) except +
+
+    void viterbi_Inside"general_viterbi<InsidePotential>"(
+        const CHypergraph *graph,
+        const CHypergraphInsidePotentials theta,
+        CInsideChart * chart,
+        CBackPointers *back
+        ) except +
+
+    void node_marginals_Inside "node_marginals<InsidePotential>"(
+        const CHypergraph *graph,
+        const CInsideChart &in_chart,
+        const CInsideChart &out_chart,
+        CInsideChart * chart)
+
+    void edge_marginals_Inside "edge_marginals<InsidePotential>"(
+        const CHypergraph *graph,
+        const CHypergraphInsidePotentials theta,
+        const CInsideChart &in_chart,
+        const CInsideChart &out_chart,
+        double *vals)
+
+    # cdef cppclass CInsideMarginals "Marginals<InsidePotential>":
+    #     double marginal(int edge)
+    #     double marginal(const CHypernode *node)
+    #     # CHypergraphBoolPotentials *threshold(
+    #     #     const double &threshold)
+    #     const CHypergraph *hypergraph()
+    #     double *node_marginals()
+    #     double *edge_marginals()
+
+    cdef cppclass CInsideChart "Chart<InsidePotential>":
+        CInsideChart(const CHypergraph *graph)
+        CInsideChart(const CHypergraph *graph, double *)
+        double get(const CHypernode *node)
+        double *chart()
+
+cdef convert_to_sparse(vector[int] positions)
+cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
+
+# cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<InsidePotential>":
+#     CInsideMarginals *Inside_compute "Marginals<InsidePotential>::compute" (
+#                            const CHypergraph *hypergraph,
+#                            const CHypergraphInsidePotentials *potentials)
+
+# cdef extern from "Hypergraph/Semirings.h":
+#     cdef cppclass InsidePotential:
+#         pass
+
+
+cdef extern from "Hypergraph/Potentials.h":
+    cdef cppclass CHypergraphInsidePotentials "HypergraphPotentials<InsidePotential>":
+        double dot(const CHyperpath &path) except +
+        double score(int edge)
+        # CHypergraphInsidePotentials *times(
+        #     const CHypergraphInsidePotentials &potentials)
+        CHypergraphInsidePotentials *project_potentials(
+            const CHypergraphMap)
+        CHypergraphInsidePotentials(
+            const CHypergraph *hypergraph,
+            const vector[double] potentials) except +
+        # double bias()
+        double *potentials()
+        CHypergraphInsidePotentials *clone() const
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<InsidePotential>":
+    CHypergraphInsidePotentials *cmake_potentials_Inside "HypergraphSparsePotentials<InsidePotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const c_map.map[int, int] map_potentials,
+        const vector[double] potentials) except +
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<InsidePotential>":
+    CHypergraphInsidePotentials *cmake_potentials_Inside "HypergraphVectorPotentials<InsidePotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const vector[double] *potentials,
+        bool copy) except +
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphPointerPotentials<InsidePotential>":
+    CHypergraphInsidePotentials *cmake_pointer_potentials_Inside "HypergraphPointerPotentials<InsidePotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        double *potentials) except +
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<InsidePotential>":
+    CHypergraphInsidePotentials *cmake_projected_potentials_Inside "HypergraphMappedPotentials<InsidePotential>::make_potentials" (
+        CHypergraphInsidePotentials *base_potentials,
+        const CHypergraphMap *projection) except +
+
+
+cdef extern from "Hypergraph/Semirings.h" namespace "InsidePotential":
+    double Inside_one "InsidePotential::one" ()
+    double Inside_zero "InsidePotential::zero" ()
+    double Inside_add "InsidePotential::add" (double, const double&)
+    double Inside_times "InsidePotential::times" (double, const double&)
+    double Inside_safeadd "InsidePotential::safe_add" (double, const double&)
+    double Inside_safetimes "InsidePotential::safe_times" (double, const double&)
+    double Inside_normalize "InsidePotential::normalize" (double&)
+
+
+cdef class _InsidePotentials(_Potentials):
+    cdef CHypergraphInsidePotentials *thisptr
+    # cdef HypergraphMap projection
+
+    cdef init(self, CHypergraphInsidePotentials *ptr)
+              # HypergraphMap projection)
+
+    # cdef double _bias(self, bias)
+
+# cdef class InsideChart(Chart):
+#     cdef CInsideChart *chart
+#     cdef kind
+
+cdef class InsideValue:
+    cdef double thisval
+    cdef InsideValue init(self, double val)
+
+
+
+# Type identifiers.
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h":
+    void inside_MinMax "general_inside<MinMaxPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphMinMaxPotentials theta,
+        CMinMaxChart * chart) except +
+
+    void outside_MinMax "general_outside<MinMaxPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphMinMaxPotentials theta,
+        CMinMaxChart inside_chart,
+        CMinMaxChart * chart) except +
+
+    void viterbi_MinMax"general_viterbi<MinMaxPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphMinMaxPotentials theta,
+        CMinMaxChart * chart,
+        CBackPointers *back
+        ) except +
+
+    void node_marginals_MinMax "node_marginals<MinMaxPotential>"(
+        const CHypergraph *graph,
+        const CMinMaxChart &in_chart,
+        const CMinMaxChart &out_chart,
+        CMinMaxChart * chart)
+
+    void edge_marginals_MinMax "edge_marginals<MinMaxPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphMinMaxPotentials theta,
+        const CMinMaxChart &in_chart,
+        const CMinMaxChart &out_chart,
+        double *vals)
+
+    # cdef cppclass CMinMaxMarginals "Marginals<MinMaxPotential>":
+    #     double marginal(int edge)
+    #     double marginal(const CHypernode *node)
+    #     # CHypergraphBoolPotentials *threshold(
+    #     #     const double &threshold)
+    #     const CHypergraph *hypergraph()
+    #     double *node_marginals()
+    #     double *edge_marginals()
+
+    cdef cppclass CMinMaxChart "Chart<MinMaxPotential>":
+        CMinMaxChart(const CHypergraph *graph)
+        CMinMaxChart(const CHypergraph *graph, double *)
+        double get(const CHypernode *node)
+        double *chart()
+
+cdef convert_to_sparse(vector[int] positions)
+cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
+
+# cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<MinMaxPotential>":
+#     CMinMaxMarginals *MinMax_compute "Marginals<MinMaxPotential>::compute" (
+#                            const CHypergraph *hypergraph,
+#                            const CHypergraphMinMaxPotentials *potentials)
+
+# cdef extern from "Hypergraph/Semirings.h":
+#     cdef cppclass MinMaxPotential:
+#         pass
+
+
+cdef extern from "Hypergraph/Potentials.h":
+    cdef cppclass CHypergraphMinMaxPotentials "HypergraphPotentials<MinMaxPotential>":
+        double dot(const CHyperpath &path) except +
+        double score(int edge)
+        # CHypergraphMinMaxPotentials *times(
+        #     const CHypergraphMinMaxPotentials &potentials)
+        CHypergraphMinMaxPotentials *project_potentials(
+            const CHypergraphMap)
+        CHypergraphMinMaxPotentials(
+            const CHypergraph *hypergraph,
+            const vector[double] potentials) except +
+        # double bias()
+        double *potentials()
+        CHypergraphMinMaxPotentials *clone() const
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<MinMaxPotential>":
+    CHypergraphMinMaxPotentials *cmake_potentials_MinMax "HypergraphSparsePotentials<MinMaxPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const c_map.map[int, int] map_potentials,
+        const vector[double] potentials) except +
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<MinMaxPotential>":
+    CHypergraphMinMaxPotentials *cmake_potentials_MinMax "HypergraphVectorPotentials<MinMaxPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const vector[double] *potentials,
+        bool copy) except +
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphPointerPotentials<MinMaxPotential>":
+    CHypergraphMinMaxPotentials *cmake_pointer_potentials_MinMax "HypergraphPointerPotentials<MinMaxPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        double *potentials) except +
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<MinMaxPotential>":
+    CHypergraphMinMaxPotentials *cmake_projected_potentials_MinMax "HypergraphMappedPotentials<MinMaxPotential>::make_potentials" (
+        CHypergraphMinMaxPotentials *base_potentials,
+        const CHypergraphMap *projection) except +
+
+
+cdef extern from "Hypergraph/Semirings.h" namespace "MinMaxPotential":
+    double MinMax_one "MinMaxPotential::one" ()
+    double MinMax_zero "MinMaxPotential::zero" ()
+    double MinMax_add "MinMaxPotential::add" (double, const double&)
+    double MinMax_times "MinMaxPotential::times" (double, const double&)
+    double MinMax_safeadd "MinMaxPotential::safe_add" (double, const double&)
+    double MinMax_safetimes "MinMaxPotential::safe_times" (double, const double&)
+    double MinMax_normalize "MinMaxPotential::normalize" (double&)
+
+
+cdef class _MinMaxPotentials(_Potentials):
+    cdef CHypergraphMinMaxPotentials *thisptr
+    # cdef HypergraphMap projection
+
+    cdef init(self, CHypergraphMinMaxPotentials *ptr)
+              # HypergraphMap projection)
+
+    # cdef double _bias(self, bias)
+
+# cdef class MinMaxChart(Chart):
+#     cdef CMinMaxChart *chart
+#     cdef kind
+
+cdef class MinMaxValue:
+    cdef double thisval
+    cdef MinMaxValue init(self, double val)
+
+
+
+# Type identifiers.
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h":
+    void inside_Alphabet "general_inside<AlphabetPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphAlphabetPotentials theta,
+        CAlphabetChart * chart) except +
+
+    void outside_Alphabet "general_outside<AlphabetPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphAlphabetPotentials theta,
+        CAlphabetChart inside_chart,
+        CAlphabetChart * chart) except +
+
+    void viterbi_Alphabet"general_viterbi<AlphabetPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphAlphabetPotentials theta,
+        CAlphabetChart * chart,
+        CBackPointers *back
+        ) except +
+
+    void node_marginals_Alphabet "node_marginals<AlphabetPotential>"(
+        const CHypergraph *graph,
+        const CAlphabetChart &in_chart,
+        const CAlphabetChart &out_chart,
+        CAlphabetChart * chart)
+
+    void edge_marginals_Alphabet "edge_marginals<AlphabetPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphAlphabetPotentials theta,
+        const CAlphabetChart &in_chart,
+        const CAlphabetChart &out_chart,
+        vector[int] *vals)
+
+    # cdef cppclass CAlphabetMarginals "Marginals<AlphabetPotential>":
+    #     vector[int] marginal(int edge)
+    #     vector[int] marginal(const CHypernode *node)
+    #     # CHypergraphBoolPotentials *threshold(
+    #     #     const vector[int] &threshold)
+    #     const CHypergraph *hypergraph()
+    #     vector[int] *node_marginals()
+    #     vector[int] *edge_marginals()
+
+    cdef cppclass CAlphabetChart "Chart<AlphabetPotential>":
+        CAlphabetChart(const CHypergraph *graph)
+        CAlphabetChart(const CHypergraph *graph, vector[int] *)
+        vector[int] get(const CHypernode *node)
+        vector[int] *chart()
+
+cdef convert_to_sparse(vector[int] positions)
+cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
+
+# cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<AlphabetPotential>":
+#     CAlphabetMarginals *Alphabet_compute "Marginals<AlphabetPotential>::compute" (
+#                            const CHypergraph *hypergraph,
+#                            const CHypergraphAlphabetPotentials *potentials)
+
+# cdef extern from "Hypergraph/Semirings.h":
+#     cdef cppclass AlphabetPotential:
+#         pass
+
+
+cdef extern from "Hypergraph/Potentials.h":
+    cdef cppclass CHypergraphAlphabetPotentials "HypergraphPotentials<AlphabetPotential>":
+        vector[int] dot(const CHyperpath &path) except +
+        vector[int] score(int edge)
+        # CHypergraphAlphabetPotentials *times(
+        #     const CHypergraphAlphabetPotentials &potentials)
+        CHypergraphAlphabetPotentials *project_potentials(
+            const CHypergraphMap)
+        CHypergraphAlphabetPotentials(
+            const CHypergraph *hypergraph,
+            const vector[vector[int]] potentials) except +
+        # vector[int] bias()
+        vector[int] *potentials()
+        CHypergraphAlphabetPotentials *clone() const
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<AlphabetPotential>":
+    CHypergraphAlphabetPotentials *cmake_potentials_Alphabet "HypergraphSparsePotentials<AlphabetPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const c_map.map[int, int] map_potentials,
+        const vector[vector[int]] potentials) except +
+
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<AlphabetPotential>":
+    CHypergraphAlphabetPotentials *cmake_potentials_Alphabet "HypergraphVectorPotentials<AlphabetPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        const vector[vector[int]] *potentials,
+        bool copy) except +
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphPointerPotentials<AlphabetPotential>":
+    CHypergraphAlphabetPotentials *cmake_pointer_potentials_Alphabet "HypergraphPointerPotentials<AlphabetPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        vector[int] *potentials) except +
+
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<AlphabetPotential>":
+    CHypergraphAlphabetPotentials *cmake_projected_potentials_Alphabet "HypergraphMappedPotentials<AlphabetPotential>::make_potentials" (
+        CHypergraphAlphabetPotentials *base_potentials,
+        const CHypergraphMap *projection) except +
+
+
+cdef extern from "Hypergraph/Semirings.h" namespace "AlphabetPotential":
+    vector[int] Alphabet_one "AlphabetPotential::one" ()
+    vector[int] Alphabet_zero "AlphabetPotential::zero" ()
+    vector[int] Alphabet_add "AlphabetPotential::add" (vector[int], const vector[int]&)
+    vector[int] Alphabet_times "AlphabetPotential::times" (vector[int], const vector[int]&)
+    vector[int] Alphabet_safeadd "AlphabetPotential::safe_add" (vector[int], const vector[int]&)
+    vector[int] Alphabet_safetimes "AlphabetPotential::safe_times" (vector[int], const vector[int]&)
+    vector[int] Alphabet_normalize "AlphabetPotential::normalize" (vector[int]&)
+
+
+cdef class _AlphabetPotentials(_Potentials):
+    cdef CHypergraphAlphabetPotentials *thisptr
+    # cdef HypergraphMap projection
+
+    cdef init(self, CHypergraphAlphabetPotentials *ptr)
+              # HypergraphMap projection)
+
+    # cdef vector[int] _bias(self, bias)
+
+# cdef class AlphabetChart(Chart):
+#     cdef CAlphabetChart *chart
+#     cdef kind
+
+cdef class AlphabetValue:
+    cdef vector[int] thisval
+    cdef AlphabetValue init(self, vector[int] val)
+
+
+
+# Type identifiers.
+
+cdef extern from "Hypergraph/SemiringAlgorithms.h":
+    void inside_BinaryVector "general_inside<BinaryVectorPotential>" (
         const CHypergraph *graph,
         const CHypergraphBinaryVectorPotentials theta,
-        CBinaryVectorChart inside_chart) except +
+        CBinaryVectorChart * chart) except +
+
+    void outside_BinaryVector "general_outside<BinaryVectorPotential>" (
+        const CHypergraph *graph,
+        const CHypergraphBinaryVectorPotentials theta,
+        CBinaryVectorChart inside_chart,
+        CBinaryVectorChart * chart) except +
 
     void viterbi_BinaryVector"general_viterbi<BinaryVectorPotential>"(
         const CHypergraph *graph,
@@ -1547,62 +1475,80 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         CBackPointers *back
         ) except +
 
-    cdef cppclass CBinaryVectorMarginals "Marginals<BinaryVectorPotential>":
-        cbitset marginal(int edge)
-        cbitset marginal(const CHypernode *node)
-        CHypergraphBoolPotentials *threshold(
-            const cbitset &threshold)
-        const CHypergraph *hypergraph()
-        vector[cbitset] node_marginals()
+    void node_marginals_BinaryVector "node_marginals<BinaryVectorPotential>"(
+        const CHypergraph *graph,
+        const CBinaryVectorChart &in_chart,
+        const CBinaryVectorChart &out_chart,
+        CBinaryVectorChart * chart)
+
+    void edge_marginals_BinaryVector "edge_marginals<BinaryVectorPotential>"(
+        const CHypergraph *graph,
+        const CHypergraphBinaryVectorPotentials theta,
+        const CBinaryVectorChart &in_chart,
+        const CBinaryVectorChart &out_chart,
+        cbitset *vals)
+
+    # cdef cppclass CBinaryVectorMarginals "Marginals<BinaryVectorPotential>":
+    #     cbitset marginal(int edge)
+    #     cbitset marginal(const CHypernode *node)
+    #     # CHypergraphBoolPotentials *threshold(
+    #     #     const cbitset &threshold)
+    #     const CHypergraph *hypergraph()
+    #     cbitset *node_marginals()
+    #     cbitset *edge_marginals()
 
     cdef cppclass CBinaryVectorChart "Chart<BinaryVectorPotential>":
         CBinaryVectorChart(const CHypergraph *graph)
+        CBinaryVectorChart(const CHypergraph *graph, cbitset *)
         cbitset get(const CHypernode *node)
-        void insert(const CHypernode& node, const cbitset& val)
-        vector[cbitset] chart()
+        cbitset *chart()
 
+cdef convert_to_sparse(vector[int] positions)
+cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
 
-cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<BinaryVectorPotential>":
-    CBinaryVectorMarginals *BinaryVector_compute "Marginals<BinaryVectorPotential>::compute" (
-                           const CHypergraph *hypergraph,
-                           const CHypergraphBinaryVectorPotentials *potentials)
+# cdef extern from "Hypergraph/SemiringAlgorithms.h" namespace "Marginals<BinaryVectorPotential>":
+#     CBinaryVectorMarginals *BinaryVector_compute "Marginals<BinaryVectorPotential>::compute" (
+#                            const CHypergraph *hypergraph,
+#                            const CHypergraphBinaryVectorPotentials *potentials)
 
-cdef extern from "Hypergraph/Semirings.h":
-    cdef cppclass BinaryVectorPotential:
-        pass
+# cdef extern from "Hypergraph/Semirings.h":
+#     cdef cppclass BinaryVectorPotential:
+#         pass
 
 
 cdef extern from "Hypergraph/Potentials.h":
     cdef cppclass CHypergraphBinaryVectorPotentials "HypergraphPotentials<BinaryVectorPotential>":
         cbitset dot(const CHyperpath &path) except +
         cbitset score(int edge)
-        CHypergraphBinaryVectorPotentials *times(
-            const CHypergraphBinaryVectorPotentials &potentials)
+        # CHypergraphBinaryVectorPotentials *times(
+        #     const CHypergraphBinaryVectorPotentials &potentials)
         CHypergraphBinaryVectorPotentials *project_potentials(
             const CHypergraphMap)
         CHypergraphBinaryVectorPotentials(
             const CHypergraph *hypergraph,
-            const vector[cbitset] potentials,
-            cbitset bias) except +
-        cbitset bias()
-        vector[cbitset] &potentials()
+            const vector[cbitset] potentials) except +
+        # cbitset bias()
+        cbitset *potentials()
         CHypergraphBinaryVectorPotentials *clone() const
+
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphSparsePotentials<BinaryVectorPotential>":
     CHypergraphBinaryVectorPotentials *cmake_potentials_BinaryVector "HypergraphSparsePotentials<BinaryVectorPotential>::make_potentials" (
         const CHypergraph *hypergraph,
         const c_map.map[int, int] map_potentials,
-        const vector[cbitset] potentials,
-        cbitset bias) except +
+        const vector[cbitset] potentials) except +
 
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphVectorPotentials<BinaryVectorPotential>":
     CHypergraphBinaryVectorPotentials *cmake_potentials_BinaryVector "HypergraphVectorPotentials<BinaryVectorPotential>::make_potentials" (
         const CHypergraph *hypergraph,
         const vector[cbitset] *potentials,
-        cbitset bias,
         bool copy) except +
 
+cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphPointerPotentials<BinaryVectorPotential>":
+    CHypergraphBinaryVectorPotentials *cmake_pointer_potentials_BinaryVector "HypergraphPointerPotentials<BinaryVectorPotential>::make_potentials" (
+        const CHypergraph *hypergraph,
+        cbitset *potentials) except +
 
 cdef extern from "Hypergraph/Potentials.h" namespace "HypergraphMappedPotentials<BinaryVectorPotential>":
     CHypergraphBinaryVectorPotentials *cmake_projected_potentials_BinaryVector "HypergraphMappedPotentials<BinaryVectorPotential>::make_potentials" (
@@ -1620,18 +1566,18 @@ cdef extern from "Hypergraph/Semirings.h" namespace "BinaryVectorPotential":
     cbitset BinaryVector_normalize "BinaryVectorPotential::normalize" (cbitset&)
 
 
-cdef class BinaryVectorPotentials(Potentials):
+cdef class _BinaryVectorPotentials(_Potentials):
     cdef CHypergraphBinaryVectorPotentials *thisptr
-    cdef HypergraphMap projection
+    # cdef HypergraphMap projection
 
-    cdef init(self, CHypergraphBinaryVectorPotentials *ptr,
-              HypergraphMap projection)
+    cdef init(self, CHypergraphBinaryVectorPotentials *ptr)
+              # HypergraphMap projection)
 
-    cdef cbitset _bias(self, bias)
+    # cdef cbitset _bias(self, bias)
 
-cdef class BinaryVectorChart(Chart):
-    cdef CBinaryVectorChart *chart
-    cdef kind
+# cdef class BinaryVectorChart(Chart):
+#     cdef CBinaryVectorChart *chart
+#     cdef kind
 
 cdef class BinaryVectorValue:
     cdef cbitset thisval
@@ -1648,11 +1594,11 @@ cdef extern from "Hypergraph/SemiringAlgorithms.h":
         int limit) except +
 
 
-cdef extern from "Hypergraph/Potentials.h":
-    void cpairwise_dot "pairwise_dot"(
-        const CHypergraphSparseVectorPotentials sparse_potentials,
-        const vector[double] vec,
-        CHypergraphLogViterbiPotentials *)
+# cdef extern from "Hypergraph/Potentials.h":
+#     void cpairwise_dot "pairwise_dot"(
+#         const CHypergraphSparseVectorPotentials sparse_potentials,
+#         const vector[double] vec,
+#         CHypergraphLogViterbiPotentials *)
 
 # cdef extern from "Hypergraph/Semirings.h":
 #     bool cvalid_binary_vectors "valid_binary_vectors" (cbitset lhs,
@@ -1665,7 +1611,7 @@ cdef extern from "Hypergraph/Algorithms.h":
         CHypergraphCountingPotentials potentials,
         int lower_limit,
         int upper_limit,
-        int goal)
+        int goal) except +
 
     CHypergraphMap *cextend_hypergraph_by_dfa "extend_with_dfa" (
         CHypergraph *graph,
@@ -1675,7 +1621,7 @@ cdef extern from "Hypergraph/Algorithms.h":
 
     CHypergraphMap *cproject_hypergraph "project_hypergraph"(
         const CHypergraph *hypergraph,
-        const CHypergraphBoolPotentials &edge_mask)
+        const CHypergraphBoolPotentials &edge_mask) except +
 
     CHypergraphMap *cbinarize "binarize"(
         const CHypergraph *hypergraph)
