@@ -80,3 +80,5 @@ generated/
 auto/
 
 *_flymake.h
+notebooks/*.py
+MANIFEST
