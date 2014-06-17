@@ -9,6 +9,7 @@ import re
 import pydoc
 from warnings import warn
 import collections
+import sys
 
 
 class Reader(object):
@@ -433,7 +434,10 @@ class FunctionDoc(NumpyDocString):
             func, func_name = self.get_func()
             try:
                 # try to read signature
-                argspec = inspect.getargspec(func)
+                if sys.version_info[0] >= 3:
+                    argspec = inspect.getfullargspec(func)
+                else:
+                    argspec = inspect.getargspec(func)
                 argspec = inspect.formatargspec(*argspec)
                 argspec = argspec.replace('*','\*')
                 signature = '%s%s' % (func_name, argspec)
@@ -499,10 +503,14 @@ class ClassDoc(NumpyDocString):
             for field, items in [('Methods', self.methods),
                                  ('Attributes', self.properties)]:
                 if not self[field]:
-                    self[field] = [
-                        (name, '',
-                         splitlines_x(pydoc.getdoc(getattr(self._cls, name))))
-                        for name in sorted(items)]
+                    doc_list = []
+                    for name in sorted(items):
+                         try:
+                            doc_item = pydoc.getdoc(getattr(self._cls, name))
+                            doc_list.append((name, '', splitlines_x(doc_item)))
+                         except AttributeError:
+                            pass # method doesn't exist
+                    self[field] = doc_list
 
     @property
     def methods(self):
