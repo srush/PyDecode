@@ -83,3 +83,6 @@ auto/
 notebooks/*.py
 MANIFEST
 *pstats
+docs/html/
+docs/latex/
+pydecode-*/
