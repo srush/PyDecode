@@ -7,9 +7,9 @@
 #include <map>
 #include <vector>
 
-#include "Hypergraph/Hypergraph.h"
-#include "Hypergraph/Semirings.h"
-#include "Hypergraph/Map.h"
+#include "Hypergraph/Hypergraph.hh"
+#include "Hypergraph/Semirings.hh"
+#include "Hypergraph/Map.hh"
 #include "./common.h"
 
 class HypergraphMap;

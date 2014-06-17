@@ -1,6 +1,6 @@
 // Copyright [2013] Alexander Rush
 
-#include "Hypergraph/Semirings.h"
+#include "Hypergraph/Semirings.hh"
 #include <utility>
 #include <vector>
 

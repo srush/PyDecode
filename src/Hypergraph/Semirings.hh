@@ -10,8 +10,8 @@
 #include <set>
 #include <cmath>
 
-#include "Hypergraph/Factory.h"
-#include "Hypergraph/Hypergraph.h"
+#include "Hypergraph/Factory.hh"
+#include "Hypergraph/Hypergraph.hh"
 #include "./common.h"
 
 #define BITMAPSIZE 500

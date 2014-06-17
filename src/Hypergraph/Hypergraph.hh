@@ -31,6 +31,7 @@ class HypergraphAccessException : public HypergraphException {};
 class HypergraphMatchException : public HypergraphException {};
 class HypergraphConstructionException : public HypergraphException {};
 
+
 /* class Hyperedge { */
 /*  public: */
 /*   Hyperedge(HNode head, */
@@ -129,6 +130,7 @@ class Hypergraph {
         /*     delete temp_structure_; */
         /* } */
     }
+
 
 
   /**

@@ -13,9 +13,9 @@
 
 #include "./common.h"
 
-#include "Hypergraph/Hypergraph.h"
-#include "Hypergraph/Semirings.h"
-#include "Hypergraph/Algorithms.h"
+#include "Hypergraph/Hypergraph.hh"
+#include "Hypergraph/Semirings.hh"
+#include "Hypergraph/Algorithms.hh"
 
 using namespace boost::intrusive;
 

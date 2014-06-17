@@ -3,7 +3,7 @@
 #include <typeinfo>
 #include <vector>
 
-#include "Hypergraph/Hypergraph.h"
+#include "Hypergraph/Hypergraph.hh"
 
 int Hypergraph::ID = 0;
 

@@ -9,8 +9,8 @@
 #include <utility>
 #include <vector>
 
-#include "Hypergraph/Algorithms.h"
-#include "Hypergraph/Potentials.h"
+#include "Hypergraph/Algorithms.hh"
+#include "Hypergraph/Potentials.hh"
 
 #define SPECIALIZE_ALGORITHMS_FOR_SEMI(X)       \
     SPECIALIZE_FOR_SEMI_MIN(X);                 \

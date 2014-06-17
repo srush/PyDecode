@@ -10,9 +10,8 @@
 #include <utility>
 #include <vector>
 
-#include "Hypergraph/Algorithms.h"
-#include "Hypergraph/Potentials.h"
-
+#include "Hypergraph/Algorithms.hh"
+#include "Hypergraph/Potentials.hh"
 
 using namespace std;
 
@@ -464,7 +463,7 @@ HypergraphMap *binarize(const Hypergraph *hypergraph) {
         (*nodes)[node->id()] = range_hyper->start_node();
 
         assert(new_edges.size() == node->edges().size());
-        for (int i = 0; i < new_edges.size(); ++i) {
+        for (uint i = 0; i < new_edges.size(); ++i) {
             (*edges)[i] = range_hyper->add_edge(new_edges[i]);
         }
         range_hyper->end_node();

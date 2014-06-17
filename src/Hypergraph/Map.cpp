@@ -1,4 +1,4 @@
-#include "Hypergraph/Map.h"
+#include "Hypergraph/Map.hh"
 
 #include <vector>
 

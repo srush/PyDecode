@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include "Hypergraph/Hypergraph.h"
+#include "Hypergraph/Hypergraph.hh"
 #include "./common.h"
 
 #define BASE_SEMIRING_REGISTRY_DECLARATION(NAME) \

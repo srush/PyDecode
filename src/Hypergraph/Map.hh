@@ -5,8 +5,8 @@
 
 #include <vector>
 
-#include "Hypergraph/Hypergraph.h"
-#include "Hypergraph/Potentials.h"
+#include "Hypergraph/Hypergraph.hh"
+#include "Hypergraph/Potentials.hh"
 
 
 class HypergraphMap {

@@ -1,8 +1,7 @@
 // Copyright [2013] Alexander Rush
 
 
-
-#include "Hypergraph/BeamSearch.h"
+#include "Hypergraph/BeamSearch.hh"
 
 #include <algorithm>
 #include <queue>
@@ -272,12 +271,12 @@ Hyperpath *BeamChart<BVP>::get_path(int result) {
         HEdge edge = score->edge;
 
         to_examine.pop();
-        if (edge == NULL) {
+        if (edge == -1) {
             assert(node->terminal());
             continue;
         }
         path.push_back(edge);
-        for (uint i = 0; i < hypergraph_->tail_nodes(edge); ++i) {
+        for (int i = 0; i < hypergraph_->tail_nodes(edge); ++i) {
             HNode node = hypergraph_->tail_node(edge, i);
             to_examine.push(pair<HNode, int>(node,
                                              (i == 0 ? score->back_position_left :

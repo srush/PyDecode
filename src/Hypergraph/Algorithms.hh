@@ -9,11 +9,11 @@
 
 #include "./common.h"
 
-#include "Hypergraph/Automaton.h"
-#include "Hypergraph/Hypergraph.h"
-#include "Hypergraph/Semirings.h"
-#include "Hypergraph/SemiringAlgorithms.h"
-#include "Hypergraph/Potentials.h"
+#include "Hypergraph/Automaton.hh"
+#include "Hypergraph/Hypergraph.hh"
+#include "Hypergraph/Semirings.hh"
+#include "Hypergraph/SemiringAlgorithms.hh"
+#include "Hypergraph/Potentials.hh"
 
 // Compute tail node set for each hypergraph node.
 vector<set<int> > *children_nodes(const Hypergraph &graph);

@@ -9,9 +9,9 @@
 
 #include "./common.h"
 
-#include "Hypergraph/Hypergraph.h"
-#include "Hypergraph/Semirings.h"
-#include "Hypergraph/Potentials.h"
+#include "Hypergraph/Hypergraph.hh"
+#include "Hypergraph/Semirings.hh"
+#include "Hypergraph/Potentials.hh"
 
 // General Code.
 /**
