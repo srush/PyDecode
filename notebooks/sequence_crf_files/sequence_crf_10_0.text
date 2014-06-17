@@ -1,6 +1,0 @@
-[{Bigram(position=0, prevtag='<t>', tag='N'),
-  Bigram(position=1, prevtag='N', tag='N'),
-  Bigram(position=2, prevtag='N', tag='N'),
-  Bigram(position=3, prevtag='N', tag='N'),
-  Bigram(position=4, prevtag='N', tag='N'),
-  Bigram(position=5, prevtag='N', tag='</t>')}]
