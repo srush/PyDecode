@@ -4,7 +4,7 @@ Requires the PuLP library.
 """
 
 import pulp
-import pydecode.hyper as ph
+import pydecode
 from collections import defaultdict
 
 
@@ -86,7 +86,7 @@ class HypergraphLP:
             path_edges = [edge
                           for edge in self.hypergraph.edges
                           if pulp.value(self.edge_vars[edge.id]) == 1.0]
-            return ph.Path(self.hypergraph, path_edges)
+            return pydecode.Path(self.hypergraph, path_edges)
 
     @property
     def objective(self):
@@ -101,8 +101,8 @@ class HypergraphLP:
     def decode_fractional(self):
         vec = [pulp.value(self.edge_vars[edge.id])
                for edge in self.hypergraph.edges]
-        weights = ph.LogViterbiPotentials(self.hypergraph).from_vector(vec)
-        return ph.best_path(self.hypergraph, weights)
+        weights = pydecode.LogViterbiPotentials(self.hypergraph).from_vector(vec)
+        return pydecode.best_path(self.hypergraph, weights)
 
     def add_constraints(self, constraints):
         """

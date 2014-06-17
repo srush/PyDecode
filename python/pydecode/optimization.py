@@ -1,7 +1,7 @@
 """
 Optimization algorithms.
 """
-import pydecode.hyper as ph
+import pydecode
 import numpy as np
 from numpy.linalg import norm
 import time
@@ -118,7 +118,7 @@ class HypergraphOptimizerWithPrimal:
 class ConstrainedHypergraphSubgradientGenerator:
     def __init__(self, graph, weight_potentials, constraint_potentials):
         self.dual_weights = weight_potentials.clone()
-        self.chart = ph.LogViterbiChart(graph)
+        self.chart = pydecode.LogViterbiChart(graph)
         self.current_graph = graph
         self.constraint_potentials = constraint_potentials
         self.weight_potentials = weight_potentials
@@ -134,12 +134,12 @@ class ConstrainedHypergraphSubgradientGenerator:
         """
 
         if x_diff is None:
-            ph.pairwise_dot(self.constraint_potentials, x, self.dual_weights)
+            pydecode.pairwise_dot(self.constraint_potentials, x, self.dual_weights)
         else:
-            ph.pairwise_dot(self.constraint_potentials, x_diff,
+            pydecode.pairwise_dot(self.constraint_potentials, x_diff,
                             self.dual_weights)
 
-        path = ph.best_path(self.current_graph, self.dual_weights)
+        path = pydecode.best_path(self.current_graph, self.dual_weights)
         dual_score = self.dual_weights.dot(path)
         constraint_vector = self.constraint_potentials.dot(path)
         subgradient = np.zeros(len(x))
@@ -307,7 +307,7 @@ class SubgradientHistory:
 class SubgradientGenerator:
     def __init__(self, graph, weight_potentials, potentials):
         self.dual_weights = weight_potentials.clone()
-        self.chart = ph.LogViterbiChart(graph)
+        self.chart = pydecode.LogViterbiChart(graph)
         self.current_graph = graph
         self.pruning_function = None
         self.potentials = potentials
@@ -317,13 +317,13 @@ class SubgradientGenerator:
         status = history.status()
 
         if status.x_diff is None:
-            ph.pairwise_dot(self.potentials, status.x, self.dual_weights)
+            pydecode.pairwise_dot(self.potentials, status.x, self.dual_weights)
         else:
-            ph.pairwise_dot(self.potentials, status.x_diff, self.dual_weights)
+            pydecode.pairwise_dot(self.potentials, status.x_diff, self.dual_weights)
         path = self.dual_weights.kind.viterbi(self.current_graph,
                                               self.dual_weights,
                                               self.chart).path
-        # path = ph.best_path(self.current_graph,
+        # path = pydecode.best_path(self.current_graph,
         #                     self.dual_weights)
 
         score = self.dual_weights.dot(path)
@@ -342,7 +342,7 @@ class SubgradientGenerator:
                                       self.potentials,
                                       history)
 
-            # pruning = ph.prune_hypergraph(self.current_graph,
+            # pruning = pydecode.prune_hypergraph(self.current_graph,
             #                               self.dual_weights,
             #                               history.best_primal)
 
@@ -350,9 +350,9 @@ class SubgradientGenerator:
                 graph, dual_weights, potentials = pruning
                 self.dual_weights = dual_weights
                 self.potentials = potentials
-                print "OLD SIZE", len(self.current_graph.nodes)
+                print "OLD SIZE", len(self.current_grapydecode.nodes)
                 self.current_graph = graph
-                self.chart = ph.LogViterbiChart(self.current_graph)
+                self.chart = pydecode.LogViterbiChart(self.current_graph)
                 print "NEW SIZE", len(self.current_graph.nodes)
                 prune = history.gap()
 
@@ -366,7 +366,7 @@ class SubgradientGenerator:
 
 
 def _subgradient(graph, weight_potentials, potentials,
-                 best_path_fn=ph.best_path):
+                 best_path_fn=pydecode.best_path):
     r"""
     Compute a subgradient with respect to potentials.
 

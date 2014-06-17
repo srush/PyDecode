@@ -11,6 +11,4 @@ Documentation
    notebooks/index
    api
    extensions
-   display
-   cpp_api
    development

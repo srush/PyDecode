@@ -43,16 +43,16 @@ env.Alias("test", b2)
 
 
 # Build the docs.
-notebooks = env.Command("ignore_note", [], "cd notebooks;make all")
-env.AlwaysBuild(notebooks)
+# notebooks = env.Command("ignore_note", [], "cd notebooks;make all")
+# env.AlwaysBuild(notebooks)
 
-doxygen = env.Command("ignore_dox", [], "doxygen Doxyfile")
-env.AlwaysBuild(doxygen)
+# doxygen = env.Command("ignore_dox", [], "doxygen Doxyfile")
+# env.AlwaysBuild(doxygen)
 
 docs = env.Command("ignore_docs", [], "cd docs; make html")
 env.AlwaysBuild(docs)
 
-env.Alias("docs", [notebooks, doxygen, docs])
+env.Alias("docs", [docs])
 
 # Run the python tests.
 pytests = env.Command("ignore_test", [], "nosetests python/pydecode/test/")
@@ -79,7 +79,5 @@ py_lib = env.Command(["python/pydecode/templates/hyper.so"],
              "python/pydecode/templates/libhypergraph.pyx",
              "python/pydecode/templates/chart.pyx",
              "python/pydecode/templates/beam.pyx.tpl"],
-             #"python/pydecode/constraints.pyx",
-             #"python/pydecode/algorithms.pyx"],
             "CC='ccache g++' python setup.py build_ext --inplace --verbose --cython --debug")
 env.Alias("pylib", [py_lib])

@@ -1,4 +1,4 @@
-import pydecode.hyper as ph
+import pydecode
 from collections import defaultdict
 from itertools import izip
 import scipy.sparse
@@ -89,12 +89,12 @@ class Constraints:
     def to_binary_potentials(self):
         vector = []
         for edge in self.graph.edges:
-            b = ph.Bitset()
+            b = pydecode.Bitset()
             for i, v in self.potentials[edge]:
                 assert(v == 1)
                 b[i] = 1
             vector.append(b)
-        return ph.BinaryVectorPotentials(self.graph).from_vector(vector)
+        return pydecode.BinaryVectorPotentials(self.graph).from_vector(vector)
 
 class WeightedConstrainedGraph:
     def __init__(self, graph, weight, constraint):
@@ -127,7 +127,7 @@ class Variables():
     def __init__(self, graph, num_variables, constraints):
         self.graph = graph
         self.variables = num_variables
-        self.potentials = ph.BinaryVectorPotentials(graph)
+        self.potentials = pydecode.BinaryVectorPotentials(graph)
         self.constraints = constraints
 
     # def build(self, build):

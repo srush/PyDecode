@@ -1,4 +1,4 @@
-import pydecode.hyper as ph
+import pydecode
 import random
 import itertools
 
@@ -38,7 +38,7 @@ def json_to_hypergraph(obj):
     --------
     graph : Hypergraph
     """
-    chart = ph.ChartBuilder(item_set=ph.IndexSet(len(obj)))
+    chart = pydecode.ChartBuilder(item_set=pydecode.IndexSet(len(obj)))
     for i, edge_ls in enumerate(obj):
         if not edge_ls:
             chart[i] = chart.init()

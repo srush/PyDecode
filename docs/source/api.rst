@@ -1,9 +1,9 @@
 .. toctree::
-   :maxdepth:
+   :maxdepth: 2
 
-=====
-Python API
-=====
+==========
+API
+==========
 
 .. _dp:
 
@@ -64,6 +64,23 @@ The toolkit contains a collection of algorithms for working with hypergraphs.
    marginals
    project
    binarize
+
+Potentials
+============
+
+There are several types of potentials implemented.
+
+.. automodule:: pydecode.potentials
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   LogViterbi
+   Inside
+   Bool
 
 
 .. Potentials
