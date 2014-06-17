@@ -1,0 +1,9 @@
+[submodule "numpydoc"]
+	path = numpydoc
+	url = https://github.com/numpy/numpydoc
+[submodule "docs/ext/numpydoc_base"]
+	path = docs/ext/numpydoc_base
+	url = https://github.com/numpy/numpydoc
+[submodule "docs/ext/breathe_base"]
+	path = docs/ext/breathe_base
+	url = https://github.com/michaeljones/breathe.git
