@@ -3,3 +3,6 @@ potentials.cpp binary
 potentials.pyx binary
 potentials.pxd binary
 *.xml binary
+docs/ext/* binary
+docs/xml/* binary
+docs/src/generated/* binary
