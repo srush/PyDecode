@@ -86,3 +86,4 @@ MANIFEST
 docs/html/
 docs/latex/
 pydecode-*/
+venv/
