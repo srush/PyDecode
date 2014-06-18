@@ -73,7 +73,7 @@ def main():
         packages=['pydecode'],
         package_dir={'pydecode': 'python/pydecode'},
         ext_modules = make_extension(wrapper),
-        requires=["networkx", "pandas"],
+        requires=["numpy"],
         version = '0.2.0',
         description = 'A dynamic programming toolkit',
         author = 'Alexander Rush',
