@@ -1,4 +1,4 @@
-#include "Hypergraph/Map.h"
+#include "Hypergraph/Map.hh"
 
 #include <vector>
 
@@ -21,8 +21,8 @@ HypergraphMap::HypergraphMap(const Hypergraph *domain_graph,
                node->id() < range_graph->nodes().size());
     }
     foreach (HEdge edge, *edge_map) {
-        assert(edge == NULL ||
-               edge->id() < range_graph->edges().size());
+        assert(edge == -1 ||
+               range_graph->id(edge) < range_graph->edges().size());
     }
 #endif
 }
@@ -45,8 +45,8 @@ HypergraphMap *HypergraphMap::compose(const HypergraphMap &other) const {
             new vector<HNode>(other.domain_graph()->nodes().size(), NULL);
     foreach (HEdge edge, other.domain_graph()->edges()) {
         HEdge proj = other.map(edge);
-        if (proj != NULL && proj->id() >= 0) {
-            (*edge_map)[edge->id()] = map(proj);
+        if (proj >= 0) {
+            (*edge_map)[edge] = map(proj);
         }
     }
 
@@ -76,9 +76,9 @@ HypergraphMap *HypergraphMap::invert() const {
         (*node_reverse_map_)[mapped_node->id()] = node;
     }
     foreach (HEdge edge, domain_graph()->edges()) {
-        HEdge mapped_edge = (*edge_map_)[edge->id()];
-        if (mapped_edge == NULL || mapped_edge->id() < 0) continue;
-        (*edge_reverse_map_)[mapped_edge->id()] = edge;
+        HEdge mapped_edge = (*edge_map_)[edge];
+        if (mapped_edge < 0) continue;
+        (*edge_reverse_map_)[mapped_edge] = edge;
     }
     return new HypergraphMap(range_graph_, domain_graph_,
                              node_reverse_map_, edge_reverse_map_, true);

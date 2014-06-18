@@ -1,5 +1,5 @@
 .. toctree::
-   :maxdepth:
+   :maxdepth: 2
 
 ==========
 Extensions
@@ -8,7 +8,7 @@ Extensions
 .. _display:
 
 Visualization
-==========
+==============
 
 One major benefit of creating a hypergraph representation is that it allows for
 easy visualization. The display package converts a hypergraph to a NetworkX_ graph
@@ -96,7 +96,7 @@ PyDecode uses PuLP_ to generate these (integer) linear programs.
 
 
 Lagrangian Relaxation
-==================
+=====================
 
 .. automodule:: pydecode.optimization
    :no-members:

@@ -7,25 +7,25 @@ Tutorials
 
 1. Fibonacci_
 
-.. image:: Fibonacci.png
+.. image:: images/Fibonacci.png
    :width: 500 px
    :align: center
 
 2. `Edit Distance`_
 
-.. image:: EditDistance.png
+.. image:: images/EditDistance.png
    :width: 500 px
    :align: center
 
 3. `Hidden Markov Model`_
 
-.. image:: hmm.png
+.. image:: images/hmm.png
    :width: 500 px
    :align: center
 
 4. `Dependency Parsing`_
 
-.. image:: parsing.png
+.. image:: images/parsing.png
    :width: 500 px
    :align: center
 
@@ -38,29 +38,29 @@ More Examples
 
 `Decipherment`_
 
-.. image:: decipher.png
+.. image:: images/decipher.png
    :width: 500 px
    :align: center
-
+   
 
 `Building a Hypergraph`_
 
 
-.. _Fibonacci : Fibonacci.html
-.. _`Edit Distance` : EditDistance.html
-.. _`Hidden Markov Model` : hmm.html
-.. _`Dependency Parsing` : parsing.html
-.. _`Training a Conditional Random Field` : sequence_crf.html
-.. _`Decipherment` : decipher.html
-.. _`Building a Hypergraph` : BuildingHypergraph.html
+.. _Fibonacci : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/Fibonacci.ipynb
+.. _`Edit Distance` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/EditDistance.ipynb
+.. _`Hidden Markov Model` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/hmm.ipynb
+.. _`Dependency Parsing` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/parsing.ipynb
+.. _`Training a Conditional Random Field` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/sequence_crf.ipynb
+.. _`Decipherment` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/decipher.ipynb
+.. _`Building a Hypergraph` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/BuildingHypergraph.ipynb
 
 .. toctree::
    :maxdepth: 2
 
-   Fibonacci
-   EditDistance
-   hmm
-   parsing
-   sequence_crf
-   decipher
-   BuildingHypergraph
+   .. Fibonacci
+   .. EditDistance
+   .. hmm
+   .. parsing
+   .. sequence_crf
+   .. decipher
+   .. BuildingHypergraph

@@ -1,3 +1,3 @@
 // Copyright [2013] Alexander Rush
 
-#include "Hypergraph/Factory.h"
+#include "Hypergraph/Factory.hh"

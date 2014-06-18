@@ -2,53 +2,51 @@
 Tests for hypergraph construction and basic data structures.
 """
 
-import pydecode.hyper as ph
+import pydecode
 import pydecode.test.utils as utils
 import pydecode.io
 import nose.tools as nt
 from pydecode.test.utils import hypergraphs
-from collections import defaultdict
 
 
 def test_main():
-    for hypergraph in hypergraphs():
-        yield check_all_valid, hypergraph
-        yield check_numbering, hypergraph
-        yield check_hypergraph, hypergraph
-        yield check_serialization, hypergraph
+    for graph in hypergraphs():
+        yield check_all_valid, graph
+        yield check_numbering, graph
+        yield check_hypergraph, graph
+        yield check_serialization, graph
+        assert utils.check_fully_connected(graph)
+
+def check_all_valid(graph):
+    for path in utils.all_paths(graph):
+        utils.valid_path(graph, path)
 
 
-def check_all_valid(hypergraph):
-    for path in utils.all_paths(hypergraph):
-        utils.valid_path(hypergraph, path)
-
-
-def check_numbering(hypergraph):
+def check_numbering(graph):
     """
     Check that the numbering nodes and edges is correct.
     """
-    for i, node in enumerate(hypergraph.nodes):
+    for i, node in enumerate(graph.nodes):
         nt.assert_equal(node.id, i)
-    for i, edge in enumerate(hypergraph.edges):
+    for i, edge in enumerate(graph.edges):
         nt.assert_equal(edge.id, i)
 
 
-def check_hypergraph(hypergraph):
+def check_hypergraph(graph):
     """
     Check the assumptions about the hypergraph.
     """
 
-    root_count = 0
     terminal = True
     children = set()
 
     # Check that terminal nodes are first.
-    print len(hypergraph.nodes)
-    print len(hypergraph.edges)
-    for node in hypergraph.nodes:
+    print len(graph.nodes)
+    print len(graph.edges)
+    for node in graph.nodes:
         print node.id
 
-    for node in hypergraph.nodes:
+    for node in graph.nodes:
         if not terminal and len(node.edges) == 0:
             assert False
         if len(node.edges) != 0:
@@ -61,44 +59,40 @@ def check_hypergraph(hypergraph):
                 children.add(tail_node.id)
 
     # Only 1 root.
-    nt.assert_equal(len(children), len(hypergraph.nodes) - 1)
+    nt.assert_equal(len(children), len(graph.nodes) - 1)
 
 
-def check_serialization(hypergraph):
-    s = pydecode.io.hypergraph_to_json(hypergraph)
+def check_serialization(graph):
+    s = pydecode.io.hypergraph_to_json(graph)
     hyper2 = pydecode.io.json_to_hypergraph(s)
-    nt.assert_equal(len(hypergraph.edges), len(hyper2.edges))
-    nt.assert_equal(len(hypergraph.nodes), len(hyper2.nodes))
+    nt.assert_equal(len(graph.edges), len(hyper2.edges))
+    nt.assert_equal(len(graph.nodes), len(hyper2.nodes))
 
 
 @nt.raises(Exception)
 def test_diff_potentials_fail():
     h1, w1 = utils.random_hypergraph()
     h2, w2 = utils.random_hypergraph()
-    ph.best_path(h1, w2)
+    pydecode.best_path(h1, w2)
 
 
 @nt.raises(Exception)
 def test_outside_fail():
     h1, w1 = utils.random_hypergraph()
     h2, w2 = utils.random_hypergraph()
-    ph.outside_path(h1, w2)
+    pydecode.outside_path(h1, w2)
 
 
 @nt.raises(Exception)
 def test_builder():
-    h = ph.Hypergraph()
+    h = pydecode.Hypergraph()
     b = h.builder()
     b.add_node([])
 
 
 @nt.raises(Exception)
 def test_bad_edge():
-    h = ph.Hypergraph()
+    h = pydecode.Hypergraph()
     with h.builder() as b:
         n1 = b.add_node()
         b.add_node(([n1],))
-
-
-if __name__ == "__main__":
-    test_variables()

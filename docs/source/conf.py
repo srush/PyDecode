@@ -26,8 +26,8 @@ sys.path.insert(0, os.path.abspath('python/'))
 sys.path.append(os.path.abspath("../ext/breathe/") )
 sys.path.append(os.path.abspath("../ext/") )
 
-breathe_projects = { "pydecode": os.path.abspath("../xml/") }
-breathe_default_project = "pydecode"
+# breathe_projects = { "pydecode": os.path.abspath("../xml/") }
+# breathe_default_project = "pydecode"
 
 # -- General configuration ------------------------------------------------
 
@@ -46,7 +46,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'breathe',
+    # 'breathe',
     'numpydoc'
 ]
 

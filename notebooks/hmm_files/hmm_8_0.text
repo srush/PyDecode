@@ -1,8 +1,0 @@
-8.6
-('the', 'D', 'ROOT')
-('dog', 'N', 'D')
-('walked', 'V', 'N')
-('in', 'D', 'V')
-('the', 'N', 'D')
-('park', 'V', 'N')
-('END', 'END', 'V')

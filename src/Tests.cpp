@@ -1,8 +1,8 @@
 //test.cpp
 #include <string>
 #include <gtest/gtest.h>
-#include "Hypergraph/Hypergraph.h"
-#include "Hypergraph/Semirings.h"
+#include "Hypergraph/Hypergraph.hh"
+#include "Hypergraph/Semirings.hh"
 #include "./common.h"
 
 #ifndef NUM_LOOPS
@@ -45,7 +45,7 @@ TEST(Decode, TestHypergraph) {
 }
 
 TEST(Decode, SemiringTests) {
-    srand(time(NULL));  
+    srand(time(NULL));
     typedef CompPotential<ViterbiPotential, LogViterbiPotential> CVL;
     for(uint i = 0; i < NUM_LOOPS; ++i) {
         SEMIRINGTEST(ViterbiPotential);

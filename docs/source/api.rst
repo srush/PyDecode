@@ -1,11 +1,26 @@
 .. toctree::
-   :maxdepth:
+   :maxdepth: 2
 
-=====
-Python API
-=====
+==========
+API
+==========
 
 .. _dp:
+
+
+Construction
+===================
+
+.. automodule:: pydecode.potentials
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   ChartBuilder
+   IndexSet
 
 .. _hypergraph:
 
@@ -27,40 +42,8 @@ structure of a dynamic programming algorithm.
    Vertex
    Edge
    Path
-   HypergraphMap
 
 .. _algorithms:
-
-Potentials
-============
-
-Users can specify potential vectors that are associated with
-each edge of the hypergraph.
-
-.. automodule:: pydecode.potentials
-   :no-members:
-   :no-inherited-members:
-
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
-
-   Potentials
-
-There are several types of potentials implemented.
-
-.. automodule:: pydecode.potentials
-   :no-members:
-   :no-inherited-members:
-
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
-
-   LogViterbiPotentials
-   InsidePotentials
-   BoolPotentials
-
 
 Algorithms
 ==========
@@ -79,49 +62,81 @@ The toolkit contains a collection of algorithms for working with hypergraphs.
    inside
    outside
    marginals
-   prune
    project
    binarize
 
-Using the corresponding data structures
+.. Potentials
+.. ============
+
+.. There are several types of potentials implemented.
+
+.. .. automodule:: pydecode.potentials
+..    :no-members:
+..    :no-inherited-members:
+
+.. .. autosummary::
+..    :toctree: generated/
+..    :template: class.rst
+
+..    LogViterbi
+..    Inside
+..    Bool
 
 
-.. automodule:: pydecode.potentials
-   :no-members:
-   :no-inherited-members:
+.. Potentials
+.. ============
 
-.. autosummary::
-   :toctree: generated/
+.. Users can specify potential vectors that are associated with
+.. each edge of the hypergraph.
 
-   Chart
-   Marginals
-   BackPointers
+.. .. automodule:: pydecode.potentials
+..    :no-members:
+..    :no-inherited-members:
 
-Construction
-===================
+.. .. autosummary::
+..    :toctree: generated/
+..    :template: class.rst
 
-Graph Builder
-------------
+..    Potentials
 
-.. automodule:: pydecode.potentials
-   :no-members:
-   :no-inherited-members:
+.. There are several types of potentials implemented.
 
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
+.. .. automodule:: pydecode.potentials
+..    :no-members:
+..    :no-inherited-members:
 
-   GraphBuilder
+.. .. autosummary::
+..    :toctree: generated/
+..    :template: class.rst
 
-Imperative
-------------
+..    LogViterbiPotentials
+..    InsidePotentials
+..    BoolPotentials
 
-.. automodule:: pydecode.chart
-   :no-members:
-   :no-inherited-members:
 
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
+.. Using the corresponding data structures
 
-   ChartBuilder
+
+.. .. automodule:: pydecode.potentials
+..    :no-members:
+..    :no-inherited-members:
+
+.. .. autosummary::
+..    :toctree: generated/
+
+..    Chart
+..    Marginals
+..    BackPointers
+
+.. Graph Builder
+.. ------------
+
+.. .. automodule:: pydecode.potentials
+..    :no-members:
+..    :no-inherited-members:
+
+.. .. autosummary::
+..    :toctree: generated/
+..    :template: class.rst
+
+..    GraphBuilder

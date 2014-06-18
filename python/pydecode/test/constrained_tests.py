@@ -2,13 +2,13 @@
 Tests for constrained hypergraph optimization.
 """
 
-import pydecode.hyper as ph
+import pydecode
 import pydecode.test.utils as utils
 import nose.tools as nt
 import pydecode.constraints as cons
 import pydecode.optimization as opt
 import random
-
+import numpy.random
 
 def test_main():
     for hypergraph in utils.hypergraphs():
@@ -55,9 +55,9 @@ def check_variables(hypergraph, path):
 @nt.nottest
 def test_subgradient():
     for h in utils.hypergraphs():
-        w = utils.random_log_viterbi_potentials(h)
+        w = numpy.random.random(len(h.edges))
         constraints, edge = random_have_constraint(h)
-        path = ph.best_path(h, w)
+        path = pydecode.best_path(h, w)
         match = constraints.check(path)
         if edge not in path:
             nt.assert_equal(match[0], "have")
@@ -71,14 +71,14 @@ def test_subgradient():
 
 def check_lp(hypergraph):
     import pydecode.lp as lp
-    w = utils.random_log_viterbi_potentials(hypergraph)
+    w = numpy.random.random(len(hypergraph.edges))
 
     g = lp.HypergraphLP.make_lp(hypergraph, w)
     g.solve()
     path = g.path
-    opath = ph.best_path(hypergraph, w)
+    opath = pydecode.best_path(hypergraph, w)
 
-    nt.assert_almost_equal(w.dot(path), w.dot(opath))
+    nt.assert_almost_equal(w.T * path.v, w.T * opath.v)
     for edge in path.edges:
         assert edge in opath
 
@@ -100,54 +100,53 @@ def test_bad_constraints():
 
 # Beam search tests.
 
-def test_future_constraints():
-    """
-    Test constraint checking.
-    """
-    hypergraph = utils.simple_hypergraph()
+# def test_future_constraints():
+#     """
+#     Test constraint checking.
+#     """
+#     hypergraph = utils.simple_hypergraph()
 
-    def build_constraints(label):
-        if label == "1":
-            return [("one", 1)]
-        return []
-    constraints = cons.Constraints(hypergraph, [("one", -1)]). \
-        from_vector([build_constraints(edge.label)
-                     for edge in hypergraph.edges])
+#     def build_constraints(label):
+#         if label == "1":
+#             return [("one", 1)]
+#         return []
+#     constraints = cons.Constraints(hypergraph, [("one", -1)]). \
+#         from_vector([build_constraints(edge.label)
+#                      for edge in hypergraph.edges])
 
-    # Compute min and max potentials.
-    min_potentials = ph.MinSparseVectorPotentials(hypergraph).\
-        from_potentials(constraints.potentials)
-    max_potentials = ph.MaxSparseVectorPotentials(hypergraph).\
-        from_potentials(constraints.potentials)
+#     # Compute min and max potentials.
+#     min_potentials = ph.MinSparseVectorPotentials(hypergraph).\
+#         from_potentials(constraints.potentials)
+#     max_potentials = ph.MaxSparseVectorPotentials(hypergraph).\
+#         from_potentials(constraints.potentials)
 
-    print "sparse"
-    for edge in hypergraph.edges:
-        print edge.label, constraints.potentials[edge]
+#     print "sparse"
+#     for edge in hypergraph.edges:
+#         print edge.label, constraints.potentials[edge.id]
 
-    # Compute min and max potentials.
-    print "min"
-    in_chart = ph.inside(hypergraph, min_potentials)
-    out_chart = ph.outside(hypergraph, min_potentials, in_chart)
-    for node in hypergraph.nodes:
-        print "%20s %20s %20s" % (node.label, in_chart[node], out_chart[node])
+#     # Compute min and max potentials.
+#     print "min"
+#     in_chart = ph.inside(hypergraph, min_potentials)
+#     out_chart = ph.outside(hypergraph, min_potentials, in_chart)
+#     for node in hypergraph.nodes:
+#         print "%20s %20s %20s" % (node.label, in_chart[node], out_chart[node])
 
-    print "max"
-    in_chart = ph.inside(hypergraph, max_potentials)
-    out_chart = ph.outside(hypergraph, max_potentials, in_chart)
-    for node in hypergraph.nodes:
-        print "%20s %20s %20s" % (node.label, in_chart[node], out_chart[node])
+#     print "max"
+#     in_chart = ph.inside(hypergraph, max_potentials)
+#     out_chart = ph.outside(hypergraph, max_potentials, in_chart)
+#     for node in hypergraph.nodes:
+#         print "%20s %20s %20s" % (node.label, in_chart[node], out_chart[node])
 
 
 def random_have_constraint(hypergraph):
     orig_edge, = random.sample(hypergraph.edges, 1)
 
-    def build_constraints(label):
-        l = orig_edge.label
-        if label == l:
+    def build_constraints(edge):
+        if edge.id == orig_edge.id:
             return [("have", 1)]
         return []
     constraints = cons.Constraints(hypergraph, [("have", -1)]).\
-        from_vector([build_constraints(edge.label)
+        from_vector([build_constraints(edge)
                      for edge in hypergraph.edges])
     return constraints, orig_edge
 
@@ -156,15 +155,13 @@ def random_constraint(hypergraph):
     "Produce a random constraint on an edge."
 
     orig_edge, = random.sample(hypergraph.edges, 1)
-    l = orig_edge.label
 
-    def build_constraints(label):
-        if label == l:
-            print "label", label
+    def build_constraints(id):
+        if id == orig_edge.id:
             return [("have", 1), ("not", 1)]
         return []
     constraints = cons.Constraints(hypergraph, [("have", -1), ("not", 0)]).\
-        from_vector([build_constraints(edge.label)
+        from_vector([build_constraints(edge.id)
                      for edge in hypergraph.edges])
     return constraints, orig_edge
 
@@ -177,7 +174,7 @@ def random_constraint_trans(hypergraph):
 
     def build_variables(label):
         if label == l:
-            b = ph.Bitset()
+            b = pydecode.Bitset()
             b[0] = 1
             return b
         return None

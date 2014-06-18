@@ -1,4 +1,13 @@
 semirings:
+  - type: Bool
+    npvalue: np.int8
+    cvalue: char
+    format: i
+    viterbi: Yes
+    description:
+      Boolean-valued logical potentials.
+
+      Uses the operations :math:`(+, *) = (\land, \lor)`.
   - type: Viterbi
     cvalue: double
     format: d
@@ -6,8 +15,18 @@ semirings:
     viterbi: Yes
     description:
       Real-valued max probability potentials.
-
       Uses the operations :math:`(+, *) = (\max, *)`.
+  - type: Counting
+    cvalue: int
+    format: i
+    npvalue: np.int32
+    viterbi: False,
+    description:
+      Natural-valued counting potentials.
+
+      Uses the operations :math:`(+, *) = (+, *)`.
+
+
   - type: LogViterbi
     cvalue: double
     format: d
@@ -17,6 +36,15 @@ semirings:
       Real-valued max log-probability potentials.
 
       Uses the operations :math:`(+, *) = (\max, *)`.
+
+  - type: LogProb
+    cvalue: double
+    format: d
+    npvalue: np.double
+    viterbi: False
+    description:
+      Real-valued inside log-probability potentials.
+
   - type: Inside
     cvalue: double
     npvalue: np.double
@@ -26,6 +54,7 @@ semirings:
       Real-valued probability potentials.
 
       Uses the operations :math:`(+, *) = (+, *)`.
+
   - type: MinMax
     cvalue: double
     npvalue: np.double
@@ -35,31 +64,37 @@ semirings:
       Real-valued min value potentials.
 
       Uses the operations :math:`(+, *) = (\min, \max)`.
-  - type: SparseVector
-    ctype: SparseVectorPotential
-    cvalue: vector[pair[int, int]]
+
+  - type: Alphabet
+    ctype: AlphabetPotential
+    cvalue: vector[int]
     viterbi: No
     description:
-      Sparse-vector valued weights.
-  - type: MinSparseVector
-    cvalue: vector[pair[int, int]]
-    viterbi : False
-  - type: MaxSparseVector
-    cvalue: vector[pair[int, int]]
-    viterbi : No
-  - type: Counting
-    cvalue: int
-    format: i
-    npvalue: np.int8
-    viterbi: False,
-    description:
-      Natural-valued counting potentials.
+      Alphabet valued weights.
 
-      Uses the operations :math:`(+, *) = (+, *)`.
-  - type: Bool
-    cvalue: bool
-    viterbi: Yes
-    description:
-      Boolean-valued logical potentials.
 
-      Uses the operations :math:`(+, *) = (\land, \lor)`.
+
+
+  - type: BinaryVector
+    cvalue: cbitset
+    pvalue: Bitset
+    to_cpp: val.data
+    from_cpp: Bitset().init(val)
+    viterbi: No
+    description:
+      Binary vector potentials.
+
+  # - type: MinSparseVector
+  #   cvalue: vector[pair[int, int]]
+  #   viterbi : False
+
+  # - type: MaxSparseVector
+  #   cvalue: vector[pair[int, int]]
+  #   viterbi : No
+
+  # - type: SparseVector
+  #   ctype: SparseVectorPotential
+  #   cvalue: vector[pair[int, int]]
+  #   viterbi: No
+  #   description:
+  #     Sparse-vector valued weights.

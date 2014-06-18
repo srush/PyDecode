@@ -1,8 +1,8 @@
-=====
+===========
 Examples
-=====
+===========
 
-.. toctree::
-   :maxdepth: 2
+.. .. toctree::
+..    :maxdepth: 2
 
-   notebooks/hypergraphs
+..    notebooks/hypergraphs

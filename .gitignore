@@ -78,3 +78,12 @@ build_config.py
 
 generated/
 auto/
+
+*_flymake.h
+notebooks/*.py
+MANIFEST
+*pstats
+docs/html/
+docs/latex/
+pydecode-*/
+venv/

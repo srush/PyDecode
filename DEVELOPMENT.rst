@@ -44,6 +44,16 @@ Build (and install) the python extension.
    > python setup.py build_ext --inplace
    > sudo python setup.py install
 
+Profiling
+
+   > python -m profile -o output.pstats test.py
+   > python ~/Downloads/gprof2dot.py  -f pstats output.pstats | dot -Tpng -o output.png
+
+Profiling C++
+
+   > python -m yep run_c2f.py
+   > google-pprof -gv potentials.so run_c2f.py.prof
+
 
 Documentation
 =============

@@ -1,1 +1,0 @@
-set(['ADV', 'NOUN', 'ADP', 'PRT', 'DET', '.', 'PRON', 'VERB', 'X', 'NUM', 'CONJ', 'ADJ'])

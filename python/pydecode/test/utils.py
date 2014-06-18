@@ -1,28 +1,98 @@
-import pydecode.hyper as ph
+import pydecode
 import random
 import itertools
 from collections import defaultdict
-from pydecode.hyper import EdgeDesc
 import numpy as np
+
+def check_fully_connected(graph):
+    """
+    Checks that a hypergraph is fully-connected.
+
+    Parameters
+    ----------
+    graph : Hypergraph
+        Hypergraph to check.
+
+    Returns
+    --------
+    checks : bool
+       True, if the hypergraph is fully-connected.
+    """
+    seen_vertices = set()
+    queue = [graph.root]
+    while queue:
+        cur_vertex = queue[0]
+        seen_vertices.add(cur_vertex)
+        queue = queue[1:]
+        for edge in cur_vertex.edges:
+            for child in edge.tail:
+                queue.append(child)
+    return len(seen_vertices) == len(graph.vertices), \
+        "%d %d"%(len(seen_vertices), len(graph.vertices))
+
+
+def check_reference_set_properties(graph, reference_sets):
+    """
+    Checks that a hypergraph satisifies reference set properties.
+
+    Parameters
+    ----------
+    graph : Hypergraph
+        Hypergraph to check.
+
+    reference_sets : list
+        The reference set associated with each vertex.
+
+    Returns
+    --------
+    checks : bool
+       True, if the hypergraph satisfies this reference set.
+    """
+    for vertex in graph.vertices:
+        for edge in vertex.edges:
+            children_set = set()
+            for child in edge.tail:
+
+                if not len(children_set & reference_sets) == 0:
+                    return False
+
+                children_set |= reference_sets[child.id]
+            if not children_set.issubset(reference_sets[vertex.id]):
+                return False
+
+    full_set = set()
+    for vertex_set in reference_sets:
+        full_set |= vertex_set
+    if full_set != reference_sets[graph.root.id]:
+        return False
+
+    return True
+
 
 def simple_hypergraph():
     """
-    Create a simple fixed hypergraph.
+    Create a simple hypergraph.
     """
-    hypergraph = ph.Hypergraph()
-    with hypergraph.builder() as b:
-        term = [b.add_node([], label="start " + str(i)) for i in range(4)]
-        head_node = b.add_node([EdgeDesc([term[0], term[1]], "0"),
-                                EdgeDesc([term[0]], "1")],
-                               label="mid")
-        head_node2 = b.add_node([EdgeDesc([head_node, term[2]], "2"),
-                                 EdgeDesc([head_node, term[3]], "3"),
-                                 EdgeDesc([head_node], "4")],
-                                label="top")
 
-    for edge in hypergraph.edges:
-        assert edge.label in ["0", "1", "2", "3", "4"]
+    c = pydecode.ChartBuilder(item_set=pydecode.IndexSet(10))
+
+    for i in range(4):
+        c[i] = c.init()
+
+        #term = [b.add_node([], label="start " + str(i)) for i in range(4)]
+    c[4] = [c.merge(0, 1), c.merge(0)]
+    c[5] = [c.merge(4, 2),
+            c.merge(4, 3),
+            c.merge(4)]
+
+    hypergraph = c.finish()
+    # for edge in hypergraph.edges:
+    #     assert edge.label in ["0", "1", "2", "3", "4"]
     return hypergraph
+
+
+def complete_hypergraph(size):
+    hypergraph = pydecode.Hypergraph()
 
 
 def random_hypergraph(size=50):
@@ -31,27 +101,32 @@ def random_hypergraph(size=50):
 
     Parameters
     ----------
-    size : Int
-
+    size : integer
     """
-    hypergraph = ph.Hypergraph()
-    children = defaultdict(lambda: set())
-    with hypergraph.builder() as b:
-        terminals = []
-        for i in range(size):
-            n = b.add_node()
-            terminals.append(n)
-            children[n.id] = set([n.id])
-        nodes = list(terminals)
-        for node in range(size):
-            node_a, node_b = random.sample(nodes, 2)
-            if len(children[node_a.id] & children[node_b.id]) > 0:
-                continue
-            head_node = b.add_node((([node_a, node_b], node),))
-            children[head_node.id] = \
-                set([head_node.id]) | children[node_a.id] | children[node_b.id]
-            nodes.append(head_node)
+    # children = defaultdict(lambda: set())
 
+    # complete_reference_set = range(0, size)
+    reference_sets = defaultdict(lambda: set())
+
+    c = pydecode.ChartBuilder(item_set=pydecode.IndexSet(2*size))
+
+
+    for i in range(size):
+        c[i] = c.init()
+        reference_sets[i] = set([i])
+
+    nodes = range(size)
+    for node in range(size):
+        head_node = size + node
+        node_a, node_b = random.sample(nodes, 2)
+        if reference_sets[node_a] & reference_sets[node_b]:
+            continue
+        print head_node, node_a, node_b
+        c[head_node] = [c.merge(node_a, node_b)]
+        reference_sets[head_node] |= \
+            reference_sets[node_a] | reference_sets[node_b]
+        nodes.append(head_node)
+    hypergraph = c.finish()
     assert len(hypergraph.nodes) > 0
     assert len(hypergraph.edges) > 0
     return hypergraph
@@ -66,7 +141,7 @@ def chain_hypergraph(size=100):
     graph : Hypergraph
        The chain hypergraph.
     """
-    hypergraph = ph.Hypergraph()
+    hypergraph = pydecode.Hypergraph()
     with hypergraph.builder() as b:
         term = b.add_node()
         last_node = term
@@ -112,6 +187,7 @@ def hypergraphs():
     """
     for i in range(10):
         h = random_hypergraph()
+        assert check_fully_connected(h)
         yield h
     h = simple_hypergraph()
     yield h
@@ -139,7 +215,7 @@ def all_paths(graph):
                 t = [paths(node) for node in edge.tail]
                 for below in itertools.product(*t):
                     yield (edge,) + sum(below, ())
-    paths = [ph.Path(graph, list(edges)) for edges in paths(graph.root)]
+    paths = [pydecode.Path(graph, list(edges)) for edges in paths(graph.root)]
     return paths
 
 
@@ -167,32 +243,31 @@ def random_path(graph):
                 edges += random_path_edges(t)
         return edges
     edges = random_path_edges(graph.root)
-    return ph.Path(graph, edges)
+    return pydecode.Path(graph, edges)
 
 
-def random_inside_potentials(hypergraph):
-    return ph.InsidePotentials(hypergraph)\
-        .from_vector([random.random()
-                      for e in hypergraph.edges])
+# def random_inside_potentials(hypergraph):
+#     return ph.InsidePotentials(hypergraph)\
+#         .from_vector([random.random()
+#                       for e in hypergraph.edges])
+
+# def random_viterbi_potentials(hypergraph):
+#     return ph.ViterbiPotentials(hypergraph)\
+#         .from_vector([random.random()
+#                       for e in hypergraph.edges])
 
 
-def random_viterbi_potentials(hypergraph):
-    return ph.ViterbiPotentials(hypergraph)\
-        .from_vector([random.random()
-                      for e in hypergraph.edges])
+# def random_log_viterbi_potentials(hypergraph):
+#     return ph.LogViterbiPotentials(hypergraph)\
+#         .from_vector([random.random()
+#                       for e in hypergraph.edges])
+
+# def random_log_viterbi_potentials_array(hypergraph):
+#     return ph.LogViterbiPotentials(hypergraph)\
+#         .from_array(np.random.rand(len(hypergraph.edges)))
 
 
-def random_log_viterbi_potentials(hypergraph):
-    return ph.LogViterbiPotentials(hypergraph)\
-        .from_vector([random.random()
-                      for e in hypergraph.edges])
-
-def random_log_viterbi_potentials_array(hypergraph):
-    return ph.LogViterbiPotentials(hypergraph)\
-        .from_array(np.random.rand(len(hypergraph.edges)))
-
-
-def random_bool_potentials(hypergraph):
-    return ph.BoolPotentials(hypergraph)\
-        .from_vector([random.random() > 0.5
-                      for e in hypergraph.edges])
+# def random_bool_potentials(hypergraph):
+#     return ph.BoolPotentials(hypergraph)\
+#         .from_vector([random.random() > 0.5
+#                       for e in hypergraph.edges])
