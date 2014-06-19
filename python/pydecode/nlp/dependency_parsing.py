@@ -1,7 +1,7 @@
 from collections import namedtuple, defaultdict
 import itertools
 import pydecode.nlp.decoding as decoding
-import pydecode.hyper as ph
+import pydecode as ph
 import random
 import numpy as np
 import scipy.sparse
@@ -306,7 +306,7 @@ class DependencyDecoder(decoding.HypergraphDecoder):
 class FirstOrderDecoder(DependencyDecoder):
     def potentials(self, hypergraph, scorer, problem):
         n = problem.size + 1
-        index_set = ph.IndexSet((n, n))
+        #index_set = ph.IndexedEncoder((n, n))
         # data = []
         # indices = []
         # ind = [0]
@@ -320,21 +320,21 @@ class FirstOrderDecoder(DependencyDecoder):
         #     shape=(hasher.max_size(), len(hypergraph.edges)),
         #     dtype=np.uint8)
 
-        scores = np.zeros([len(index_set)])
+        scores = np.zeros([n, n])
         for i in range(n):
             for j in range(n):
-                scores[index_set.index((i,j))] = scorer.arc_score(i, j)
+                scores[i, j] = scorer.arc_score(i, j)
+        scores = scores.reshape([1,n*n])
         # print arcs.shape
         # print scores.shape
         # self.data = scores * self.data
 
         print scores.shape
         print self.data.shape
+        print self.data.shape
+        print scores.shape
         return scores * self.data
 
-    """
-    First-order dependency parsing.
-    """
     def dynamic_program(self, p, problem, _):
         """
         Parameters
@@ -349,17 +349,26 @@ class FirstOrderDecoder(DependencyDecoder):
         """
         n = problem.size + 1
         num_edges = 4 * n ** 3
+        item_encoder = ph.IndexedEncoder([kShapes, kDir, n, n])
+        coder = np.arange(item_encoder.max_size, dtype=np.int64).reshape([kShapes, kDir, n, n])
+
+        output_encoder = ph.IndexedEncoder((n, n))
+        out = np.arange(output_encoder.max_size, dtype=np.int64).reshape([n, n])
         c = ph.ChartBuilder(
-            strict=False,
-            output_set=ph.IndexSet((n, n)),
-            item_set=ph.IndexSet((kShapes, kDir, n, n)),
+            coder, item_encoder.max_size,
+            unstrict=True,
+            output_encoder=output_encoder,
+            output_size= output_encoder.max_size,
             expected_size=(num_edges, 2))
 
         # Add terminal nodes.
         for s in range(n):
             for d in [Right, Left]:
                 for sh in [Tri]:
-                    c[sh, d, s, s] = c.init()
+                    c.init(coder[sh, d, s, s])
+                    #p = coder[sh, d, s, s]
+
+        #arr = np.zeros([n+1, 8], dtype=np.int, order="F")
 
         for k in range(1, n):
             for s in range(n):
@@ -368,37 +377,191 @@ class FirstOrderDecoder(DependencyDecoder):
 
                 # First create incomplete items.
                 if s != 0:
-                    c[Trap, Left, s, t] = \
-                          [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
-                           values=[(t, s)])
-                           for r in range(s, t)]
+                    c.set2(coder[Trap, Left, s, t],
+                           coder[Tri, Right, s, s:t],
+                           coder[Tri, Left, s+1:t+1, t],
+                           np.repeat(out[t, s], t-s))
 
-                c[Trap, Right, s, t] = \
-                      [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
-                               values=[(s, t)])
-                       for r in range(s, t)]
+                    # for i, r in enumerate(range(s, t)):
+                        # for j in range(8): arr[i,j] = p[j]
 
+                    #np.array(p)
+
+                # p = []
+                # for i, r in enumerate(range(s, t)):
+                c.set2(coder[Trap, Right, s, t],
+                       coder[Tri, Right, s, s:t],
+                       coder[Tri, Left, s+1:t+1, t],
+                       np.repeat(out[s, t], t -s)
+                       )
+                    # for j in range(8): arr[i,j] = p[j]
+
+                # c[Trap, Right, s, t] = np.array(p) #arr[:i+1, :]
+
+                # p = []
                 if s != 0:
-                    c[Tri, Left, s, t] = \
-                        [c.merge((Tri, Left, s, r), (Trap, Left, r, t),
-                                 values=[])
-                         for r in range(s, t)]
+                    # for i, r in enumerate(range(s, t)):
+                    c.set2(coder[Tri, Left, s, t],
+                           coder[Tri, Left, s, s:t],
+                           coder[Trap, Left, s:t, t],
+                           np.repeat(0, t -s))
+                        # for j in range(8): arr[i,j] = p[j]
+                    #np.array(p)
+                    # c[Tri, Left, s, t] = np.array(p)#arr[:i+1, :]
 
-                c[Tri, Right, s, t] = \
-                      [c.merge((Trap, Right, s, r), (Tri, Right, r, t),
-                               values=[])
-                       for r in range(s + 1, t + 1)]
+                # p = []
+                # for i, r in enumerate(range(s + 1, t + 1)):
+                # print np.vstack([coder[Trap, Right, s, s+1:t+1],
+                #                  coder[Tri, Right, s+t:t+1, t]])
+                c.set2(coder[Tri, Right, s, t],
+                       coder[Trap, Right, s, s+1:t+1],
+                       coder[Tri, Right, s+1:t+1, t],
+                       np.repeat(0, t -s))
+                    # for j in range(8): arr[i,j] = p[j]
+
+                # c[Tri, Right, s, t] = np.array(p) #arr[:i+1, :]
+
+        hyper = c.finish(False)
+        #self.data = c.output_matrix
 
         return c
-        # hyper = c.finish(False)
-        # self.data = c.matrix()
-        # #self.data = np.zeros([num_edges])
-        # # print len(hyper.edges)
-        # # print self.data
-        # # print self.data
-        # #print c.matrix().shape
-        # #self.data = c.matrix()
-        # return hyper
+
+    # """
+    # First-order dependency parsing.
+    # """
+    # def dynamic_program(self, p, problem, _):
+    #     """
+    #     Parameters
+    #     -----------
+    #     sentence_length : int
+    #       The length of the sentence.
+
+    #     Returns
+    #     -------
+    #     chart :
+    #       The finished chart.
+    #     """
+    #     n = problem.size + 1
+    #     num_edges = 4 * n ** 3
+    #     item_encoder = ph.IndexedEncoder((kShapes, kDir, n, n))
+    #     coder = np.arange(item_encoder.max_size).reshape([kShapes, kDir, n, n])
+    #     output_encoder = ph.IndexedEncoder((n, n))
+    #     outcoder = np.arange(output_encoder.max_size).reshape([n, n])
+    #     c = ph.ChartBuilder(
+    #         coder, item_encoder.max_size,
+    #         unstrict=True,
+    #         output_encoder=outcoder,
+    #         output_size= output_encoder.max_size,
+    #         expected_size=(num_edges, 2))
+
+    #     # Add terminal nodes.
+    #     for s in range(n):
+    #         for d in [Right, Left]:
+    #             for sh in [Tri]:
+    #                 c[sh, d, s, s] = c.init()
+
+    #     for k in range(1, n):
+    #         for s in range(n):
+    #             t = k + s
+    #             if t >= n: break
+
+    #             # First create incomplete items.
+    #             if s != 0:
+    #                 c[Trap, Left, s, t] = \
+    #                       [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
+    #                        out=[(t, s)])
+    #                        for r in range(s, t)]
+
+    #             c[Trap, Right, s, t] = \
+    #                   [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
+    #                            out=[(s, t)])
+    #                    for r in range(s, t)]
+
+    #             if s != 0:
+    #                 c[Tri, Left, s, t] = \
+    #                     [c.merge((Tri, Left, s, r), (Trap, Left, r, t), out=[])
+    #                      for r in range(s, t)]
+
+    #             c[Tri, Right, s, t] = \
+    #                   [c.merge((Trap, Right, s, r), (Tri, Right, r, t),
+    #                            out=[])
+    #                    for r in range(s + 1, t + 1)]
+
+    #     hyper = c.finish(False)
+    #     self.data = c.output_matrix
+
+    #     return c
+    #     # hyper = c.finish(False)
+    #     # #self.data = np.zeros([num_edges])
+    #     # # print len(hyper.edges)
+    #     # # print self.data
+    #     # # print self.data
+    #     # #print c.matrix().shape
+    #     # #self.data = c.matrix()
+    #     # return hyper
+
+    # def dynamic_program(self, p, problem, _):
+    #     """
+    #     Parameters
+    #     -----------
+    #     sentence_length : int
+    #       The length of the sentence.
+
+    #     Returns
+    #     -------
+    #     chart :
+    #       The finished chart.
+    #     """
+    #     n = problem.size + 1
+    #     num_edges = 4 * n ** 3
+    #     item_encoder = ph.IndexedEncoder((kShapes, kDir, n, n))
+    #     coder = np.arange(item_encoder.max_size).reshape([kShapes, kDir, n, n])
+    #     output_encoder = ph.IndexedEncoder((n, n))
+    #     outcoder = np.arange(output_encoder.max_size).reshape([n, n])
+    #     c = ph.ChartBuilder(
+    #         coder, item_encoder.max_size,
+    #         unstrict=True,
+    #         output_encoder=outcoder,
+    #         output_size= output_encoder.max_size,
+    #         expected_size=(num_edges, 2))
+
+    #     # Add terminal nodes.
+    #     for s in range(n):
+    #         for d in [Right, Left]:
+    #             for sh in [Tri]:
+    #                 c[sh, d, s, s] = c.init()
+
+    #     for k in range(1, n):
+    #         for s in range(n):
+    #             t = k + s
+    #             if t >= n: break
+
+    #             # First create incomplete items.
+    #             if s != 0:
+    #                 c[Trap, Left, s, t] = \
+    #                       [c.merge(coder[Tri, Right, s:t, r], coder[Tri, Left, s+1:t+1, t])
+    #                        out=[(t, s)])]
+
+    #             c[Trap, Right, s, t] = \
+    #                   [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
+    #                            out=[(s, t)])
+    #                    for r in range(s, t)]
+
+    #             if s != 0:
+    #                 c[Tri, Left, s, t] = \
+    #                     [c.merge((Tri, Left, s, r), (Trap, Left, r, t), out=[])
+    #                      for r in range(s, t)]
+
+    #             c[Tri, Right, s, t] = \
+    #                   [c.merge((Trap, Right, s, r), (Tri, Right, r, t),
+    #                            out=[])
+    #                    for r in range(s + 1, t + 1)]
+
+    #     hyper = c.finish(False)
+    #     self.data = c.output_matrix
+
+    #     return c
+
 
 class SecondOrderDecoder(DependencyDecoder):
     def dynamic_program(self, c, problem):

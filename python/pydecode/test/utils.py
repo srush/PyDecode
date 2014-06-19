@@ -73,17 +73,19 @@ def simple_hypergraph():
     """
     Create a simple hypergraph.
     """
-
-    c = pydecode.ChartBuilder(item_set=pydecode.IndexSet(10))
+    enc = pydecode.IndexedEncoder([6])
+    c = pydecode.ChartBuilder(enc, enc.max_size,
+                              output_encoder=pydecode.IndexedEncoder([10]))
 
     for i in range(4):
         c[i] = c.init()
 
         #term = [b.add_node([], label="start " + str(i)) for i in range(4)]
-    c[4] = [c.merge(0, 1), c.merge(0)]
-    c[5] = [c.merge(4, 2),
-            c.merge(4, 3),
-            c.merge(4)]
+    c[4] = [c.merge([0], [1]),
+            c.merge([0])]
+    c[5] = [c.merge([4], [2]),
+            c.merge([4], [3]),
+            c.merge([4])]
 
     hypergraph = c.finish()
     # for edge in hypergraph.edges:
@@ -94,7 +96,7 @@ def simple_hypergraph():
 def complete_hypergraph(size):
     hypergraph = pydecode.Hypergraph()
 
-
+import numpy as np
 def random_hypergraph(size=50):
     """
     Generate a random hypergraph.
@@ -107,8 +109,10 @@ def random_hypergraph(size=50):
 
     # complete_reference_set = range(0, size)
     reference_sets = defaultdict(lambda: set())
+    enc = pydecode.IndexedEncoder([2*size])
 
-    c = pydecode.ChartBuilder(item_set=pydecode.IndexSet(2*size))
+    c = pydecode.ChartBuilder(enc, enc.max_size,
+                              output_encoder=pydecode.IndexedEncoder([10]))
 
 
     for i in range(size):
@@ -121,8 +125,8 @@ def random_hypergraph(size=50):
         node_a, node_b = random.sample(nodes, 2)
         if reference_sets[node_a] & reference_sets[node_b]:
             continue
-        print head_node, node_a, node_b
-        c[head_node] = [c.merge(node_a, node_b)]
+        print node_a, node_b
+        c[head_node] = [c.merge([node_a], [node_b])]
         reference_sets[head_node] |= \
             reference_sets[node_a] | reference_sets[node_b]
         nodes.append(head_node)

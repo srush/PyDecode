@@ -1,3 +1,4 @@
+# cython: profile=True
 #cython: embedsignature=True
 
 from cython.operator cimport dereference as deref

@@ -1,8 +1,8 @@
 
-PyDecode is a dynamic programming toolkit for researchers studying natural language processing.
+PyDecode is a dynamic programming toolkit, developed for research in  NLP.
 
-The interface and visualization code is written Python, the core algorithms are written in C++.
-For examples of some possible projects see the gallery_.
+The aim is to be simple enough for prototyping, but efficient enough for research use.
+
 
 .. _documentation: http://pydecode.readthedocs.org/
 
@@ -12,30 +12,56 @@ For examples of some possible projects see the gallery_.
    :align: center
 
 
-
-Benefits
+Features
 -------------
 
-* **Simple imperative interface.** Algorithms look like pseudo-code ::
+* **Simple interface.** Dynamic programming algorithms specified through pseudo-code. ::
 
-    def viterbi(chart, words):
-        c.init(Tagged(0, "ROOT"))
-        for i, word in enumerate(words[1:], 1):
-            for tag in emission[word]:
-                c[Tagged(i, tag)] = \
-                   c.sum((c[Tagged(i - 1, prev)] * \
-                          c.sr(Bigram(word, tag, prev))
-                          for prev in emission[words[i-1]]))
+    c[0, START] = c.init()
 
-* **Efficient implementation.** Python front-end, C++ data structures and algorithms.
+    for i in range(1, n):
+        for tag in tags:
+            c[i, tag] = \
+                [c.merge((i-1, prev), values=[(i-1, tag, prev)])
+                 for prev in tags]
+
+* **Efficient implementation.** Core code in C++, interfaces through numpy/scipy. ::
+
+    dp = c.finish()
+    scores = numpy.random(len(dp.edges))
+    path = pydecode.best_path(dp, scores)
+    scores = scores.T * path.v
+
+* **High-level algorithms.** Includes a set of widely-used algorithms. ::
+
+    # Max-marginals.
+    marginals = pydecode.marginals(dp, scores)
+
+    # K-Best decoding.
+    kbest = pydecode.kbest(dp, scores)
+
+    # Inside probabilities.
+    inside = pydecode.inside(dp, scores, kind=pydecode.Inside)
+
+    # Pruning
+    filter = marginals > threshold
+    _, projection, pruned_dp = pydecode.project(dp, filter)
+
+* **Integration with machine learning toolkits.** Train structured models using dynamic programming. ::
 
 
-  * If you need even more efficiency, access the C++ interface directly.
+    perceptron_tagger = StructuredPerceptron(tagger, max_iter=5)
+    perceptron_tagger.fit(X, Y)
+    Y_test = perceptron_tagger.predict(X_test)
+
+* **Visualization tools.**  IPython integrated tools for debugging algorithms. ::
+
+    display.HypergraphFormatter(labeled_dp).to_ipython()
 
 
-* **Easy-to-use extensions.** Write only the max dynamic program.
-
-  * PyDecode provides the derivations, marginals, oracle scores, and many other elements.
+.. image:: _images/hmm.png
+   :width: 500 px
+   :align: center
 
 
 Documentation, Tutorial and Gallery
@@ -50,24 +76,20 @@ Documentation, Tutorial and Gallery
    * api_
 
 
-Features
--------------
+.. Features
+.. -------------
 
-Currently the toolkit is in early development but should be ready to be used.
-This presentation_ discusses the background for this work.
+.. Currently the toolkit is in development. It includes the following features:
 
-.. _presentation: https://github.com/srush/PyDecode/raw/master/writing/slides/slides.pdf
-
-
-* Simple imperative construction of dynamic programming structures.
-* Customizable GraphViz output for debugging.
-* Algorithms for best path, inside scores, outside scores, and oracle scores.
-* Several types of pruning.
-* Integration with an (I)LP solver for constrained problems.
-* Lagrangian Relaxation optimization tools.
-* Semiring operations over hypergraph structures.
-* Hooks into PyStruct for structured training.
-* Fast k-best algorithms.
+.. * Simple construction of dynamic programs.
+.. * Customizable GraphViz output for debugging.
+.. * Algorithms for best path, inside scores, outside scores, and oracle scores.
+.. * Several types of pruning.
+.. * Integration with an (I)LP solver for constrained problems.
+.. * Lagrangian Relaxation optimization tools.
+.. * Semiring operations over hypergraph structures.
+.. * Hooks into PyStruct for structured training.
+.. * Fast k-best algorithms.
 
 
 .. image:: https://travis-ci.org/srush/PyDecode.png?branch=master

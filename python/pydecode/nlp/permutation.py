@@ -2,7 +2,7 @@ from collections import namedtuple
 import itertools
 import pydecode.nlp.decoding as decoding
 import pydecode.constraints as constraints
-import pydecode.hyper as ph
+import pydecode as ph
 import random
 
 class PermutationProblem(decoding.DecodingProblem):

@@ -1,4 +1,4 @@
-import pydecode.hyper as ph
+import pydecode as ph
 import pydecode.nlp.decoding as decoding
 from collections import namedtuple
 import itertools

@@ -5,24 +5,28 @@ Setup
 Installation
 =============
 
-Install using pip
+Install using pip ::
 
     $ pip install pydecode
 
 Running Notebooks
 =================
 
-All of the documentation examples are written as IPython notebooks. They are available in the notebooks/ directory. 
+All of the documentation examples are written as IPython notebooks. They are available in the notebooks/ directory.
 
 To modify examples locally, install IPython and run ::
 
     $ cd notebooks
-    $ ipython notebook --pylab inline 
-
-( You can also run IPython notebook on a remote server using ssh tunneling_ and in emacs_.)
+    $ ipython notebook --pylab inline
 
 .. _tunneling: http://wisdomthroughknowledge.blogspot.com/2012/07/accessing-ipython-notebook-remotely.html
 .. _emacs: http://tkf.github.io/emacs-ipython-notebook/
+
+Dependencies
+=====================
+
+Requires numpy and scipy.
+
 
 Optional Dependencies
 =====================
@@ -43,8 +47,8 @@ IPython
 Provides features for working with graphs in IPython and IPython notebook.
 
 
-PyStruct
--------------
+Scikit Learn and PyStruct
+-------------------------
 
 Provides methods for training the parameters of a hypergraph model.
 

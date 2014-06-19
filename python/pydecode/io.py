@@ -38,7 +38,7 @@ def json_to_hypergraph(obj):
     --------
     graph : Hypergraph
     """
-    chart = pydecode.ChartBuilder(item_set=pydecode.IndexSet(len(obj)))
+    chart = pydecode.ChartBuilder(item_set=pydecode.IndexedEncoder(len(obj)))
     for i, edge_ls in enumerate(obj):
         if not edge_ls:
             chart[i] = chart.init()

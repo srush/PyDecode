@@ -351,6 +351,7 @@ def outside(Hypergraph graph, potentials, inside_chart,
     return new_potentials.kind.outside(graph, new_potentials, inside_chart, chart)
 
 
+
 def best_path(Hypergraph graph, potentials,
               kind=LogViterbi, chart=None):
     r"""

@@ -1,5 +1,5 @@
-import pydecode.chart as chart
-import pydecode.hyper as ph
+
+import pydecode as ph
 import pydecode.lp as lp
 import pulp
 

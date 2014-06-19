@@ -41,18 +41,18 @@ More Examples
 .. image:: images/decipher.png
    :width: 500 px
    :align: center
-   
+
 
 `Building a Hypergraph`_
 
 
-.. _Fibonacci : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/Fibonacci.ipynb
-.. _`Edit Distance` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/EditDistance.ipynb
-.. _`Hidden Markov Model` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/hmm.ipynb
-.. _`Dependency Parsing` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/parsing.ipynb
-.. _`Training a Conditional Random Field` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/sequence_crf.ipynb
-.. _`Decipherment` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/decipher.ipynb
-.. _`Building a Hypergraph` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/beamsearch/notebooks/BuildingHypergraph.ipynb
+.. _Fibonacci : http://nbviewer.ipython.org/github/srush/PyDecode/blob/master/notebooks/Fibonacci.ipynb
+.. _`Edit Distance` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/master/notebooks/EditDistance.ipynb
+.. _`Hidden Markov Model` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/master/notebooks/hmm.ipynb
+.. _`Dependency Parsing` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/master/notebooks/parsing.ipynb
+.. _`Training a Conditional Random Field` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/master/notebooks/sequence_crf.ipynb
+.. _`Decipherment` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/master/notebooks/decipher.ipynb
+.. _`Building a Hypergraph` : http://nbviewer.ipython.org/github/srush/PyDecode/blob/master/notebooks/BuildingHypergraph.ipynb
 
 .. toctree::
    :maxdepth: 2
