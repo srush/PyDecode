@@ -95,17 +95,17 @@ PyDecode uses PuLP_ to generate these (integer) linear programs.
    HypergraphLP
 
 
-Lagrangian Relaxation
-=====================
+.. Lagrangian Relaxation
+.. =====================
 
-.. automodule:: pydecode.optimization
-   :no-members:
-   :no-inherited-members:
+.. .. automodule:: pydecode.optimization
+..    :no-members:
+..    :no-inherited-members:
 
-.. autosummary::
+.. .. autosummary::
 
-   subgradient
-   subgradient_descent
+..    subgradient
+..    subgradient_descent
 
 
 

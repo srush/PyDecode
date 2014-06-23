@@ -212,7 +212,7 @@ def argmax(dp, out_potentials,
     outputs : output x output_width matrix
        Matrix of outputs.
     """
-    _check_output_potentials(out_potentials)
+    _check_output_potentials(dp, out_potentials)
     potentials = dp.output_matrix.T * out_potentials.ravel()
     path = best_path(dp.hypergraph, potentials,
                      kind, chart)
@@ -235,7 +235,7 @@ def fill(dp, out_potentials, kind=LogViterbi, chart=None):
     chart : array
        An array in the shape of items.
     """
-    _check_output_potentials(out_potentials)
+    _check_output_potentials(dp, out_potentials)
     potentials = dp.output_matrix.T * out_potentials.ravel()
     new_chart = inside(dp.hypergraph, potentials,
                    kind, chart)
@@ -259,7 +259,7 @@ def output_marginals(dp,
     output_marginals : array
        An array in the shape of dp.outputs with marginal values.
     """
-    _check_output_potentials(out_potentials)
+    _check_output_potentials(dp, out_potentials)
     potentials = dp.output_matrix.T * out_potentials.ravel()
     _, edge_marginals = marginals(dp.hypergraph,
                                   potentials, None, None, kind)
@@ -283,7 +283,7 @@ def item_marginals(dp,
     item_marginals : array
        An array in the shape of dp.items with marginal values.
     """
-    _check_output_potentials(out_potentials)
+    _check_output_potentials(dp, out_potentials)
     potentials = dp.output_matrix.T * out_potentials.ravel()
     node_marginals, _ = marginals(dp.hypergraph,
                                   potentials, None, None, kind)

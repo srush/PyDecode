@@ -13,7 +13,7 @@ from IPython.nbformat.current import reads
 # and
 # https://gist.github.com/2621679 by minrk
 
-tests = ["Fibonacci", "hmm", "parsing", "PerceptronTagger"]
+tests = ["Fibonacci", "EditDistance", "hmm", "parsing", "PerceptronTagger"]
 
 def pytest_collect_file(path, parent):
     print path

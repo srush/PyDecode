@@ -1,7 +1,5 @@
 
-PyDecode is a dynamic programming toolkit, developed for research in  NLP.
-
-The aim is to be simple enough for prototyping, but efficient enough for research use.
+PyDecode is a dynamic programming toolkit. It was developed for research in natural language processing with the aim of being simple enough for prototyping, but efficient enough for research use.
 
 
 .. _documentation: http://pydecode.readthedocs.org/
@@ -15,37 +13,33 @@ The aim is to be simple enough for prototyping, but efficient enough for researc
 Features
 -------------
 
-* **Simple interface.** Dynamic programming algorithms specified through pseudo-code. ::
+* **Simple interface.** Dynamic programming algorithms specified through pseudo-code like interface. ::
 
-    c[0, START] = c.init()
-
+    c.init(items[0, K[0]])
     for i in range(1, n):
-        for tag in tags:
-            c[i, tag] = \
-                [c.merge((i-1, prev), values=[(i-1, tag, prev)])
-                 for prev in tags]
+        for t in K[i]:
+            c.set(items[i, t],
+                  items[i-1, K[i-1]],
+                  out=outputs[i, t, K[i-1]])
+    return c.finish()
 
 * **Efficient implementation.** Core code in C++, interfaces through numpy/scipy. ::
 
     dp = c.finish()
-    scores = numpy.random(len(dp.edges))
-    path = pydecode.best_path(dp, scores)
-    scores = scores.T * path.v
+    scores = numpy.random(dp.outputs.shape)
+    output = pydecode.argmax(dp, scores)
 
 * **High-level algorithms.** Includes a set of widely-used algorithms. ::
 
     # Max-marginals.
-    marginals = pydecode.marginals(dp, scores)
-
-    # K-Best decoding.
-    kbest = pydecode.kbest(dp, scores)
+    marginals = pydecode.output_marginals(dp, scores)
 
     # Inside probabilities.
-    inside = pydecode.inside(dp, scores, kind=pydecode.Inside)
+    inside = pydecode.fill(dp, scores, kind=pydecode.Inside)
 
     # Pruning
-    filter = marginals > threshold
-    _, projection, pruned_dp = pydecode.project(dp, filter)
+    filter = values > threshold
+    _, projection, pruned = pydecode.project(dp.hypergraph, filter)
 
 * **Integration with machine learning toolkits.** Train structured models using dynamic programming. ::
 
@@ -56,8 +50,7 @@ Features
 
 * **Visualization tools.**  IPython integrated tools for debugging algorithms. ::
 
-    display.HypergraphFormatter(labeled_dp).to_ipython()
-
+    display.HypergraphFormatter(hypergraph).to_ipython()
 
 .. image:: _images/hmm.png
    :width: 500 px

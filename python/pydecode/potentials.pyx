@@ -965,7 +965,6 @@ cdef class ChartBuilder:
             self._ndata.append(1)
             self._nindices.append(index)
             self._nind.append(len(self._ndata))
-        print self._no_tail
 
     def finish(self, reconstruct=True):
         """

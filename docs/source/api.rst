@@ -20,15 +20,31 @@ Construction
    :template: class.rst
 
    ChartBuilder
-   IndexSet
+   DynamicProgram
 
 .. _hypergraph:
+
+Algorithms
+==========
+
+.. automodule:: pydecode
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+   :toctree: generated/
+
+   argmax
+   fill
+   output_marginals
+   score_outputs
 
 Hypergraph
 ==========
 
-PyDecode uses directed hypergraphs to represent the
-structure of a dynamic programming algorithm.
+Internally, PyDecode uses directed hypergraphs to represent the
+structure of a dynamic programming algorithms. It also includes
+a low-level interface for working with hypergraphs directly.
 
 .. automodule:: pydecode.potentials
    :no-members:
@@ -51,7 +67,7 @@ Algorithms
 The toolkit contains a collection of algorithms for working with hypergraphs.
 
 
-.. automodule:: pydecode.potentials
+.. automodule:: pydecode
    :no-members:
    :no-inherited-members:
 
@@ -65,22 +81,24 @@ The toolkit contains a collection of algorithms for working with hypergraphs.
    project
    binarize
 
-.. Potentials
-.. ============
+Semirings
+============
 
-.. There are several types of potentials implemented.
+Each of these algorithms is parameterized over several
+different semirings. The `kind` argument is used to specify
+the semiring.
 
-.. .. automodule:: pydecode.potentials
-..    :no-members:
-..    :no-inherited-members:
+.. automodule:: pydecode.potentials
+   :no-members:
+   :no-inherited-members:
 
-.. .. autosummary::
-..    :toctree: generated/
-..    :template: class.rst
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
 
-..    LogViterbi
-..    Inside
-..    Bool
+   LogViterbi
+   Inside
+   Bool
 
 
 .. Potentials
