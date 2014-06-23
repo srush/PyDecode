@@ -10,8 +10,7 @@ Extensions
 Visualization
 ==============
 
-One major benefit of creating a hypergraph representation is that it allows for
-easy visualization. The display package converts a hypergraph to a NetworkX_ graph
+PyDecode can be used direcly visualizing dynamic program. The display package converts a hypergraph to a NetworkX_ graph
 and then uses PyGraphViz_ to render an image. The style of the graph can be easily customized by inheriting from HypergraphFormatter.
 
 .. automodule:: pydecode.display
@@ -59,9 +58,7 @@ train the parameters of a model by specifying a HypergraphModelBuilder.
 Constraints
 =============
 
-Many algorithms in natural language processing, such as translation decoding, can be represented as constrained dynamic programming problems. These can be described as hypergraphs with additional constraints on hyperedges. The notation used to describe constrained hypergraphs is based on this :ref:`introduction to constraints <intro_constraints>`
-
-Constrained hypergraphs can be solved in PyDecode either using a subgradient-based solver (best_constrained) or by using an :ref:`(integer) linear programming solver<lp>`.
+Many algorithms in natural language processing, such as translation decoding, can be represented as constrained dynamic programming problems. These can be described as hypergraphs with additional constraints on hyperedges.
 
 .. automodule:: pydecode.constraints
    :no-members:
@@ -80,7 +77,7 @@ Linear Programming
 ==================
 
 Standard hypergraph search problems can also be solved by using linear programming,
-and constrained hypergraph search problems can be solved using integer linear programming. The notation used to describe constrained hypergraphs is based on this :ref:` conversion to linear program <intro_lp>`.
+and constrained hypergraph search problems can be solved using integer linear programming.
 
 PyDecode uses PuLP_ to generate these (integer) linear programs.
 
@@ -95,17 +92,17 @@ PyDecode uses PuLP_ to generate these (integer) linear programs.
    HypergraphLP
 
 
-.. Lagrangian Relaxation
-.. =====================
+Lagrangian Relaxation
+=====================
 
-.. .. automodule:: pydecode.optimization
-..    :no-members:
-..    :no-inherited-members:
+.. automodule:: pydecode.optimization
+   :no-members:
+   :no-inherited-members:
 
-.. .. autosummary::
+.. autosummary::
 
-..    subgradient
-..    subgradient_descent
+   subgradient
+   subgradient_descent
 
 
 
