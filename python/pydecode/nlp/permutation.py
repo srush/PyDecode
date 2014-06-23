@@ -43,58 +43,70 @@ class Permutation(object):
         return True
 
 
-class PermutationScorer(decoding.Scorer):
-    """
-    Object for scoring permutation structures.
-    """
-
-    def __init__(self, problem, bigram_scores):
-        self._bigram_score = bigram_scores
-        self._problem = problem
-
+class PermutationScorer(object):
     @staticmethod
     def random(dependency_problem):
         n = dependency_problem.size
-        first = [[random.random() for j in range(n)] for i in range(n)]
-        return PermutationScorer(dependency_problem, first)
+        return numpy.random.random([n, n])
 
-    def trans_score(self, i, j):
-        return self._bigram_score[i][j]
-
-    def score(self, perm):
-        return \
-            sum((self.trans_score(i, j)
+    @staticmethod
+    def score(scores, perm):
+        return sum((scores[i, j]
                  for i, j in perm.transition()))
+
+def make_lattice(width, height, transitions):
+    w, h = width, height
+
+    blank = np.array([], dtype=np.int64)
+
+    coder = np.arange(w * h, dtype=np.int64)\
+        .reshape([w+2, h])
+    out = np.arange(w * h * h, dtype=np.int64)\
+        .reshape([w, h, h])
+
+    c = ph.ChartBuilder(coder.size,
+                        unstrict=True,
+                        output_size=out.size)
+
+    c.init(coder[0, 0])
+    for i in range(1, w + 1):
+        for j in range(h):
+            c.set2(coder[i, j],
+                   coder[i-1, transitions[j]],
+                   blank,
+                   out[i-1, j, transitions[j]])
+    c.set(coder[w+1, 0],
+          coder[w, :h],
+          blank,
+          blank)
+    return c
 
 
 class PermutationDecoder(decoding.ConstrainedHypergraphDecoder):
-    def path_to_instance(self, problem, path):
+    def output_to_instance(self, problem, items):
+        w, h = problem.size-1, problem.size
+        trans = numpy.unravel_index(items.nonzero()[0], (w, h, h))
+        trans = zip(*trans)
         perms = [-1] * (problem.size - 1)
-        for edge in path:
-            if edge.head.label.i == 0 or edge.head.label.i > problem.size-1: continue
-            perms[edge.head.label.i - 1] = edge.head.label.j
+        for i, j, _ in trans:
+            perms[i] = j
         return Permutation(perms)
-
-    def potentials(self, hypergraph, scorer, problem):
-        def score(edge):
-            return scorer.trans_score(edge.tail[0].label.j, edge.head.label.j)
-
-        return ph.LogViterbiPotentials(hypergraph).from_vector([
-                score(edge) for edge in hypergraph.edges])
 
     def constraints(self, hypergraph, problem):
         cons = constraints.Constraints(hypergraph,
                                        [(i, -1) for i in range(problem.size)])
         def make_constraint(edge):
-            if edge.head.label.i == 0 or edge.head.label.i > problem.size: return []
+            if edge.head.label.i == 0 or edge.head.label.i > problem.size:
+                return []
             return [(edge.head.label.j, 1)]
 
-        cons.from_vector([make_constraint(edge) for edge in hypergraph.edges])
+        cons.from_vector([make_constraint(edge)
+                          for edge in hypergraph.edges])
         return cons
 
     def hypergraph(self, problem):
-        return ph.make_lattice(problem.size-1, problem.size,
-                               [range(problem.size) for _ in range(problem.size)])
+        return make_lattice(problem.size-1, problem.size,
+                            np.repeat(np.arange(problem.size), problem.size))
 
     def special_decode(self, method, problem, hypergraph, scores, constraints,
                        scorer):

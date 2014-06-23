@@ -1,19 +1,31 @@
-from collections import namedtuple, defaultdict
-import itertools
-import pydecode.nlp.decoding as decoding
-import pydecode as ph
-import random
-import numpy as np
-import scipy.sparse
+"""
+Classes for dependency parsing problems.
+"""
 
-class DependencyDecodingProblem(decoding.DecodingProblem):
-    def __init__(self, size, order):
+import pydecode.nlp.decoding as decoding
+import pydecode
+import numpy.random
+import numpy as np
+import itertools
+
+class DependencyProblem(decoding.DecodingProblem):
+    """
+    Descriptions for dependency parsing problem over a
+    sentence x_1 ... x_n, where x_0 is an implied root
+    vertex.
+    """
+    def __init__(self, size):
+        """
+        Parameters
+        ----------
+        size : int
+           The length of the sentence n.
+        """
         self.size = size
-        self.order = order
 
     def feasible_set(self):
         """
-        Enumerate all possible projective trees.
+        Generate all possible projective trees.
 
         Returns
         --------
@@ -23,7 +35,8 @@ class DependencyDecodingProblem(decoding.DecodingProblem):
         n = self.size
         for mid in itertools.product(range(n + 1), repeat=n):
             parse = DependencyParse([-1] + list(mid))
-            if (not parse.check_projective()) or (not parse.check_spanning()):
+            if (not parse.check_projective()) or \
+                    (not parse.check_spanning()):
                 continue
             yield parse
 
@@ -53,7 +66,7 @@ class DependencyParse(object):
     def __repr__(self):
         return str(self.heads)
 
-    def arcs(self, second=False):
+    def arcs(self):
         """
         Returns
         -------
@@ -61,7 +74,8 @@ class DependencyParse(object):
            Each of the arcs used in the parse.
         """
         for m, h in enumerate(self.heads):
-            if m == 0 or h is None: continue
+            if m == 0 or h is None:
+                continue
             yield (m, h)
 
     def siblings(self, m):
@@ -70,6 +84,17 @@ class DependencyParse(object):
                 if m != m2]
 
     def sibling(self, m):
+        """
+        Parameters
+        ----------
+        m : int
+           Sentence position in {1..n}.
+
+        Returns
+        -------
+        sibling : int
+           The sibling of m in the parse.
+        """
         sibs = self.siblings(m)
         h = self.heads[m]
         if m > h:
@@ -77,22 +102,6 @@ class DependencyParse(object):
         if m < h:
             return min([s2 for s2 in sibs if h > s2 > m] + [h])
 
-
-    def sequence(self):
-        """
-        Returns
-        -------
-        sequence : iterator of m indices in m order
-           Each of the words used in the sentence,
-           by convention starts with 0 and ends with n+1.
-        """
-        yield 0
-        for m, h in self.arcs():
-            yield m
-        yield len(self.heads)
-
-    def skipped_words(self):
-        return len([h for h in self.heads if h is None])
 
     def check_spanning(self):
         """
@@ -118,7 +127,8 @@ class DependencyParse(object):
                 return False
             seen.add(cur)
             stack = d.get(cur,[]) + stack[1:]
-        if len(seen) != len(self.heads) - len([1 for p in self.heads if p is None]):
+        if len(seen) != len(self.heads) - \
+                len([1 for p in self.heads if p is None]):
             return False
         return True
 
@@ -134,7 +144,8 @@ class DependencyParse(object):
 
         for m, h in self.arcs():
             for m2, h2 in self.arcs():
-                if m2 == m: continue
+                if m2 == m:
+                    continue
                 if m < h:
                     if m < m2 < h < h2 or m < h2 < h < m2 or \
                             m2 < m < h2 < h or  h2 < m < m2 < h:
@@ -145,84 +156,56 @@ class DependencyParse(object):
                         return False
         return True
 
-
-
-class DependencyScorer(decoding.Scorer):
+class FirstOrderCoder(object):
     """
-    Object for scoring parse structures.
+    Bijective map between DependencyParse and sparse output
+    representation as arcs (h, m).
     """
-
-    def __init__(self, problem, arc_scores, second_order=None):
-        """
-        Parameters
-        ----------
-        n : int
-           Length of the sentence (without root).
-
-        arc_scores : 2D array (n+1 x n+1)
-           Scores for each possible arc
-           arc_scores[h][m].
-
-        second_order : 3d array (n+2 x n+2 x n+2)
-           Scores for each possible modifier bigram
-           second_order[h][s][m].
-        """
-        self.arc_scores = arc_scores
-        self._second_order_scores = second_order
+    def __init__(self, problem):
         self._problem = problem
+        n = problem.size
+        self.shape_ = [n+1, n+1]
 
-    @staticmethod
-    def random(dependency_problem):
-        n = dependency_problem.size
-        order = dependency_problem.order
-        first = [[random.random() for j in range(n+1)] for i in range(n+1)]
-        second = None
-        if order == 2:
-            second = [[[random.random() for k in range(n+1)] for j in range(n+1)]
-                      for i in range(n+1)]
-        return DependencyScorer(dependency_problem, first, second)
-
-
-
-    def arc_score(self, head, modifier, sibling=None):
+    def inverse_transform(self, arcs):
         """
-        Returns
-        -------
-        score : float
-           The score of head->modifier
+        Map sparse output to DependencyParse.
         """
-        assert((sibling is None) or (self._second_order_scores is not None))
-        if sibling is None:
-            return self.arc_scores[head][modifier]
-        else:
-            return self.arc_scores[head][modifier] + \
-                self._second_order_scores[head][sibling][modifier]
+        arcs = list(arcs)
+        arcs.sort(key=lambda a:a[1])
+        heads = ([-1] + [head for head, m in arcs if m != 0])
+        return DependencyParse(heads)
 
-    def score(self, parse):
+    def transform(self, parse):
         """
-        Score a parse based on arc score.
-
-        Parameters
-        ----------
-        parse : Parse
-            The parse to score.
-
-        Returns
-        -------
-        score : float
-           The score of the parse structure.
+        Map DependencyParse to sparse output.
         """
-        parse_score = 0.0
-        if self._second_order_scores is None:
-            parse_score = \
-                sum((self.arc_score(h, m)
-                     for m, h in parse.arcs()))
-        else:
-            parse_score = \
-                sum((self.arc_score(h, m, parse.sibling(m))
-                     for m, h in parse.arcs()))
+        return np.array([[h, m] for m, h in parse.arcs()])
 
-        return parse_score
+class SecondOrderCoder(object):
+    """
+    Bijective map between DependencyParse and sparse output
+    representation as arcs (h, m, s).
+    """
+    def __init__(self, problem):
+        self._problem = problem
+        n = self._problem.size
+        self.shape_ = [n+1, n+1, n+1]
+
+    def inverse_transform(self, arcs):
+        """
+        Map sparse output to dependency parse.
+        """
+        arcs = list(arcs)
+        arcs.sort(key=lambda a:a[1])
+        heads = ([-1] + [head for head, m, _ in arcs if m != 0])
+        return DependencyParse(heads)
+
+    def transform(self, parse):
+        """
+        Map DependencyParse to sparse output.
+        """
+        return np.array([[h, m, parse.sibling(m)]
+                         for m, h in parse.arcs()])
 
 # Globals
 kShapes = 3
@@ -234,402 +217,133 @@ kDir = 2
 Right = 0
 Left = 1
 
-def NodeType(type, dir, s, t) :
-    return (type, dir, s, t)
-def node_type(nodetype): return nodetype[0]
-def node_span(nodetype): return nodetype[2:]
-def node_dir(nodetype): return nodetype[1]
+class FirstOrderDecoder(decoding.HypergraphDecoder):
+    def output_coder(self, problem):
+        return FirstOrderCoder(problem)
 
-
-def Arc(head, mod):
-    return (head, mod)
-
-def Arc2(head, mod, sibling):
-    return (head, mod, sibling)
-
-def arc_head(arc):
-    return arc[0]
-def arc_mod(arc):
-    return arc[1]
-def arc_sib(arc):
-    if len(arc) > 2:
-        return arc[2]
-    else:
-        return None
-
-class DependencyDecoder(decoding.HypergraphDecoder):
-    def _to_arc(self, hasher, edge):
-
-        label = edge.head_label
-
-        if label is None: return None
-        typ, d, s, t = label
-        if typ != Trap:
-            return None
-        if d == Left: s, t = t, s
-        return (s, t)
-
-    def path_to_instance(self, problem, path):
-        n = problem.size + 1
-        print "path"
-        #hasher = ph.SizedTupleHasher([3, 2, n, n])
-        # hasher = ph.QuartetHasher(3, 2, n, n])
-
-        labels = [self._to_arc(None, edge) for edge in path]
-        labels = [l for l in labels if l is not None]
-        labels.sort(key = arc_mod)
-        heads = ([-1] + [arc_head(arc) for arc in labels])
-        return DependencyParse(heads)
-
-    def potentials(self, hypergraph, scorer, problem):
-        n = problem.size + 1
-        print len(hypergraph.nodes)
-        print len(hypergraph.edges)
-
-        scores = np.zeros([len(hypergraph.edges)])
-        for edge_num, label in hypergraph.head_labels():
-            typ, d, s, t = label.unpack()
-            if typ != Trap: continue
-            if d == Left: s, t = t, s
-            scores[edge_num] = scorer.arc_scores[s][t]
-        # def score(edge):
-        #     arc = self._to_arc(hasher, edge)
-        #     if arc == None: return 0.0
-        #     # label = hasher.unhash(edge.head.label)
-        #     # s, t = node_span(label)
-        #     # d = node_dir(label)
-        #     # if d == Left: s, t = t, s
-        #     return scorer.arc_score(arc[0], arc[1])
-        return ph.LogViterbiPotentials(hypergraph).from_array(scores)
-                # score(edge) for edge in hypergraph.edges])
-
-class FirstOrderDecoder(DependencyDecoder):
-    def potentials(self, hypergraph, scorer, problem):
-        n = problem.size + 1
-        #index_set = ph.IndexedEncoder((n, n))
-        # data = []
-        # indices = []
-        # ind = [0]
-        # for i, ls in enumerate(self.data):
-        #     data += [1] * len(ls)
-        #     indices += ls
-        #     ind.append(len(data))
-        # # print data, indices, ind
-        # arcs = scipy.sparse.csc_matrix(
-        #     (data, indices, ind),
-        #     shape=(hasher.max_size(), len(hypergraph.edges)),
-        #     dtype=np.uint8)
-
-        scores = np.zeros([n, n])
-        for i in range(n):
-            for j in range(n):
-                scores[i, j] = scorer.arc_score(i, j)
-        scores = scores.reshape([1,n*n])
-        # print arcs.shape
-        # print scores.shape
-        # self.data = scores * self.data
-
-        print scores.shape
-        print self.data.shape
-        print self.data.shape
-        print scores.shape
-        return scores * self.data
-
-    def dynamic_program(self, p, problem, _):
+    def dynamic_program(self, problem):
         """
+        Implements Eisner's algorithm for first-order parsing.
+
         Parameters
         -----------
-        sentence_length : int
-          The length of the sentence.
+        problem : DependencyProblem
+          Problem description.
 
         Returns
         -------
-        chart :
-          The finished chart.
+        dp : DynamicProgram
         """
         n = problem.size + 1
         num_edges = 4 * n ** 3
-        item_encoder = ph.IndexedEncoder([kShapes, kDir, n, n])
-        coder = np.arange(item_encoder.max_size, dtype=np.int64).reshape([kShapes, kDir, n, n])
 
-        output_encoder = ph.IndexedEncoder((n, n))
-        out = np.arange(output_encoder.max_size, dtype=np.int64).reshape([n, n])
-        c = ph.ChartBuilder(
-            coder, item_encoder.max_size,
-            unstrict=True,
-            output_encoder=output_encoder,
-            output_size= output_encoder.max_size,
-            expected_size=(num_edges, 2))
+        items = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
+            .reshape([kShapes, kDir, n, n])
+        out = np.arange(n*n, dtype=np.int64).reshape([n, n])
+        c = pydecode.ChartBuilder(items, out,
+                                  unstrict=True,
+                                  expected_size=(num_edges, 2))
 
         # Add terminal nodes.
-        for s in range(n):
-            for d in [Right, Left]:
-                for sh in [Tri]:
-                    c.init(coder[sh, d, s, s])
-                    #p = coder[sh, d, s, s]
-
-        #arr = np.zeros([n+1, 8], dtype=np.int, order="F")
+        c.init(np.diag(items[Tri, Right]).copy())
+        c.init(np.diag(items[Tri, Left, 1:, 1:]).copy())
 
         for k in range(1, n):
             for s in range(n):
                 t = k + s
-                if t >= n: break
+                if t >= n:
+                    break
+
+                out_ind = np.zeros([t-s], dtype=np.int64)
 
                 # First create incomplete items.
                 if s != 0:
-                    c.set2(coder[Trap, Left, s, t],
-                           coder[Tri, Right, s, s:t],
-                           coder[Tri, Left, s+1:t+1, t],
-                           np.repeat(out[t, s], t-s))
+                    out_ind.fill(out[t, s])
+                    c.set(items[Trap, Left,  s,       t],
+                           items[Tri,  Right, s,       s:t],
+                           items[Tri,  Left,  s+1:t+1, t],
+                           out=out_ind)
 
-                    # for i, r in enumerate(range(s, t)):
-                        # for j in range(8): arr[i,j] = p[j]
+                out_ind.fill(out[s, t])
+                c.set(items[Trap, Right, s,       t],
+                      items[Tri,  Right, s,       s:t],
+                      items[Tri,  Left,  s+1:t+1, t],
+                      out=out_ind)
 
-                    #np.array(p)
-
-                # p = []
-                # for i, r in enumerate(range(s, t)):
-                c.set2(coder[Trap, Right, s, t],
-                       coder[Tri, Right, s, s:t],
-                       coder[Tri, Left, s+1:t+1, t],
-                       np.repeat(out[s, t], t -s)
-                       )
-                    # for j in range(8): arr[i,j] = p[j]
-
-                # c[Trap, Right, s, t] = np.array(p) #arr[:i+1, :]
-
-                # p = []
+                out_ind.fill(-1)
                 if s != 0:
-                    # for i, r in enumerate(range(s, t)):
-                    c.set2(coder[Tri, Left, s, t],
-                           coder[Tri, Left, s, s:t],
-                           coder[Trap, Left, s:t, t],
-                           np.repeat(0, t -s))
-                        # for j in range(8): arr[i,j] = p[j]
-                    #np.array(p)
-                    # c[Tri, Left, s, t] = np.array(p)#arr[:i+1, :]
+                    c.set(items[Tri,  Left,  s,   t],
+                          items[Tri,  Left,  s,   s:t],
+                          items[Trap, Left,  s:t, t],
+                          out=out_ind)
 
-                # p = []
-                # for i, r in enumerate(range(s + 1, t + 1)):
-                # print np.vstack([coder[Trap, Right, s, s+1:t+1],
-                #                  coder[Tri, Right, s+t:t+1, t]])
-                c.set2(coder[Tri, Right, s, t],
-                       coder[Trap, Right, s, s+1:t+1],
-                       coder[Tri, Right, s+1:t+1, t],
-                       np.repeat(0, t -s))
-                    # for j in range(8): arr[i,j] = p[j]
+                c.set(items[Tri,  Right, s,       t],
+                      items[Trap, Right, s,       s+1:t+1],
+                      items[Tri,  Right, s+1:t+1, t],
+                      out=out_ind)
 
-                # c[Tri, Right, s, t] = np.array(p) #arr[:i+1, :]
+        return c.finish()
 
-        hyper = c.finish(False)
-        #self.data = c.output_matrix
+class SecondOrderDecoder(decoding.HypergraphDecoder):
+    def output_coder(self, problem):
+        return SecondOrderCoder(problem)
 
-        return c
+    def dynamic_program(self, problem):
+        """
+        Implements Eisner's algorithm for second-order parsing.
 
-    # """
-    # First-order dependency parsing.
-    # """
-    # def dynamic_program(self, p, problem, _):
-    #     """
-    #     Parameters
-    #     -----------
-    #     sentence_length : int
-    #       The length of the sentence.
+        Parameters
+        -----------
+        problem : DependencyProblem
+          Problem description.
 
-    #     Returns
-    #     -------
-    #     chart :
-    #       The finished chart.
-    #     """
-    #     n = problem.size + 1
-    #     num_edges = 4 * n ** 3
-    #     item_encoder = ph.IndexedEncoder((kShapes, kDir, n, n))
-    #     coder = np.arange(item_encoder.max_size).reshape([kShapes, kDir, n, n])
-    #     output_encoder = ph.IndexedEncoder((n, n))
-    #     outcoder = np.arange(output_encoder.max_size).reshape([n, n])
-    #     c = ph.ChartBuilder(
-    #         coder, item_encoder.max_size,
-    #         unstrict=True,
-    #         output_encoder=outcoder,
-    #         output_size= output_encoder.max_size,
-    #         expected_size=(num_edges, 2))
-
-    #     # Add terminal nodes.
-    #     for s in range(n):
-    #         for d in [Right, Left]:
-    #             for sh in [Tri]:
-    #                 c[sh, d, s, s] = c.init()
-
-    #     for k in range(1, n):
-    #         for s in range(n):
-    #             t = k + s
-    #             if t >= n: break
-
-    #             # First create incomplete items.
-    #             if s != 0:
-    #                 c[Trap, Left, s, t] = \
-    #                       [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
-    #                        out=[(t, s)])
-    #                        for r in range(s, t)]
-
-    #             c[Trap, Right, s, t] = \
-    #                   [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
-    #                            out=[(s, t)])
-    #                    for r in range(s, t)]
-
-    #             if s != 0:
-    #                 c[Tri, Left, s, t] = \
-    #                     [c.merge((Tri, Left, s, r), (Trap, Left, r, t), out=[])
-    #                      for r in range(s, t)]
-
-    #             c[Tri, Right, s, t] = \
-    #                   [c.merge((Trap, Right, s, r), (Tri, Right, r, t),
-    #                            out=[])
-    #                    for r in range(s + 1, t + 1)]
-
-    #     hyper = c.finish(False)
-    #     self.data = c.output_matrix
-
-    #     return c
-    #     # hyper = c.finish(False)
-    #     # #self.data = np.zeros([num_edges])
-    #     # # print len(hyper.edges)
-    #     # # print self.data
-    #     # # print self.data
-    #     # #print c.matrix().shape
-    #     # #self.data = c.matrix()
-    #     # return hyper
-
-    # def dynamic_program(self, p, problem, _):
-    #     """
-    #     Parameters
-    #     -----------
-    #     sentence_length : int
-    #       The length of the sentence.
-
-    #     Returns
-    #     -------
-    #     chart :
-    #       The finished chart.
-    #     """
-    #     n = problem.size + 1
-    #     num_edges = 4 * n ** 3
-    #     item_encoder = ph.IndexedEncoder((kShapes, kDir, n, n))
-    #     coder = np.arange(item_encoder.max_size).reshape([kShapes, kDir, n, n])
-    #     output_encoder = ph.IndexedEncoder((n, n))
-    #     outcoder = np.arange(output_encoder.max_size).reshape([n, n])
-    #     c = ph.ChartBuilder(
-    #         coder, item_encoder.max_size,
-    #         unstrict=True,
-    #         output_encoder=outcoder,
-    #         output_size= output_encoder.max_size,
-    #         expected_size=(num_edges, 2))
-
-    #     # Add terminal nodes.
-    #     for s in range(n):
-    #         for d in [Right, Left]:
-    #             for sh in [Tri]:
-    #                 c[sh, d, s, s] = c.init()
-
-    #     for k in range(1, n):
-    #         for s in range(n):
-    #             t = k + s
-    #             if t >= n: break
-
-    #             # First create incomplete items.
-    #             if s != 0:
-    #                 c[Trap, Left, s, t] = \
-    #                       [c.merge(coder[Tri, Right, s:t, r], coder[Tri, Left, s+1:t+1, t])
-    #                        out=[(t, s)])]
-
-    #             c[Trap, Right, s, t] = \
-    #                   [c.merge((Tri, Right, s, r), (Tri, Left, r+1, t),
-    #                            out=[(s, t)])
-    #                    for r in range(s, t)]
-
-    #             if s != 0:
-    #                 c[Tri, Left, s, t] = \
-    #                     [c.merge((Tri, Left, s, r), (Trap, Left, r, t), out=[])
-    #                      for r in range(s, t)]
-
-    #             c[Tri, Right, s, t] = \
-    #                   [c.merge((Trap, Right, s, r), (Tri, Right, r, t),
-    #                            out=[])
-    #                    for r in range(s + 1, t + 1)]
-
-    #     hyper = c.finish(False)
-    #     self.data = c.output_matrix
-
-    #     return c
-
-
-class SecondOrderDecoder(DependencyDecoder):
-    def dynamic_program(self, c, problem):
+        Returns
+        -------
+        dp : DynamicProgram
+        """
         n = problem.size + 1
-        # hasher = ph.SizedTupleHasher([3, 2, n, n])
-        c.set_hasher(hasher)
 
+        coder = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
+            .reshape([kShapes, kDir, n, n])
+        out = np.arange(n*n*n, dtype=np.int64).reshape([n, n, n])
+        c = pydecode.ChartBuilder(coder, out,
+                                  unstrict=True)
         # Initialize the chart.
-        for s in range(n):
-             for d in [Right, Left]:
-                 for sh in [Tri]:
-                     c.init(NodeType(sh, d, s, s))
+        c.init(np.diag(coder[Tri, Right]).copy())
+        c.init(np.diag(coder[Tri, Left, 1:, 1:]).copy())
 
         for k in range(1, n):
             for s in range(n):
                 t = k + s
-                if t >= n: break
-                #span = (s, t)
+                if t >= n:
+                    break
 
                 if s != 0:
-                    c.set(NodeType(Box, Left, s, t),
-                          [((c[key1], c[key2]), None)
-                           for r  in range(s, t)
-                           for key1 in [(Tri, Right, s, r)]
-                           if key1 in c
-                           for key2 in [(Tri, Left, r+1, t)]
-                           if key2 in c])
+                    c.set(coder[Box, Left, s, t],
+                          coder[Tri, Right, s, s:t],
+                          coder[Tri, Left, s+1:t+1, t])
+
+                    c.set(coder[Trap, Left, s, t],
+                          np.append(coder[Tri, Right, s, t-1],
+                                    coder[Box, Left, s, t-1:s:-1]),
+                          np.append(coder[Tri, Left, t, t],
+                                    coder[Trap, Left, t-1:s:-1, t]),
+                          out=out[t, s, t:s:-1])
+
+                c.set(coder[Trap, Right, s, t],
+                      np.append(coder[Tri, Right, s, s],
+                                coder[Trap, Right, s, s+1:t]),
+                      np.append(coder[Tri, Left, s+1, t],
+                                coder[Box, Left, s+1:t, t]),
+                      out=out[s, t, s:t])
 
                 if s != 0:
-                    c.set(NodeType(Trap, Left, s, t),
-                          [((c[key1], c[key2]), Arc(t, s, t))
-                           for key1 in [(Tri, Right, s, t-1)]
-                           if key1 in c
-                           for key2 in [(Tri, Left, t, t)]
-                           if key2 in c] +
-                          [((c[key1], c[key2]),  Arc(t, s, r))
-                           for r in range(s+1, t)
-                           for key1 in [(Box, Left, s, r)]
-                           if key1 in c
-                           for key2 in [(Trap, Left, r, t)]
-                           if key2 in c])
+                    c.set(coder[Tri, Left, s, t],
+                          coder[Tri, Left, s, s:t],
+                          coder[Trap, Left, s:t, t])
 
-                c.set(NodeType(Trap, Right, s, t),
-                      [((c[key1], c[key2]),  Arc(s, t, s))
-                       for key1 in [(Tri, Right, s, s)]
-                       if key1 in c
-                       for key2 in [(Tri, Left, s+1, t)]
-                       if key2 in c] +
-                      [((c[key1], c[key2]), Arc(s, t, r))
-                       for r  in range(s + 1, t)
-                       for key1 in [(Trap, Right, s, r)]
-                       if key1 in c
-                       for key2 in [(Box, Left, r, t)]
-                       if key2 in c])
-
-                if s != 0:
-                    c.set(NodeType(Tri, Left, s, t),
-                          [((c[key1], c[key2]), None)
-                           for r  in range(s, t)
-                           for key1 in [(Tri, Left, s, r)]
-                           if key1 in c
-                           for key2 in [(Trap, Left, r, t)]
-                           if key2 in c])
-
-                c.set(NodeType(Tri, Right, s, t),
-                      [((c[key1], c[key2]), None)
-                      for r in range(s + 1, t + 1)
-                      for key1 in [(Trap, Right, s, r)]
-                      if key1 in c
-                      for key2 in [(Tri, Right, r, t)]
-                      if key2 in c])
+                if (s, t) == (0, n-1) or s != 0:
+                    c.set(coder[Tri, Right, s, t],
+                          coder[Trap, Right, s, s+1:t+1],
+                          coder[Tri, Right, s+1:t+1, t])
+        return c.finish()

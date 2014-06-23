@@ -1,5 +1,5 @@
-
-import pydecode as ph
+import numpy as np
+import pydecode
 import pydecode.lp as lp
 import pulp
 
@@ -17,90 +17,59 @@ class DecodingProblem(object):
         """
         pass
 
-    @staticmethod
-    def random():
-        raise NotImplementedErrro()
+def decode_exhaustive(decoding_problem, scores, coder):
+    best_score = MIN
+    best = None
+    for y in decoding_problem.feasible_set():
+        output = coder.transform(y)
+        indices = np.ravel_multi_index(output.T, coder.shape_)
+        score = np.sum(scores.ravel()[indices])
+        if score > best_score:
+            best_score = score
+            best = y
+    return best
 
-class Scorer(object):
-    def score(self, y):
+class HypergraphDecoder(object):
+    def output_coder(self, problem):
+        raise NotImplementedError()
+
+    def dynamic_program(self, problem):
+        raise NotImplementedError()
+
+    def decode(self, decoding_problem, scores):
         """
-        The score of an instance of the problem.
         """
-        pass
+        dp = self.dynamic_program(decoding_problem)
+        return self.output_coder(decoding_problem).\
+            inverse_transform(pydecode.argmax(dp, scores))
 
-    @staticmethod
-    def random(decoding_problem):
-        raise NotImplementedError()
+# TODO: update this
 
-class Decoder(object):
-    def decode(self, decoding_problem, scorer):
-        """
-        Returns the highest scoring structure.
+# class ConstrainedHypergraphDecoder(Decoder):
+#     def __init__(self, method="ILP"):
+#         self.method = method
 
-        Parameters
-        ----------
+#     def hypergraph(self, problem):
+#         raise NotImplementedError()
 
-        Returns
-        ---------
-        """
-        raise NotImplementedError()
+#     def special_decode(self):
+#         raise NotImplementedError()
 
-class ExhaustiveDecoder(Decoder):
-    def decode(self, decoding_problem, scorer):
-        score = MIN
-        best = None
-        for y in decoding_problem.feasible_set():
-            if scorer.score(y) > score:
-                score = scorer.score(y)
-                best = y
-        return best
-
-class BaseHypergraphDecoder(Decoder):
-
-    def potentials(self, hypergraph, scorer):
-        raise NotImplementedError()
-
-    def path_to_instance(self, problem, path):
-        raise NotImplementedError()
-
-class HypergraphDecoder(Decoder):
-    def dynamic_program(self, chart, problem):
-        raise NotImplementedError()
-
-    def decode(self, decoding_problem, scorer):
-        # c = chart.ChartBuilder(lambda a:a, chart.HypergraphSemiRing,
-        #                        build_hypergraph = True)
-        hypergraph = self.dynamic_program(None, decoding_problem, scorer)
-        scores = self.potentials(hypergraph, scorer, decoding_problem)
-        path = ph.best_path(hypergraph, scores)
-        return self.path_to_instance(decoding_problem, path)
+#     def decode(self, decoding_problem, scorer):
+#         hypergraph = self.hypergraph(decoding_problem)
+#         scores = self.potentials(hypergraph, scorer, decoding_problem)
+#         constraints = self.constraints(hypergraph, decoding_problem)
 
 
-class ConstrainedHypergraphDecoder(Decoder):
-    def __init__(self, method="ILP"):
-        self.method = method
+#         if self.method == "ILP":
+#             hyperlp = lp.HypergraphLP.make_lp(hypergraph,
+#                                               scores,
+#                                               integral=True)
+#             hyperlp.add_constraints(constraints)
+#             hyperlp.solve(pulp.solvers.GLPK(mip=1, msg=0))
+#             path = hyperlp.path
+#         else:
+#             path = self.special_decode(self.method, decoding_problem,
+#                                        hypergraph, scores, constraints, scorer)
 
-    def hypergraph(self, problem):
-        raise NotImplementedError()
-
-    def special_decode(self):
-        raise NotImplementedError()
-
-    def decode(self, decoding_problem, scorer):
-        hypergraph = self.hypergraph(decoding_problem)
-        scores = self.potentials(hypergraph, scorer, decoding_problem)
-        constraints = self.constraints(hypergraph, decoding_problem)
-
-
-        if self.method == "ILP":
-            hyperlp = lp.HypergraphLP.make_lp(hypergraph,
-                                              scores,
-                                              integral=True)
-            hyperlp.add_constraints(constraints)
-            hyperlp.solve(pulp.solvers.GLPK(mip=1, msg=0))
-            path = hyperlp.path
-        else:
-            path = self.special_decode(self.method, decoding_problem,
-                                       hypergraph, scores, constraints, scorer)
-
-        return self.path_to_instance(decoding_problem, path)
+#         return self.path_to_instance(decoding_problem, path)

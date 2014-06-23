@@ -1,22 +1,49 @@
-import pydecode as ph
+"""
+Classes for sequence tagging/labeling problem.
+"""
+import pydecode
 import pydecode.nlp.decoding as decoding
-from collections import namedtuple
 import itertools
-import random
-
-START = "<s>"
+import numpy as np
 
 class TaggingProblem(decoding.DecodingProblem):
-    def __init__(self, size, order, tag_set):
+    """
+    Description of a tagging program.
+
+    Given an input sequence x_0,x_1, ... x_{n-1}, predict the best
+    output sequence y_0,y_1, ... y_{n-1}.
+    """
+    def __init__(self, size, tag_sizes):
+        r"""
+        Describe a tagging problem.
+
+        Parameters
+        ----------
+        size : int
+           The length n of the underlying sequence.
+
+        tag_sizes : sequence of ints
+           The number of tags available at each position.
+           y_0 \in tag_sizes[0] etc.
+
+        """
         self.size = size
-        self.order = order
-        self.tag_set = tag_set
+        self.tag_sizes = tag_sizes
+        self.max_tag_size = max(tag_sizes)
+        assert tag_sizes[0] == 1
+        assert tag_sizes[size-1] == 1
 
     def feasible_set(self):
-        for seq in itertools.product(self.tag_set, repeat=self.size):
+        """
+        Generate all valid tag sequences for a tagging problem.
+        """
+        for seq in itertools.product(*map(range, self.tag_sizes)):
             yield TagSequence(seq)
 
 class TagSequence(object):
+    """
+    A tag sequence y_0,y_1...y_{n-1}.
+    """
     def __init__(self, tags):
         self.tags = tuple(tags)
 
@@ -29,117 +56,99 @@ class TagSequence(object):
     def __repr__(self):
         return str(self.tags)
 
-    def contexts(self, back):
+    def ngrams(self, K):
+        """
+        Generates all n-grams from a sequence.
+
+        Parameters
+        ----------
+        K : int
+           The size of the n-gram.
+
+        Yields
+        ------
+        contexts : tuple (i, t_i, t_{i-1}, t_{i - (K-1)})
+        """
         for i, t in enumerate(self.tags):
-            yield (i, t) + (tuple([(self.tags[i-k] if i - k >= 0 else START)
-                                   for k in range(back, 0, -1)]),)
+            yield (i, t) + tuple([(self.tags[i-k] if i - k >= 0 else 0)
+                                   for k in range(K-1, 0, -1)])
 
-class TagScorer(decoding.Scorer):
-    def __init__(self, problem, scores):
-        self._scores = scores
+class BiTagCoder(object):
+    """
+    Codes a tag sequence as a sparse output array as a 3 x n
+    array of sparse elements if tge form (i, t_i, t_{i-1}).
+    """
+
+    def __init__(self, problem):
         self._problem = problem
+        self.shape_ = [problem.size,
+                       problem.max_tag_size,
+                       problem.max_tag_size]
 
-    def tag_score(self, i, tag, context):
-        return self._scores[i][tag][context]
+    def transform(self, sequence):
+        """
+        Maps a TagSequence to output array.
+        """
+        return np.array([[con[0], con[1], con[2]]
+                         for con in sequence.ngrams(2)])
 
-    def score(self, instance):
-        return sum((self.tag_score(*con)
-                    for con in instance.contexts(self._problem.order-1)))
-
-    @staticmethod
-    def random(problem):
-        return TagScorer(problem,
-                         [[{t2 : random.random()
-                            for t2 in itertools.product(problem.tag_set + [START],
-                                                        repeat=problem.order-1)}
-                           for t in problem.tag_set]
-                          for i in range(problem.size)])
-
-
-class Tagged(namedtuple("Tagged", ["position", "tag", "memory"])):
-    pass
-
-class NGram(namedtuple("NGram", ["position", "tag", "memory"])):
-    def __str__(self): return "%s %s"%(self.word, self.tag)
-
-class Tagger(decoding.HypergraphDecoder):
-    def path_to_instance(self, problem, path):
-        sequence = [None] * problem.size
-        for node in path.nodes:
-            print node.label
-            if isinstance(node.label, Tagged):
-                sequence[node.label.position] = node.label.tag
+    def inverse_transform(self, tags):
+        """
+        Maps an output array to a TagSequence.
+        """
+        sequence = [None] * self._problem.size
+        sequence[0] = 0
+        for (i, t, pt) in tags:
+            print i, t, pt
+            sequence[i] = t
         return TagSequence(sequence)
 
-    def potentials(self, hypergraph, scorer):
-        def score(edge):
-            label = edge.label
-            if label is None: return 0.0
-            return scorer.tag_score(label.position, label.tag, label.memory)
-        return ph.LogViterbiPotentials(hypergraph).from_vector([
-                score(edge) for edge in hypergraph.edges])
+class BigramTagger(decoding.HypergraphDecoder):
+    """
+    Bigram tagging decoder.
+    """
+    def output_coder(self, problem):
+        """
+        Get the output coder for a tagging problem.
 
+        Parameters
+        ----------
+        problem : TaggingProblem
 
-class BigramTagger(Tagger):
-    def dynamic_program(self, c, problem):
-        assert(problem.order == 2)
-        c.init("START")
-        for t in problem.tag_set:
-            c[Tagged(0, t, ())] = \
-                c.sum([c["START"] * c.sr(NGram(0, t, (START,)))])
+        """
+        return BiTagCoder(problem)
 
+    def dynamic_program(self, problem):
+        """
+        Construct a dynamic program for decoding a tagging problem.
+
+        Parameters
+        ----------
+        problem : TaggingProblem
+
+        Returns
+        --------
+        dp : DynamicProgram
+
+        """
+
+        n = problem.size
+        K = problem.tag_sizes
+
+        t = problem.max_tag_size
+        coder = np.arange(n * t, dtype=np.int64)\
+            .reshape([n, t])
+        out = np.arange(n * t * t, dtype=np.int64)\
+            .reshape([n, t, t])
+
+        c = pydecode.ChartBuilder(coder, out,
+                                  unstrict=True)
+
+        c.init(coder[0, :K[0]])
         for i in range(1, problem.size):
-            for t in problem.tag_set:
-                c[Tagged(i, t, ())] = \
-                    c.sum([c[key] * c.sr(NGram(i, t, (t2,)))
-                           for t2 in problem.tag_set
-                           for key in [Tagged(i-1, t2, ())]
-                           if key in c])
-        c["END"] = c.sum([c[Tagged(problem.size - 1, t, ())]
-                          for t in problem.tag_set])
+            for t in range(K[i]):
+                c.set(coder[i, t],
+                      coder[i-1, :K[i-1]],
+                      out=out[i, t, :K[i-1]])
 
-
-class TrigramTagger(Tagger):
-    def dynamic_program(self, c, problem):
-        assert(problem.order == 3)
-        c.init("START")
-        for t in problem.tag_set:
-            c[Tagged(0, t, (START,))] = \
-                c.sum([c["START"] * c.sr(NGram(0, t, (START, START,)))])
-
-        for i in range(1, problem.size):
-            for t in problem.tag_set:
-                for t2 in problem.tag_set:
-                    c[Tagged(i, t, (t2,))] = \
-                        c.sum([c[key] * c.sr(NGram(i, t, (t3, t2,)))
-                               for t3 in problem.tag_set + [START]
-                               for key in [Tagged(i-1, t2, (t3,))]
-                               if key in c])
-        c["END"] = c.sum([c[Tagged(problem.size - 1, t, (t2,))]
-                          for t in problem.tag_set
-                          for t2 in problem.tag_set])
-
-
-        # words = ["ROOT"] + sentence.strip().split(" ") + ["END"]
-        # c.init(Tagged(0, "ROOT", "ROOT"))
-        # for i, word in enumerate(words[1:], 1):
-        #     prev_tags = emission[words[i-1]].keys()
-        #     for tag in emission[word].iterkeys():
-        #         c[Tagged(i, word, tag)] = \
-        #             c.sum([c[key] * c.sr(Bigram(word, tag, prev))
-        #                    for prev in prev_tags
-        #                    for key in [Tagged(i - 1, words[i - 1], prev)]
-        #                    if key in c])
-
-
-# def tag_first_order(n, tags):
-#     lattice = ph.make_lattice(n, len(tags))
-#     lattice.labeling = ph.Labeling(lattice, [Bigram(node.label.i, node.label.j)
-#                                              for node in lattice nodes])
-#     return lattice
-
-# def tag_second_order(n, tags):
-#     lattice = ph.make_lattice(n, len(tags))
-#     lattice.labeling = ph.Labeling(lattice, [Bigram(node.label.i, node.label.j)
-#                                              for node in lattice nodes])
-#     return lattice
+        return c.finish()

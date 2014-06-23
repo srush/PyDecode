@@ -405,6 +405,16 @@ cdef class Path:
             shape=(len(self.graph.edges),1),
             dtype=np.uint16)
 
+        data = []
+        indices = []
+        for vertex in self.vertices:
+            indices.append(vertex.id)
+            data.append(1)
+        self._vertex_vector = scipy.sparse.csc_matrix(
+            (data, indices, [0, len(data)]),
+            shape=(len(self.graph.vertices),1),
+            dtype=np.uint16)
+
     cdef Path init(self, const CHyperpath *path, Hypergraph graph):
         self.thisptr = path
         self.graph = graph
@@ -448,6 +458,10 @@ cdef class Path:
     property v:
         def __get__(self):
             return self.vector
+
+    property vertex_vector:
+        def __get__(self):
+            return self._vertex_vector
 
 class HypergraphAccessException(Exception):
     def __init__(self, value):

@@ -4,7 +4,6 @@ Tests for hypergraph construction and basic data structures.
 
 import pydecode
 import pydecode.test.utils as utils
-import pydecode.io
 import nose.tools as nt
 from pydecode.test.utils import hypergraphs
 
@@ -14,7 +13,6 @@ def test_main():
         yield check_all_valid, graph
         yield check_numbering, graph
         yield check_hypergraph, graph
-        yield check_serialization, graph
         assert utils.check_fully_connected(graph)
 
 def check_all_valid(graph):
@@ -62,11 +60,11 @@ def check_hypergraph(graph):
     nt.assert_equal(len(children), len(graph.nodes) - 1)
 
 
-def check_serialization(graph):
-    s = pydecode.io.hypergraph_to_json(graph)
-    hyper2 = pydecode.io.json_to_hypergraph(s)
-    nt.assert_equal(len(graph.edges), len(hyper2.edges))
-    nt.assert_equal(len(graph.nodes), len(hyper2.nodes))
+# def check_serialization(graph):
+#     s = pydecode.io.hypergraph_to_json(graph)
+#     hyper2 = pydecode.io.json_to_hypergraph(s)
+#     nt.assert_equal(len(graph.edges), len(hyper2.edges))
+#     nt.assert_equal(len(graph.nodes), len(hyper2.nodes))
 
 
 @nt.raises(Exception)

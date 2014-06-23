@@ -73,28 +73,21 @@ def simple_hypergraph():
     """
     Create a simple hypergraph.
     """
-    enc = pydecode.IndexedEncoder([6])
-    c = pydecode.ChartBuilder(enc, enc.max_size,
-                              output_encoder=pydecode.IndexedEncoder([10]))
+    enc = np.arange(6)
+    c = pydecode.ChartBuilder(enc, np.arange(10))
 
-    for i in range(4):
-        c[i] = c.init()
+
+    c.init(enc[:4])
 
         #term = [b.add_node([], label="start " + str(i)) for i in range(4)]
-    c[4] = [c.merge([0], [1]),
-            c.merge([0])]
-    c[5] = [c.merge([4], [2]),
-            c.merge([4], [3]),
-            c.merge([4])]
+    c.set(enc[4], enc[0:2], enc[1:3])
+    c.set(enc[5], np.repeat(enc[4], 3), enc[[2, 3, 1]])
 
-    hypergraph = c.finish()
+    dp = c.finish()
     # for edge in hypergraph.edges:
     #     assert edge.label in ["0", "1", "2", "3", "4"]
-    return hypergraph
+    return dp.hypergraph
 
-
-def complete_hypergraph(size):
-    hypergraph = pydecode.Hypergraph()
 
 import numpy as np
 def random_hypergraph(size=50):
@@ -109,14 +102,14 @@ def random_hypergraph(size=50):
 
     # complete_reference_set = range(0, size)
     reference_sets = defaultdict(lambda: set())
-    enc = pydecode.IndexedEncoder([2*size])
+    enc = np.arange(2*size  + 1)
 
-    c = pydecode.ChartBuilder(enc, enc.max_size,
-                              output_encoder=pydecode.IndexedEncoder([10]))
+    c = pydecode.ChartBuilder(enc, np.arange(10))
+    used = set()
 
+    c.init(enc[:size])
 
     for i in range(size):
-        c[i] = c.init()
         reference_sets[i] = set([i])
 
     nodes = range(size)
@@ -125,15 +118,20 @@ def random_hypergraph(size=50):
         node_a, node_b = random.sample(nodes, 2)
         if reference_sets[node_a] & reference_sets[node_b]:
             continue
-        print node_a, node_b
-        c[head_node] = [c.merge([node_a], [node_b])]
+
+        c.set(enc[head_node], enc[[node_a]], enc[[node_b]])
+        used.update([node_a, node_b])
         reference_sets[head_node] |= \
             reference_sets[node_a] | reference_sets[node_b]
         nodes.append(head_node)
-    hypergraph = c.finish()
-    assert len(hypergraph.nodes) > 0
-    assert len(hypergraph.edges) > 0
-    return hypergraph
+
+    unused = set(nodes) -  used
+    c.set(enc[2*size], enc[list(unused)])
+
+    dp = c.finish()
+    assert len(dp.hypergraph.nodes) > 0
+    assert len(dp.hypergraph.edges) > 0
+    return dp.hypergraph
 
 
 def chain_hypergraph(size=100):

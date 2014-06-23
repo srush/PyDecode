@@ -1,68 +1,83 @@
 import numpy as np
 cimport cython
 
-class IdHasher:
-    def hash_item(self, i):
-        return i
+# class IdHasher:
+#     def hash_item(self, i):
+#         return i
 
-cdef class IndexedEncoder:
-    """
-    Encoder mapping integer tuples to integers.
+# cdef class IndexedEncoder:
+#     """
+#     Encoder mapping integer tuples to integers.
 
-    Encodes the mapping N_1 x N_2 x ... N_k -> {0...|N_1||N_2|...|N_k|}.
-    Attributes
-    ----------
-    max_size : int
-        The range size |N_1||N_2|...|N_k|.
+#     Encodes the mapping N_1 x N_2 x ... N_k -> {0...|N_1||N_2|...|N_k|}.
+#     Attributes
+#     ----------
+#     max_size : int
+#         The range size |N_1||N_2|...|N_k|.
 
-    """
-    def __cinit__(self, shape):
-        """
-        Initialize the encoder from set sizes.
+#     """
+#     def __cinit__(self, shape):
+#         """
+#         Initialize the encoder from set sizes.
 
-        Parameters
-        -----------
-        size : int tuple
-           A tuple of (|N_1|, |N_2|, ..., |N_k|)
+#         Parameters
+#         -----------
+#         size : int tuple
+#            A tuple of (|N_1|, |N_2|, ..., |N_k|)
 
-        """
-        self._multipliers = np.zeros([len(shape), 1], dtype=np.int32)
-        self._shape = shape
-        self._multipliers[0] = 1
+#         """
+#         self._multipliers = np.zeros([len(shape), 1], dtype=np.int32)
+#         self._shape = shape
+#         self._multipliers[0] = 1
 
-        for j in range(1, len(shape)):
-            self._multipliers[j] = self._multipliers[j-1] * shape[j-1]
-        self._max_size = np.product(shape)
+#         for j in range(1, len(shape)):
+#             self._multipliers[j] = self._multipliers[j-1] * shape[j-1]
+#         self._max_size = np.product(shape)
 
-    cpdef np.ndarray transform(self, np.ndarray element):
-        """
-        Transform from tuple to int.
-        """
-        return np.dot(self._multipliers.T, element.T)
+#     cpdef np.ndarray transform(self, np.ndarray element):
+#         """
+#         Transform from tuple to int.
+#         """
+#         return np.dot(self._multipliers.T, element.T)
 
-    cpdef np.ndarray inverse_transform(self, np.ndarray indices):
-        """
-        Inverse transform from int to tuple.
-        """
-        v = indices
-        m = np.zeros((len(self._multipliers), len(indices)), dtype=np.int32)
-        for j in range(len(self._multipliers) - 1, -1, -1):
-            m[j, :] =  v // self._multipliers[j]
-            v = v % self._multipliers[j]
-        return m
+#     cpdef np.ndarray inverse_transform(self, np.ndarray indices):
+#         """
+#         Inverse transform from int to tuple.
+#         """
+#         v = indices
+#         m = np.zeros((len(self._multipliers), len(indices)), dtype=np.int32)
+#         for j in range(len(self._multipliers) - 1, -1, -1):
+#             m[j, :] =  v // self._multipliers[j]
+#             v = v % self._multipliers[j]
+#         return m
 
-    def reshape(self, matrix):
-        assert matrix.shape == self._shape
-        return np.reshape(matrix.T, (self.max_size, 1))
+#     def reshape(self, matrix):
+#         assert matrix.shape == self._shape
+#         return np.reshape(matrix.T, (self.max_size, 1))
+
+
+#     def item_vector(self, elements):
+#         data = []
+#         indices = []
+#         ind = [0]
+#         for element in elements:
+#             data.append(1)
+#             indices.append(self.transform(element))
+#         ind.append(len(data))
+#         return scipy.sparse.csc_matrix(
+#             (data, indices, ind),
+#             shape=(self._max_size, 1),
+#             dtype=np.uint8)
+
+#     property max_size:
+#         def __get__(self):
+#             return self._max_size
 
 #         self._multipliers[0] = 1
 
 #         for j in range(1, len(size)):
 #             self._multipliers[j] = self._multiplier[j-1] * size[j-1]
 
-    property max_size:
-        def __get__(self):
-            return self._max_size
 
 #     cpdef int [:] transform(self, int [:,:] element):
 #         """
@@ -88,19 +103,15 @@ cdef class IndexedEncoder:
 #                 yield i, self._hasher.unhash(i)
 
 
-    def item_vector(self, elements):
-        data = []
-        indices = []
-        ind = [0]
-        for element in elements:
-            data.append(1)
-            indices.append(self.transform(element))
-        ind.append(len(data))
-        return scipy.sparse.csc_matrix(
-            (data, indices, ind),
-            shape=(self._max_size, 1),
-            dtype=np.uint8)
-
+class DynamicProgram:
+    def __init__(self, hypergraph,
+                 item_matrix, output_matrix,
+                 items, outputs):
+        self.hypergraph = hypergraph
+        self.item_matrix = item_matrix
+        self.output_matrix = output_matrix
+        self.items = items
+        self.outputs = outputs
 
 cdef class _ChartEdge:
     pass
@@ -144,10 +155,8 @@ cdef class ChartBuilder:
     """
 
     def __init__(self,
-                 item_encoder,
-                 item_set_size=None,
-                 output_encoder=None,
-                 output_size=None,
+                 items,
+                 outputs,
                  unstrict=False,
                  expected_size=None):
         """
@@ -174,87 +183,139 @@ cdef class ChartBuilder:
 
         self._done = False
         self._last = -1
+        self._no_tail = set[long]()
         self._strict = not unstrict
         self._hg_ptr = new CHypergraph(False)
 
-        self._item_encoder = item_encoder
-        cdef int size = item_set_size
-        self._chart = new vector[const CHypernode *](size, NULL)
-        self._item_size = size
-
-        self._output_encoder = output_encoder
-        self._output_size = output_size
-
-        self._label_chart = []
-
-        if expected_size:
-            self._hg_ptr.set_expected_size(size,
-                                           expected_size[0],
-                                           expected_size[1])
-            self._max_arity = expected_size[1]
-
-        self._data = []
-        self._indices = []
-        self._ind = [0]
+        self._size = np.max(items) + 1
+        self.items = items
+        self.outputs = outputs
+        self._chart = new vector[const CHypernode *](self._size, NULL)
 
         self._ndata = []
         self._nindices = []
         self._nind = [0]
 
-    # def init(self):
-    #     """
-    #     Returns the initial value for a chart item. Usage::
+        # Output structures.
+        self._output_size = np.max(outputs) + 1
+        self._construct_output = self._output_size is not None
 
-    #        >> c[item] = c.init()
-    #     Returns
-    #     --------
-    #      : token
-    #        Chart token used to initialize a cell.
+        self._data = []
+        self._indices = []
+        self._ind = [0]
 
-    #     """
-    #     return _ChartEdge()
+        if expected_size:
+            self._hg_ptr.set_expected_size(self._size,
+                                           expected_size[0],
+                                           expected_size[1])
+            self._max_arity = expected_size[1]
 
-    # cpdef _ChartEdge merge():
-    #     cdef _ChartEdge chart_edge = _ChartEdge()
+        self._edges1 = np.array([0], dtype=np.int64)
+        self._edges2 = np.array([0], dtype=np.int64)
+        self._out = np.array([0], dtype=np.int64)
 
-    def merge(self, *args, out=[]):
-        """
-        Merges the items given as arguments. Usage::
 
-           >> c[item_head] = [c.merge(item_tail1, item_tail2, out=[2])]
-
-        Parameters
-        ----------
-        *args : list of items in I
-            The items to merge.
-
-        out : list of outputs in O
-            The outputs to associate with this merge.
-
-        Returns
-        --------
-         : token
-           Chart token used to represent the merge.
-
-        """
-
-        cdef int index
-        if len(args) == 0:
-            raise Exception("Merge takes at least one item.")
-        # chart_edge.items = np.array(args)
-        return self._merge(args, out)
 
     @cython.boundscheck(False)
-    cdef _ChartEdge  _merge(self, args, outs):
-        cdef _ChartEdge chart_edge = _ChartEdge()
-        chart_edge.tail_ptrs.resize(len(args))
-        cdef int i = 0
-        for arg in args:
-            chart_edge.tail_ptrs[i] = deref(self._chart)[
-                    self._item_encoder[arg]]
-            i += 1
-        chart_edge.values = [self._output_encoder[out] for out in outs]
-        return chart_edge
+    cpdef init(self, long [:] indices):
+        cdef int i
+        for i in range(indices.shape[0]):
+            deref(self._chart)[indices[i]] = \
+                self._hg_ptr.add_terminal_node()
+
+            self._ndata.append(1)
+            self._nindices.append(indices[i])
+            self._nind.append(len(self._ndata))
+            self._no_tail.insert(indices[i])
+
+    # def set(self, long index, edges1, edges2=None, out=None):
+    #     if isinstance(edges1, int):
+    #         self._edges1[0] = edges1
+    #         self._edges2[0] = edges2
+    #         self._out[0] = out
+    #         return self.set2(index, self._edges1, self._edges2,
+    #                          self._out[0])
+    #     else:
+    #         return self.set2(index, edges1, edges2, out)
+
+
+    @cython.boundscheck(False)
+    cpdef set(self,
+              long index,
+              long [:] tails1,
+              long [:] tails2=None,
+              long [:] tails3=None,
+              long [:] out=None):
+
+        deref(self._chart)[index] = self._hg_ptr.start_node()
+
+        blank = (out is None)
+        cdef vector[const CHypernode *] tails
+        if tails2 is not None:
+            assert tails1.shape[0] == tails2.shape[0], \
+                "Tails 1 shape: %s Tails 2 shape: %s"% (tails1.shape[0], tails2.shape[0])
+
+        if tails3 is not None:
+            assert tails1.shape[0] == tails3.shape[0], \
+                "Tails 1 shape: %s Tails 3 shape: %s"% (tails1.shape[0], tails3.shape[0])
+
+        if out is not None:
+            assert tails1.shape[0] == out.shape[0], \
+                "Tails 1 shape: %s Out shape: %s"% (tails1.shape[0], out.shape[0])
+
+        cdef int i, j
+
+        # assert blank_edge or tails1.shape[0] == tails2.shape[0]
+        for j in range(tails1.shape[0]):
+            tails.clear()
+            if tails1[j] == -1: continue
+            tails.push_back(deref(self._chart)[tails1[j]])
+            if tails.back() == NULL:
+                raise Exception(
+                    "Item %s not found for tail 1."%(tails1[j],))
+
+            if tails2 is not None:
+                if tails2[j] == -1: continue
+                tails.push_back(deref(self._chart)[tails2[j]])
+
+                if tails.back() == NULL:
+                    raise Exception(
+                        "Item %s not found for tail 2."%(tails2[j],))
+
+            if tails3 is not None:
+                if tails3[j] == -1: continue
+                tails.push_back(deref(self._chart)[tails3[j]])
+                if tails.back() == NULL:
+                    raise Exception(
+                        "Item %s not found for tail 3."%(tails3[j],))
+
+            self._hg_ptr.add_edge(tails)
+
+            if self._no_tail.find(tails1[j]) != self._no_tail.end():
+                self._no_tail.erase(tails1[j])
+            if tails2 is not None and self._no_tail.find(tails2[j]) != self._no_tail.end():
+                self._no_tail.erase(tails2[j])
+            if tails3 is not None and self._no_tail.find(tails3[j]) != self._no_tail.end():
+                self._no_tail.erase(tails3[j])
+
+            if self._construct_output:
+                if not blank and out[j] != -1:
+                    self._indices.append(out[j])
+                    self._data.append(1)
+                self._ind.append(len(self._data))
+
+        result = self._hg_ptr.end_node()
+        if not result:
+            if self._strict:
+                raise Exception("No tail items found for item %s."%(index,))
+            deref(self._chart)[index] = NULL
+        else:
+            self._last = index
+            self._no_tail.insert(index)
+            self._ndata.append(1)
+            self._nindices.append(index)
+            self._nind.append(len(self._ndata))
+        print self._no_tail
 
     def finish(self, reconstruct=True):
         """
@@ -268,263 +329,33 @@ cdef class ChartBuilder:
         """
         if self._done:
             raise Exception("Hypergraph not constructed.")
+        if self._no_tail.size() != 1:
+            raise Exception("Hypergraph has multiple vertices that are not connected: %s."%(self._no_tail,))
         self._done = True
         self._hg_ptr.finish(reconstruct)
 
-        final_node_labels = [None] * self._hg_ptr.nodes().size()
-        for h, label in self._label_chart:
-            if deref(self._chart)[h] != NULL and deref(self._chart)[h].id() >= 0:
-                final_node_labels[deref(self._chart)[h].id()] = label
-
         hypergraph = Hypergraph(False)
         hypergraph.init(self._hg_ptr,
-                        Labeling(hypergraph, final_node_labels))
-        return hypergraph
-
-    def __contains__(self, item):
-        cdef int index = self._item_encoder.transform(np.array([item]))[0,0]
-        return deref(self._chart)[index] != NULL
-
-    # def build_up(self, chart_edges):
-    #     cdef _ChartEdge chart_edge
-
-    #     cdef np.ndarray[np.int_t, ndim=2] stack1 = np.zeros([len(chart_edges), 4],
-    #                                                        dtype=np.int)
-    #     cdef np.ndarray[np.int_t, ndim=2] stack2 = np.zeros([len(chart_edges), 4],
-    #                                                        dtype=np.int)
-    #     cdef np.ndarray[np.int_t, ndim=2] values = np.zeros([len(chart_edges), 2],
-    #                                                        dtype=np.int)
-
-    #     cdef int j = 0
-    #     cdef int i
-    #     cdef np.ndarray[np.int_t, ndim=2] items
-    #     for i, chart_edge in enumerate(chart_edges):
-    #         items = chart_edge.items
-    #         stack1[i,:] = items[0]
-    #         stack2[i,:] = items[1]
-    #         for v in chart_edge.values:
-    #             values[j,:] = v
-    #             j+=1
+                        Labeling(hypergraph, None))
+        return DynamicProgram(hypergraph,
+                              self._make_item_matrix(),
+                              self._make_output_matrix(),
+                              self.items,
+                              self.outputs)
 
 
-        # ind1 = self._item_encoder.transform(stack1)[0]
-        # ind2 = self._item_encoder.transform(stack2)[0]
-        # trans_values = self._output_encoder.transform(values)[0]
-        # return ind1, ind2, trans_values
+    def _make_output_matrix(self):
+        assert self._construct_output, \
+            "Output size not specified."
+        return scipy.sparse.csc_matrix(
+            (self._data, self._indices, self._ind),
+            shape=(self._output_size,
+                   self._hg_ptr.edges().size()),
+            dtype=np.uint8)
 
-    # def build_up2(self, edges1, edges2, values):
-    #     cdef _ChartEdge chart_edge
-
-        # cdef np.ndarray[np.int_t, ndim=2] stack1 = np.zeros([len(edges1), 4],
-        #                                                    dtype=np.int)
-        # cdef np.ndarray[np.int_t, ndim=2] stack2 = np.zeros([len(edges2), 4],
-        #                                                    dtype=np.int)
-        # cdef np.ndarray[np.int_t, ndim=2] values_a = np.zeros([len(values), 2],
-        #                                                    dtype=np.int)
-
-        # cdef int j = 0
-        # cdef int i
-        # cdef np.ndarray[np.int_t, ndim=2] items
-        # for i, edge in enumerate(edges1):
-        #     stack1[i,:] = edges1[i]
-        #     stack2[i,:] = edges2[i]
-            # for v in chart_edge.values:
-            #     values[j,:] = v
-            #     j+=1
-
-
-        # ind1 = self._item_encoder.transform(edges1)[0]
-        # ind2 = self._item_encoder.transform(edges2)[0]
-        # trans_values = self._output_encoder.transform(values)[0]
-        # return ind1, ind2, trans_values
-
-    # def __setitem__(self, key, q):
-
-    #     cdef int index = self._item_encoder.transform(np.array([key]))[0,0]
-    #     if self._strict and deref(self._chart)[index] != NULL:
-    #         raise Exception("Chart already has label %s"%(key,))
-    #     if isinstance(q, _ChartEdge):
-    #         deref(self._chart)[index] = self._hg_ptr.add_terminal_node()
-    #         self._label_chart.append((index, key))
-
-    #         self._ndata.append(1)
-    #         self._nindices.append(index)
-    #         self._nind.append(len(self._ndata))
-    #         return
-    #     arr = q
-    #     values = np.array([[0,0]])
-    #     deref(self._chart)[index] = self._hg_ptr.start_node()
-
-    #     ind1, ind2, trans_values = self.build_up2(arr[:,:4], arr[:,4:], values)
-
-    #     cdef int j = 0
-    #     cdef int i
-    #     cdef vector[const CHypernode *] tail_ptrs
-    #     #cdef _ChartEdge chart_edge
-    #     for i in range(len(ind1)):
-    #         tail_ptrs.clear()
-    #         tail_ptrs.push_back(deref(self._chart)[ind1[i]])
-    #         tail_ptrs.push_back(deref(self._chart)[ind2[i]])
-
-    #         edge_num = self._hg_ptr.add_edge(tail_ptrs)
-
-    #         # for v in chart_edge.values:
-    #         #     self._data.append(1)
-    #         #     self._indices.append(trans_values[j])
-    #         #     j += 1
-    #         # self._ind.append(len(self._data))
-
-    #     result = self._hg_ptr.end_node()
-    #     if not result:
-    #         if self._strict:
-    #             raise Exception("Index failed. %s"%(key,))
-    #         deref(self._chart)[index] = NULL
-
-    #     self._last = index
-    #     self._label_chart.append((index, key))
-
-    #     self._ndata.append(1)
-    #     self._nindices.append(index)
-    #     self._nind.append(len(self._ndata))
-
-    @cython.boundscheck(False)
-    cpdef init(self, int index):
-        deref(self._chart)[index] = self._hg_ptr.add_terminal_node()
-        # self._label_chart.append((index, key))
-
-        self._ndata.append(1)
-        self._nindices.append(index)
-        self._nind.append(len(self._ndata))
-
-
-    @cython.boundscheck(False)
-    cpdef set2(self, long key, long [:] edges1, long [:] edges2,
-               long [:] labels):
-        cdef long index = key
-        deref(self._chart)[index] = self._hg_ptr.start_node()
-        cdef vector[const CHypernode *] tails
-        J = edges1.shape[0]
-        cdef int i, j
-        for i in range(2):
-            tails.clear()
-            for j in range(J):
-                if i == 0:
-                    tails.push_back(deref(self._chart)[edges1[j]])
-                elif i == 1:
-                    tails.push_back(deref(self._chart)[edges2[j]])
-            edge_num = self._hg_ptr.add_edge(tails)
-
-        # for i in range(labels.shape[0]):
-        #     self._ind.append(labels[i])
-        #     self._data.append(1)
-        #     self._indices.append(len(self._data))
-
-
-        result = self._hg_ptr.end_node()
-        if not result:
-            if self._strict:
-                raise Exception("Index failed. %s"%(key,))
-            deref(self._chart)[index] = NULL
-
-        self._last = index
-        self._label_chart.append((index, key))
-
-        self._ndata.append(1)
-        self._nindices.append(index)
-        self._nind.append(len(self._ndata))
-
-        # cdef int index = self._item_encoder[key]
-        # if self._strict and deref(self._chart)[index] != NULL:
-        #     raise Exception("Chart already has label %s"%(key,))
-        # if isinstance(chart_edges, _ChartEdge):
-        #     deref(self._chart)[index] = self._hg_ptr.add_terminal_node()
-        #     self._label_chart.append((index, key))
-
-        #     self._ndata.append(1)
-        #     self._nindices.append(index)
-        #     self._nind.append(len(self._ndata))
-        #     return
-
-
-
-        # ind1, ind2, trans_values = self.build_up(chart_edges)
-
-        # cdef int j = 0
-        # cdef int i
-        # cdef _ChartEdge chart_edge
-        # for i, chart_edge in enumerate(chart_edges):
-        #     edge_num = self._hg_ptr.add_edge(
-        #         chart_edge.tail_ptrs)
-
-
-        #     self._data += [1] * len(chart_edge.values)
-        #     self._indices += chart_edge.values
-        #     self._ind.append(len(self._data))
-
-
-    property output_encoder:
-        def __get__(self):
-            return self._output_encoder
-
-    property item_encoder:
-        def __get__(self):
-            return self._item_encoder
-
-    property output_matrix:
-        def __get__(self):
-            return scipy.sparse.csc_matrix(
-                (self._data, self._indices, self._ind),
-                shape=(self._output_size,
-                       self._hg_ptr.edges().size()),
-                dtype=np.uint8)
-
-    property item_matrix:
-        def __get__(self):
-            return scipy.sparse.csc_matrix(
-                (self._ndata, self._nindices, self._nind),
-                shape=(self._item_size,
-                       self._hg_ptr.nodes().size()),
-                dtype=np.uint8)
-
-# {% for i in range(2, 6) %}
-# cdef class IntTuple{{i}}:
-#     def __cinit__(self, {% for j in range(i) %}int {{var[j]}}, {% endfor %}
-#                   blank=None):
-#     {% for j in range(i) %}
-#         self.{{var[j]}} = {{var[j]}}
-#     {% endfor %}
-
-#     def unpack(self):
-#         return ({% for j in range(i) %} self.{{var[j]}}, {% endfor %})
-
-# cdef class IntTuple{{i}}Hasher:
-#     def __cinit__(self, {% for j in range(i) %}int {{var[j]}}, {% endfor %}):
-#         # n = {{i}}
-#         # m = ({% for j in range(i) %} {{var[j]}},{% endfor %})
-#         self._multipliers_a = 1
-#         {% for j in range(1,i) %}
-#         self._multipliers_{{var[j]}} = self._multipliers_{{var[j-1]}} * {{var[j-1]}}
-#         {% endfor %}
-#         self._max_size = {% for j in range(i) %} {{var[j]}} * {% endfor %} 1
-
-#     def max_size(self):
-#         return self._max_size
-
-#     cpdef unhash(self, int val):
-#         cdef t = []
-#         cdef int v = val
-#         {% for j in range(i-1, -1, -1) %}
-#         #for k in range({{i}}-1, -1, -1):
-#         t.insert(0, v / self._multipliers_{{var[j]}})
-#         v = v % self._multipliers_{{var[j]}}
-#         {% endfor %}
-#         return tuple(t)
-
-
-
-#     cpdef int hash_item(self, {% for j in range(i) %}{{var[j]}}, {% endfor %}):
-#         return \
-#           {% for j in range(i) %} \
-#             {{var[j]}} * self._multipliers_{{var[j]}} + \
-#           {% endfor %} + 0
-# {% endfor %}
+    def _make_item_matrix(self):
+        return scipy.sparse.csc_matrix(
+            (self._ndata, self._nindices, self._nind),
+            shape=(self._size,
+                   self._hg_ptr.nodes().size()),
+            dtype=np.uint8)

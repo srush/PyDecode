@@ -15,7 +15,9 @@ class HypergraphFormatter:
     Full list available - http://www.graphviz.org/content/attrs
     """
 
-    def __init__(self, hypergraph, show_hyperedges=True):
+    def __init__(self, hypergraph, vertex_labels=None,
+                 hyperedge_labels=None,
+                 show_hyperedges=True):
         """
         Parameters
         -------------
@@ -26,12 +28,14 @@ class HypergraphFormatter:
 
         self.hypergraph = hypergraph
         self._show_hyperedges = show_hyperedges
+        self._vertex_labels = vertex_labels
+        self._hyperedge_labels = hyperedge_labels
 
     def graph_attrs(self):
         "Returns a dictionary of graph properties."
         return {"rankdir": "RL"}
 
-    def hypernode_attrs(self, node):
+    def hypernode_attrs(self, vertex):
         """
         Returns a dictionary of node properties for style hypernode.
 
@@ -42,7 +46,8 @@ class HypergraphFormatter:
            The hypernode to style.
         """
         return {"shape": "ellipse",
-                "label": str(node.label)}
+                "label": "" if self._vertex_labels is None
+                else self._vertex_labels[vertex.id]}
 
     def hyperedge_node_attrs(self, edge):
         """
@@ -57,7 +62,8 @@ class HypergraphFormatter:
         """
         if self._show_hyperedges:
             return {"shape": "rect",
-                    "label": str(edge.label)}
+                    "label": "" if self._hyperedge_labels is None
+                else self._hyperedge_labels[edge.id]}
         else:
             return {"shape": "point"}
 
@@ -225,10 +231,9 @@ def report(duals):
 
 
 class HypergraphPathFormatter(HypergraphFormatter):
-    def __init__(self, hypergraph, paths):
-        self.hypergraph = hypergraph
+    def set_paths(self, paths):
         self.paths = paths
-        self._show_hyperedges = False
+        return self
 
     def hyperedge_attrs(self, edge):
         colors = ["red", "green", "blue", "purple", "orange", "yellow"]
@@ -246,17 +251,3 @@ class HypergraphPotentialFormatter(HypergraphFormatter):
 
     def hyperedge_node_attrs(self, edge):
         return {"label": self.potentials[edge]}
-
-
-class HypergraphConstraintFormatter(HypergraphFormatter):
-    def __init__(self, hypergraph, constraints):
-        self.hypergraph = hypergraph
-        self.constraints = constraints
-        self._show_hyperedges = False
-
-    def hyperedge_attrs(self, edge):
-        colors = ["red", "green", "blue", "purple"]
-        for constraint, color in zip(self.constraints, colors):
-            if edge in constraint:
-                return {"color": color}
-        return {}

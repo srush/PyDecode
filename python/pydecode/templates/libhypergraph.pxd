@@ -74,6 +74,7 @@ cdef class Path:
     cdef const CHyperpath *thisptr
     cdef Hypergraph graph
     cdef vector
+    cdef _vertex_vector
 
     cdef Path init(self, const CHyperpath *path, Hypergraph graph)
     cdef public equal(Path self, Path other)

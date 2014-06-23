@@ -122,7 +122,7 @@ cdef _{{S.type}}vector_to_numpy(const {{S.cvalue}} *vec,
 
 class {{S.type}}:
     Potentials = _{{S.type}}Potentials
-
+    Value = {{S.type}}Value
     {% if S.npvalue %}
     @staticmethod
     def inside(Hypergraph graph,
@@ -277,144 +277,13 @@ cdef convert_hypergraph_map(const CHypergraphMap *hyper_map,
 
 ####### Methods that use specific potential ########
 
-def _get_potentials(graph, potentials, kind=_LogViterbiPotentials):
+def get_potentials(graph, potentials, kind=_LogViterbiPotentials):
     if isinstance(potentials, _Potentials):
         return potentials
     else:
+        if potentials.size != len(graph.edges):
+            raise ValueError("Potentials must match hypergraph hyperedges size: %s != %s"%(potentials.size, len(graph.edges)))
         return kind(graph).from_array(potentials)
-
-def inside(Hypergraph graph, potentials,
-           kind=LogViterbi, chart=None):
-    r"""
-    Compute the inside values for potentials.
-
-    Parameters
-    ----------
-
-    graph : :py:class:`Hypergraph`
-      The underlying hypergraph :math:`({\cal V}, {\cal E})`.
-
-    potentials : Nx1 column vector (type depends on `kind`)
-      The potential vector :math:`\theta` for each hyperedge.
-
-    kind : A semiring type.
-      The semiring to use. Must agree with potentials.
-
-    chart : Mx1 column vector.
-      A chart buffer to reuse.
-    Returns
-    -------
-
-    chart : Mx1 column vector (type depends on `kind`).
-       The inside chart. Type depends on potentials type, i.e.
-       for inside potentials this will be the probability paths
-       reaching this vertex.
-    """
-    new_potentials = _get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.inside(graph, new_potentials, chart)
-
-
-def outside(Hypergraph graph, potentials, inside_chart,
-            kind=LogViterbi, chart=None):
-    r"""
-    Compute the outside values for potentials.
-
-    Parameters
-    -----------
-
-    graph : :py:class:`Hypergraph`
-      The underlying hypergraph :math:`({\cal V}, {\cal E})`.
-
-    potentials : Nx1 column vector (type depends on `kind`)
-      The potential vector :math:`\theta` for each hyperedge.
-
-    inside_chart : :py:class:`Chart`
-       The associated inside chart. Compute by calling
-       :py:function:`inside`.  Must be the same type as potentials.
-
-    kind : A semiring type.
-      The semiring to use. Must agree with potentials.
-
-    chart : Mx1 column vector.
-      A chart buffer to reuse.
-
-    Returns
-    ---------
-
-    chart : Mx1 column vector (type depends on `kind`).
-       The outside chart. Type depends on potentials type, i.e. for
-       inside potentials this will be the probability paths reaching
-       this node.
-
-    """
-    new_potentials = _get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.outside(graph, new_potentials, inside_chart, chart)
-
-
-
-def best_path(Hypergraph graph, potentials,
-              kind=LogViterbi, chart=None):
-    r"""
-    Find the best path through a hypergraph for a given set of potentials.
-
-    Formally gives
-    :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`
-    in the hypergraph.
-
-    Parameters
-    ----------
-
-    graph : :py:class:`Hypergraph`
-      The underlying hypergraph :math:`({\cal V}, {\cal E})`.
-
-    potentials : Nx1 column vector (type depends on `kind`)
-      The potential vector :math:`\theta` for each hyperedge.
-
-    kind : A semiring type.
-      The semiring to use. Must agree with potentials.
-
-    chart : Mx1 column vector.
-      A chart buffer to reuse.
-
-    Returns
-    -------
-    path : :py:class:`Path`
-      The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
-    """
-    new_potentials = _get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.viterbi(graph, new_potentials, chart)
-
-def marginals(Hypergraph graph, potentials,
-              inside_chart=None,
-              outside_chart=None,
-              kind=LogViterbi):
-    r"""
-    Compute marginals for hypergraph and potentials.
-
-    Parameters
-    -----------
-    graph : :py:class:`Hypergraph`
-       The hypergraph to search.
-
-    potentials : :py:class:`Potentials`
-       The potentials of the hypergraph.
-
-    Returns
-    --------
-    marginals : :py:class:`Marginals`
-       The node and edge marginals associated with these potentials.
-    """
-    my_inside = inside_chart
-    if my_inside is None:
-        my_inside = inside(graph, potentials, kind=kind)
-
-    my_outside = outside_chart
-    if my_outside is None:
-        my_outside = outside(graph, potentials, inside_chart=my_inside, kind=kind)
-
-    new_potentials = _get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.compute_marginals(graph, new_potentials,
-                                                 my_inside, my_outside)
 
 
 def project(Hypergraph graph, hyperedge_filter):
@@ -445,7 +314,7 @@ def project(Hypergraph graph, hyperedge_filter):
 
 
     """
-    new_filt = <_BoolPotentials> _get_potentials(graph, hyperedge_filter,
+    new_filt = <_BoolPotentials> get_potentials(graph, hyperedge_filter,
                                                  Bool.Potentials)
     cdef const CHypergraphMap *projection = \
         cproject_hypergraph(graph.thisptr,
