@@ -6,7 +6,7 @@ python:
 # command to install dependencies
 before_install:
  - sudo apt-get update -qq
- - sudo apt-get install python-scipy python-cvxopt graphviz cython glpk
+ - sudo apt-get install python-scipy python-cvxopt graphviz cython glpk libboost-dev
 install:
   - pip install -r requirements.txt -r optional-requirements.txt --use-mirrors
   - pip install .
