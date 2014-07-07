@@ -472,44 +472,66 @@ HypergraphMap *binarize(const Hypergraph *hypergraph) {
                              nodes, edges, true);
 }
 
+// HypergraphMap *to_lattice(const Hypergraph *hypergraph) {
+//     stack<int> vertices;
+//     vertices.push(hypergraph->root().id());
+//     Hypergraph *new_hypergraph;
+//     while (!vertices.empty()) {
+//         int node_id = vertices.top();
+//         vertices.pop();
+//         HNode node = hypergraph->nodes()[node_id];
+//         new_hypergraph->start_node();
+//         foreach(HEdge edge, node->edges()) {
+//             // Start Node
+//             vector<HNode> &tails = edge->tail_nodes();
 
-Hypergraph *make_lattice(int width, int height,
-                         const vector<vector<int> > &transitions,
-                         vector<LatticeLabel> *labels) {
-    Hypergraph *graph = new Hypergraph(true);
-    HNode source = graph->add_terminal_node();
-    labels->push_back(LatticeLabel(0, 0));
+//             foreach (HNode tail_node, tails) {
+//                 tail_node->id();
+//             }
+//             // End Node
 
-    vector<HNode> old_nodes(height), new_nodes(height);
-    for (int j = 0; j < height; ++j) {
-        old_nodes[j] = graph->start_node();
-        labels->push_back(LatticeLabel(1, j));
-        graph->add_edge(source);
-        graph->end_node();
-    }
+//         }
+//     }
 
-    for (int i = 1; i < width; ++i) {
-        for (int j = 0; j < height; ++j) {
-            new_nodes[j] = graph->start_node();
-            labels->push_back(LatticeLabel(i + 1, j));
-            foreach (int k, transitions[j]) {
-                graph->add_edge(old_nodes[k]);
-            }
-            graph->end_node();
-        }
-        old_nodes = new_nodes;
-    }
+// }
 
-    graph->start_node();
-    labels->push_back(LatticeLabel(width + 1, 0));
-    for (int j = 0; j < height; ++j) {
-        graph->add_edge(old_nodes[j]);
-    }
-    graph->end_node();
+// Hypergraph *make_lattice(int width, int height,
+//                          const vector<vector<int> > &transitions,
+//                          vector<LatticeLabel> *labels) {
+//     Hypergraph *graph = new Hypergraph(true);
+//     HNode source = graph->add_terminal_node();
+//     labels->push_back(LatticeLabel(0, 0));
 
-    graph->finish();
-    return graph;
-}
+//     vector<HNode> old_nodes(height), new_nodes(height);
+//     for (int j = 0; j < height; ++j) {
+//         old_nodes[j] = graph->start_node();
+//         labels->push_back(LatticeLabel(1, j));
+//         graph->add_edge(source);
+//         graph->end_node();
+//     }
+
+//     for (int i = 1; i < width; ++i) {
+//         for (int j = 0; j < height; ++j) {
+//             new_nodes[j] = graph->start_node();
+//             labels->push_back(LatticeLabel(i + 1, j));
+//             foreach (int k, transitions[j]) {
+//                 graph->add_edge(old_nodes[k]);
+//             }
+//             graph->end_node();
+//         }
+//         old_nodes = new_nodes;
+//     }
+
+//     graph->start_node();
+//     labels->push_back(LatticeLabel(width + 1, 0));
+//     for (int j = 0; j < height; ++j) {
+//         graph->add_edge(old_nodes[j]);
+//     }
+//     graph->end_node();
+
+//     graph->finish();
+//     return graph;
+// }
 
 
 // vector<bool> active_nodes(const Hypergraph *graph, set<int> on_edges) {
