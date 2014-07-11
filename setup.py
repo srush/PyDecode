@@ -12,10 +12,12 @@ class ExtensionWrapper:
         self.debug = debug
         self.cython = cython
 
-    def make(self, ext_name, pyx_name, cpp_names, extra_objects=[]):
-
+    def make(self, ext_name, pyx_name, cpp_names,
+             extra_objects=[]):
         return Extension(ext_name,
-                         [pyx_name] + cpp_names if self.cython else [pyx_name.split(".")[0] + "." + "cpp"] + cpp_names,
+                         [pyx_name] + cpp_names
+                         if self.cython
+                         else [pyx_name.split(".")[0] + "." + "cpp"] + cpp_names,
                          language='c++',
                          extra_compile_args=["-O0"] if self.debug else [],
                          include_dirs=[r'src/', "."])
@@ -27,8 +29,8 @@ class ExtensionWrapper:
             return {'build_ext': build_ext}
         return {}
 
-def make_extension(wrapper):
 
+def make_extension(wrapper):
     a = [wrapper.make("pydecode.potentials",
                      "python/pydecode/potentials.pyx",
                      ["src/Hypergraph/Hypergraph.cpp",
@@ -40,16 +42,6 @@ def make_extension(wrapper):
                       "src/Hypergraph/BeamSearch.cpp"
                       ])]
     return a
-            # ,extra_objects = [os.path.abspath('python/pydecode/hypergraph.so')])
-
-        # wrapper.make("pydecode.beam",
-        #              "python/pydecode/beam.pyx",
-        #              ["src/Hypergraph/BeamSearch.cpp"],
-        #              extra_objects=[os.path.abspath('python/pydecode/potentials.so'),
-        #                             os.path.abspath('python/pydecode/hypergraph.so')])
-
-
-
 
 def main():
     copy_args = sys.argv[1:]
@@ -74,7 +66,7 @@ def main():
         package_dir={'pydecode': 'python/pydecode'},
         ext_modules = make_extension(wrapper),
         requires=["numpy"],
-        version = '0.2.1',
+        version = '0.2.2',
         description = 'A dynamic programming toolkit',
         author = 'Alexander Rush',
         author_email = 'srush@csail.mit.edu',
@@ -86,4 +78,5 @@ def main():
         include_dirs = [np.get_include()]
         )
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    main()
