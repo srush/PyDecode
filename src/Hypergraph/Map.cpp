@@ -17,11 +17,11 @@ HypergraphMap::HypergraphMap(const Hypergraph *domain_graph,
 
 #ifndef NDEBUG
     foreach (HNode node, *node_map) {
-        assert(node == NULL ||
-               node->id() < range_graph->nodes().size());
+        assert(node == NODE_NULL ||
+               node < range_graph->nodes().size());
     }
     foreach (HEdge edge, *edge_map) {
-        assert(edge == -1 ||
+        assert(edge == EDGE_NULL ||
                range_graph->id(edge) < range_graph->edges().size());
     }
 #endif
@@ -40,20 +40,20 @@ HypergraphMap *HypergraphMap::compose(const HypergraphMap &other) const {
     }
 
     vector<HEdge> *edge_map =
-            new vector<HEdge>(other.domain_graph()->edges().size(), NULL);
+            new vector<HEdge>(other.domain_graph()->edges().size(), EDGE_NULL);
     vector<HNode> *node_map =
-            new vector<HNode>(other.domain_graph()->nodes().size(), NULL);
+            new vector<HNode>(other.domain_graph()->nodes().size(), NODE_NULL);
     foreach (HEdge edge, other.domain_graph()->edges()) {
-        HEdge proj = other.map(edge);
+        HEdge proj = other.map_edge(edge);
         if (proj >= 0) {
-            (*edge_map)[edge] = map(proj);
+            (*edge_map)[edge] = map_edge(proj);
         }
     }
 
     foreach (HNode node, other.domain_graph()->nodes()) {
-        HNode proj = other.map(node);
-        if (proj != NULL && proj->id() >= 0) {
-            (*node_map)[node->id()] = map(proj);
+        HNode proj = other.map_node(node);
+        if (proj != NODE_NULL && proj >= 0) {
+            (*node_map)[node] = map_node(proj);
         }
     }
 
@@ -66,14 +66,16 @@ HypergraphMap *HypergraphMap::compose(const HypergraphMap &other) const {
 HypergraphMap *HypergraphMap::invert() const {
     assert(bidirectional_);
     vector<HNode> *node_reverse_map_ =
-            new vector<HNode>(range_graph_->nodes().size(), NULL);
+            new vector<HNode>(range_graph_->nodes().size(),
+                              NODE_NULL);
     vector<HEdge> *edge_reverse_map_ =
-            new vector<HEdge>(range_graph_->edges().size(), NULL);
+            new vector<HEdge>(range_graph_->edges().size(),
+                              EDGE_NULL);
 
     foreach (HNode node, domain_graph()->nodes()) {
-        HNode mapped_node = (*node_map_)[node->id()];
-        if (mapped_node == NULL || mapped_node->id() < 0) continue;
-        (*node_reverse_map_)[mapped_node->id()] = node;
+        HNode mapped_node = (*node_map_)[node];
+        if (mapped_node == NODE_NULL || mapped_node < 0) continue;
+        (*node_reverse_map_)[mapped_node] = node;
     }
     foreach (HEdge edge, domain_graph()->edges()) {
         HEdge mapped_edge = (*edge_map_)[edge];

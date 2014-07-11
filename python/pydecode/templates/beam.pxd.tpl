@@ -52,7 +52,7 @@ cdef extern from "Hypergraph/BeamSearch.hh" namespace "BeamChart<{{S.type}}>":
 cdef extern from "Hypergraph/BeamSearch.hh":
     cdef cppclass CBeamChart{{S.type}} "BeamChart<{{S.type}}>":
         CHyperpath *get_path(int result)
-        vector[CBeamHyp{{S.type}} *] get_beam(const CHypernode *node)
+        vector[CBeamHyp{{S.type}} *] get_beam(int)
         bool exact
 
 cdef class BeamChart{{S.type}}:

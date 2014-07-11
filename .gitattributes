@@ -6,3 +6,4 @@ potentials.pxd binary
 docs/ext/* binary
 docs/xml/* binary
 docs/src/generated/* binary
+notebooks/*.ipynb binary

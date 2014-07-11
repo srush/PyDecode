@@ -11,20 +11,21 @@ def inside(graph, potentials,
     graph : :py:class:`Hypergraph`
       The underlying hypergraph :math:`({\cal V}, {\cal E})`.
 
-    potentials : Nx1 column vector (type depends on `kind`)
+    potentials : |V|-column vector (type depends on `kind`)
       The potential vector :math:`\theta` for each hyperedge.
 
-    kind : A semiring type.
+    kind : Semiring.
       The semiring to use. Must agree with potentials.
 
-    chart : Mx1 column vector.
+    chart : |V|-column vector (optional)
       A chart buffer to reuse.
+
     Returns
     -------
 
-    chart : Mx1 column vector (type depends on `kind`).
-       The inside chart. Type depends on potentials type, i.e.
-       for inside potentials this will be the probability paths
+    chart : |V|x1 column vector (type depends on `kind`).
+       The inside chart. Type depends on semiring, i.e.
+       for inside this will be the probability paths
        reaching this vertex.
     """
     new_potentials = get_potentials(graph, potentials, kind.Potentials)
@@ -65,7 +66,8 @@ def outside(graph, potentials, inside_chart,
 
     """
     new_potentials = get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.outside(graph, new_potentials, inside_chart, chart)
+    return new_potentials.kind.outside(graph, new_potentials,
+                                       inside_chart, chart)
 
 
 
@@ -127,7 +129,8 @@ def marginals(graph, potentials,
 
     my_outside = outside_chart
     if my_outside is None:
-        my_outside = outside(graph, potentials, inside_chart=my_inside, kind=kind)
+        my_outside = \
+            outside(graph, potentials, inside_chart=my_inside, kind=kind)
 
     new_potentials = get_potentials(graph, potentials, kind.Potentials)
     return new_potentials.kind.compute_marginals(graph, new_potentials,
@@ -139,7 +142,8 @@ def marginals(graph, potentials,
 
 def _check_output_potentials(dp, out_potentials):
     if dp.outputs.size != out_potentials.size:
-        raise ValueError("Potentials do not match output shape: %s != %s"%(out_potentials.shape, dep.outputs.shape))
+        raise ValueError("Potentials do not match output shape: %s != %s"
+                         %(out_potentials.shape, dp.outputs.shape))
 
 def path_output(dp, path):
     """
@@ -158,8 +162,9 @@ def path_output(dp, path):
        Matrix of outputs. Output_width is the width of an output
        and outputs is the numbe of non-zero outputs in the path.
     """
-    int_output = (dp.output_matrix * path.v).nonzero()[0]
-    return np.array(np.unravel_index(int_output,
+    int_output = dp.output_indices.take(path.edge_indices,
+                                        mode="clip")
+    return np.array(np.unravel_index(int_output[int_output!=-1],
                                      dp.outputs.shape)).T
 
 def vertex_items(dp):
@@ -179,10 +184,9 @@ def vertex_items(dp):
        Matrix of items. Item_width is the width of an item
        and |V| is the number of vertices.
     """
-    labels = [dp.item_matrix.T[vertex.id].nonzero()[1]
-              for vertex in dp.hypergraph.vertices]
-    return [zip(*np.unravel_index(l, dp.items.shape))[0]
-            for l in labels]
+    return np.array(np.unravel_index(dp.item_indices,
+                                     dp.items.shape)).T
+
 
 def hyperedge_outputs(dp):
     """
@@ -197,9 +201,15 @@ def hyperedge_outputs(dp):
        Matrix of items. Output width is the width of an output
        and |E| is the number of hyperedges.
     """
-    return np.unravel_index(dp.output_matrix.nonzero()[0],
+    return np.unravel_index(dp.output_indices,
                             dp.outputs.shape)
 
+
+def _map_potentials(dp, out_potentials):
+    return out_potentials.take(dp.output_indices, mode='clip')
+
+def _map_potentials2(dp, out_potentials):
+    return dp.output_matrix.T * out_potentials.ravel()
 
 def argmax(dp, out_potentials,
            kind=LogViterbi, chart=None):
@@ -213,7 +223,7 @@ def argmax(dp, out_potentials,
        Matrix of outputs.
     """
     _check_output_potentials(dp, out_potentials)
-    potentials = dp.output_matrix.T * out_potentials.ravel()
+    potentials = _map_potentials(dp, out_potentials)
     path = best_path(dp.hypergraph, potentials,
                      kind, chart)
     return path_output(dp, path)
@@ -236,9 +246,9 @@ def fill(dp, out_potentials, kind=LogViterbi, chart=None):
        An array in the shape of items.
     """
     _check_output_potentials(dp, out_potentials)
-    potentials = dp.output_matrix.T * out_potentials.ravel()
+    potentials = _map_potentials(dp, out_potentials)
     new_chart = inside(dp.hypergraph, potentials,
-                   kind, chart)
+                       kind, chart)
     return new_chart.reshape(dp.items.shape)
 
 
@@ -260,7 +270,7 @@ def output_marginals(dp,
        An array in the shape of dp.outputs with marginal values.
     """
     _check_output_potentials(dp, out_potentials)
-    potentials = dp.output_matrix.T * out_potentials.ravel()
+    potentials = _map_potentials(dp, out_potentials)
     _, edge_marginals = marginals(dp.hypergraph,
                                   potentials, None, None, kind)
     return (dp.output_matrix * edge_marginals).reshape(
@@ -284,10 +294,10 @@ def item_marginals(dp,
        An array in the shape of dp.items with marginal values.
     """
     _check_output_potentials(dp, out_potentials)
-    potentials = dp.output_matrix.T * out_potentials.ravel()
+    potentials = _map_potentials(dp, out_potentials)
     node_marginals, _ = marginals(dp.hypergraph,
                                   potentials, None, None, kind)
-    return (dp.item_matrix* node_marginals).reshape(
+    return (dp.item_matrix * node_marginals).reshape(
         dp.items.shape)
 
 def score_outputs(dp, outputs, out_potentials,
@@ -295,7 +305,7 @@ def score_outputs(dp, outputs, out_potentials,
     """
 
     """
-
     indices = np.ravel_multi_index(outputs.T,
                                    dp.outputs.shape)
-    return np.prod(map(kind.Value, out_potentials.ravel()[indices]))
+    return np.prod(map(kind.Value,
+                       out_potentials.ravel()[indices]))

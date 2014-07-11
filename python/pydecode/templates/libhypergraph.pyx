@@ -49,7 +49,7 @@ cdef class _LazyVertices:
     def __init__(self, graph):
         self._graph = graph
 
-    cdef init(self, vector[const CHypernode *] nodes):
+    cdef init(self, vector[int] nodes):
         self._nodes = nodes
         return self
 
@@ -210,7 +210,7 @@ cdef class Vertex:
         Data associated with the vertex.
     """
 
-    cdef Vertex init(self, const CHypernode *nodeptr,
+    cdef Vertex init(self, int nodeptr,
                    Hypergraph graph):
         self.nodeptr = nodeptr
         self.graph = graph
@@ -230,12 +230,13 @@ cdef class Vertex:
 
     property id:
         def __get__(self):
-            assert self.nodeptr.id() != -1, "Bad node id."
-            return self.nodeptr.id()
+            # assert self.nodeptr.id() != -1, "Bad node id."
+            return self.nodeptr
 
     property subedges:
         def __get__(self):
-            return convert_edges(self.nodeptr.edges(), self.graph)
+            return convert_edges(self.graph.thisptr.edges(self.nodeptr),
+                                 self.graph)
 
     property edges:
         def __get__(self):
@@ -243,21 +244,21 @@ cdef class Vertex:
 
     property is_terminal:
         def __get__(self):
-            return (self.nodeptr.edges().size() == 0)
+            return self.graph.thisptr.terminal(self.nodeptr)
 
     property label:
         def __get__(self):
             return self.graph.labeling[self]
 
     def __str__(self):
-        return str(self.nodeptr.id())
+        return str(self.nodeptr)
 
     def __cinit__(self):
         ""
         pass
 
-    def _removed(self):
-        return self.nodeptr == NULL or (self.nodeptr.id() == -1)
+    # def _removed(self):
+    #     return self.nodeptr == NULL or (self.nodeptr.id() == -1)
 
 cdef class Node(Vertex):
     pass
@@ -295,7 +296,7 @@ cdef class Edge:
         pass
 
     def __hash__(self):
-        return self.thisptr
+        return self.edgeptr
 
     def __dealloc__(self):
         pass
@@ -342,14 +343,14 @@ cdef class Edge:
             else:
                 return self.edgeptr
 
-    def _removed(self):
-        return (self.id == -1)
+    # def _removed(self):
+    #     return (self.id == -1)
 
 cdef convert_edges(vector[int] edges,
                    Hypergraph graph):
     return [Edge().init(edge, graph) for edge in edges]
 
-cdef convert_nodes(vector[const CHypernode *] nodes,
+cdef convert_nodes(vector[int] nodes,
                    Hypergraph graph):
     return [Vertex().init(node, graph) for node in nodes]
 
@@ -392,7 +393,14 @@ cdef class Path:
             for edge in edges:
                 cedges.push_back((<Edge>edge).id)
             self.thisptr = new CHyperpath(graph.thisptr, cedges)
-            self._make_vector()
+            self.vector = None
+            self._vertex_vector = None
+            #self._make_vector()
+            self._edge_indices = \
+                np.array(self.thisptr.edges())
+
+            self._vertex_indices = \
+                np.array(self.thisptr.nodes())
 
     def _make_vector(self):
         data = []
@@ -418,7 +426,16 @@ cdef class Path:
     cdef Path init(self, const CHyperpath *path, Hypergraph graph):
         self.thisptr = path
         self.graph = graph
-        self._make_vector()
+
+        cdef int edge
+        self._edge_indices = \
+            np.array(self.thisptr.edges())
+        self._vertex_indices = \
+            np.array(self.thisptr.nodes())
+
+
+        self.vector = None
+        self._vertex_vector = None
         return self
 
     def __str__(self):
@@ -443,6 +460,14 @@ cdef class Path:
             return not self.equal(other)
         raise Exception("No inequality on paths.")
 
+    property edge_indices:
+        def __get__(self):
+            return self._edge_indices
+
+    property vertex_indices:
+        def __get__(self):
+            return self._vertex_indices
+
     property edges:
         def __get__(self):
             return _LazyEdges(self.graph).init(self.thisptr.edges())
@@ -457,10 +482,14 @@ cdef class Path:
 
     property v:
         def __get__(self):
+            if self.vector is None:
+                self._make_vector()
             return self.vector
 
     property vertex_vector:
         def __get__(self):
+            if self._vertex_vector is None:
+                self._make_vector()
             return self._vertex_vector
 
 class HypergraphAccessException(Exception):

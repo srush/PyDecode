@@ -10,7 +10,7 @@ cimport cython
 #     cpdef np.ndarray inverse_transform(self, np.ndarray index)
 
 # cdef class _ChartEdge:
-#     cdef vector[const CHypernode *] tail_ptrs
+#     cdef vector[int] tail_ptrs
 #     cdef values
 #     cdef items
 
@@ -24,7 +24,7 @@ cdef class ChartBuilder:
               long [:] out=*)
 
     cdef CHypergraph *_hg_ptr
-    cdef vector[const CHypernode *] *_chart
+    cdef vector[int] *_chart
 
     cdef bool _done
     cdef int _last
@@ -52,7 +52,7 @@ cdef class ChartBuilder:
     cdef np.ndarray _edges2
     cdef np.ndarray _out
 
-
+    cdef _lattice
 
 # {% for i in range(2, 6) %}
 # cdef class IntTuple{{i}}:

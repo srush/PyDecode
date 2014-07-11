@@ -39,25 +39,25 @@ class Chart {
 
     void initialize_inside() {
         foreach (HNode node, graph_->nodes()) {
-            if (node->terminal()) {
+            if (graph_->terminal(node)) {
                 insert(node, S::one());
             }
         }
     }
 
-    // V& operator[] (HNode node) { return chart_[node->id()]; }
-    inline V operator[] (HNode node) const { return chart_[node->id()]; }
+    // V& operator[] (HNode node) { return chart_[node]; }
+    inline V operator[] (HNode node) const { return chart_[node]; }
 
-    V get(HNode node) const { return chart_[node->id()]; }
+    V get(HNode node) const { return chart_[node]; }
     inline void insert(const HNode& node, const V& val) {
-        chart_[node->id()] = val;
+        chart_[node] = val;
     }
 
     inline V compute_edge_score(HEdge edge, const V &start) {
         V score = start;
         for (int j = 0; j < this->graph_->tail_nodes(edge); ++j) {
             HNode tail = this->graph_->tail_node(edge, j);
-            score = S::times(score, chart_[tail->id()]);
+            score = S::times(score, chart_[tail]);
         }
         return score;
     }
@@ -86,12 +86,12 @@ class BackPointers {
     }
 
     inline HEdge operator[] (HNode node) const {
-        return chart_[node->id()];
+        return chart_[node];
     }
 
-    HEdge get(HNode node) const { return chart_[node->id()]; }
+    HEdge get(HNode node) const { return chart_[node]; }
     inline void insert(HNode node, HEdge val) {
-        chart_[node->id()] = val;
+        chart_[node] = val;
     }
 
     void check(const Hypergraph *hypergraph) const {
@@ -116,12 +116,12 @@ class BackPointers {
 /*         chart_(graph_->nodes().size(), -1) {} */
 
 /*     inline HEdge operator[] (HNode node) const { */
-/*         return chart_[node->id()]; */
+/*         return chart_[node]; */
 /*     } */
 
-/*     HEdge get(HNode node) const { return chart_[node->id()]; } */
+/*     HEdge get(HNode node) const { return chart_[node]; } */
 /*     inline void insert(HNode node, HEdge val) { */
-/*         chart_[node->id()] = val; */
+/*         chart_[node] = val; */
 /*     } */
 
 /*     void check(const Hypergraph *hypergraph) const { */
@@ -216,7 +216,7 @@ void edge_marginals(const Hypergraph *hypergraph,
 /*                 in_chart->check(hypergraph); */
 /*                 out_chart->check(hypergraph); */
 /*                 foreach (HNode node, hypergraph_->nodes()) { */
-/*                     node_marginals_[node->id()] = marginal(node); */
+/*                     node_marginals_[node] = marginal(node); */
 /*                 } */
 /*                 foreach (HEdge edge, hypergraph_->edges()) { */
 /*                     edge_marginals_[edge] = marginal(edge); */

@@ -49,7 +49,7 @@ cdef class _LazyVertices:
     def __init__(self, graph):
         self._graph = graph
 
-    cdef init(self, vector[const CHypernode *] nodes):
+    cdef init(self, vector[int] nodes):
         self._nodes = nodes
         return self
 
@@ -210,7 +210,7 @@ cdef class Vertex:
         Data associated with the vertex.
     """
 
-    cdef Vertex init(self, const CHypernode *nodeptr,
+    cdef Vertex init(self, int nodeptr,
                    Hypergraph graph):
         self.nodeptr = nodeptr
         self.graph = graph
@@ -230,12 +230,13 @@ cdef class Vertex:
 
     property id:
         def __get__(self):
-            assert self.nodeptr.id() != -1, "Bad node id."
-            return self.nodeptr.id()
+            # assert self.nodeptr.id() != -1, "Bad node id."
+            return self.nodeptr
 
     property subedges:
         def __get__(self):
-            return convert_edges(self.nodeptr.edges(), self.graph)
+            return convert_edges(self.graph.thisptr.edges(self.nodeptr),
+                                 self.graph)
 
     property edges:
         def __get__(self):
@@ -243,21 +244,21 @@ cdef class Vertex:
 
     property is_terminal:
         def __get__(self):
-            return (self.nodeptr.edges().size() == 0)
+            return self.graph.thisptr.terminal(self.nodeptr)
 
     property label:
         def __get__(self):
             return self.graph.labeling[self]
 
     def __str__(self):
-        return str(self.nodeptr.id())
+        return str(self.nodeptr)
 
     def __cinit__(self):
         ""
         pass
 
-    def _removed(self):
-        return self.nodeptr == NULL or (self.nodeptr.id() == -1)
+    # def _removed(self):
+    #     return self.nodeptr == NULL or (self.nodeptr.id() == -1)
 
 cdef class Node(Vertex):
     pass
@@ -295,7 +296,7 @@ cdef class Edge:
         pass
 
     def __hash__(self):
-        return self.thisptr
+        return self.edgeptr
 
     def __dealloc__(self):
         pass
@@ -342,14 +343,14 @@ cdef class Edge:
             else:
                 return self.edgeptr
 
-    def _removed(self):
-        return (self.id == -1)
+    # def _removed(self):
+    #     return (self.id == -1)
 
 cdef convert_edges(vector[int] edges,
                    Hypergraph graph):
     return [Edge().init(edge, graph) for edge in edges]
 
-cdef convert_nodes(vector[const CHypernode *] nodes,
+cdef convert_nodes(vector[int] nodes,
                    Hypergraph graph):
     return [Vertex().init(node, graph) for node in nodes]
 
@@ -392,7 +393,14 @@ cdef class Path:
             for edge in edges:
                 cedges.push_back((<Edge>edge).id)
             self.thisptr = new CHyperpath(graph.thisptr, cedges)
-            self._make_vector()
+            self.vector = None
+            self._vertex_vector = None
+            #self._make_vector()
+            self._edge_indices = \
+                np.array(self.thisptr.edges())
+
+            self._vertex_indices = \
+                np.array(self.thisptr.nodes())
 
     def _make_vector(self):
         data = []
@@ -418,7 +426,16 @@ cdef class Path:
     cdef Path init(self, const CHyperpath *path, Hypergraph graph):
         self.thisptr = path
         self.graph = graph
-        self._make_vector()
+
+        cdef int edge
+        self._edge_indices = \
+            np.array(self.thisptr.edges())
+        self._vertex_indices = \
+            np.array(self.thisptr.nodes())
+
+
+        self.vector = None
+        self._vertex_vector = None
         return self
 
     def __str__(self):
@@ -443,6 +460,14 @@ cdef class Path:
             return not self.equal(other)
         raise Exception("No inequality on paths.")
 
+    property edge_indices:
+        def __get__(self):
+            return self._edge_indices
+
+    property vertex_indices:
+        def __get__(self):
+            return self._vertex_indices
+
     property edges:
         def __get__(self):
             return _LazyEdges(self.graph).init(self.thisptr.edges())
@@ -457,10 +482,14 @@ cdef class Path:
 
     property v:
         def __get__(self):
+            if self.vector is None:
+                self._make_vector()
             return self.vector
 
     property vertex_vector:
         def __get__(self):
+            if self._vertex_vector is None:
+                self._make_vector()
             return self._vertex_vector
 
 class HypergraphAccessException(Exception):
@@ -615,12 +644,12 @@ def extend_hypergraph_by_dfa(Hypergraph graph,
                                   deref(dfa.thisptr),
                                   &labels)
     node_labels = []
-    cdef const CHypernode *node
-    cdef vector[const CHypernode*] new_nodes = \
+    cdef int node
+    cdef vector[int] new_nodes = \
         projection.domain_graph().nodes()
 
     for i in range(labels.size()):
-        node = projection.map(new_nodes[i])
+        node = projection.map_node(new_nodes[i])
         node_labels.append(DFALabel().init(labels[i],
                                            graph.labeling.node_labels[node.id()]))
 
@@ -651,121 +680,69 @@ def binarize(Hypergraph graph):
 import numpy as np
 cimport cython
 
-# class IdHasher:
-#     def hash_item(self, i):
-#         return i
+    # item_matrix : Sparse matrix |I| x |V|
+    #    Maps vertices of the hypergraph to item indicators.
 
-# cdef class IndexedEncoder:
-#     """
-#     Encoder mapping integer tuples to integers.
-
-#     Encodes the mapping N_1 x N_2 x ... N_k -> {0...|N_1||N_2|...|N_k|}.
-#     Attributes
-#     ----------
-#     max_size : int
-#         The range size |N_1||N_2|...|N_k|.
-
-#     """
-#     def __cinit__(self, shape):
-#         """
-#         Initialize the encoder from set sizes.
-
-#         Parameters
-#         -----------
-#         size : int tuple
-#            A tuple of (|N_1|, |N_2|, ..., |N_k|)
-
-#         """
-#         self._multipliers = np.zeros([len(shape), 1], dtype=np.int32)
-#         self._shape = shape
-#         self._multipliers[0] = 1
-
-#         for j in range(1, len(shape)):
-#             self._multipliers[j] = self._multipliers[j-1] * shape[j-1]
-#         self._max_size = np.product(shape)
-
-#     cpdef np.ndarray transform(self, np.ndarray element):
-#         """
-#         Transform from tuple to int.
-#         """
-#         return np.dot(self._multipliers.T, element.T)
-
-#     cpdef np.ndarray inverse_transform(self, np.ndarray indices):
-#         """
-#         Inverse transform from int to tuple.
-#         """
-#         v = indices
-#         m = np.zeros((len(self._multipliers), len(indices)), dtype=np.int32)
-#         for j in range(len(self._multipliers) - 1, -1, -1):
-#             m[j, :] =  v // self._multipliers[j]
-#             v = v % self._multipliers[j]
-#         return m
-
-#     def reshape(self, matrix):
-#         assert matrix.shape == self._shape
-#         return np.reshape(matrix.T, (self.max_size, 1))
-
-
-#     def item_vector(self, elements):
-#         data = []
-#         indices = []
-#         ind = [0]
-#         for element in elements:
-#             data.append(1)
-#             indices.append(self.transform(element))
-#         ind.append(len(data))
-#         return scipy.sparse.csc_matrix(
-#             (data, indices, ind),
-#             shape=(self._max_size, 1),
-#             dtype=np.uint8)
-
-#     property max_size:
-#         def __get__(self):
-#             return self._max_size
-
-#         self._multipliers[0] = 1
-
-#         for j in range(1, len(size)):
-#             self._multipliers[j] = self._multiplier[j-1] * size[j-1]
-
-
-#     cpdef int [:] transform(self, int [:,:] element):
-#         """
-#         Transform from tuple to int.
-#         """
-#         return self._multipliers * element
-
-#     cpdef int [:,:] inverse_transform(self, int [:]  index):
-#         """
-#         Inverse transform from int to tuple.
-#         """
-#         if self._hasher is None: return index
-#         return self._hasher.unhash(index)
-
-
-#     def iteritems(self):
-#         cdef int i
-#         if self._hasher is None:
-#             for i in range(self._max_size):
-#                 yield i, i
-#         else:
-#             for i in range(self._max_size):
-#                 yield i, self._hasher.unhash(i)
+    # output_matrix : Sparse matrix |O| x |E|
+    #    Maps hyperedges of the hypergraph to sparse output counts.
 
 
 class DynamicProgram:
     def __init__(self, hypergraph,
-                 item_matrix, output_matrix,
+                 item_indices,
+                 output_indices,
                  items, outputs):
         self.hypergraph = hypergraph
-        self.item_matrix = item_matrix
-        self.output_matrix = output_matrix
         self.items = items
         self.outputs = outputs
+        self.item_indices = np.array(item_indices)
+        self.output_indices = np.array(output_indices)
+
+        self._item_matrix = None
+        self._output_matrix = None
+
+    def _make_output_matrix(self):
+        # assert self._construct_output, \
+        #     "Output size not specified."
+        data = []
+        outputs = []
+        ind = [0]
+        for index in self.output_indices:
+            if index != -1:
+                data.append(1)
+                outputs.append(index)
+            ind.append(len(data))
+        return scipy.sparse.csc_matrix(
+            (data, outputs, ind),
+            shape=(np.max(self.outputs) + 1,
+                   len(self.hypergraph.edges)),
+            dtype=np.uint8)
+
+    def _make_item_matrix(self):
+        return scipy.sparse.csc_matrix(
+            ([1] * len(self.item_indices),
+             self.item_indices,
+             range(len(self.item_indices) + 1)),
+            shape=(np.max(self.items) + 1,
+                   len(self.hypergraph.nodes)),
+            dtype=np.uint8)
+
+    @property
+    def output_matrix(self):
+        if self._output_matrix is None:
+            self._output_matrix = self._make_output_matrix()
+        return self._output_matrix
+
+    @property
+    def item_matrix(self):
+        if self._item_matrix is None:
+            self._item_matrix = self._make_item_matrix()
+        return self._item_matrix
 
 cdef class _ChartEdge:
     pass
 
+NODE_NULL = -1
 cdef class ChartBuilder:
     """
     ChartBuilder is an interface for specifying dynamic programs.
@@ -791,24 +768,19 @@ cdef class ChartBuilder:
 
     Attributes
     ----------
-    item_encoder : Encoder I -> {0...|I|}
+    items : Encoder I -> {0...|I|}
        Encodes elements of the item set I as integers.
 
-    output_encoder : Encoder O -> {0...|O|}
+    outputs : Encoder O -> {0...|O|}
        Encodes elements of the output set O as integers.
-
-    item_matrix : Sparse matrix |I| x |V|
-       Maps vertices of the hypergraph to item indicators.
-
-    output_matrix : Sparse matrix |O| x |E|
-       Maps hyperedges of the hypergraph to sparse output counts.
     """
 
     def __init__(self,
                  items,
                  outputs,
                  unstrict=False,
-                 expected_size=None):
+                 expected_size=None,
+                 lattice=False):
         """
         Initialize the dynamic programming chart.
 
@@ -835,24 +807,19 @@ cdef class ChartBuilder:
         self._last = -1
         self._no_tail = set[long]()
         self._strict = not unstrict
-        self._hg_ptr = new CHypergraph(False)
+        self._hg_ptr = new CHypergraph(lattice)
 
         self._size = np.max(items) + 1
         self.items = items
         self.outputs = outputs
-        self._chart = new vector[const CHypernode *](self._size, NULL)
-
-        self._ndata = []
+        self._chart = new vector[int](self._size, NODE_NULL)
         self._nindices = []
-        self._nind = [0]
 
         # Output structures.
         self._output_size = np.max(outputs) + 1
         self._construct_output = self._output_size is not None
 
-        self._data = []
         self._indices = []
-        self._ind = [0]
 
         if expected_size:
             self._hg_ptr.set_expected_size(self._size,
@@ -860,11 +827,9 @@ cdef class ChartBuilder:
                                            expected_size[1])
             self._max_arity = expected_size[1]
 
-        self._edges1 = np.array([0], dtype=np.int64)
-        self._edges2 = np.array([0], dtype=np.int64)
         self._out = np.array([0], dtype=np.int64)
 
-
+        self._lattice = lattice
 
     @cython.boundscheck(False)
     cpdef init(self, long [:] indices):
@@ -873,21 +838,8 @@ cdef class ChartBuilder:
             deref(self._chart)[indices[i]] = \
                 self._hg_ptr.add_terminal_node()
 
-            self._ndata.append(1)
             self._nindices.append(indices[i])
-            self._nind.append(len(self._ndata))
             self._no_tail.insert(indices[i])
-
-    # def set(self, long index, edges1, edges2=None, out=None):
-    #     if isinstance(edges1, int):
-    #         self._edges1[0] = edges1
-    #         self._edges2[0] = edges2
-    #         self._out[0] = out
-    #         return self.set2(index, self._edges1, self._edges2,
-    #                          self._out[0])
-    #     else:
-    #         return self.set2(index, edges1, edges2, out)
-
 
     @cython.boundscheck(False)
     cpdef set(self,
@@ -900,7 +852,7 @@ cdef class ChartBuilder:
         deref(self._chart)[index] = self._hg_ptr.start_node()
 
         blank = (out is None)
-        cdef vector[const CHypernode *] tails
+        cdef vector[int] tails
         if tails2 is not None:
             assert tails1.shape[0] == tails2.shape[0], \
                 "Tails 1 shape: %s Tails 2 shape: %s"% (tails1.shape[0], tails2.shape[0])
@@ -918,27 +870,27 @@ cdef class ChartBuilder:
         # assert blank_edge or tails1.shape[0] == tails2.shape[0]
         for j in range(tails1.shape[0]):
             tails.clear()
-            if tails1[j] == -1: continue
+
+            if tails1[j] == NODE_NULL: continue
             tails.push_back(deref(self._chart)[tails1[j]])
-            if tails.back() == NULL:
+            if tails.back() == NODE_NULL:
                 raise Exception(
                     "Item %s not found for tail 1."%(tails1[j],))
 
             if tails2 is not None:
-                if tails2[j] == -1: continue
+                if tails2[j] == NODE_NULL: continue
                 tails.push_back(deref(self._chart)[tails2[j]])
 
-                if tails.back() == NULL:
+                if tails.back() == NODE_NULL:
                     raise Exception(
                         "Item %s not found for tail 2."%(tails2[j],))
 
             if tails3 is not None:
-                if tails3[j] == -1: continue
+                if tails3[j] == NODE_NULL: continue
                 tails.push_back(deref(self._chart)[tails3[j]])
-                if tails.back() == NULL:
+                if tails.back() == NODE_NULL:
                     raise Exception(
                         "Item %s not found for tail 3."%(tails3[j],))
-
             self._hg_ptr.add_edge(tails)
 
             if self._no_tail.find(tails1[j]) != self._no_tail.end():
@@ -951,22 +903,20 @@ cdef class ChartBuilder:
             if self._construct_output:
                 if not blank and out[j] != -1:
                     self._indices.append(out[j])
-                    self._data.append(1)
-                self._ind.append(len(self._data))
+                else:
+                    self._indices.append(-1)
 
         result = self._hg_ptr.end_node()
         if not result:
             if self._strict:
                 raise Exception("No tail items found for item %s."%(index,))
-            deref(self._chart)[index] = NULL
+            deref(self._chart)[index] = NODE_NULL
         else:
             self._last = index
             self._no_tail.insert(index)
-            self._ndata.append(1)
             self._nindices.append(index)
-            self._nind.append(len(self._ndata))
 
-    def finish(self, reconstruct=True):
+    def finish(self, reconstruct=False):
         """
         Finish chart construction.
 
@@ -983,31 +933,14 @@ cdef class ChartBuilder:
         self._done = True
         self._hg_ptr.finish(reconstruct)
 
-        hypergraph = Hypergraph(False)
+        hypergraph = Hypergraph(self._lattice)
         hypergraph.init(self._hg_ptr,
                         Labeling(hypergraph, None))
         return DynamicProgram(hypergraph,
-                              self._make_item_matrix(),
-                              self._make_output_matrix(),
+                              self._nindices,
+                              self._indices,
                               self.items,
                               self.outputs)
-
-
-    def _make_output_matrix(self):
-        assert self._construct_output, \
-            "Output size not specified."
-        return scipy.sparse.csc_matrix(
-            (self._data, self._indices, self._ind),
-            shape=(self._output_size,
-                   self._hg_ptr.edges().size()),
-            dtype=np.uint8)
-
-    def _make_item_matrix(self):
-        return scipy.sparse.csc_matrix(
-            (self._ndata, self._nindices, self._nind),
-            shape=(self._size,
-                   self._hg_ptr.nodes().size()),
-            dtype=np.uint8)
 from cython.operator cimport dereference as deref
 from libcpp cimport bool
 from libcpp.vector cimport vector
@@ -2978,13 +2911,15 @@ cdef convert_hypergraph_map(const CHypergraphMap *hyper_map,
 ####### Methods that use specific potential ########
 
 def get_potentials(graph, potentials, kind=_LogViterbiPotentials):
-    if isinstance(potentials, _Potentials):
-        return potentials
-    else:
-        if potentials.size != len(graph.edges):
-            raise ValueError("Potentials must match hypergraph hyperedges size: %s != %s"%(potentials.size, len(graph.edges)))
-        return kind(graph).from_array(potentials)
+    # if potentials.size != len(graph.edges):
+    #     raise ValueError("Potentials must match hypergraph hyperedges size: %s != %s"%(potentials.size, len(graph.edges)))
+    return kind(graph).from_array(potentials)
 
+@cython.boundscheck(False)
+cpdef map_potentials(dp, out_potentials):
+    cdef np.ndarray raveled = out_potentials.ravel()
+    cdef np.ndarray potentials = raveled[dp.output_indices]
+    return potentials
 
 def project(Hypergraph graph, hyperedge_filter):
     """

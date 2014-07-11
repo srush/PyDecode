@@ -1,3 +1,4 @@
+cimport numpy as np
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.map cimport map
@@ -5,32 +6,33 @@ from libcpp.set cimport set
 from libcpp cimport bool
 
 cdef extern from "Hypergraph/Hypergraph.hh":
-    cdef cppclass CHypernode "Hypernode":
-        int id()
-        vector[int ] edges()
-
+    # cdef cppclass CHypernode "Hypernode":
+    #     int id()
+    #     vector[int ] edges()
     cdef cppclass CHypergraph "Hypergraph":
         CHypergraph(bool)
         void set_expected_size(int, int, int)
-        const CHypernode *root()
+        int root()
+        vector[int] edges(int)
+        bool terminal(int)
         int tail_nodes(int)
-        const CHypernode *tail_node(int, int)
-        const CHypernode *head(int)
-        const CHypernode *start_node()
-        const CHypernode *add_terminal_node()
+        int tail_node(int, int)
+        int head(int)
+        int start_node()
+        int add_terminal_node()
         bool end_node()
         int id()
         int new_id(int)
-        int add_edge(vector[const CHypernode *]) except +
+        int add_edge(vector[int]) except +
         void finish(bool reconstruct) except +
-        vector[const CHypernode *] nodes()
-        vector[int ] edges()
+        vector[int] nodes()
+        vector[int] edges()
 
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,
                    const vector[int] edges) except +
         vector[int] edges()
-        vector[const CHypernode *] nodes()
+        vector[int] nodes()
         int has_edge(int)
         bool equal(const CHyperpath path)
 
@@ -45,8 +47,8 @@ cdef class _LazyEdges:
 
 cdef class _LazyVertices:
     cdef Hypergraph _graph
-    cdef vector[const CHypernode *] _nodes
-    cdef init(self, vector[const CHypernode *])
+    cdef vector[int] _nodes
+    cdef init(self, vector[int])
 
 cdef class Hypergraph:
     cdef CHypergraph *thisptr
@@ -56,11 +58,11 @@ cdef class Hypergraph:
     cdef Hypergraph init(self, const CHypergraph *ptr, Labeling labeling)
 
 cdef class Vertex:
-    cdef const CHypernode *nodeptr
+    cdef int nodeptr
     cdef CHypergraph *graphptr
     cdef Hypergraph graph
 
-    cdef Vertex init(self, const CHypernode *nodeptr,
+    cdef Vertex init(self, int nodeptr,
                    Hypergraph graph)
 
 cdef class Edge:
@@ -75,14 +77,16 @@ cdef class Path:
     cdef Hypergraph graph
     cdef vector
     cdef _vertex_vector
+    cdef np.ndarray _edge_indices
+    cdef np.ndarray _vertex_indices
 
     cdef Path init(self, const CHyperpath *path, Hypergraph graph)
     cdef public equal(Path self, Path other)
 
 cdef extern from "Hypergraph/Map.hh":
     cdef cppclass CHypergraphMap "HypergraphMap":
-        int map(int)
-        const CHypernode *map(const CHypernode *node)
+        int map_node(int)
+        int map_edge(int)
         const CHypergraph *domain_graph()
         const CHypergraph *range_graph()
         const vector[int] edge_map()
@@ -137,7 +141,7 @@ cimport cython
 #     cpdef np.ndarray inverse_transform(self, np.ndarray index)
 
 # cdef class _ChartEdge:
-#     cdef vector[const CHypernode *] tail_ptrs
+#     cdef vector[int] tail_ptrs
 #     cdef values
 #     cdef items
 
@@ -151,7 +155,7 @@ cdef class ChartBuilder:
               long [:] out=*)
 
     cdef CHypergraph *_hg_ptr
-    cdef vector[const CHypernode *] *_chart
+    cdef vector[int] *_chart
 
     cdef bool _done
     cdef int _last
@@ -179,7 +183,7 @@ cdef class ChartBuilder:
     cdef np.ndarray _edges2
     cdef np.ndarray _out
 
-
+    cdef _lattice
 
 # 
 # cdef class IntTuple2:
@@ -300,7 +304,7 @@ cdef extern from "Hypergraph/BeamSearch.hh" namespace "BeamChart<BinaryVectorPot
 cdef extern from "Hypergraph/BeamSearch.hh":
     cdef cppclass CBeamChartBinaryVectorPotential "BeamChart<BinaryVectorPotential>":
         CHyperpath *get_path(int result)
-        vector[CBeamHypBinaryVectorPotential *] get_beam(const CHypernode *node)
+        vector[CBeamHypBinaryVectorPotential *] get_beam(int)
         bool exact
 
 cdef class BeamChartBinaryVectorPotential:
@@ -339,7 +343,7 @@ cdef extern from "Hypergraph/BeamSearch.hh" namespace "BeamChart<AlphabetPotenti
 cdef extern from "Hypergraph/BeamSearch.hh":
     cdef cppclass CBeamChartAlphabetPotential "BeamChart<AlphabetPotential>":
         CHyperpath *get_path(int result)
-        vector[CBeamHypAlphabetPotential *] get_beam(const CHypernode *node)
+        vector[CBeamHypAlphabetPotential *] get_beam(int)
         bool exact
 
 cdef class BeamChartAlphabetPotential:
@@ -378,7 +382,7 @@ cdef extern from "Hypergraph/BeamSearch.hh" namespace "BeamChart<LogViterbiPoten
 cdef extern from "Hypergraph/BeamSearch.hh":
     cdef cppclass CBeamChartLogViterbiPotential "BeamChart<LogViterbiPotential>":
         CHyperpath *get_path(int result)
-        vector[CBeamHypLogViterbiPotential *] get_beam(const CHypernode *node)
+        vector[CBeamHypLogViterbiPotential *] get_beam(int)
         bool exact
 
 cdef class BeamChartLogViterbiPotential:
@@ -407,7 +411,7 @@ from libcpp cimport bool
 cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CBackPointers "BackPointers":
         CBackPointers(CHypergraph *graph)
-        int get(const CHypernode *node)
+        int get(int node)
         CHyperpath *construct_path()
 
 # cdef class BackPointers:
@@ -474,7 +478,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CBoolChart "Chart<BoolPotential>":
         CBoolChart(const CHypergraph *graph)
         CBoolChart(const CHypergraph *graph, char *)
-        char get(const CHypernode *node)
+        char get(int node)
         char *chart()
 
 cdef convert_to_sparse(vector[int] positions)
@@ -606,7 +610,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CViterbiChart "Chart<ViterbiPotential>":
         CViterbiChart(const CHypergraph *graph)
         CViterbiChart(const CHypergraph *graph, double *)
-        double get(const CHypernode *node)
+        double get(int node)
         double *chart()
 
 cdef convert_to_sparse(vector[int] positions)
@@ -738,7 +742,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CCountingChart "Chart<CountingPotential>":
         CCountingChart(const CHypergraph *graph)
         CCountingChart(const CHypergraph *graph, int *)
-        int get(const CHypernode *node)
+        int get(int node)
         int *chart()
 
 cdef convert_to_sparse(vector[int] positions)
@@ -870,7 +874,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CLogViterbiChart "Chart<LogViterbiPotential>":
         CLogViterbiChart(const CHypergraph *graph)
         CLogViterbiChart(const CHypergraph *graph, double *)
-        double get(const CHypernode *node)
+        double get(int node)
         double *chart()
 
 cdef convert_to_sparse(vector[int] positions)
@@ -1002,7 +1006,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CLogProbChart "Chart<LogProbPotential>":
         CLogProbChart(const CHypergraph *graph)
         CLogProbChart(const CHypergraph *graph, double *)
-        double get(const CHypernode *node)
+        double get(int node)
         double *chart()
 
 cdef convert_to_sparse(vector[int] positions)
@@ -1134,7 +1138,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CInsideChart "Chart<InsidePotential>":
         CInsideChart(const CHypergraph *graph)
         CInsideChart(const CHypergraph *graph, double *)
-        double get(const CHypernode *node)
+        double get(int node)
         double *chart()
 
 cdef convert_to_sparse(vector[int] positions)
@@ -1266,7 +1270,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CMinMaxChart "Chart<MinMaxPotential>":
         CMinMaxChart(const CHypergraph *graph)
         CMinMaxChart(const CHypergraph *graph, double *)
-        double get(const CHypernode *node)
+        double get(int node)
         double *chart()
 
 cdef convert_to_sparse(vector[int] positions)
@@ -1398,7 +1402,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CAlphabetChart "Chart<AlphabetPotential>":
         CAlphabetChart(const CHypergraph *graph)
         CAlphabetChart(const CHypergraph *graph, vector[int] *)
-        vector[int] get(const CHypernode *node)
+        vector[int] get(int node)
         vector[int] *chart()
 
 cdef convert_to_sparse(vector[int] positions)
@@ -1530,7 +1534,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CBinaryVectorChart "Chart<BinaryVectorPotential>":
         CBinaryVectorChart(const CHypergraph *graph)
         CBinaryVectorChart(const CHypergraph *graph, cbitset *)
-        cbitset get(const CHypernode *node)
+        cbitset get(int node)
         cbitset *chart()
 
 cdef convert_to_sparse(vector[int] positions)
@@ -1668,3 +1672,5 @@ cdef extern from "Hypergraph/Algorithms.hh":
 # cdef class NodeUpdates:
 #     cdef Hypergraph graph
 #     cdef vector[set[int] ] *children
+
+cpdef map_potentials(dp, out_potentials)

@@ -136,12 +136,12 @@ def extend_hypergraph_by_dfa(Hypergraph graph,
                                   deref(dfa.thisptr),
                                   &labels)
     node_labels = []
-    cdef const CHypernode *node
-    cdef vector[const CHypernode*] new_nodes = \
+    cdef int node
+    cdef vector[int] new_nodes = \
         projection.domain_graph().nodes()
 
     for i in range(labels.size()):
-        node = projection.map(new_nodes[i])
+        node = projection.map_node(new_nodes[i])
         node_labels.append(DFALabel().init(labels[i],
                                            graph.labeling.node_labels[node.id()]))
 

@@ -60,3 +60,6 @@ def test_pruning():
         #     nt.assert_almost_equal(w[orig], new_potentials[edge])
         #     m = max_marginals[orig]
         #     nt.assert_greater(m, prune)
+
+if __name__ == "__main__":
+    test_pruning()

@@ -118,7 +118,7 @@ template<typename SemiringType>
         return score;
     }
 
-    V score(HEdge edge) const { return (*potentials_)[this->hypergraph_->id(edge)]; }
+    inline V score(HEdge edge) const { return (*potentials_)[this->hypergraph_->id(edge)]; }
     inline V operator[] (HEdge edge) const {
         return (*potentials_)[this->hypergraph_->id(edge)];
     }
@@ -180,7 +180,7 @@ template<typename SemiringType>
         return score;
     }
 
-    V score(HEdge edge) const { return potentials_[this->hypergraph_->id(edge)]; }
+    inline V score(HEdge edge) const { return potentials_[this->hypergraph_->id(edge)]; }
     inline V operator[] (HEdge edge) const {
         return potentials_[this->hypergraph_->id(edge)];
     }
@@ -299,7 +299,7 @@ template<typename SemiringType>
         return base_score;
     }
 
-    V score(HEdge edge) const;
+    inline V score(HEdge edge) const;
 
     inline V operator[] (HEdge edge) const {
         return score(edge);

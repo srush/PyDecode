@@ -17,7 +17,7 @@ from libcpp cimport bool
 cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CBackPointers "BackPointers":
         CBackPointers(CHypergraph *graph)
-        int get(const CHypernode *node)
+        int get(int node)
         CHyperpath *construct_path()
 
 # cdef class BackPointers:
@@ -84,7 +84,7 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass C{{S.type}}Chart "Chart<{{S.ctype}}>":
         C{{S.type}}Chart(const CHypergraph *graph)
         C{{S.type}}Chart(const CHypergraph *graph, {{S.cvalue}} *)
-        {{S.cvalue}} get(const CHypernode *node)
+        {{S.cvalue}} get(int node)
         {{S.cvalue}} *chart()
 
 cdef convert_to_sparse(vector[int] positions)
@@ -222,3 +222,5 @@ cdef extern from "Hypergraph/Algorithms.hh":
 # cdef class NodeUpdates:
 #     cdef Hypergraph graph
 #     cdef vector[set[int] ] *children
+
+cpdef map_potentials(dp, out_potentials)

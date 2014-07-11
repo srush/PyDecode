@@ -278,13 +278,15 @@ cdef convert_hypergraph_map(const CHypergraphMap *hyper_map,
 ####### Methods that use specific potential ########
 
 def get_potentials(graph, potentials, kind=_LogViterbiPotentials):
-    if isinstance(potentials, _Potentials):
-        return potentials
-    else:
-        if potentials.size != len(graph.edges):
-            raise ValueError("Potentials must match hypergraph hyperedges size: %s != %s"%(potentials.size, len(graph.edges)))
-        return kind(graph).from_array(potentials)
+    # if potentials.size != len(graph.edges):
+    #     raise ValueError("Potentials must match hypergraph hyperedges size: %s != %s"%(potentials.size, len(graph.edges)))
+    return kind(graph).from_array(potentials)
 
+@cython.boundscheck(False)
+cpdef map_potentials(dp, out_potentials):
+    cdef np.ndarray raveled = out_potentials.ravel()
+    cdef np.ndarray potentials = raveled[dp.output_indices]
+    return potentials
 
 def project(Hypergraph graph, hyperedge_filter):
     """

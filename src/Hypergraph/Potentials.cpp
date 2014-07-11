@@ -43,7 +43,7 @@ HypergraphPotentials<SemiringType>::project_potentials(
                 projection.range_graph()->edges().size());
 
     foreach (HEdge edge, projection.domain_graph()->edges()) {
-        HEdge new_edge = projection.map(edge);
+        HEdge new_edge = projection.map_edge(edge);
         if (new_edge >= 0) {
             assert(new_edge->id() < projection.range_graph()->edges().size());
             (*potentials)[projection.range_graph()->id(new_edge)] = score(edge);
@@ -111,7 +111,7 @@ HypergraphMappedPotentials<SemiringType>::HypergraphMappedPotentials(
 template<typename SemiringType>
 typename SemiringType::ValType
 HypergraphMappedPotentials<SemiringType>::score(HEdge edge) const {
-    HEdge new_edge = projection_->map(edge);
+    HEdge new_edge = projection_->map_edge(edge);
     return base_potentials_->score(new_edge);
 }
 

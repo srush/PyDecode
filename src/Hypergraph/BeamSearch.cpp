@@ -59,8 +59,8 @@ BeamChart<BVP> *BeamChart<BVP>::cube_pruning(
 
 
     foreach (HNode node, graph->nodes()) {
-        if (node->terminal()) {
-            chart->insert(node, NULL, one, LVP::one(),
+        if (graph->terminal(node)) {
+            chart->insert(node, NODE_NULL, one, LVP::one(),
                           -1, -1);
             continue;
         }
@@ -70,7 +70,7 @@ BeamChart<BVP> *BeamChart<BVP>::cube_pruning(
         priority_queue<BeamHyp> pqueue;
         foreach (HNode node, groups.group_nodes(group)) {
             // 2) Enumerate over each edge (in topological order).
-            foreach (HEdge edge, node->edges()) {
+            foreach (HEdge edge, graph->edges(node)) {
                 chart->queue_up(node, edge, 0, 0, &pqueue);
             }
             for (int i = 0; i < groups.group_limit(group); ++i) {
@@ -146,8 +146,8 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
     // 1) Initialize the chart with terminal nodes.
     typename BVP::ValType one = BVP::one();
     foreach (HNode node, graph->nodes()) {
-        if (node->terminal()) {
-            chart->insert(node, NULL, one, LVP::one(),
+        if (graph->terminal(node)) {
+            chart->insert(node, NODE_NULL, one, LVP::one(),
                           -1, -1);
             continue;
         }
@@ -156,7 +156,7 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
     for (int group = 0; group < groups.groups_size(); ++group) {
         foreach (HNode node, groups.group_nodes(group)) {
             // 2) Enumerate over each edge (in topological order).
-            foreach (HEdge edge, node->edges()) {
+            foreach (HEdge edge, graph->edges(node)) {
                 const typename BVP::ValType &sig =
                         constraints.score(edge);
                 double score = potentials.score(edge);
@@ -272,7 +272,7 @@ Hyperpath *BeamChart<BVP>::get_path(int result) {
 
         to_examine.pop();
         if (edge == -1) {
-            assert(node->terminal());
+            assert(hypergraph_->terminal(node));
             continue;
         }
         path.push_back(edge);
@@ -317,9 +317,9 @@ Hyperpath *BeamChart<BVP>::get_path(int result) {
 //     // Check overlap.
 //     typename Beam::iterator iter = b.begin();
 
-//     int id = node->id();
+//     int id = node;
 //     for (int i = 0; i < limit; ++i) {
-//         if (iter->node->id() == id && iter->sig == sig) {
+//         if (iter->node == id && iter->sig == sig) {
 //             if (total_score > iter->total_score) {
 //                 b.erase(iter);
 //                 cur_size--;
@@ -396,7 +396,7 @@ void BeamChart<BVP>::insert(HNode node,
     // Check overlap.
     // typename Beam::iterator iter = b.begin();
     // for (int i = 0; i < limit; ++i) {
-    //     if ((*iter)->node->id() == node->id() && (*iter)->sig == sig) {
+    //     if ((*iter)->node == node && (*iter)->sig == sig) {
     //         if (total_score > (*iter)->total_score) {
     //             //(*iter) = new BeamHyp(edge, node, sig, score, future_score, bp_left, bp_right);
     //             //return;
@@ -486,7 +486,7 @@ void BeamChart<BVP>::insert(HNode node,
 //     // Check overlap.
 //     typename Beam::iterator iter = b.begin();
 //     for (int i = 0; i < limit; ++i) {
-//         if ((*iter)->node->id() == node->id() && (*iter)->sig == sig) {
+//         if ((*iter)->node == node && (*iter)->sig == sig) {
 //             if (total_score > (*iter)->total_score) {
 //                 //(*iter) = new BeamHyp(edge, node, sig, score, future_score, bp_left, bp_right);
 //                 //return;
@@ -557,7 +557,7 @@ void BeamChart<BVP>::finish(int group) {
         iter = b->begin();
         for (int i = 0; i < size; ++i) {
             if (!seen[i]) {
-                BeamPointers &bp = beam_nodes_[iter->node->id()];
+                BeamPointers &bp = beam_nodes_[iter->node];
                 bp.push_back(&(*iter));
             }
             iter++;
@@ -565,7 +565,7 @@ void BeamChart<BVP>::finish(int group) {
     } else {
         typename Beam::iterator iter = b->begin();
         for (int i = 0; i < size; ++i) {
-            BeamPointers &bp = beam_nodes_[iter->node->id()];
+            BeamPointers &bp = beam_nodes_[iter->node];
             bp.push_back(&(*iter));
             iter++;
         }

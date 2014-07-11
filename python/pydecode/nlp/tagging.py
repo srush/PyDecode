@@ -99,7 +99,6 @@ class BiTagCoder(object):
         sequence = [None] * self._problem.size
         sequence[0] = 0
         for (i, t, pt) in tags:
-            print i, t, pt
             sequence[i] = t
         return TagSequence(sequence)
 
@@ -142,7 +141,8 @@ class BigramTagger(decoding.HypergraphDecoder):
             .reshape([n, t, t])
 
         c = pydecode.ChartBuilder(coder, out,
-                                  unstrict=True)
+                                  unstrict=True,
+                                  lattice=True)
 
         c.init(coder[0, :K[0]])
         for i in range(1, problem.size):
@@ -151,4 +151,4 @@ class BigramTagger(decoding.HypergraphDecoder):
                       coder[i-1, :K[i-1]],
                       out=out[i, t, :K[i-1]])
 
-        return c.finish()
+        return c.finish(False)

@@ -19,7 +19,7 @@ HEdge Hypergraph::add_edge(const vector<HNode> &nodes)  {
     temp_structure_->edge_tails_.push_back(nodes);
     temp_structure_->edge_heads_.push_back(creating_node_);
     foreach (HNode node, nodes) {
-        if (node == NULL) {
+        if (node == NODE_NULL) {
             throw HypergraphException("Hypernode is NULL.");
         }
     }
@@ -40,8 +40,9 @@ HEdge Hypergraph::add_edge(HNode node)  {
 HNode Hypergraph::start_node() {
     terminal_lock_ = false;
     lock_ = true;
-    creating_node_ = new Hypernode();
-    creating_node_->set_id(temp_structure_->nodes_.size());
+    // creating_node_ = new Hypernode();
+    // creating_node_->set_id(temp_structure_->nodes_.size());
+    creating_node_ = temp_structure_->nodes_.size();
     temp_structure_->nodes_.push_back(creating_node_);
     return creating_node_;
 }
@@ -55,7 +56,7 @@ bool Hypergraph::end_node() {
         temp_structure_->edge_heads_.back() == creating_node_) {
         return true;
     } else {
-        creating_node_->set_id(-1);
+        // creating_node_->set_id(-1);
         temp_structure_->nodes_.pop_back();
         return false;
     }
@@ -63,8 +64,10 @@ bool Hypergraph::end_node() {
 
 HNode Hypergraph::add_terminal_node() {
     assert(terminal_lock_);
-    Hypernode *node = new Hypernode();
-    node->set_id(temp_structure_->nodes_.size());
+    // Hypernode *node = new Hypernode();
+    // node->set_id(temp_structure_->nodes_.size());
+
+    HNode node = temp_structure_->nodes_.size();
     temp_structure_->nodes_.push_back(node);
     return temp_structure_->nodes_[temp_structure_->nodes_.size() - 1];
 }
@@ -76,18 +79,18 @@ void Hypergraph::fill() {
     // Mark the reachable temp edges and nodes.
     for (int i = temp_structure_->edges_.size() - 1; i >= 0; --i) {
         HNode head = temp_structure_->edge_heads_[i];
-        if (head->id() == root()->id()) {
-            reachable_nodes[head->id()] = true;
+        if (head == root()) {
+            reachable_nodes[head] = true;
         }
-        if (reachable_nodes[head->id()]) {
+        if (reachable_nodes[head]) {
             reachable_edges[i] = true;
             if (!unary_) {
                 vector<HNode> &edge = temp_structure_->edge_tails_[i];
                 foreach (HNode node, edge) {
-                    reachable_nodes[node->id()] = true;
+                    reachable_nodes[node] = true;
                 }
             } else {
-                reachable_nodes[temp_structure_->edge_tails_unary_[i]->id()] = true;
+                reachable_nodes[temp_structure_->edge_tails_unary_[i]] = true;
             }
         }
     }
@@ -95,33 +98,40 @@ void Hypergraph::fill() {
 
     // Relabel edges and nodes.
     int node_count = 0;
+    vector<int> node_mapping(temp_structure_->nodes_.size(),
+                             NODE_NULL);
     for (uint i = 0; i < reachable_nodes.size(); ++i) {
         if (reachable_nodes[i]) {
-            ((Hypernode *)temp_structure_->nodes_[i])->set_id(node_count);
-
-            structure_->nodes_.push_back(temp_structure_->nodes_[i]);
+            structure_->nodes_.push_back(node_count);
+            node_mapping[i] = node_count;
             node_count++;
-        } else {
-            ((Hypernode *)temp_structure_->nodes_[i])->set_id(-1);
         }
     }
+    structure_->node_edges_.resize(structure_->nodes_.size());
     int edge_count = 0;
     for (uint i = 0; i < reachable_edges.size(); ++i) {
         if (reachable_edges[i]) {
             temp_structure_->edges_[i] = edge_count;
             structure_->edges_.push_back(edge_count);
             if (!unary_) {
-                structure_->edge_tails_.push_back(temp_structure_->edge_tails_[i]);
+                vector<HNode> tail_nodes;
+                foreach (HNode node, temp_structure_->edge_tails_[i]) {
+                    tail_nodes.push_back(node_mapping[node]);
+                }
+                structure_->edge_tails_.push_back(tail_nodes);
             } else {
-                structure_->edge_tails_unary_.push_back(temp_structure_->edge_tails_unary_[i]);
+                structure_->edge_tails_unary_.push_back(
+                    node_mapping[temp_structure_->edge_tails_unary_[i]]);
             }
-            structure_->edge_heads_.push_back(temp_structure_->edge_heads_[i]);
-            ((Hypernode *)temp_structure_->edge_heads_[i])->add_edge(edge_count);
+            HNode head = node_mapping[temp_structure_->edge_heads_[i]];
+            structure_->edge_heads_.push_back(head);
+            structure_->node_edges_[head].push_back(i);
             edge_count++;
         } else {
-            temp_structure_->edges_[i] = -1;
+            temp_structure_->edges_[i] = EDGE_NULL;
         }
     }
+    root_ = node_mapping[root_];
     temp_structure_->edge_tails_.clear();
     temp_structure_->edge_heads_.clear();
 }

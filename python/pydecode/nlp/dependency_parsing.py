@@ -282,7 +282,7 @@ class FirstOrderDecoder(decoding.HypergraphDecoder):
                       items[Tri,  Right, s+1:t+1, t],
                       out=out_ind)
 
-        return c.finish()
+        return c.finish(False)
 
 class SecondOrderDecoder(decoding.HypergraphDecoder):
     def output_coder(self, problem):
@@ -346,4 +346,4 @@ class SecondOrderDecoder(decoding.HypergraphDecoder):
                     c.set(coder[Tri, Right, s, t],
                           coder[Trap, Right, s, s+1:t+1],
                           coder[Tri, Right, s+1:t+1, t])
-        return c.finish()
+        return c.finish(False)

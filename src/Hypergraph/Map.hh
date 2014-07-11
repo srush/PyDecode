@@ -27,19 +27,19 @@ class HypergraphMap {
         domain_path.check(*domain_graph());
         vector<HEdge> edges;
         foreach (HEdge edge, domain_path.edges()) {
-            edges.push_back(map(edge));
+            edges.push_back(map_edge(edge));
         }
         return new Hyperpath(range_graph(), edges);
     }
 
-    HEdge map(HEdge original) const {
+    HEdge map_edge(HEdge original) const {
         //assert(original->id() < edge_map_->size());
         return (*edge_map_)[domain_graph_->id(original)];
     }
 
-    HNode map(HNode original) const {
-        assert(original->id() < node_map_->size());
-        return (*node_map_)[original->id()];
+    HNode map_node(HNode original) const {
+        assert(original < node_map_->size());
+        return (*node_map_)[original];
     }
 
     const Hypergraph *domain_graph() const {
@@ -58,15 +58,17 @@ class HypergraphMap {
 
         // Create node maps.
         vector<HNode> *node_map =
-                new vector<HNode>(domain_graph->nodes().size(), NULL);
+                new vector<HNode>(domain_graph->nodes().size(),
+                                  NODE_NULL);
         vector<HEdge> *edge_map =
-                new vector<HEdge>(domain_graph->edges().size(), -1);
+                new vector<HEdge>(domain_graph->edges().size(),
+                                  EDGE_NULL);
 
 
         foreach (HNode node, range_graph->nodes()) {
-            foreach (HNode new_node, reverse_node_map[node->id()]) {
-                if (new_node->id() == -1) continue;
-                (*node_map)[new_node->id()] = node;
+            foreach (HNode new_node, reverse_node_map[node]) {
+                if (new_node == NODE_NULL) continue;
+                (*node_map)[new_node] = node;
             }
         }
         foreach (HEdge edge, range_graph->edges()) {

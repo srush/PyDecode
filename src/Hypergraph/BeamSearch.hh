@@ -36,7 +36,7 @@ struct BeamGroups {
                 "Hypergraph does not match groups.");
         }
         foreach (HNode node, hypergraph_->nodes()) {
-            int group = groups_[node->id()];
+            int group = groups_[node];
             group_nodes_[group].push_back(node);
         }
     }
@@ -50,7 +50,7 @@ struct BeamGroups {
     }
 
     int group(HNode node) const {
-        return groups_[node->id()];
+        return groups_[node];
     }
 
     const vector<HNode> &group_nodes(int group) const {
@@ -214,7 +214,7 @@ class BeamChart {
 
     //
     const BeamPointers &get_beam(HNode node) const {
-        return beam_nodes_[node->id()];
+        return beam_nodes_[node];
     }
 
     static BeamChart<BVP> *beam_search(
