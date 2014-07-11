@@ -210,7 +210,9 @@ class {{S.type}}:
     @staticmethod
     def viterbi(Hypergraph graph,
                 _{{S.type}}Potentials potentials,
-                {{S.cvalue}} [:] chart=None):
+                {{S.cvalue}} [:] chart=None,
+                bool [:] mask=None,
+                ):
         cdef {{S.cvalue}} [:] my_chart = chart
         if chart is None:
             my_chart = np.zeros(len(graph.nodes))
@@ -224,7 +226,9 @@ class {{S.type}}:
         viterbi_{{S.type}}(graph.thisptr,
                            deref(potentials.thisptr),
                            in_chart,
-                           used_back)
+                           used_back,
+                           (<bool *> NULL) if mask is None else (<bool *>&mask[0])
+                           )
         cdef CHyperpath *path = used_back.construct_path()
         del in_chart
         return Path().init(path, graph)

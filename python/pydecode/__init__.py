@@ -72,7 +72,7 @@ def outside(graph, potentials, inside_chart,
 
 
 def best_path(graph, potentials,
-              kind=LogViterbi, chart=None):
+              kind=LogViterbi, chart=None, mask=None):
     r"""
     Find the best path through a hypergraph for a given set of potentials.
 
@@ -101,7 +101,7 @@ def best_path(graph, potentials,
       The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
     """
     new_potentials = get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.viterbi(graph, new_potentials, chart)
+    return new_potentials.kind.viterbi(graph, new_potentials, chart, mask)
 
 def marginals(graph, potentials,
               inside_chart=None,
@@ -208,11 +208,14 @@ def hyperedge_outputs(dp):
 def _map_potentials(dp, out_potentials):
     return out_potentials.take(dp.output_indices, mode='clip')
 
+def map_items(dp, out_items):
+    return out_items.take(dp.item_indices, mode='clip')
+
 def _map_potentials2(dp, out_potentials):
     return dp.output_matrix.T * out_potentials.ravel()
 
 def argmax(dp, out_potentials,
-           kind=LogViterbi, chart=None):
+           kind=LogViterbi, chart=None, mask=None):
     """
     Find the highest scoring output structure in a
     dynamic program.
@@ -224,8 +227,13 @@ def argmax(dp, out_potentials,
     """
     _check_output_potentials(dp, out_potentials)
     potentials = _map_potentials(dp, out_potentials)
-    path = best_path(dp.hypergraph, potentials,
-                     kind, chart)
+    if mask != None:
+        new_mask = map_items(dp, mask)
+        path = best_path(dp.hypergraph, potentials,
+                         kind, chart, new_mask)
+    else:
+        path = best_path(dp.hypergraph, potentials,
+                         kind, chart)
     return path_output(dp, path)
 
 

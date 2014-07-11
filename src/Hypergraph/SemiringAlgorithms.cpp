@@ -16,7 +16,7 @@
     SPECIALIZE_FOR_SEMI_MIN(X);                 \
   template void general_viterbi<X>(const Hypergraph *graph, \
     const HypergraphPotentials<X> &potentials, \
-    Chart<X> *chart, BackPointers *back);
+    Chart<X> *chart, BackPointers *back, bool *mask);
 
 #define SPECIALIZE_FOR_SEMI_MIN(X)\
   template class Chart<X>;\
@@ -103,7 +103,8 @@ template<typename S>
 void general_viterbi(const Hypergraph *graph,
                      const HypergraphPotentials<S> &potentials,
                      Chart<S> *chart,
-                     BackPointers *back) {
+                     BackPointers *back,
+                     bool *mask) {
     potentials.check(*graph);
     chart->check(graph);
     back->check(graph);
@@ -111,25 +112,41 @@ void general_viterbi(const Hypergraph *graph,
 
     chart->initialize_inside();
     bool unary = graph->is_unary();
+    bool use_mask = (mask != NULL);
+    typename S::ValType zero = S::zero();
     typename S::ValType *inner_chart = chart->chart();
     foreach (HNode node, graph->nodes()) {
+        if (use_mask && !mask[node]) continue;
         typename S::ValType best = inner_chart[node];
         foreach (HEdge edge, graph->edges(node)) {
             typename S::ValType score;
             if (unary) {
+                if (use_mask && !mask[graph->tail_node(edge)]) continue;
                 score = S::times(
                     potentials.score(edge),
                     inner_chart[graph->tail_node(edge)]);
             } else {
-                score = chart->compute_edge_score(
-                    edge,
-                    potentials.score(edge));
+                score = potentials.score(edge);
+                bool fail = false;
+                for (int j = 0; j < graph->tail_nodes(edge); ++j) {
+                    HNode tail = graph->tail_node(edge, j);
+                    if (mask && !mask[tail]) {
+                        fail = true;
+                        break;
+                    }
+                    score = S::times(score,
+                                     inner_chart[tail]);
+                }
+                if (mask && fail) continue;
             }
             if (score > best) {
                 inner_chart[node] = score;
                 back->insert(node, edge);
                 best = score;
             }
+        }
+        if (mask && inner_chart[node] <= S::zero()) {
+            mask[node] = true;
         }
     }
 }

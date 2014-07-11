@@ -137,6 +137,10 @@ cdef class Hypergraph:
         def __get__(self):
             return _LazyEdges(self).init(self.thisptr.edges())
 
+    property heads:
+        def __get__(self):
+            return np.array(self.thisptr.heads())
+
     property labeling:
         def __get__(self):
             return self.labeling
@@ -325,6 +329,7 @@ cdef class Edge:
     property head:
         def __get__(self):
             return Vertex().init(self.graph.thisptr.head(self.id), self.graph)
+
 
     property head_label:
         def __get__(self):

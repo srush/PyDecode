@@ -158,7 +158,8 @@ void general_viterbi(
     const Hypergraph *graph,
     const HypergraphPotentials<SemiringType> &potentials,
     Chart<SemiringType> *chart,
-    BackPointers *back);
+    BackPointers *back,
+    bool *mask);
 
 template<typename S>
 Hyperpath *count_constrained_viterbi(

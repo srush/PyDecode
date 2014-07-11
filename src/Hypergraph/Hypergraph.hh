@@ -140,6 +140,10 @@ class Hypergraph {
         return structure_->edge_heads_[edge];
     }
 
+    const vector<int> &heads() const {
+        return structure_->edge_heads_;
+    }
+
     int tail_nodes(HEdge edge) const {
         if (unary_) return 1;
         return structure_->edge_tails_[edge].size();

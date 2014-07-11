@@ -23,14 +23,35 @@ def make_tagging_dp():
 
 def time_argmax(dp, scores):
     chart = np.zeros(len(dp.hypergraph.edges))
+    print dp.items.shape
     for _ in range(1000):
         pydecode.argmax(dp, scores, chart=chart)
+
+def time_argmax_masked(dp, scores):
+    chart = np.zeros(len(dp.hypergraph.edges))
+    print dp.items.shape
+    mask = np.array(np.random.choice([0, 0, 0, 0, 1],
+                                     dp.items.shape),
+                    dtype=np.uint8)
+
+    for _ in range(1000):
+        pydecode.argmax(dp, scores, chart=chart, mask=mask)
 
 def time_hypergraph(dp, scores):
     chart = np.zeros(len(dp.hypergraph.vertices))
     for _ in range(1000):
         pydecode.best_path(dp.hypergraph, scores,
                            chart=chart)
+
+def time_hypergraph_masked(dp, scores):
+    chart = np.zeros(len(dp.hypergraph.vertices))
+    mask = np.array(np.random.choice([0] * 40 + [1] * 2,
+                                     len(dp.hypergraph.vertices)),
+                    dtype=np.uint8)
+    print  np.sum(mask) / float(len(mask))
+    for _ in range(1000):
+        pydecode.best_path(dp.hypergraph, scores,
+                           chart=chart, mask=mask)
 
 
 def main():
@@ -39,9 +60,13 @@ def main():
     time_argmax(dp, scores)
     print time.time() - s
 
-    # hypergraph_scores = np.random.random(len(dp.hypergraph.edges))
+    hypergraph_scores = np.random.random(len(dp.hypergraph.edges))
     # s = time.time()
     # time_hypergraph(dp, hypergraph_scores)
+    # print time.time() - s
+
+    # s = time.time()
+    # time_hypergraph_masked(dp, hypergraph_scores)
     # print time.time() - s
 
 

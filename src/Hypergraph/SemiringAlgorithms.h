@@ -13,6 +13,7 @@
 #include "Hypergraph/Semirings.h"
 #include "Hypergraph/Potentials.h"
 
+
 // General Code.
 /**
  * A dynamic programming chart for SemiringType.
@@ -111,7 +112,8 @@ void general_viterbi(
     const Hypergraph *graph,
     const HypergraphPotentials<SemiringType> &potentials,
     Chart<SemiringType> *chart,
-    BackPointers *back);
+    BackPointers *back,
+    bool *mask);
 
 template<typename SemiringType>
 class Marginals {

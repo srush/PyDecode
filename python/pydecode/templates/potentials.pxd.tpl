@@ -55,7 +55,8 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const CHypergraph *graph,
         const CHypergraph{{S.type}}Potentials theta,
         C{{S.type}}Chart * chart,
-        CBackPointers *back
+        CBackPointers *back,
+        bool *mask
         ) except +
 
     void node_marginals_{{S.type}} "node_marginals<{{S.ctype}}>"(
