@@ -77,7 +77,13 @@ def check_lp(hypergraph):
     g.solve()
     path = g.path
     opath = pydecode.best_path(hypergraph, w)
-
+    print path.v
+    print
+    print opath.v
+    print g.objective, w.T * path.v, w.T * opath.v
+    for edge in hypergraph.edges:
+        print edge.head
+        print "\t", [n.id for n in edge.tail]
     nt.assert_almost_equal(w.T * path.v, w.T * opath.v)
     for edge in path.edges:
         assert edge in opath

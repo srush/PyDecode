@@ -79,9 +79,8 @@ def simple_hypergraph():
 
     c.init(enc[:4])
 
-        #term = [b.add_node([], label="start " + str(i)) for i in range(4)]
     c.set(enc[4], enc[0:2], enc[1:3])
-    c.set(enc[5], np.repeat(enc[4], 3), enc[[2, 3, 1]])
+    c.set(enc[5], np.repeat(enc[4], 1), enc[[3]])
 
     dp = c.finish()
     # for edge in hypergraph.edges:
@@ -124,7 +123,6 @@ def random_hypergraph(size=50):
         reference_sets[head_node] |= \
             reference_sets[node_a] | reference_sets[node_b]
         nodes.append(head_node)
-
     unused = set(nodes) -  used
     c.set(enc[2*size], enc[list(unused)])
 
