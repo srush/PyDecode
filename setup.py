@@ -66,7 +66,7 @@ def main():
         package_dir={'pydecode': 'python/pydecode'},
         ext_modules = make_extension(wrapper),
         requires=["numpy"],
-        version = '0.2.2',
+        version = '0.2.3',
         description = 'A dynamic programming toolkit',
         author = 'Alexander Rush',
         author_email = 'srush@csail.mit.edu',
