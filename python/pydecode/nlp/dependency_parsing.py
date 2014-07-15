@@ -161,10 +161,9 @@ class FirstOrderCoder(object):
     Bijective map between DependencyParse and sparse output
     representation as arcs (h, m).
     """
-    def __init__(self, problem):
-        self._problem = problem
+    def shape(self, problem):
         n = problem.size
-        self.shape_ = [n+1, n+1]
+        return [n+1, n+1]
 
     def inverse_transform(self, arcs):
         """
@@ -186,10 +185,9 @@ class SecondOrderCoder(object):
     Bijective map between DependencyParse and sparse output
     representation as arcs (h, m, s).
     """
-    def __init__(self, problem):
-        self._problem = problem
-        n = self._problem.size
-        self.shape_ = [n+1, n+1, n+1]
+    def shape(self, problem):
+        n = problem.size
+        return [n+1, n+1, n+1]
 
     def inverse_transform(self, arcs):
         """
@@ -218,8 +216,8 @@ Right = 0
 Left = 1
 
 class FirstOrderDecoder(decoding.HypergraphDecoder):
-    def output_coder(self, problem):
-        return FirstOrderCoder(problem)
+    def output_coder(self):
+        return FirstOrderCoder()
 
     def dynamic_program(self, problem):
         """
@@ -285,8 +283,8 @@ class FirstOrderDecoder(decoding.HypergraphDecoder):
         return c.finish(False)
 
 class SecondOrderDecoder(decoding.HypergraphDecoder):
-    def output_coder(self, problem):
-        return SecondOrderCoder(problem)
+    def output_coder(self):
+        return SecondOrderCoder()
 
     def dynamic_program(self, problem):
         """

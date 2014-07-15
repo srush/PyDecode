@@ -205,8 +205,11 @@ def hyperedge_outputs(dp):
                             dp.outputs.shape)
 
 
-def _map_potentials(dp, out_potentials):
+def map_potentials(dp, out_potentials):
     return out_potentials.take(dp.output_indices, mode='clip')
+
+def map_active_potentials(dp, active_potentials):
+    return active_potentials.take(dp.active_output_indices, mode='clip')
 
 def map_items(dp, out_items):
     return out_items.take(dp.item_indices, mode='clip')
@@ -226,7 +229,7 @@ def argmax(dp, out_potentials,
        Matrix of outputs.
     """
     _check_output_potentials(dp, out_potentials)
-    potentials = _map_potentials(dp, out_potentials)
+    potentials = map_potentials(dp, out_potentials)
     if mask != None:
         new_mask = map_items(dp, mask)
         path = best_path(dp.hypergraph, potentials,
@@ -254,7 +257,7 @@ def fill(dp, out_potentials, kind=LogViterbi, chart=None):
        An array in the shape of items.
     """
     _check_output_potentials(dp, out_potentials)
-    potentials = _map_potentials(dp, out_potentials)
+    potentials = map_potentials(dp, out_potentials)
     new_chart = inside(dp.hypergraph, potentials,
                        kind, chart)
     return new_chart.reshape(dp.items.shape)
@@ -278,7 +281,7 @@ def output_marginals(dp,
        An array in the shape of dp.outputs with marginal values.
     """
     _check_output_potentials(dp, out_potentials)
-    potentials = _map_potentials(dp, out_potentials)
+    potentials = map_potentials(dp, out_potentials)
     _, edge_marginals = marginals(dp.hypergraph,
                                   potentials, None, None, kind)
     return (dp.output_matrix * edge_marginals).reshape(
@@ -302,7 +305,7 @@ def item_marginals(dp,
        An array in the shape of dp.items with marginal values.
     """
     _check_output_potentials(dp, out_potentials)
-    potentials = _map_potentials(dp, out_potentials)
+    potentials = map_potentials(dp, out_potentials)
     node_marginals, _ = marginals(dp.hypergraph,
                                   potentials, None, None, kind)
     return (dp.item_matrix * node_marginals).reshape(

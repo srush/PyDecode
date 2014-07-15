@@ -10,79 +10,212 @@ import scipy.sparse
 import pydecode
 import numpy as np
 import pydecode.lp as lp
-
-class Preprocessor(object):
-    def initialize(self, X):
-        pass
-
-    def preprocess(self, X):
-        return X
-
-class Pruner(object):
-    def initialize(self, X, Y, out):
-        pass
-
-    def preprocess(self, x):
-        return X
-
+from collections import defaultdict
+from copy import copy
 
 class StructuredCoder(object):
     def inverse_transform(self, outputs):
-        pass
+        raise NotImplementedError()
 
     def transform(self, y):
-        pass
+        raise NotImplementedError()
 
-class SequencePreprocessor(object):
-
-    def process_item(self, item):
-        pass
+class LabelPreprocessor(object):
+    def input_labels(self, x):
+        raise NotImplementedError()
 
     def size(self, typ):
-        return len(self._preprocess_encoders[typ].classes_)
+        return len(self._encoders[typ])
 
     def initialize(self, X):
-        parts = [self.preprocess_item(item)
-                 for x in X
-                 for item in x]
+        labels = [self.input_labels(x) for x in X]
+        labels = np.hstack(labels)
+        self._encoders = []
+        for i in range(labels.shape[0]):
+            encoder = defaultdict(lambda: 0)
+            encoder.update([(j, i) for i, j in enumerate(set(labels[i]), 1)])
+            self._encoders.append(encoder)
 
-        part_lists = zip(*parts)
-        self._preprocess_encoders = []
-        for part_list in part_lists:
-            encoder = sklearn.preprocessing.LabelEncoder()
-            encoder.fit(part_list)
-            self._preprocess_encoders.append(encoder)
+            #     #sklearn.preprocessing.LabelEncoder().fit(labels[i]))
+            # # Grr.. Label encoder doesn't handle oov.
+            # self._encoders[-1].classes_ = \
+            #     np.append(self._encoders[-1].classes_, '<unknown>')
+
+        self._cache = {}
+        for x in X:
+            self._cache[tuple(x)] = self.preprocess(x)
 
     def preprocess(self, x):
-        part_lists = zip(*[self.preprocess_item(item) for item in x])
-        return [encoder.transform(part_list)
-                for part_list, encoder in
-                itertools.izip(part_lists, self._preprocess_encoders)]
+        v = self._cache.get(tuple(x), None)
+        if v is not None:
+            return v
+        labels = self.input_labels(x)
+        return np.array([[self._encoders[i][l] for l in labels[i]]
+                         for i in range(labels.shape[0])])
+
+
+class _SparseVec(object):
+    __array_priority__ = 2
+
+    def __init__(self, values):
+        self.d = {}
+        for v in values:
+            self.d[v] = 1
+
+    def __repr__(self):
+        return repr(self.d)
+
+    def __setitem__(self, key, val):
+        self.d[key] = val
+
+    def __getitem__(self, key):
+        return self.d[key]
+
+    def __sub__(self, other):
+        new = _SparseVec([])
+        new.d = copy(self.d)
+        for k, val in other.d.iteritems():
+            if k in new.d:
+                if new.d[k] == val: del new.d[k]
+                else: new.d[k] -= val
+            else: new.d[k] = -val
+        return new
+
+    def __rmul__(self, other):
+        new = _SparseVec([])
+        new.d = copy(self.d)
+        for k, val in self.d.iteritems():
+            new.d[k] *= other
+        return new
+
+    def __radd__(self, other):
+        other.T[:, self.d.keys()] += self.d.values()
+        return other
+
+class StructuredFeatures(object):
+    def output_features(self, x, outputs):
+        raise NotImplementedError()
+
+    @property
+    def feature_templates(self):
+        raise NotImplementedError()
+
+    @property
+    def size_joint_feature(self):
+        return (self.encoder.feature_indices_[-1], 1)
+
+    @property
+    def size_features(self):
+        return self.encoder.feature_indices_[-1]
+
+    def __init__(self, output_coder):
+        self.output_coder = output_coder
+        self._feature_templates = self.feature_templates
+        self._feature_size = [np.product(shape)
+                              for shape in self._feature_templates]
+        self._starts = np.cumsum(self._feature_size)[:-1]
+        self._starts = np.insert(self._starts, 0, 0)
+        self.encoder = None
+        self._joint_feature_cache = {}
+
+    def initialize(self, X, Y):
+        # Collect all the active features.
+        features = []
+        # Make a one-hot encoder to map features to indices.
+        self.encoder = sklearn.preprocessing.OneHotEncoder(
+            n_values=[size
+                      for size in self._feature_size])
+
+        for x, y in itertools.izip(X, Y):
+            outputs = self.output_coder.transform(y)
+            features.append(self._stack_output_features(x, outputs))
+
+        self.encoder.fit(np.vstack(features))
+
+        for x, y in itertools.izip(X, Y):
+            outputs = self.output_coder.transform(y)
+            feature_indices = \
+                self._stack_output_features(x, outputs, shift=True)
+
+            self._joint_feature_cache[x, y] = \
+                self._sparse_feature_vector(feature_indices)
+
+    def _stack_output_features(self, x, outputs, shift=False):
+        """
+        Returns a matrix where rows correspond to an outputs
+        and columns correspond to feature templates.
+
+        Returns
+        ---------
+        |outputs| x |templates| matrix, value is the index in the template.
+        """
+        # Generate the feature tuples for the matrix of outputs.
+        features = self.output_features(x, outputs)
+        assert len(features) == len(self._feature_templates)
+
+        # For each template, convert its feature tuples to
+        # indices in the corresponding template space.
+        rows = []
+        for shape, features in itertools.izip(self._feature_templates,
+                                              features):
+            rows.append(np.ravel_multi_index(features, shape))
+
+        if shift:
+            ret = np.vstack(rows).T + self._starts
+        else:
+            ret = np.vstack(rows).T
+
+        # The final matrix is |outputs| x |templates|.
+        assert ret.shape == (len(outputs),
+                             len(self._feature_templates)),\
+                             "%s %s" %(ret.shape, len(outputs))
+        return ret
+
+    def _sparse_feature_vector(self, feature_indices):
+        ind = feature_indices.ravel()
+        # self._vec = np.zeros(self.size_features)
+        # vec[ind] = 1
+        # return vec
+        # return scipy.sparse.csc_matrix((np.repeat(1, len(ind)), ind, [0, len(ind)]),
+        #                                shape=(self.size_features, 1),
+        #                                dtype=np.double)
+
+        return _SparseVec(ind)
+
+    def joint_features(self, x, y):
+        """
+        Parameters
+        ----------
+        x : input structure
+           Structure in X.
+
+        y : output structure
+
+        Returns
+        --------
+        mat : D- sparse matrix
+        """
+        cached_features = self._joint_feature_cache.get((x, y), None)
+        if cached_features is not None:
+            return cached_features
+        outputs = self.output_coder.transform(y)
+        feature_indices = \
+            self._stack_output_features(x, outputs, shift=True)
+        return self._sparse_feature_vector(feature_indices)
+
 
 
 class DynamicProgrammingModel(StructuredModel):
     def __init__(self,
-                 preprocessor=None,
-                 output_coder=None,
-                 pruner=None):
+                 output_coder,
+                 structured_features):
         self.inference_calls = 0
-
-        self._preprocessor = preprocessor
-        if preprocessor == None:
-            self._preprocessor = Preprocessor()
         self._output_coder = output_coder
+        self._structured_features = structured_features
+        self._dp_cache = {}
+        self._feature_cache = {}
 
-        self._pruner = pruner
-        if pruner == None:
-            self._pruner = Pruner()
-
-    def feature_templates(self):
-        raise NotImplementedError()
-
-    def generate_features(self, element, preprocessed_x):
-        raise NotImplementedError()
-
-    def chart(self, x):
+    def dynamic_program(self, x):
         raise NotImplementedError()
 
     def loss(self, yhat, y):
@@ -91,82 +224,57 @@ class DynamicProgrammingModel(StructuredModel):
     def max_loss(self, y):
         raise NotImplementedError()
 
-    def _output_features(self, output, x):
-        """
-        Returns
-        ---------
-        list of Dx1 vectors
-        """
-        return [array[feature]
-                for array, feature in
-                zip(self._feature_arrays,
-                    self.generate_features(output, x))]
-
     def initialize(self, X, Y):
-        self._preprocessor.initialize(X)
-        self._pruner.initialize(X, Y, self._output_coder)
+        self._structured_features.initialize(X, Y)
+        self.size_joint_feature = \
+            self._structured_features.size_joint_feature
 
-        self._feature_arrays = [np.arange(np.product(shape)).reshape(shape)
-                                for shape in self.feature_templates()]
+        for x in X:
+            dp = self.dynamic_program(x)
+            import sys
 
-        templates = self._feature_arrays
+            # print len(dp.hypergraph.edges), dp.outputs.nbytes, dp.output_indices.nbytes, dp.items.nbytes, dp.item_indices.nbytes
 
+            self._dp_cache[x] = dp
 
-        n_values = []
-        for template in templates:
-            n_values.append(template.size)
+            feature_indices = \
+                self.feature_indices(x, dp, dp.active_outputs)
+            self._feature_cache[x] = feature_indices
 
-        self.encoder = sklearn.preprocessing.OneHotEncoder(
-            n_values=n_values)
+    def joint_feature(self, x, y):
+        return self._structured_features.joint_features(x, y)
 
-        features = []
+    def feature_indices(self, x, dp, output_indices):
+        outputs = np.array(np.unravel_index(output_indices,
+                                            dp.outputs.shape)).T
+        return self._structured_features._stack_output_features(x, outputs, shift=True)
 
-        for x, y in itertools.izip(X, Y):
-            preprocessed_x = self._preprocessor.preprocess(x)
-            features += [self._output_features(output,
-                                               preprocessed_x)
-                         for output in self._output_coder.transform(y)]
+    def argmax(self, x, w):
+        dp = self._dp_cache.get(x, None)
+        if dp is None:
+            dp = self.dynamic_program(x)
+            # self._dp_cache[x] = dp
 
+        indices = self._feature_cache.get(x, None)
+        if indices is None:
+            feature_indices = \
+                self.feature_indices(x, dp, active_indices)
+        else:
+            feature_indices = indices
+        active_scores = \
+            np.sum(np.take(np.asarray(w), feature_indices, mode="clip"), axis=1)
 
-        self.encoder.fit(features)
-        self.size_joint_feature = self.encoder.feature_indices_[-1]
+        potentials = pydecode.map_active_potentials(dp, active_scores)
+        path = pydecode.best_path(dp.hypergraph, potentials)
 
-    def _feature_matrix(self, x, active_outputs, outputs):
-        """
-        Parameters
-        ----------
-        x : input structure
-           Structure in X.
+        # Compute features.
+        indices = dp.active_output_indices.take(path.edge_indices)
+        features = feature_indices[indices[indices != -1]]
 
-        active_outputs : list
-           Possible outputs as indices in {1..O}
+        # For testing
+        # assert(potentials * path.v == np.sum(w.take(features.ravel())))
 
-        Returns
-        --------
-        Dx
-
-        mat : I x D
-        """
-        D = self.size_joint_feature
-        A = len(active_outputs)
-        I = outputs.size
-
-        feature_arrays = self._feature_arrays
-
-        preprocessed_x = self._preprocessor.preprocess(x)
-        features = self.encoder.transform(
-            [self._output_features(output, preprocessed_x)
-             for output in zip(*np.unravel_index(active_outputs, outputs.shape))])
-        assert features.shape == (A, D)
-
-        # Matrix
-        trans = scipy.sparse.csr_matrix(([1] * A, active_outputs,
-                                         np.arange(A+1)),
-                                        shape=(A, I),
-                                        dtype=np.uint8)
-        # print  "SPARSE time ", time.time()-a
-        #D x A  A x I
-        return (features.T * trans).T
+        return pydecode.path_output(dp, path), features
 
     def inference(self, x, w, relaxed=False):
         """
@@ -177,43 +285,8 @@ class DynamicProgrammingModel(StructuredModel):
         w : D x 1 matrix
 
         """
-        dp = self.chart(x)
-
-        I = dp.outputs.size
-        N = len(dp.hypergraph.edges)
-        D = self.size_joint_feature
-
-        assert w.shape == (D,)
-
-        active_outputs = (dp.output_matrix * np.ones(N)).nonzero()[0]
-        feature_matrix = self._feature_matrix(x, active_outputs, dp.outputs)
-        assert feature_matrix.shape == (I, D)
-
-        output_scores = w.T * feature_matrix.T
-        assert output_scores.shape == (I,)
-
-        best_outputs = pydecode.argmax(dp, output_scores)
-
-        return self._output_coder.inverse_transform(best_outputs)
-
-    def joint_feature(self, x, y):
-        """
-        Returns
-        --------
-        Features : D x 1 matrix
-        """
-        D = self.size_joint_feature
-
-        outputs = self._output_coder.transform(y)
-
-        #output_set = self.output_set(x)
-        preprocessed_x = self._preprocessor.preprocess(x)
-
-        cat_feats = [self._output_features(output, preprocessed_x)
-                     for output in outputs]
-        features = self.encoder.transform(cat_feats)
-
-        # Sum up the features.
-        final_features = features.T * np.ones(features.shape[0]).T
-        assert final_features.shape == (D, )
-        return final_features
+        best_outputs, features = self.argmax(x, w)
+        y = self._output_coder.inverse_transform(best_outputs)
+        self._structured_features._joint_feature_cache[x, y] = \
+            self._structured_features._sparse_feature_vector(features)
+        return y

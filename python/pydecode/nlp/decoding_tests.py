@@ -14,10 +14,10 @@ dependency_instances = [
 
 
 def check_decoding(problem, decoder):
-    scores = np.random.random(decoder.output_coder(problem).shape_)
+    scores = np.random.random(decoder.output_coder().shape(problem))
     optimal = decoding.decode_exhaustive(problem,
                                          scores,
-                                         decoder.output_coder(problem))
+                                         decoder.output_coder())
     hyp_opt = decoder.decode(problem, scores)
     print optimal, hyp_opt
 

@@ -692,19 +692,21 @@ cimport cython
     #    Maps hyperedges of the hypergraph to sparse output counts.
 
 
-class DynamicProgram:
+cdef class DynamicProgram:
     def __init__(self, hypergraph,
                  item_indices,
                  output_indices,
                  items, outputs):
-        self.hypergraph = hypergraph
-        self.items = items
-        self.outputs = outputs
-        self.item_indices = np.array(item_indices)
-        self.output_indices = np.array(output_indices)
+        self._hypergraph = hypergraph
+        self._items = items
+        self._outputs = outputs
+        self._item_indices = np.array(item_indices)
+        self._output_indices = np.array(output_indices)
 
         self._item_matrix = None
         self._output_matrix = None
+        self._active_outputs = None
+        self._active_output_indices = None
 
     def _make_output_matrix(self):
         # assert self._construct_output, \
@@ -732,17 +734,68 @@ class DynamicProgram:
                    len(self.hypergraph.nodes)),
             dtype=np.uint8)
 
-    @property
-    def output_matrix(self):
-        if self._output_matrix is None:
-            self._output_matrix = self._make_output_matrix()
-        return self._output_matrix
+    def _make_active_outputs(self):
+        d = {}
+        counter = 0
+        aoi = []
+        ao = []
+        cdef int index
+        for index in self._output_indices:
+            if index in d:
+                aoi.append(d[index])
+            elif index == -1:
+                aoi.append(-1)
+            else:
+                aoi.append(counter)
+                ao.append(index)
+                d[index] = counter
+                counter += 1
+        self._active_output_indices = np.array(aoi)
+        self._active_outputs = np.array(ao)
 
-    @property
-    def item_matrix(self):
-        if self._item_matrix is None:
-            self._item_matrix = self._make_item_matrix()
-        return self._item_matrix
+    property hypergraph:
+        def __get__(self):
+            return self._hypergraph
+
+    property items:
+        def __get__(self):
+            return self._items
+
+    property outputs:
+        def __get__(self):
+            return self._outputs
+
+    property item_indices:
+        def __get__(self):
+            return self._item_indices
+
+    property output_indices:
+        def __get__(self):
+            return self._output_indices
+
+    property output_matrix:
+        def __get__(self):
+            if self._output_matrix is None:
+                self._output_matrix = self._make_output_matrix()
+            return self._output_matrix
+
+    property item_matrix:
+        def __get__(self):
+            if self._item_matrix is None:
+                self._item_matrix = self._make_item_matrix()
+            return self._item_matrix
+
+    property active_outputs:
+        def __get__(self):
+            if self._active_outputs is None:
+                self._make_active_outputs()
+            return self._active_outputs
+
+    property active_output_indices:
+        def __get__(self):
+            if self._active_output_indices is None:
+                self._make_active_outputs()
+            return self._active_output_indices
 
 cdef class _ChartEdge:
     pass

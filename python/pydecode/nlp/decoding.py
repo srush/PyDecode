@@ -22,7 +22,9 @@ def decode_exhaustive(decoding_problem, scores, coder):
     best = None
     for y in decoding_problem.feasible_set():
         output = coder.transform(y)
-        indices = np.ravel_multi_index(output.T, coder.shape_)
+        indices = np.ravel_multi_index(output.T,
+                                       coder.shape(decoding_problem))
+
         score = np.sum(scores.ravel()[indices])
         if score > best_score:
             best_score = score
@@ -30,7 +32,7 @@ def decode_exhaustive(decoding_problem, scores, coder):
     return best
 
 class HypergraphDecoder(object):
-    def output_coder(self, problem):
+    def output_coder(self):
         raise NotImplementedError()
 
     def dynamic_program(self, problem):
@@ -40,7 +42,7 @@ class HypergraphDecoder(object):
         """
         """
         dp = self.dynamic_program(decoding_problem)
-        return self.output_coder(decoding_problem).\
+        return self.output_coder().\
             inverse_transform(pydecode.argmax(dp, scores))
 
 # TODO: update this
