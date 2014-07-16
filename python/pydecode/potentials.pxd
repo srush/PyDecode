@@ -130,6 +130,13 @@ cdef class LatticeLabel:
     cdef CLatticeLabel label
     cdef init(LatticeLabel self, CLatticeLabel label)
 
+cdef void _fill_trellis(float[:, :] emissions,
+                        float[:] transitions,
+                        int n_labels,
+                        int[:] words,
+                        float[:, :] trellis,
+                        int[:,:] path)
+
 cimport numpy as np
 cimport cython
 
