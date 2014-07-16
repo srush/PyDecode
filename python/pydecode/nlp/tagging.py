@@ -199,7 +199,8 @@ class PrunedBigramTagger(decoding.HypergraphDecoder):
         return BiTagCoder()
 
     def __init__(self, expected_tags=None):
-        self._use_cache = expected_tags is not None
+        self._use_cache = (expected_tags is not None)
+        self._expected_tags = expected_tags
         if self._use_cache:
             self._cache_outputs = {}
             self._cache_coder = {}
@@ -227,7 +228,9 @@ class PrunedBigramTagger(decoding.HypergraphDecoder):
 
         n = problem.size
         K = problem.pruned_tag_sizes
-        t = problem.max_tag_size
+        t = problem.max_tag_size \
+            if not self._use_cache \
+            else self._expected_tags
 
         if self._use_cache and n in self._cache_coder:
             coder = self._cache_coder[n]

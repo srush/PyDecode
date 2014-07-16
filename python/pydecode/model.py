@@ -139,6 +139,7 @@ class StructuredFeatures(object):
 
             self._joint_feature_cache[x, y] = \
                 self._sparse_feature_vector(feature_indices)
+        print "FEATURE SIZE", self.encoder.feature_indices_[-1]
 
     def _stack_output_features(self, x, outputs, shift=False):
         """
