@@ -130,14 +130,14 @@ void general_viterbi(const Hypergraph *graph,
                 bool fail = false;
                 for (int j = 0; j < graph->tail_nodes(edge); ++j) {
                     HNode tail = graph->tail_node(edge, j);
-                    if (mask && !mask[tail]) {
+                    if (use_mask && !mask[tail]) {
                         fail = true;
                         break;
                     }
                     score = S::times(score,
                                      inner_chart[tail]);
                 }
-                if (mask && fail) continue;
+                if (use_mask && fail) continue;
             }
             if (score > best) {
                 inner_chart[node] = score;
@@ -145,8 +145,9 @@ void general_viterbi(const Hypergraph *graph,
                 best = score;
             }
         }
-        if (mask && inner_chart[node] <= S::zero()) {
-            mask[node] = true;
+
+        if (use_mask && inner_chart[node] <= S::zero()) {
+            mask[node] = false;
         }
     }
 }
