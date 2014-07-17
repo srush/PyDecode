@@ -1,220 +1,108 @@
+from __future__ import division, absolute_import
+
 """
-A structured prediction and training library.
-Requires pystruct.
+Classes for training structured models based on dynamic programming.
+Focuses particularly on large training sets with high-dimensional
+sparse binary features which are common in natural language processing.
+
+Michael Collins
+Discriminative training methods for hidden markov models: Theory and
+experiments with perceptron algorithms, 2002
+
+Training algorithms use PyStruct.
+
+Andreas C. Mueller, Sven Behnke
+PyStruct - Structured prediction in Python, 2014
+http://pystruct.github.io/
 """
 
-from pystruct.models import StructuredModel
-import sklearn.preprocessing
-import itertools
-import scipy.sparse
-import pydecode
-import numpy as np
-import pydecode.lp as lp
 from collections import defaultdict
 from copy import copy
+from pystruct.models import StructuredModel
+import itertools
+import numpy as np
+import pydecode
+import scipy.sparse
+import pydecode.features
 
-class StructuredCoder(object):
-    def inverse_transform(self, outputs):
-        raise NotImplementedError()
-
-    def transform(self, y):
-        raise NotImplementedError()
-
-class LabelPreprocessor(object):
-    def input_labels(self, x):
-        raise NotImplementedError()
-
-    def size(self, typ):
-        return len(self._encoders[typ])
-
-    def initialize(self, X):
-        labels = [self.input_labels(x) for x in X]
-        labels = np.hstack(labels)
-        self._encoders = []
-        for i in range(labels.shape[0]):
-            encoder = defaultdict(lambda: 0)
-            encoder.update([(j, i) for i, j in enumerate(set(labels[i]), 1)])
-            self._encoders.append(encoder)
-
-            #     #sklearn.preprocessing.LabelEncoder().fit(labels[i]))
-            # # Grr.. Label encoder doesn't handle oov.
-            # self._encoders[-1].classes_ = \
-            #     np.append(self._encoders[-1].classes_, '<unknown>')
-
-        self._cache = {}
-        for x in X:
-            self._cache[tuple(x)] = self.preprocess(x)
-
-    def preprocess(self, x):
-        v = self._cache.get(tuple(x), None)
-        if v is not None:
-            return v
-        labels = self.input_labels(x)
-        return np.array([[self._encoders[i][l] for l in labels[i]]
-                         for i in range(labels.shape[0])])
-
-
-class _SparseVec(object):
-    __array_priority__ = 2
-
-    def __init__(self, values):
-        self.d = {}
-        for v in values:
-            self.d[v] = 1
-
-    def __repr__(self):
-        return repr(self.d)
+class _Cache:
+    """
+    Helper class for caching.
+    """
+    def __init__(self):
+        self._d = {}
 
     def __setitem__(self, key, val):
-        self.d[key] = val
+        self._d[key] = val
 
-    def __getitem__(self, key):
-        return self.d[key]
-
-    def __sub__(self, other):
-        new = _SparseVec([])
-        new.d = copy(self.d)
-        for k, val in other.d.iteritems():
-            if k in new.d:
-                if new.d[k] == val: del new.d[k]
-                else: new.d[k] -= val
-            else: new.d[k] = -val
-        return new
-
-    def __rmul__(self, other):
-        new = _SparseVec([])
-        new.d = copy(self.d)
-        for k, val in self.d.iteritems():
-            new.d[k] *= other
-        return new
-
-    def __radd__(self, other):
-        other.T[:, self.d.keys()] += self.d.values()
-        return other
-
-class StructuredFeatures(object):
-    def output_features(self, x, outputs):
-        raise NotImplementedError()
-
-    @property
-    def feature_templates(self):
-        raise NotImplementedError()
-
-    @property
-    def size_joint_feature(self):
-        return (self.encoder.feature_indices_[-1], 1)
-
-    @property
-    def size_features(self):
-        return self.encoder.feature_indices_[-1]
-
-    def __init__(self, output_coder):
-        self.output_coder = output_coder
-        self._feature_templates = self.feature_templates
-        self._feature_size = [np.product(shape)
-                              for shape in self._feature_templates]
-        self._starts = np.cumsum(self._feature_size)[:-1]
-        self._starts = np.insert(self._starts, 0, 0)
-        self.encoder = None
-        self._joint_feature_cache = {}
-
-    def initialize(self, X, Y):
-        # Collect all the active features.
-        features = []
-        # Make a one-hot encoder to map features to indices.
-        self.encoder = sklearn.preprocessing.OneHotEncoder(
-            n_values=[size
-                      for size in self._feature_size])
-
-        for x, y in itertools.izip(X, Y):
-            outputs = self.output_coder.transform(y)
-            features.append(self._stack_output_features(x, outputs))
-
-        self.encoder.fit(np.vstack(features))
-
-        for x, y in itertools.izip(X, Y):
-            outputs = self.output_coder.transform(y)
-            feature_indices = \
-                self._stack_output_features(x, outputs, shift=True)
-
-            self._joint_feature_cache[x, y] = \
-                self._sparse_feature_vector(feature_indices)
-        print "FEATURE SIZE", self.encoder.feature_indices_[-1]
-
-    def _stack_output_features(self, x, outputs, shift=False):
+    def get(self, key, default_fn):
         """
-        Returns a matrix where rows correspond to an outputs
-        and columns correspond to feature templates.
-
-        Returns
-        ---------
-        |outputs| x |templates| matrix, value is the index in the template.
+        Lazy version of dictionary .get(key, default).
+        Evaluates default_fn only if key is not in dict.
         """
-        # Generate the feature tuples for the matrix of outputs.
-        features = self.output_features(x, outputs)
-        assert len(features) == len(self._feature_templates)
-
-        # For each template, convert its feature tuples to
-        # indices in the corresponding template space.
-        rows = []
-        for shape, features in itertools.izip(self._feature_templates,
-                                              features):
-            rows.append(np.ravel_multi_index(features, shape))
-
-        if shift:
-            ret = np.vstack(rows).T + self._starts
+        val = self._d.get(key, None)
+        if val is not None:
+            return val
         else:
-            ret = np.vstack(rows).T
+            return default_fn()
 
-        # The final matrix is |outputs| x |templates|.
-        assert ret.shape == (len(outputs),
-                             len(self._feature_templates)),\
-                             "%s %s" %(ret.shape, len(outputs))
-        return ret
+class DynamicProgrammingModel(StructuredModel):
+    """
+    Main class for training dynamic programming models with
+    argmax-style training (i.e. perceptron, struct-svm algorithms).
 
-    def _sparse_feature_vector(self, feature_indices):
-        ind = feature_indices.ravel()
-        # self._vec = np.zeros(self.size_features)
-        # vec[ind] = 1
-        # return vec
-        # return scipy.sparse.csc_matrix((np.repeat(1, len(ind)), ind, [0, len(ind)]),
-        #                                shape=(self.size_features, 1),
-        #                                dtype=np.double)
-
-        return _SparseVec(ind)
-
-    def joint_features(self, x, y):
+    Subclasses must implements `loss`, `maxloss`, and `dynamic_program`, and provide a `FeatureGenerator` and `OutputEncoder`.
+    """
+    def __init__(self,
+                 output_encoder,
+                 structured_features,
+                 components=None,
+                 caching=True):
         """
         Parameters
         ----------
-        x : input structure
-           Structure in X.
+        output_encoder : `OutputEncoder`
+            Used to tranform results `y` to outputs.
+            E
 
-        y : output structure
+        structured_features : `FeatureGenerator`
+            Used to generate features from outputs.
 
-        Returns
-        --------
-        mat : D- sparse matrix
+        components : list of objects
+            Additional components associated
+            with the model, for instace pruners.  Initialized
+            and stored as part of the model.
+
+        caching : bool (defaults to true)
+            Store dp's and features for future rounds.
         """
-        cached_features = self._joint_feature_cache.get((x, y), None)
-        if cached_features is not None:
-            return cached_features
-        outputs = self.output_coder.transform(y)
-        feature_indices = \
-            self._stack_output_features(x, outputs, shift=True)
-        return self._sparse_feature_vector(feature_indices)
 
-
-
-class DynamicProgrammingModel(StructuredModel):
-    def __init__(self,
-                 output_coder,
-                 structured_features):
+        # Necessary for pystruct.
         self.inference_calls = 0
-        self._output_coder = output_coder
-        self._structured_features = structured_features
-        self._dp_cache = {}
-        self._feature_cache = {}
+
+        self._encoder = output_encoder
+        self._feature = SparseFeatureManager(structured_features)
+
+        # Initialize caching.
+        self._use_cache = caching
+
+        # Stores dp for x.
+        self._dp_cache = _Cache()
+
+        # Stores active feature indices for x.
+        self._feature_cache = _Cache()
+
+        # Stores joint feature vectors for x, y.
+        self._joint_feature_cache = _Cache()
+
+        # Component storage.
+        self._components = [self._feature,
+                            structured_features.components]
+        if self._components is not None:
+            self._components += components
+
+        # if structured_features.components is not None:
+        #     self._components += structured_features.components
 
     def dynamic_program(self, x):
         raise NotImplementedError()
@@ -226,68 +114,126 @@ class DynamicProgrammingModel(StructuredModel):
         raise NotImplementedError()
 
     def initialize(self, X, Y):
-        self._structured_features.initialize(X, Y)
+        """
+        Initialize the model and components based on the training data.
+        """
+        # Initialize the encoder.
+        self._encoder.fit(Y)
+
+        # for component in structured_features.components:
+        #     component.initialize(X, Y)
+
+        # Initialize the components.
+        for component in self._components:
+            component.initialize(X, Y, self._encoder)
+
+        # Set the features size (required for pystruct).
         self.size_joint_feature = \
-            self._structured_features.size_joint_feature
+            (self._feature.size_features, 1)
 
-        for x in X:
-            dp = self.dynamic_program(x)
-            import sys
+        # If using caching, prime all the caches.
+        # (This takes most of the time, so add progress bar).
+        if self._use_cache:
+            for x, y in itertools.izip(X, Y):
+                dp = self.dynamic_program(x)
+                self._dp_cache[x] = dp
+                self._feature_cache[x] = self._active_feature_indices(x, dp)
+                self._joint_feature_cache[x, y] = self._joint_feature(x, y)
 
-            # print len(dp.hypergraph.edges), dp.outputs.nbytes, dp.output_indices.nbytes, dp.items.nbytes, dp.item_indices.nbytes
 
-            self._dp_cache[x] = dp
-
-            feature_indices = \
-                self.feature_indices(x, dp, dp.active_outputs)
-            self._feature_cache[x] = feature_indices
+    def _joint_feature(self, x, y):
+        """
+        Generates joint feature vectors.
+        """
+        outputs = self._encoder.transform(y)
+        feature_indices = \
+            self._feature.generate_output_features(x, outputs, shift=True)
+        return self._feature.sparse_feature_vector(feature_indices)
 
     def joint_feature(self, x, y):
-        return self._structured_features.joint_features(x, y)
+        """
+        Computes a joint feature vector for (x, y) pair.
 
-    def feature_indices(self, x, dp, output_indices):
-        outputs = np.array(np.unravel_index(output_indices,
+        Returns
+        --------
+        mat : D- sparse matrix
+        """
+        return self._joint_feature_cache.\
+            get((x, y), lambda: self._joint_feature(x, y))
+
+    def _active_feature_indices(self, x, dp):
+        """
+        Generates the features for each output that is seen in
+        the dynamic program (active_output).
+
+        Returns
+        -------
+        matrix : |dp.active_indices|x|templates| - matrix
+            A matrix for feature indices for each active output.
+        """
+        outputs = np.array(np.unravel_index(dp.active_indices,
                                             dp.outputs.shape)).T
-        return self._structured_features._stack_output_features(x, outputs, shift=True)
-
-    def argmax(self, x, w):
-        dp = self._dp_cache.get(x, None)
-        if dp is None:
-            dp = self.dynamic_program(x)
-            # self._dp_cache[x] = dp
-
-        indices = self._feature_cache.get(x, None)
-        if indices is None:
-            feature_indices = \
-                self.feature_indices(x, dp, active_indices)
-        else:
-            feature_indices = indices
-        active_scores = \
-            np.sum(np.take(np.asarray(w), feature_indices, mode="clip"), axis=1)
-
-        potentials = pydecode.map_active_potentials(dp, active_scores)
-        path = pydecode.best_path(dp.hypergraph, potentials)
-
-        # Compute features.
-        indices = dp.active_output_indices.take(path.edge_indices)
-        features = feature_indices[indices[indices != -1]]
-
-        # For testing
-        # assert(potentials * path.v == np.sum(w.take(features.ravel())))
-
-        return pydecode.path_output(dp, path), features
+        return self._feature.stack_output_features(
+            x, outputs, shift=True)
 
     def inference(self, x, w, relaxed=False):
         """
+        Computes the best output y based on input x and
+        weight parameter vector w.
+
         Parameters
         -----------
-        x :
+        x : input
 
-        w : D x 1 matrix
+        w : dx1 - parameter matrix
 
+        Returns
+        -------
+        y : output
+           The best output structure.
+
+           Returns ::math::`\arg\max_y (F_x w) (E y)`
+           where F_x is a feature matrix, E is the output encoder.
         """
-        best_outputs, features = self.argmax(x, w)
-        y = self._output_coder.inverse_transform(best_outputs)
-        self._structured_features._joint_feature_cache[x, y] = \
-            self._structured_features._sparse_feature_vector(features)
+        # First get the dp and active features from the cache.
+        dp = self._dp_cache.get(x, lambda: self.dynamic_program(x))
+        feature_indices = self._feature_cache\
+            .get(x, lambda: self._active_feature_indices(x, dp))
+
+        # This is the main feature 'dot-product'. In theory we have a
+        # dx1-parameter vector w and a |I|xd-feature vector F. We would
+        # like to compute F w to get a score for each element in
+        # output I.
+        #
+        # For efficiency we use two optimizations (1) instead of using
+        # the full set I, we only consider the outputs that appear in
+        # the DP, i.e. active outputs A \subset I. (2) to avoid
+        # constructing F explicitly we construct an index matrix
+        # {1..d}^|A|x|T| where T is the set of feature templates.
+        # This is feature_indices, see features.py for this code.
+        #
+        # After this dot-product `active_scores` is a R^|A| vector
+        # that has the score for each active output index.
+        active_scores = \
+            np.sum(np.take(np.asarray(w), feature_indices,
+                           mode="clip"), axis=1)
+
+        # Use the active score vector to find the best path and
+        # transform to a result y.
+        scores = pydecode.map_active_potentials(dp, active_scores)
+        path = pydecode.best_path(dp.hypergraph, scores)
+        best_outputs = pydecode.path_output(dp, path)
+        y = self._encoder.inverse_transform(best_outputs)
+
+        if self._use_cache:
+            # If we are caching, we will likely need the features of
+            # this (x, y) pair. Since we already have the path, it is
+            # better to cache them now.
+            indices = dp.active_output_indices.take(path.edge_indices)
+            features = feature_indices[indices[indices != -1]]
+            self._joint_feature_cache[x, y] = \
+                self._feature._sparse_feature_vector(features)
+
+            # For testing:
+            # assert(potentials * path.v == np.sum(w.take(features.ravel())))
         return y
