@@ -35,10 +35,3 @@ cdef class DFA:
 cdef class LatticeLabel:
     cdef CLatticeLabel label
     cdef init(LatticeLabel self, CLatticeLabel label)
-
-cdef void _fill_trellis(float[:, ::1] emissions,
-                        float[:] transitions,
-                        int n_labels,
-                        int[:] words,
-                        float[:, ::1] trellis,
-                        int[:,::1] path)
