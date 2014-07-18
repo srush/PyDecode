@@ -20,11 +20,14 @@ cdef class DynamicProgram:
     cdef _outputs
     cdef _item_indices
     cdef _output_indices
-
+    cdef _output_shape
     cdef _item_matrix
     cdef _output_matrix
+    cdef _active_output_matrix
     cdef _active_outputs
+    cdef _active_output_elements
     cdef _active_output_indices
+    cdef _active_dict
 
 cdef class ChartBuilder:
     cpdef init(self, long [:] index)

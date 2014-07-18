@@ -5,6 +5,7 @@ import pydecode
 import pydecode.nlp.decoding as decoding
 import itertools
 import numpy as np
+from collections import defaultdict, Counter
 
 class TaggingProblem(decoding.DecodingProblem):
     """
@@ -47,6 +48,31 @@ class TaggingProblem(decoding.DecodingProblem):
             yield seq
 
 
+class DictionaryPruner(object):
+    def __init__(self, limit=2):
+        self._limit = limit
+        self._all_tags = None
+        self._word_tag_counts = defaultdict(Counter)
+        self._word_counts = Counter()
+
+    def initialize(self, X, Y, output_coder):
+        c = output_coder
+        for x, y in itertools.izip(X, Y):
+            for word, tag in zip(x, y):
+                self._word_tag_counts[word][c.transform_tag(tag)] += 1
+                self._word_counts[word] += 1
+        self._all_tags = range(output_coder.tags)
+
+    def table(self, x):
+        table = []
+        for word in x:
+            if self._word_counts[word] < self._limit:
+                table.append(self._all_tags)
+            else:
+                table.append(self._word_tag_counts[word].keys())
+        return table
+
+
 
 def ngrams(tag_sequence, K):
     """
@@ -65,7 +91,7 @@ def ngrams(tag_sequence, K):
         yield (i, t) + tuple([(tag_sequence[i-k] if i - k >= 0 else "*START*")
                                for k in range(K-1, 0, -1)])
 
-class BiTagCoder(object):
+class BiTagEncoder(object):
     """
     Codes a tag sequence as a sparse output array as a 3 x n
     array of sparse elements of the form (i, t_i, t_{i-1}).
@@ -87,7 +113,9 @@ class BiTagCoder(object):
                 problem.max_tag_size]
 
     def pretty(self, output):
-        return output[0], self._tag_trans(output[self.PREV_TAG], 1), self._tag_trans(output[self.TAG], 1)
+        return (output[0],
+                self._tag_trans(output[self.PREV_TAG], 1),
+                self._tag_trans(output[self.TAG], 1))
 
     def fit(self, Y):
         self.tag_encoder = {}
@@ -118,6 +146,11 @@ class BiTagCoder(object):
         else:
             return tag
 
+    def transform_tag(self, tag):
+        return self._tag_trans(tag, 0)
+
+    def inverse_transform_tag(self, t):
+        return self._tag_trans(t, 1)
 
     def transform(self, sequence):
         """
@@ -139,6 +172,11 @@ class BiTagCoder(object):
         return tuple(sequence)
 
 class BigramTagger(decoding.HypergraphDecoder):
+
+    def __init__(self, use_cache=False):
+        self._use_cache = use_cache
+        self._cache_dp = {}
+
     """
     Bigram tagging decoder.
     """
@@ -170,6 +208,8 @@ class BigramTagger(decoding.HypergraphDecoder):
         n = problem.size
         K = problem.tag_sizes
 
+        if self._use_cache and n in self._cache_dp:
+            return self._cache_dp[n]
 
         t = problem.max_tag_size
         coder = np.arange(n * t, dtype=np.int64)\
@@ -188,7 +228,11 @@ class BigramTagger(decoding.HypergraphDecoder):
                       coder[i-1, :K[i-1]],
                       out=out[i, t, :K[i-1]])
 
-        return c.finish(False)
+        dp = c.finish(False)
+        if self._use_cache:
+            self._cache_dp[n] = dp
+
+        return dp
 
 
 class PrunedBigramTagger(decoding.HypergraphDecoder):

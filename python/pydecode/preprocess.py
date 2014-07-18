@@ -41,14 +41,21 @@ class LabelPreprocessor(object):
         """
         return len(self._encoders[label_num])
 
-    def initialize(self, X):
+    def inverse_transform_label(self, label_num, label_ind):
+        return self._rev_encoders[label_num][label_ind]
+
+    def initialize(self, X, _, __):
         labels = np.hstack([self.input_labels(x) for x in X])
         self._encoders = [defaultdict(lambda: 0)
                           for _ in range(labels.shape[0])]
 
-        for label, enc in izip(labels, self._encoders):
-            ls = set(label)
-            enc.update([ls, range(1, len(ls)+1)])
+        self._rev_encoders = [defaultdict(lambda: "UNK")
+                              for _ in range(labels.shape[0])]
+
+        for label, enc, rev in izip(labels, self._encoders, self._rev_encoders):
+            ls = list(set(label))
+            enc.update(zip(ls, range(1, len(ls)+1)))
+            rev.update(zip(range(1, len(ls)+1), ls))
 
         for x in X:
             self._cache[tuple(x)] = self.preprocess(x)

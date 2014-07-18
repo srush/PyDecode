@@ -7,6 +7,7 @@ import pydecode
 import numpy.random
 import numpy as np
 import itertools
+from collections import defaultdict
 
 class DependencyProblem(decoding.DecodingProblem):
     """
@@ -55,16 +56,34 @@ class DependencyParse(object):
            Requires head[0] = -1 for convention.
         """
         self.heads = heads
+        self._dir_mods = None
+
         assert(self.heads[0] == -1)
 
     def __eq__(self, other):
         return self.heads == other.heads
+
+    def __iter__(self):
+        return iter(self.heads[1:])
+
+    def __len__(self):
+        return len(self.heads[1:])
 
     def __cmp__(self, other):
         return cmp(self.heads, other.heads)
 
     def __repr__(self):
         return str(self.heads)
+
+    def has_mod(self, head, side):
+        if self._dir_mods is None:
+            self._dir_mods = defaultdict(list)
+            for m, h in self.arcs():
+                self._dir_mods[h, 0 if m < h else 1].append(m)
+        return len(self._dir_mods[head, side]) > 0
+
+    def first_mod(self, mod, head):
+        return self.sibling(mod) == head
 
     def arcs(self):
         """
@@ -161,9 +180,15 @@ class FirstOrderCoder(object):
     Bijective map between DependencyParse and sparse output
     representation as arcs (h, m).
     """
+    HEAD = 0
+    MOD = 1
+
     def shape(self, problem):
         n = problem.size
         return [n+1, n+1]
+
+    def fit(self, Y):
+        pass
 
     def inverse_transform(self, arcs):
         """
@@ -205,6 +230,10 @@ class SecondOrderCoder(object):
         return np.array([[h, m, parse.sibling(m)]
                          for m, h in parse.arcs()])
 
+    def fit(self, Y):
+        pass
+
+
 # Globals
 kShapes = 3
 Tri = 0
@@ -215,7 +244,13 @@ kDir = 2
 Right = 0
 Left = 1
 
+
+
 class FirstOrderDecoder(decoding.HypergraphDecoder):
+    def __init__(self, use_cache=False):
+        self._use_cache = use_cache
+        self._cache_dp = {}
+
     def output_coder(self):
         return FirstOrderCoder()
 
@@ -235,9 +270,13 @@ class FirstOrderDecoder(decoding.HypergraphDecoder):
         n = problem.size + 1
         num_edges = 4 * n ** 3
 
+        if self._use_cache and n in self._cache_dp:
+            return self._cache_dp[n]
+
         items = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
             .reshape([kShapes, kDir, n, n])
         out = np.arange(n*n, dtype=np.int64).reshape([n, n])
+
         c = pydecode.ChartBuilder(items, out,
                                   unstrict=True,
                                   expected_size=(num_edges, 2))
@@ -280,7 +319,11 @@ class FirstOrderDecoder(decoding.HypergraphDecoder):
                       items[Tri,  Right, s+1:t+1, t],
                       out=out_ind)
 
-        return c.finish(False)
+        dp = c.finish(False)
+        if self._use_cache:
+            self._cache_dp[n] = dp
+        return dp
+
 
 class SecondOrderDecoder(decoding.HypergraphDecoder):
     def output_coder(self):
@@ -345,3 +388,120 @@ class SecondOrderDecoder(decoding.HypergraphDecoder):
                           coder[Trap, Right, s, s+1:t+1],
                           coder[Tri, Right, s+1:t+1, t])
         return c.finish(False)
+
+
+
+class FirstOrderStopCoder(object):
+    """
+    Bijective map between DependencyParse and sparse output
+    representation as arcs (h, m).
+    """
+    HEAD = 0
+    MOD = 1
+
+    def shape(self, problem):
+        n = problem.size
+        # Extra bits encode
+        # Is first?
+        # Is stop?
+        return [n+1, n+1, 2, 2]
+
+    def fit(self, Y):
+        pass
+
+    def inverse_transform(self, arcs):
+        """
+        Map sparse output to DependencyParse.
+        """
+        arcs = list(arcs)
+        arcs.sort(key=lambda a:a[1])
+        heads = ([-1] + [arc[HEAD] for arc in arcs
+                         if m != 0])
+        return DependencyParse(heads)
+
+    def transform(self, parse):
+        """
+        Map DependencyParse to sparse output.
+        """
+        outputs = [[h, m,
+                    1 if parse.first_mod(m, h) else 0,
+                    1 if parse.has_mod(m, 1 if m < h else 0) else 0]
+                   for m, h in parse.arcs()]
+        return np.array(outputs)
+
+
+class FirstOrderStopDecoder(decoding.HypergraphDecoder):
+    def __init__(self, use_cache=False):
+        self._use_cache = use_cache
+        self._cache_dp = {}
+
+    def output_coder(self):
+        return FirstOrderStopCoder()
+
+    def dynamic_program(self, problem):
+        n = problem.size + 1
+        num_edges = 4 * n ** 3
+
+        if self._use_cache and n in self._cache_dp:
+            return self._cache_dp[n]
+
+        items = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
+            .reshape([kShapes, kDir, n, n])
+        out = np.arange(n*n*2*2, dtype=np.int64).reshape([n, n, 2, 2])
+
+        c = pydecode.ChartBuilder(items, out,
+                                  unstrict=True,
+                                  expected_size=(num_edges, 2))
+
+        # Add terminal nodes.
+        c.init(np.diag(items[Tri, Right]).copy())
+        c.init(np.diag(items[Tri, Left, 1:, 1:]).copy())
+
+        for k in range(1, n):
+            for s in range(n):
+                t = k + s
+                if t >= n:
+                    break
+
+                out_ind = np.zeros([t-s], dtype=np.int64)
+
+                # First create incomplete items.
+                if s != 0:
+                    out_ind.fill(out[t, s, 0, 0])
+                    out_ind[-1] = out[t,s,1,0]
+                    # out_ind[0]  = out[t,s,0,1]
+                    # if k == 1: out_ind[0] = out[t, s, 1, 1]
+                    c.set(items[Trap, Left,  s,       t],
+                          items[Tri,  Right, s,       s:t],
+                          items[Tri,  Left,  s+1:t+1, t],
+                          out=out_ind)
+
+                out_ind.fill(out[s, t, 0, 0])
+                out_ind[0] = out[s, t, 1, 0]
+                # out_ind[-1]  = out[s,t,0,1]
+                # if k == 1: out_ind[0] = out[s, t, 1, 1]
+
+                c.set(items[Trap, Right, s,       t],
+                      items[Tri,  Right, s,       s:t],
+                      items[Tri,  Left,  s+1:t+1, t],
+                      out=out_ind)
+
+                out_ind.fill(out[s, s-1, 0, 1])
+                out_ind[-1] = out[s, s-1, 1, 1]
+                if s != 0:
+                    c.set(items[Tri,  Left,  s,   t],
+                          items[Tri,  Left,  s,   s:t],
+                          items[Trap, Left,  s:t, t],
+                          out=out_ind)
+
+                out_ind.fill(out[s, s+1, 0, 1])
+                out_ind[0] = out[s, s+1, 1, 1]
+                c.set(items[Tri,  Right, s,       t],
+                      items[Trap, Right, s,       s+1:t+1],
+                      items[Tri,  Right, s+1:t+1, t],
+                      out=out_ind)
+
+        dp = c.finish(False)
+        if self._use_cache:
+            self._cache_dp[n] = dp
+        return dp

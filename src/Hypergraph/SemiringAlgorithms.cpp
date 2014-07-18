@@ -73,6 +73,7 @@ void general_outside(const Hypergraph *graph,
                      const HypergraphPotentials<S> &potentials,
                      const Chart<S> &inside_chart,
                      Chart<S> *chart) {
+    bool unary = graph->is_unary();
     potentials.check(*graph);
     inside_chart.check(graph);
     chart->clear();
@@ -83,18 +84,26 @@ void general_outside(const Hypergraph *graph,
     for (int i = edges.size() - 1; i >= 0; --i) {
         HEdge edge = edges[i];
         typename S::ValType head_score = (*chart)[graph->head(edge)];
-        for (int j = 0; j < graph->tail_nodes(edge); ++j) {
-            HNode node = graph->tail_node(edge, j);
-            typename S::ValType other_score = S::one();
-            for (int k = 0; k < graph->tail_nodes(edge); ++k) {
-                HNode other_node = graph->tail_node(edge, k);
-                if (other_node == node) continue;
-                other_score = S::times(other_score, inside_chart[other_node]);
-            }
+        if (unary) {
+            HNode node = graph->tail_node(edge);
             chart->insert(node, S::add((*chart)[node],
                                        S::times(head_score,
-                                                S::times(other_score,
-                                                         potentials.score(edge)))));
+                                                potentials.score(edge))));
+        } else {
+            for (int j = 0; j < graph->tail_nodes(edge); ++j) {
+                HNode node = graph->tail_node(edge, j);
+                typename S::ValType other_score = S::one();
+                for (int k = 0; k < graph->tail_nodes(edge); ++k) {
+                    HNode other_node = graph->tail_node(edge, k);
+                    if (other_node == node) continue;
+                    other_score = S::times(other_score,
+                                           inside_chart[other_node]);
+                }
+                chart->insert(node, S::add((*chart)[node],
+                                           S::times(head_score,
+                                                    S::times(other_score,
+                                                             potentials.score(edge)))));
+            }
         }
     }
 }

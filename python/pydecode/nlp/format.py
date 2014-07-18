@@ -4,9 +4,13 @@ import pandas as pd
 from StringIO import StringIO
 import numpy as np
 
-def read_csv_records(f, front=[], back =[]):
+def read_csv_records(f, front=[], back =[], limit=None, length=None):
     s = open(f).read()
-    for l in re.finditer("(.*?)\n\n", s, re.DOTALL):
+    for i, l in enumerate(re.finditer("(.*?)\n\n", s, re.DOTALL)):
+        if limit is not None and i > limit:
+            break
+        if length is not None and len(l.group(1).split("\n")) > length:
+            continue
         yield np.array(front + [line.split()
                         for line in l.group(1).split("\n")] + back)
 
@@ -14,7 +18,7 @@ CONLL = {"INDEX":1,
          "WORD":1,
          "TAG":3,
          "HEAD":6,
-         "HEAD":7}
+         "LABEL":7}
 
 TAG = {"WORD":0,
        "TAG":1}

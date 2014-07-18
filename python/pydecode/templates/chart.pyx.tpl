@@ -24,6 +24,9 @@ cdef class DynamicProgram:
         self._output_matrix = None
         self._active_outputs = None
         self._active_output_indices = None
+        self._active_dict = None
+
+        self._active_output_elements = None
 
     def _make_output_matrix(self):
         # assert self._construct_output, \
@@ -39,6 +42,21 @@ cdef class DynamicProgram:
         return scipy.sparse.csc_matrix(
             (data, outputs, ind),
             shape=(np.max(self.outputs) + 1,
+                   len(self.hypergraph.edges)),
+            dtype=np.uint8)
+
+    def _make_active_output_matrix(self):
+        data = []
+        outputs = []
+        ind = [0]
+        for index in self.active_output_indices:
+            if index != -1:
+                data.append(1)
+                outputs.append(index)
+            ind.append(len(data))
+        return scipy.sparse.csc_matrix(
+            (data, outputs, ind),
+            shape=(max(self.active_output_indices)+1,
                    len(self.hypergraph.edges)),
             dtype=np.uint8)
 
@@ -112,11 +130,27 @@ cdef class DynamicProgram:
                 self._make_active_outputs()
             return self._active_outputs
 
+    property active_output_matrix:
+        def __get__(self):
+            if self._active_output_matrix is None:
+                self._active_output_matrix = self._make_active_output_matrix()
+            return self._active_output_matrix
+
     property active_output_indices:
         def __get__(self):
             if self._active_output_indices is None:
                 self._make_active_outputs()
             return self._active_output_indices
+
+    property active_output_elements:
+        def __get__(self):
+            if self._active_output_indices is None:
+                self._active_output_elements = \
+                    np.array(np.unravel_index(self.active_outputs,
+                                              self.outputs.shape)).T
+            return self._active_output_elements
+
+
 
 cdef class _ChartEdge:
     pass

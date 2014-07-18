@@ -176,3 +176,9 @@ def check_semirings(graph):
 
     potentials = np.array(weights2)
     # chart = ph.inside(graph, potentials, kind=ph.Inside)
+
+
+# def check_inside(graph):
+#     probs = numpy.random(len(graph.edges()))
+#     inside = pydecode.inside(graph, probs)
+#     inside <

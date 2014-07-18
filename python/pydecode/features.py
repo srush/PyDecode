@@ -4,6 +4,7 @@ Classes for generating and working with sparse features.
 
 import numpy as np
 import itertools
+from copy import copy
 
 class FeatureGenerator(object):
     """
@@ -46,11 +47,12 @@ class SparseFeatureManager(object):
     """
     Helper class for generating stuctured features.
     """
-    def __init__(self, feature_generator):
+    def __init__(self, feature_generator, hash_limit=None):
         self._feature_generator = feature_generator
         self._feature_templates = None
         self._feature_size = None
         self._starts = None
+        self._hash_limit = hash_limit
         self.size_features = -1
 
     def initialize(self, X, Y, output_coder):
@@ -65,7 +67,10 @@ class SparseFeatureManager(object):
 
         sizes = np.cumsum(self._feature_size)
         self._starts = np.insert(sizes[:-1], 0, 0)
-        self.size_features = sizes[-1]
+        if self._hash_limit is None:
+            self.size_features = sizes[-1]
+        else:
+            self.size_features = min(sizes[-1], self._hash_limit)
         print "FEATURE SIZE", self.size_features
 
     def generate_output_features(self, x, outputs):
@@ -87,21 +92,27 @@ class SparseFeatureManager(object):
             output and template.
         """
         # Generate the feature tuples for the matrix of outputs.
-        features = self._feature_generator.output_features(x, outputs)
-        assert len(features) == len(self._feature_templates)
+        features, templates = \
+            self._feature_generator.output_features(x, outputs)
+
+        assert len(features) == len(templates)
 
         # For each template, convert its feature tuples to
         # indices in the corresponding template space.
         rows = []
-        for shape, features in itertools.izip(self._feature_templates,
-                                              features):
-            rows.append(np.ravel_multi_index(features, shape))
+        for template, features in zip(templates, features):
+            shape = self._feature_templates[template]
+            out = np.ravel_multi_index(features, shape)
+            rows.append(out)
 
-        ret = np.vstack(rows).T + self._starts
+        ret = np.vstack(rows).T + self._starts[templates]
+
+        if self._hash_limit is not None:
+            ret %= self._hash_limit
 
         # The final matrix is |outputs| x |templates|.
         assert ret.shape == (len(outputs),
-                             len(self._feature_templates)),\
+                             len(templates)),\
                              "%s %s" %(ret.shape, len(outputs))
         return ret
 
