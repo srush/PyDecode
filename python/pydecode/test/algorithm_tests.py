@@ -176,3 +176,8 @@ def check_semirings(graph):
 
     potentials = np.array(weights2)
     # chart = ph.inside(graph, potentials, kind=ph.Inside)
+
+if __name__ == "__main__":
+    for a in test_main():
+        print a[0]
+        a[0](*a[1:])

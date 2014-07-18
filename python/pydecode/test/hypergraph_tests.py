@@ -10,14 +10,14 @@ from pydecode.test.utils import hypergraphs
 
 def test_main():
     for graph in hypergraphs():
-        yield check_all_valid, graph
+        # yield check_all_valid, graph
         yield check_numbering, graph
         yield check_hypergraph, graph
         assert utils.check_fully_connected(graph)
 
-def check_all_valid(graph):
-    for path in utils.all_paths(graph):
-        utils.valid_path(graph, path)
+# def check_all_valid(graph):
+#     for path in utils.all_paths(graph):
+#         utils.valid_path(graph, path)
 
 
 def check_numbering(graph):
@@ -94,3 +94,8 @@ def test_bad_edge():
     with h.builder() as b:
         n1 = b.add_node()
         b.add_node(([n1],))
+
+if __name__ == "__main__":
+    for a in test_main():
+        print a[0]
+        a[0](*a[1:])

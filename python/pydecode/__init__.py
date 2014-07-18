@@ -70,9 +70,14 @@ def outside(graph, potentials, inside_chart,
                                        inside_chart, chart)
 
 
+def viterbi(graph, potentials,
+              kind=LogViterbi, chart=None, back_pointers=None, mask=None):
+    new_potentials = get_potentials(graph, potentials, kind.Potentials)
+    new_potentials.kind.viterbi(graph, new_potentials, chart,
+                                back_pointers, mask, get_path=False)
 
 def best_path(graph, potentials,
-              kind=LogViterbi, chart=None, mask=None):
+              kind=LogViterbi, chart=None, back_pointers=None, mask=None):
     r"""
     Find the best path through a hypergraph for a given set of potentials.
 
@@ -101,7 +106,10 @@ def best_path(graph, potentials,
       The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
     """
     new_potentials = get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.viterbi(graph, new_potentials, chart, mask)
+    return new_potentials.kind.viterbi(graph, new_potentials,
+                                       chart=chart,
+                                       back_pointers=back_pointers,
+                                       mask=mask)
 
 def marginals(graph, potentials,
               inside_chart=None,
@@ -230,10 +238,10 @@ def argmax(dp, out_potentials,
     if mask != None:
         new_mask = map_items(dp, mask)
         path = best_path(dp.hypergraph, potentials,
-                         kind, chart, new_mask)
+                         kind, chart=chart, mask=new_mask)
     else:
         path = best_path(dp.hypergraph, potentials,
-                         kind, chart)
+                         kind, chart=chart)
     return path_output(dp, path)
 
 

@@ -52,17 +52,26 @@ void general_inside(const Hypergraph *graph,
     chart->clear();
     chart->initialize_inside();
     typename S::ValType *inner_chart = chart->chart();
+    const typename S::ValType *potential = potentials.potentials();
+    int edge = 0;
     foreach (HNode node, graph->nodes()) {
+        if (graph->terminal(node)) continue;
         typename S::ValType cur = inner_chart[node];
-        foreach (HEdge edge, graph->edges(node)) {
-            typename S::ValType score;
-            if (unary) {
-                score = S::times(potentials.score(edge),
-                                 inner_chart[graph->tail_node(edge)]);
-            } else {
-                score = chart->compute_edge_score(edge, potentials.score(edge));
+        int end = graph->edge_end(node);
+        if (unary) {
+            for (; edge <= end; ++edge) {
+                typename S::ValType score =
+                        score = S::times(potential[edge],
+                                         inner_chart[graph->tail_node(edge)]);
+                cur = S::add(cur, score);
             }
-            cur = S::add(cur, score);
+        } else {
+            for (; edge <= end; ++edge) {
+                typename S::ValType score =
+                        chart->compute_edge_score(edge,
+                                                  potential[edge]);
+                cur = S::add(cur, score);
+            }
         }
         inner_chart[node] = cur;
     }
@@ -111,22 +120,33 @@ void general_viterbi(const Hypergraph *graph,
     chart->clear();
 
     chart->initialize_inside();
-    bool unary = graph->is_unary();
-    bool use_mask = (mask != NULL);
-    typename S::ValType zero = S::zero();
+    const bool unary = graph->is_unary();
+    const bool use_mask = (mask != NULL);
     typename S::ValType *inner_chart = chart->chart();
+    const typename S::ValType *potential = potentials.potentials();
+    HEdge *back_chart = back->chart();
+    int edge = 0;
     foreach (HNode node, graph->nodes()) {
+        if (graph->terminal(node)) continue;
         if (use_mask && !mask[node]) continue;
         typename S::ValType best = inner_chart[node];
-        foreach (HEdge edge, graph->edges(node)) {
-            typename S::ValType score;
-            if (unary) {
-                if (use_mask && !mask[graph->tail_node(edge)]) continue;
-                score = S::times(
-                    potentials.score(edge),
+        int end = graph->edge_end(node);
+        // if (use_mask && !mask[graph->tail_node(edge)]) continue;
+        if (unary) {
+            for (; edge <= end; ++edge) {
+                typename S::ValType score = S::times(
+                    potential[edge],
                     inner_chart[graph->tail_node(edge)]);
-            } else {
-                score = potentials.score(edge);
+
+                if (score > best) {
+                    inner_chart[node] = score;
+                    back_chart[node] = edge;
+                    best = score;
+                }
+            }
+        } else {
+            for (; edge <= end; ++edge) {
+                typename S::ValType score = potential[edge];
                 bool fail = false;
                 for (int j = 0; j < graph->tail_nodes(edge); ++j) {
                     HNode tail = graph->tail_node(edge, j);
@@ -138,19 +158,61 @@ void general_viterbi(const Hypergraph *graph,
                                      inner_chart[tail]);
                 }
                 if (use_mask && fail) continue;
-            }
-            if (score > best) {
-                inner_chart[node] = score;
-                back->insert(node, edge);
-                best = score;
+                if (score > best) {
+                    inner_chart[node] = score;
+                    back_chart[node] = edge;
+                    best = score;
+                }
             }
         }
-
         if (use_mask && inner_chart[node] <= S::zero()) {
             mask[node] = false;
         }
     }
 }
+
+// template<>
+// void general_viterbi(const Hypergraph *graph,
+//                      const HypergraphPotentials<LogViterbiPotential> &potentials,
+//                      Chart<LogViterbiPotential> *chart,
+//                      BackPointers *back,
+//                      bool *mask) {
+//     potentials.check(*graph);
+//     chart->check(graph);
+//     back->check(graph);
+//     chart->clear();
+//     const double *potential = potentials.potentials();
+//     HEdge *back_chart = back->chart();
+//     chart->initialize_inside();
+//     bool unary = graph->is_unary();
+//     double zero = -1e9;
+//     double *inner_chart = chart->chart();
+//     int edge = 0;
+//     foreach (HNode node, graph->nodes()) {
+//         if (graph->terminal(node)) continue;
+//         double best = inner_chart[node];
+//         int end = graph->edge_end(node);
+//         for (; edge <= end; ++edge) {
+//             double score;
+//             if (true) {
+//                 score = potential[edge] +
+//                         inner_chart[graph->tail_node(edge)];
+//             } else {
+//                 score = potential[edge];
+//                 for (int j = 0; j < graph->tail_nodes(edge); ++j) {
+//                     HNode tail = graph->tail_node(edge, j);
+//                     score = score + inner_chart[tail];
+//                 }
+//             }
+
+//             if (score > best) {
+//                 inner_chart[node] = score;
+//                 back_chart[node] = edge;
+//                 best = score;
+//             }
+//         }
+//     }
+// }
 
 
 // template<typename S>
@@ -198,24 +260,41 @@ void general_viterbi(const Hypergraph *graph,
 
 Hyperpath *BackPointers::construct_path() const {
     // Collect backpointers.
+    bool unary = graph_->is_unary();
     vector<HEdge> path;
-    queue<HNode> to_examine;
-    to_examine.push(graph_->root());
-    while (!to_examine.empty()) {
-        HNode node = to_examine.front();
-        HEdge edge = chart_[node];
-        to_examine.pop();
-        if (edge == -1) {
-            assert(graph_->terminal(node));
-            continue;
+    vector<HNode> node_path;
+    if (unary) {
+        HNode cur = graph_->root();
+        node_path.push_back(cur);
+        while (!graph_->terminal(cur)) {
+            HEdge edge = chart_[cur];
+            path.push_back(edge);
+            cur = graph_->tail_node(edge);
+            node_path.push_back(cur);
         }
-        path.push_back(edge);
-        for (int i = 0; i < graph_->tail_nodes(edge); ++i) {
-            to_examine.push(graph_->tail_node(edge, i));
+        reverse(path.begin(), path.end());
+        reverse(node_path.begin(), node_path.end());
+    } else {
+        queue<HNode> to_examine;
+        to_examine.push(graph_->root());
+        while (!to_examine.empty()) {
+            HNode node = to_examine.front();
+            node_path.push_back(node);
+            HEdge edge = chart_[node];
+            to_examine.pop();
+            if (edge == -1) {
+                assert(graph_->terminal(node));
+                continue;
+            }
+            path.push_back(edge);
+            for (int i = 0; i < graph_->tail_nodes(edge); ++i) {
+                to_examine.push(graph_->tail_node(edge, i));
+            }
         }
+        sort(path.begin(), path.end(), IdComparator());
+        sort(node_path.begin(), node_path.end(), IdComparator());
     }
-    sort(path.begin(), path.end(), IdComparator());
-    return new Hyperpath(graph_, path);
+    return new Hyperpath(graph_, node_path, path);
 }
 
 template<typename StatSem>
@@ -320,6 +399,7 @@ Hyperpath *count_constrained_viterbi(
 
   // Collect backpointers.
   vector<HEdge> path;
+  vector<HNode> node_path;
   queue<pair<HNode, int> > to_examine;
   int result = -1;
   int i = -1;
@@ -335,6 +415,7 @@ Hyperpath *count_constrained_viterbi(
       if (result == -1) break;
       pair<HNode, int> p = to_examine.front();
       HNode node = p.first;
+      node_path.push_back(node);
       int position = p.second;
 
       NodeScore<S> &score = chart[node][position];
@@ -353,7 +434,8 @@ Hyperpath *count_constrained_viterbi(
       }
   }
   sort(path.begin(), path.end());
-  return new Hyperpath(graph, path);
+  sort(node_path.begin(), node_path.end());
+  return new Hyperpath(graph, node_path, path);
 }
 
 
