@@ -182,3 +182,8 @@ def check_semirings(graph):
 #     probs = numpy.random(len(graph.edges()))
 #     inside = pydecode.inside(graph, probs)
 #     inside <
+
+if __name__ == "__main__":
+    for a in test_main():
+        print a[0]
+        a[0](*a[1:])

@@ -77,9 +77,10 @@ class Chart {
 
 class BackPointers {
   public:
-    explicit BackPointers(const Hypergraph *graph)
-            : graph_(graph) {
-        chart_ = new HEdge[graph_->nodes().size()];
+    explicit BackPointers(const Hypergraph *graph,
+                          HEdge *chart)
+            : graph_(graph), chart_(chart) {
+        // chart_ = new HEdge[graph_->nodes().size()];
         for (int i = 0; i < graph_->nodes().size(); ++i){
             chart_[i] = -1;
         }
@@ -102,6 +103,8 @@ class BackPointers {
     }
 
     Hyperpath *construct_path() const;
+
+    HEdge *chart() { return chart_; }
 
   protected:
     const Hypergraph *graph_;

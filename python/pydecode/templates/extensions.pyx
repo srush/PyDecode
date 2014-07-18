@@ -1,5 +1,7 @@
 # For finite-state automaton construction.
 
+cimport cython
+
 cdef class DFA:
     def __init__(self, int num_states,
                  int num_symbols, transitions,

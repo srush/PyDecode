@@ -31,6 +31,7 @@ cdef extern from "Hypergraph/Hypergraph.hh":
 
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,
+                   const vector[int] nodes,
                    const vector[int] edges) except +
         vector[int] edges()
         vector[int] nodes()

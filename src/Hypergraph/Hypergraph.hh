@@ -127,6 +127,15 @@ class Hypergraph {
         return structure_->edges_;
     }
 
+    int edge_start(HNode node) const {
+        return structure_->node_edges_[node][0];
+    }
+
+    int edge_end(HNode node) const {
+        return structure_->node_edges_[node].back();
+    }
+
+
     const vector<HEdge> &edges(HNode node) const {
         return structure_->node_edges_[node];
     }
@@ -285,23 +294,24 @@ class Hypergraph {
 class Hyperpath {
   public:
     Hyperpath(const Hypergraph *graph,
+              const vector<HNode> &nodes,
               const vector<HEdge> &edges)
-            : graph_(graph), edges_(edges) {
+            : graph_(graph), nodes_(nodes), edges_(edges) {
         HEdge last_edge = -1;
         foreach (HEdge edge, edges) {
             edges_set_.insert(graph->id(edge));
-            if (last_edge != -1 && graph->id(last_edge) >= graph->id(edge)) {
-                throw HypergraphException("Hyperpath is not in order.");
-            }
-            for (int i = 0; i < graph_->tail_nodes(edge); ++i) {
-                HNode node = graph_->tail_node(edge, i);
-                nodes_.push_back(node);
-                nodes_set_.insert(node);
-            }
-            last_edge = edge;
+        //     if (last_edge != -1 && graph->id(last_edge) >= graph->id(edge)) {
+        //         throw HypergraphException("Hyperpath is not in order.");
+        //     }
+        //     for (int i = 0; i < graph_->tail_nodes(edge); ++i) {
+        //         HNode node = graph_->tail_node(edge, i);
+        //         nodes_.push_back(node);
+        //         nodes_set_.insert(node);
+        //     }
+            // last_edge = edge;
         }
-        nodes_.push_back(graph->root());
-        nodes_set_.insert(graph->root());
+        // nodes_.push_back(graph->root());
+        // nodes_set_.insert(graph->root());
     }
 
     /**

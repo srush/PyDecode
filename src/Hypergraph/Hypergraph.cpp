@@ -125,7 +125,7 @@ void Hypergraph::fill() {
             }
             HNode head = node_mapping[temp_structure_->edge_heads_[i]];
             structure_->edge_heads_.push_back(head);
-            structure_->node_edges_[head].push_back(i);
+            structure_->node_edges_[head].push_back(edge_count);
             edge_count++;
         } else {
             temp_structure_->edges_[i] = EDGE_NULL;

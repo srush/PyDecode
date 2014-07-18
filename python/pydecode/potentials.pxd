@@ -31,6 +31,7 @@ cdef extern from "Hypergraph/Hypergraph.hh":
 
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,
+                   const vector[int] nodes,
                    const vector[int] edges) except +
         vector[int] edges()
         vector[int] nodes()
@@ -426,22 +427,13 @@ from libcpp cimport bool
 
 cdef extern from "Hypergraph/SemiringAlgorithms.hh":
     cdef cppclass CBackPointers "BackPointers":
-        CBackPointers(CHypergraph *graph)
+        CBackPointers(CHypergraph *graph, int *)
         int get(int node)
         CHyperpath *construct_path()
-
-# cdef class BackPointers:
-#      cdef const CBackPointers *thisptr
-#      cdef Hypergraph graph
-#      cdef BackPointers init(self, const CBackPointers *ptr,
-#                             Hypergraph graph)
 
 cdef class _Potentials:
      cdef Hypergraph graph
      cdef kind
-
-# cdef class Chart:
-#      pass
 
 ############# This is the templated semiring part. ##############
 

@@ -390,14 +390,22 @@ cdef class Path:
     def __cinit__(self, Hypergraph graph=None, edges=[]):
         """
         """
-
         cdef vector[int ] cedges
+        cdef vector[int ] cnodes
+        cdef set[int] nodes
         self.graph = graph
         edges.sort(key=lambda e: e.id)
         if graph and edges:
+            nodes = set[int]()
             for edge in edges:
                 cedges.push_back((<Edge>edge).id)
-            self.thisptr = new CHyperpath(graph.thisptr, cedges)
+                nodes.add(edge.head.id)
+                for node in edge.tail:
+                    nodes.add(node.id)
+            for node in nodes:
+                cnodes.push_back(node)
+
+            self.thisptr = new CHyperpath(graph.thisptr, cnodes, cedges)
             self.vector = None
             self._vertex_vector = None
             #self._make_vector()
@@ -437,7 +445,6 @@ cdef class Path:
             np.array(self.thisptr.edges())
         self._vertex_indices = \
             np.array(self.thisptr.nodes())
-
 
         self.vector = None
         self._vertex_vector = None
