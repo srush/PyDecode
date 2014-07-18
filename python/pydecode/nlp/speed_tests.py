@@ -24,13 +24,11 @@ def make_tagging_dp():
 
 def time_argmax(dp, scores):
     chart = np.zeros(len(dp.hypergraph.edges))
-    print dp.items.shape
     for _ in range(1000):
         pydecode.argmax(dp, scores, chart=chart)
 
 def time_argmax_masked(dp, scores):
     chart = np.zeros(len(dp.hypergraph.edges))
-    print dp.items.shape
     mask = np.array(np.random.choice([0, 0, 0, 0, 1],
                                      dp.items.shape),
                     dtype=np.uint8)
@@ -49,12 +47,12 @@ def time_hypergraph_masked(dp, scores):
     mask = np.array(np.random.choice([1] * 2,
                                      len(dp.hypergraph.vertices)),
                     dtype=np.uint8)
-    print  np.sum(mask) / float(len(mask))
+    # print  np.sum(mask) / float(len(mask))
 
     for _ in range(1000):
         pydecode.best_path(dp.hypergraph, scores,
                            chart=chart, mask=mask)
-        print np.sum(mask) / float(len(mask))
+        # print np.sum(mask) / float(len(mask))
 def time_trellis():
     n_labels = BIG
     words = np.array([1] * BIG, dtype=np.int32)
@@ -62,14 +60,14 @@ def time_trellis():
     path = np.zeros([n_labels+2, n_labels+2], dtype=np.int32)
     emissions = np.array(np.random.random([BIG, BIG]), dtype=np.float32)
 
-    # transitions = np.array(np.random.random([n_labels+2, n_labels+2]), dtype=np.float32).ravel()
+    transitions = np.array(np.random.random([n_labels+2, n_labels+2]), dtype=np.float32).ravel()
 
-    transitions = np.array(np.random.choice([-1e9] * 1 + [1] * 1,
-                     [n_labels+2, n_labels+2]), dtype=np.float32).ravel()
+    # transitions = np.array(np.random.choice([-1e9] * 1 + [1] * 1,
+    #                  [n_labels+2, n_labels+2]), dtype=np.float32).ravel()
     # print transitions
     # transitions.fill(-1e9)
-    transitions = np.array(np.random.choice([-1e9] * 2 + [1] * 1,
-                                            [n_labels+2, n_labels+2]), dtype=np.float32).ravel()
+    # transitions = np.array(np.random.choice([-1e9] * 2 + [1] * 1,
+    #                                         [n_labels+2, n_labels+2]), dtype=np.float32).ravel()
 
     for _ in range(1000):
         pydecode.fill_trel(emissions, transitions, n_labels, words, trellis, path)
@@ -80,9 +78,9 @@ def main():
     # time_argmax(dp, scores)
     # print ((1000 * 50) / (time.time() - s))
 
-    # s = time.time()
-    # time_trellis()
-    # print ((1000 * 50) / (time.time() - s))
+    s = time.time()
+    time_trellis()
+    print ((1000 * 50) / (time.time() - s))
 
     hypergraph_scores = np.random.choice([-1e10] * 10 + [1] * 5,
                                          len(dp.hypergraph.edges))
@@ -90,7 +88,7 @@ def main():
     # transitions = np.array(np.random.choice([-1e9] * 1 + [1] * 1,
     #                  [n_labels+2, n_labels+2]), dtype=np.float32).ravel()
 
-    time_hypergraph_masked(dp, hypergraph_scores)
+    time_hypergraph(dp, hypergraph_scores)
     print ((1000 * 50) / (time.time() - s))
 
     # s = time.time()

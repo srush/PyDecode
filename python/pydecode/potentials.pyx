@@ -390,14 +390,22 @@ cdef class Path:
     def __cinit__(self, Hypergraph graph=None, edges=[]):
         """
         """
-
         cdef vector[int ] cedges
+        cdef vector[int ] cnodes
+        cdef set[int] nodes
         self.graph = graph
         edges.sort(key=lambda e: e.id)
         if graph and edges:
+            nodes = set[int]()
             for edge in edges:
                 cedges.push_back((<Edge>edge).id)
-            self.thisptr = new CHyperpath(graph.thisptr, cedges)
+                nodes.add(edge.head.id)
+                for node in edge.tail:
+                    nodes.add(node.id)
+            for node in nodes:
+                cnodes.push_back(node)
+
+            self.thisptr = new CHyperpath(graph.thisptr, cnodes, cedges)
             self.vector = None
             self._vertex_vector = None
             #self._make_vector()
@@ -437,7 +445,6 @@ cdef class Path:
             np.array(self.thisptr.edges())
         self._vertex_indices = \
             np.array(self.thisptr.nodes())
-
 
         self.vector = None
         self._vertex_vector = None
@@ -512,6 +519,8 @@ class HypergraphConstructionException(Exception):
         return repr(self.value)
 
 # For finite-state automaton construction.
+
+cimport cython
 
 cdef class DFA:
     def __init__(self, int num_states,
@@ -688,10 +697,12 @@ INFINITY = 1e9
 def fill_trel(emissions, transitions, n_labels, words, trellis, path):
     _fill_trellis(emissions, transitions, n_labels, words, trellis, path)
 
-
-cdef void _fill_trellis(float[:,:] emissions, float[:] transitions,
-                        int n_labels, int[:] words, float[:,:] trellis,
-                        int[:,:] path):
+# @cython.wraparound(False)
+# @cython.boundscheck(False)
+# @cython.cdivision(False)
+cdef void _fill_trellis(float[:,::1] emissions, float[:] transitions,
+                        int n_labels, int[:] words, float[:,::1] trellis,
+                        int[:,::1] path):
     cdef:
         float min_score
         float score
@@ -703,13 +714,14 @@ cdef void _fill_trellis(float[:,:] emissions, float[:] transitions,
         int word_i = 0
         # Example cur
         int offset
+        int cur
 
     for word_i in range(len(words)):
         cur = words[word_i]
         # Current label
         for cur_label in range(n_labels):
-            if trellis[word_i, cur_label] == -INFINITY:
-                continue
+            # if trellis[word_i, cur_label] == -INFINITY:
+            #     continue
 
             min_score = -1E9
             min_prev = -1
@@ -1026,6 +1038,333 @@ cdef class Bitset:
         self.data[position] = val
 
 
+cdef class BeamChartBinaryVectorPotential:
+    cdef init(self, CBeamChartBinaryVectorPotential *chart, Hypergraph graph):
+        self.thisptr = chart
+        self.graph = graph
+        return self
+
+    def __dealloc__(self):
+        if self.thisptr is not NULL:
+            del self.thisptr
+            self.thisptr = NULL
+
+    def path(self, int result):
+        if self.thisptr.get_path(result) == NULL:
+            return None
+        return Path().init(self.thisptr.get_path(result),
+                           self.graph)
+
+    def __getitem__(self, Vertex vertex):
+        cdef vector[CBeamHypBinaryVectorPotential *] beam = \
+                    self.thisptr.get_beam(vertex.nodeptr)
+        data = []
+        i = 0
+        for p in beam:
+            data.append((_BinaryVector_from_cpp(p.sig),
+                         p.current_score,
+                         p.future_score))
+        return data
+
+
+    property exact:
+        def __get__(self):
+            return self.thisptr.exact
+
+
+# def beam_search_BinaryVector(Hypergraph graph,
+#                 _LogViterbiPotentials potentials,
+#                 BinaryVectorPotentials constraints,
+#                 outside,
+#                 double lower_bound,
+#                 groups,
+#                 group_limits,
+#                 int num_groups=-1,
+#                 bool recombine=True,
+#                            bool cube_pruning = False):
+#     r"""
+
+#     Parameters
+#     -----------
+#     graph : Hypergraph
+
+#     potentials : LogViterbiPotentials
+#        The potentials on each hyperedge.
+
+#     constraints : BinaryVectorPotentials
+#        The constraints (bitset) at each hyperedge.
+
+#     lower_bound : double
+
+#     outside : LogViterbiChart
+#         The outside scores.
+
+#     groups : size of vertex list
+#        The group for each vertex.
+
+#     group_limits :
+#        The size limit for each group.
+
+#     num_groups :
+#         The total number of groups.
+#     """
+#     if num_groups == -1:
+#         ngroups = max(groups) + 1
+#     else:
+#         ngroups = num_groups
+#     cdef vector[int] cgroups = groups
+#     cdef vector[int] cgroup_limits = group_limits
+
+#     cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
+#                                                     cgroups,
+#                                                     cgroup_limits,
+#                                                     ngroups)
+#     # cgroups.resize(graph.nodes_size())
+#     # cdef vector[int] cgroup_limits
+#     # cgroups.resize(graph.nodes_size())
+
+#     # for i, group in enumerate(groups):
+#     #     cgroups[i] = group
+
+
+#     cdef CBeamChartBinaryVectorPotential *chart
+#     if cube_pruning:
+#         chart = ccube_pruningBinaryVectorPotential(graph.thisptr,
+#                      deref(potentials.thisptr),
+#                      deref(constraints.thisptr),
+#                      deref(outside.chart),
+#                      lower_bound,
+#                      deref(beam_groups),
+#                      recombine)
+#     else:
+#         chart = cbeam_searchBinaryVectorPotential(graph.thisptr,
+#                      deref(potentials.thisptr),
+#                      deref(constraints.thisptr),
+#                      deref(outside.chart),
+#                      lower_bound,
+#                      deref(beam_groups),
+#                      recombine)
+#     return BeamChartBinaryVectorPotential().init(chart, graph)
+
+
+cdef class BeamChartAlphabetPotential:
+    cdef init(self, CBeamChartAlphabetPotential *chart, Hypergraph graph):
+        self.thisptr = chart
+        self.graph = graph
+        return self
+
+    def __dealloc__(self):
+        if self.thisptr is not NULL:
+            del self.thisptr
+            self.thisptr = NULL
+
+    def path(self, int result):
+        if self.thisptr.get_path(result) == NULL:
+            return None
+        return Path().init(self.thisptr.get_path(result),
+                           self.graph)
+
+    def __getitem__(self, Vertex vertex):
+        cdef vector[CBeamHypAlphabetPotential *] beam = \
+                    self.thisptr.get_beam(vertex.nodeptr)
+        data = []
+        i = 0
+        for p in beam:
+            data.append((_Alphabet_from_cpp(p.sig),
+                         p.current_score,
+                         p.future_score))
+        return data
+
+
+    property exact:
+        def __get__(self):
+            return self.thisptr.exact
+
+
+# def beam_search_Alphabet(Hypergraph graph,
+#                 _LogViterbiPotentials potentials,
+#                 AlphabetPotentials constraints,
+#                 outside,
+#                 double lower_bound,
+#                 groups,
+#                 group_limits,
+#                 int num_groups=-1,
+#                 bool recombine=True,
+#                            bool cube_pruning = False):
+#     r"""
+
+#     Parameters
+#     -----------
+#     graph : Hypergraph
+
+#     potentials : LogViterbiPotentials
+#        The potentials on each hyperedge.
+
+#     constraints : BinaryVectorPotentials
+#        The constraints (bitset) at each hyperedge.
+
+#     lower_bound : double
+
+#     outside : LogViterbiChart
+#         The outside scores.
+
+#     groups : size of vertex list
+#        The group for each vertex.
+
+#     group_limits :
+#        The size limit for each group.
+
+#     num_groups :
+#         The total number of groups.
+#     """
+#     if num_groups == -1:
+#         ngroups = max(groups) + 1
+#     else:
+#         ngroups = num_groups
+#     cdef vector[int] cgroups = groups
+#     cdef vector[int] cgroup_limits = group_limits
+
+#     cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
+#                                                     cgroups,
+#                                                     cgroup_limits,
+#                                                     ngroups)
+#     # cgroups.resize(graph.nodes_size())
+#     # cdef vector[int] cgroup_limits
+#     # cgroups.resize(graph.nodes_size())
+
+#     # for i, group in enumerate(groups):
+#     #     cgroups[i] = group
+
+
+#     cdef CBeamChartAlphabetPotential *chart
+#     if cube_pruning:
+#         chart = ccube_pruningAlphabetPotential(graph.thisptr,
+#                      deref(potentials.thisptr),
+#                      deref(constraints.thisptr),
+#                      deref(outside.chart),
+#                      lower_bound,
+#                      deref(beam_groups),
+#                      recombine)
+#     else:
+#         chart = cbeam_searchAlphabetPotential(graph.thisptr,
+#                      deref(potentials.thisptr),
+#                      deref(constraints.thisptr),
+#                      deref(outside.chart),
+#                      lower_bound,
+#                      deref(beam_groups),
+#                      recombine)
+#     return BeamChartAlphabetPotential().init(chart, graph)
+
+
+cdef class BeamChartLogViterbiPotential:
+    cdef init(self, CBeamChartLogViterbiPotential *chart, Hypergraph graph):
+        self.thisptr = chart
+        self.graph = graph
+        return self
+
+    def __dealloc__(self):
+        if self.thisptr is not NULL:
+            del self.thisptr
+            self.thisptr = NULL
+
+    def path(self, int result):
+        if self.thisptr.get_path(result) == NULL:
+            return None
+        return Path().init(self.thisptr.get_path(result),
+                           self.graph)
+
+    def __getitem__(self, Vertex vertex):
+        cdef vector[CBeamHypLogViterbiPotential *] beam = \
+                    self.thisptr.get_beam(vertex.nodeptr)
+        data = []
+        i = 0
+        for p in beam:
+            data.append((_LogViterbi_from_cpp(p.sig),
+                         p.current_score,
+                         p.future_score))
+        return data
+
+
+    property exact:
+        def __get__(self):
+            return self.thisptr.exact
+
+
+# def beam_search_LogViterbi(Hypergraph graph,
+#                 _LogViterbiPotentials potentials,
+#                 LogViterbiPotentials constraints,
+#                 outside,
+#                 double lower_bound,
+#                 groups,
+#                 group_limits,
+#                 int num_groups=-1,
+#                 bool recombine=True,
+#                            bool cube_pruning = False):
+#     r"""
+
+#     Parameters
+#     -----------
+#     graph : Hypergraph
+
+#     potentials : LogViterbiPotentials
+#        The potentials on each hyperedge.
+
+#     constraints : BinaryVectorPotentials
+#        The constraints (bitset) at each hyperedge.
+
+#     lower_bound : double
+
+#     outside : LogViterbiChart
+#         The outside scores.
+
+#     groups : size of vertex list
+#        The group for each vertex.
+
+#     group_limits :
+#        The size limit for each group.
+
+#     num_groups :
+#         The total number of groups.
+#     """
+#     if num_groups == -1:
+#         ngroups = max(groups) + 1
+#     else:
+#         ngroups = num_groups
+#     cdef vector[int] cgroups = groups
+#     cdef vector[int] cgroup_limits = group_limits
+
+#     cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
+#                                                     cgroups,
+#                                                     cgroup_limits,
+#                                                     ngroups)
+#     # cgroups.resize(graph.nodes_size())
+#     # cdef vector[int] cgroup_limits
+#     # cgroups.resize(graph.nodes_size())
+
+#     # for i, group in enumerate(groups):
+#     #     cgroups[i] = group
+
+
+#     cdef CBeamChartLogViterbiPotential *chart
+#     if cube_pruning:
+#         chart = ccube_pruningLogViterbiPotential(graph.thisptr,
+#                      deref(potentials.thisptr),
+#                      deref(constraints.thisptr),
+#                      deref(outside.chart),
+#                      lower_bound,
+#                      deref(beam_groups),
+#                      recombine)
+#     else:
+#         chart = cbeam_searchLogViterbiPotential(graph.thisptr,
+#                      deref(potentials.thisptr),
+#                      deref(constraints.thisptr),
+#                      deref(outside.chart),
+#                      lower_bound,
+#                      deref(beam_groups),
+#                      recombine)
+#     return BeamChartLogViterbiPotential().init(chart, graph)
+
+
 #cython: embedsignature=True
 
 from cython.operator cimport dereference as deref
@@ -1234,8 +1573,9 @@ class Bool:
     def viterbi(Hypergraph graph,
                 _BoolPotentials potentials,
                 char [:] chart=None,
+                int [:] back_pointers=None,
                 bool [:] mask=None,
-                ):
+                bool get_path=True):
         cdef char [:] my_chart = chart
         if chart is None:
             my_chart = np.zeros(len(graph.nodes))
@@ -1243,8 +1583,12 @@ class Bool:
             graph.thisptr,
             &my_chart[0])
 
+        cdef int [:] my_back_pointers = back_pointers
+        if back_pointers is None:
+            my_back_pointers = np.zeros(len(graph.nodes), dtype=np.int32)
         cdef CBackPointers *used_back = \
-            new CBackPointers(graph.thisptr)
+            new CBackPointers(graph.thisptr,
+                              &my_back_pointers[0])
 
         viterbi_Bool(graph.thisptr,
                            deref(potentials.thisptr),
@@ -1252,9 +1596,13 @@ class Bool:
                            used_back,
                            (<bool *> NULL) if mask is None else (<bool *>&mask[0])
                            )
-        cdef CHyperpath *path = used_back.construct_path()
-        del in_chart
-        return Path().init(path, graph)
+        cdef CHyperpath *path
+        if get_path:
+            path = used_back.construct_path()
+            del in_chart, used_back
+            return Path().init(path, graph)
+        else:
+            del in_chart, used_back
 
     
 
@@ -1443,8 +1791,9 @@ class Viterbi:
     def viterbi(Hypergraph graph,
                 _ViterbiPotentials potentials,
                 double [:] chart=None,
+                int [:] back_pointers=None,
                 bool [:] mask=None,
-                ):
+                bool get_path=True):
         cdef double [:] my_chart = chart
         if chart is None:
             my_chart = np.zeros(len(graph.nodes))
@@ -1452,8 +1801,12 @@ class Viterbi:
             graph.thisptr,
             &my_chart[0])
 
+        cdef int [:] my_back_pointers = back_pointers
+        if back_pointers is None:
+            my_back_pointers = np.zeros(len(graph.nodes), dtype=np.int32)
         cdef CBackPointers *used_back = \
-            new CBackPointers(graph.thisptr)
+            new CBackPointers(graph.thisptr,
+                              &my_back_pointers[0])
 
         viterbi_Viterbi(graph.thisptr,
                            deref(potentials.thisptr),
@@ -1461,9 +1814,13 @@ class Viterbi:
                            used_back,
                            (<bool *> NULL) if mask is None else (<bool *>&mask[0])
                            )
-        cdef CHyperpath *path = used_back.construct_path()
-        del in_chart
-        return Path().init(path, graph)
+        cdef CHyperpath *path
+        if get_path:
+            path = used_back.construct_path()
+            del in_chart, used_back
+            return Path().init(path, graph)
+        else:
+            del in_chart, used_back
 
     
 
@@ -1652,8 +2009,9 @@ class Counting:
     def viterbi(Hypergraph graph,
                 _CountingPotentials potentials,
                 int [:] chart=None,
+                int [:] back_pointers=None,
                 bool [:] mask=None,
-                ):
+                bool get_path=True):
         cdef int [:] my_chart = chart
         if chart is None:
             my_chart = np.zeros(len(graph.nodes))
@@ -1661,8 +2019,12 @@ class Counting:
             graph.thisptr,
             &my_chart[0])
 
+        cdef int [:] my_back_pointers = back_pointers
+        if back_pointers is None:
+            my_back_pointers = np.zeros(len(graph.nodes), dtype=np.int32)
         cdef CBackPointers *used_back = \
-            new CBackPointers(graph.thisptr)
+            new CBackPointers(graph.thisptr,
+                              &my_back_pointers[0])
 
         viterbi_Counting(graph.thisptr,
                            deref(potentials.thisptr),
@@ -1670,9 +2032,13 @@ class Counting:
                            used_back,
                            (<bool *> NULL) if mask is None else (<bool *>&mask[0])
                            )
-        cdef CHyperpath *path = used_back.construct_path()
-        del in_chart
-        return Path().init(path, graph)
+        cdef CHyperpath *path
+        if get_path:
+            path = used_back.construct_path()
+            del in_chart, used_back
+            return Path().init(path, graph)
+        else:
+            del in_chart, used_back
 
     
 
@@ -1861,8 +2227,9 @@ class LogViterbi:
     def viterbi(Hypergraph graph,
                 _LogViterbiPotentials potentials,
                 double [:] chart=None,
+                int [:] back_pointers=None,
                 bool [:] mask=None,
-                ):
+                bool get_path=True):
         cdef double [:] my_chart = chart
         if chart is None:
             my_chart = np.zeros(len(graph.nodes))
@@ -1870,8 +2237,12 @@ class LogViterbi:
             graph.thisptr,
             &my_chart[0])
 
+        cdef int [:] my_back_pointers = back_pointers
+        if back_pointers is None:
+            my_back_pointers = np.zeros(len(graph.nodes), dtype=np.int32)
         cdef CBackPointers *used_back = \
-            new CBackPointers(graph.thisptr)
+            new CBackPointers(graph.thisptr,
+                              &my_back_pointers[0])
 
         viterbi_LogViterbi(graph.thisptr,
                            deref(potentials.thisptr),
@@ -1879,10 +2250,752 @@ class LogViterbi:
                            used_back,
                            (<bool *> NULL) if mask is None else (<bool *>&mask[0])
                            )
-        cdef CHyperpath *path = used_back.construct_path()
-        del in_chart
-        return Path().init(path, graph)
+        cdef CHyperpath *path
+        if get_path:
+            path = used_back.construct_path()
+            del in_chart, used_back
+            return Path().init(path, graph)
+        else:
+            del in_chart, used_back
 
+    
+
+
+cdef class _LogProbPotentials(_Potentials):
+    def __cinit__(self, Hypergraph graph):
+        self.graph = graph
+        self.kind = LogProb
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+        self.thisptr = NULL
+
+    cdef init(self, CHypergraphLogProbPotentials *ptr):
+        self.thisptr = ptr
+        return self
+
+    
+    def from_array(self, double [:] X):
+        self.thisptr =  \
+            cmake_pointer_potentials_LogProb(self.graph.thisptr,
+                                               <double *> &X[0])
+        return self
+
+    def as_array(self):
+        return _LogProbvector_to_numpy(self.thisptr.potentials(),
+                                          len(self.graph.edges))
+    
+
+
+cdef class LogProbValue:
+    cdef LogProbValue init(self, double val):
+        self.thisval = val
+        return self
+
+    @staticmethod
+    def from_value(double val):
+        created = LogProbValue()
+        created.thisval = _LogProb_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _LogProb_from_cpp(LogProb_zero())
+
+    @staticmethod
+    def one_raw():
+        return _LogProb_from_cpp(LogProb_one())
+
+    @staticmethod
+    def zero():
+        return LogProbValue().init(LogProb_zero())
+
+    @staticmethod
+    def one():
+        return LogProbValue().init(LogProb_one())
+
+    def __add__(LogProbValue self, LogProbValue other):
+        return LogProbValue().init(LogProb_add(self.thisval,
+                                                  other.thisval))
+
+    def __mul__(LogProbValue self, LogProbValue other):
+        return LogProbValue().init(LogProb_times(self.thisval,
+                                                    other.thisval))
+
+    property value:
+        def __get__(self):
+            return _LogProb_from_cpp(self.thisval)
+
+
+cdef double _LogProb_to_cpp(double val):
+    return val
+
+
+cdef _LogProb_from_cpp(double val):
+    
+    return val
+    
+
+
+
+
+
+cdef _LogProbvector_to_numpy(const double *vec,
+                                int size):
+    cdef view.array my_array = \
+        view.array(shape=(size,),
+                   itemsize=sizeof(double),
+                   format="d",
+                   mode="c", allocate_buffer=False)
+    my_array.data = <char *> vec
+    cdef double [:] my_view = my_array
+    return np.asarray(my_view)
+
+
+
+class LogProb:
+    Potentials = _LogProbPotentials
+    Value = LogProbValue
+    
+    @staticmethod
+    def inside(Hypergraph graph,
+               _LogProbPotentials potentials,
+               double [:] chart=None):
+        cdef double [:] my_chart = chart
+        if chart is None:
+            my_chart = np.zeros(len(graph.nodes))
+        cdef CLogProbChart *in_chart = new CLogProbChart(
+            graph.thisptr,
+            &my_chart[0])
+
+        inside_LogProb(graph.thisptr,
+                          deref(potentials.thisptr),
+                          in_chart)
+        del in_chart
+        return np.asarray(my_chart)
+
+    @staticmethod
+    def outside(Hypergraph graph,
+                _LogProbPotentials potentials,
+                double [:] inside_chart,
+                double [:] chart=None):
+        cdef double [:] my_chart = chart
+        if chart is None:
+            my_chart = np.zeros(len(graph.nodes))
+
+        cdef CLogProbChart *in_chart = new CLogProbChart(
+            graph.thisptr,
+            &inside_chart[0])
+        cdef CLogProbChart *out_chart = new CLogProbChart(
+            graph.thisptr,
+            &my_chart[0])
+
+        outside_LogProb(graph.thisptr,
+                           deref(potentials.thisptr),
+                           deref(in_chart),
+                           out_chart)
+        del in_chart, out_chart
+        return np.asarray(my_chart)
+
+    @staticmethod
+    def compute_marginals(Hypergraph graph,
+                          _LogProbPotentials potentials,
+                          double [:] inside_chart,
+                          double [:] outside_chart):
+
+        cdef double [:] node_margs = np.zeros(len(graph.nodes))
+        cdef double [:] edge_margs = np.zeros(len(graph.edges))
+
+        cdef CLogProbChart *in_chart = new CLogProbChart(
+            graph.thisptr,
+            &inside_chart[0])
+        cdef CLogProbChart *out_chart = new CLogProbChart(
+            graph.thisptr,
+            &outside_chart[0])
+
+        cdef CLogProbChart *node_chart = new CLogProbChart(
+            graph.thisptr,
+            &node_margs[0])
+
+        node_marginals_LogProb(graph.thisptr,
+                                  deref(in_chart),
+                                  deref(out_chart),
+                                  node_chart)
+
+        edge_marginals_LogProb(graph.thisptr,
+                                  deref(potentials.thisptr),
+                                  deref(in_chart),
+                                  deref(out_chart),
+                                  &edge_margs[0])
+        del in_chart, out_chart, node_chart
+        return np.asarray(node_margs), np.asarray(edge_margs)
+        # #cdef const CLogProbMarginals *marginals = \
+
+
+        # return (_LogProbvector_to_numpy(marginals.node_marginals(),
+        #                                    len(graph.nodes)),
+        #         _LogProbvector_to_numpy(marginals.edge_marginals(),
+        #                                    len(graph.edges)))
+
+    
+    
+
+
+cdef class _InsidePotentials(_Potentials):
+    def __cinit__(self, Hypergraph graph):
+        self.graph = graph
+        self.kind = Inside
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+        self.thisptr = NULL
+
+    cdef init(self, CHypergraphInsidePotentials *ptr):
+        self.thisptr = ptr
+        return self
+
+    
+    def from_array(self, double [:] X):
+        self.thisptr =  \
+            cmake_pointer_potentials_Inside(self.graph.thisptr,
+                                               <double *> &X[0])
+        return self
+
+    def as_array(self):
+        return _Insidevector_to_numpy(self.thisptr.potentials(),
+                                          len(self.graph.edges))
+    
+
+
+cdef class InsideValue:
+    cdef InsideValue init(self, double val):
+        self.thisval = val
+        return self
+
+    @staticmethod
+    def from_value(double val):
+        created = InsideValue()
+        created.thisval = _Inside_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _Inside_from_cpp(Inside_zero())
+
+    @staticmethod
+    def one_raw():
+        return _Inside_from_cpp(Inside_one())
+
+    @staticmethod
+    def zero():
+        return InsideValue().init(Inside_zero())
+
+    @staticmethod
+    def one():
+        return InsideValue().init(Inside_one())
+
+    def __add__(InsideValue self, InsideValue other):
+        return InsideValue().init(Inside_add(self.thisval,
+                                                  other.thisval))
+
+    def __mul__(InsideValue self, InsideValue other):
+        return InsideValue().init(Inside_times(self.thisval,
+                                                    other.thisval))
+
+    property value:
+        def __get__(self):
+            return _Inside_from_cpp(self.thisval)
+
+
+cdef double _Inside_to_cpp(double val):
+    return val
+
+
+cdef _Inside_from_cpp(double val):
+    
+    return val
+    
+
+
+
+
+
+cdef _Insidevector_to_numpy(const double *vec,
+                                int size):
+    cdef view.array my_array = \
+        view.array(shape=(size,),
+                   itemsize=sizeof(double),
+                   format="d",
+                   mode="c", allocate_buffer=False)
+    my_array.data = <char *> vec
+    cdef double [:] my_view = my_array
+    return np.asarray(my_view)
+
+
+
+class Inside:
+    Potentials = _InsidePotentials
+    Value = InsideValue
+    
+    @staticmethod
+    def inside(Hypergraph graph,
+               _InsidePotentials potentials,
+               double [:] chart=None):
+        cdef double [:] my_chart = chart
+        if chart is None:
+            my_chart = np.zeros(len(graph.nodes))
+        cdef CInsideChart *in_chart = new CInsideChart(
+            graph.thisptr,
+            &my_chart[0])
+
+        inside_Inside(graph.thisptr,
+                          deref(potentials.thisptr),
+                          in_chart)
+        del in_chart
+        return np.asarray(my_chart)
+
+    @staticmethod
+    def outside(Hypergraph graph,
+                _InsidePotentials potentials,
+                double [:] inside_chart,
+                double [:] chart=None):
+        cdef double [:] my_chart = chart
+        if chart is None:
+            my_chart = np.zeros(len(graph.nodes))
+
+        cdef CInsideChart *in_chart = new CInsideChart(
+            graph.thisptr,
+            &inside_chart[0])
+        cdef CInsideChart *out_chart = new CInsideChart(
+            graph.thisptr,
+            &my_chart[0])
+
+        outside_Inside(graph.thisptr,
+                           deref(potentials.thisptr),
+                           deref(in_chart),
+                           out_chart)
+        del in_chart, out_chart
+        return np.asarray(my_chart)
+
+    @staticmethod
+    def compute_marginals(Hypergraph graph,
+                          _InsidePotentials potentials,
+                          double [:] inside_chart,
+                          double [:] outside_chart):
+
+        cdef double [:] node_margs = np.zeros(len(graph.nodes))
+        cdef double [:] edge_margs = np.zeros(len(graph.edges))
+
+        cdef CInsideChart *in_chart = new CInsideChart(
+            graph.thisptr,
+            &inside_chart[0])
+        cdef CInsideChart *out_chart = new CInsideChart(
+            graph.thisptr,
+            &outside_chart[0])
+
+        cdef CInsideChart *node_chart = new CInsideChart(
+            graph.thisptr,
+            &node_margs[0])
+
+        node_marginals_Inside(graph.thisptr,
+                                  deref(in_chart),
+                                  deref(out_chart),
+                                  node_chart)
+
+        edge_marginals_Inside(graph.thisptr,
+                                  deref(potentials.thisptr),
+                                  deref(in_chart),
+                                  deref(out_chart),
+                                  &edge_margs[0])
+        del in_chart, out_chart, node_chart
+        return np.asarray(node_margs), np.asarray(edge_margs)
+        # #cdef const CInsideMarginals *marginals = \
+
+
+        # return (_Insidevector_to_numpy(marginals.node_marginals(),
+        #                                    len(graph.nodes)),
+        #         _Insidevector_to_numpy(marginals.edge_marginals(),
+        #                                    len(graph.edges)))
+
+    
+    
+
+    @staticmethod
+    def viterbi(Hypergraph graph,
+                _InsidePotentials potentials,
+                double [:] chart=None,
+                int [:] back_pointers=None,
+                bool [:] mask=None,
+                bool get_path=True):
+        cdef double [:] my_chart = chart
+        if chart is None:
+            my_chart = np.zeros(len(graph.nodes))
+        cdef CInsideChart *in_chart = new CInsideChart(
+            graph.thisptr,
+            &my_chart[0])
+
+        cdef int [:] my_back_pointers = back_pointers
+        if back_pointers is None:
+            my_back_pointers = np.zeros(len(graph.nodes), dtype=np.int32)
+        cdef CBackPointers *used_back = \
+            new CBackPointers(graph.thisptr,
+                              &my_back_pointers[0])
+
+        viterbi_Inside(graph.thisptr,
+                           deref(potentials.thisptr),
+                           in_chart,
+                           used_back,
+                           (<bool *> NULL) if mask is None else (<bool *>&mask[0])
+                           )
+        cdef CHyperpath *path
+        if get_path:
+            path = used_back.construct_path()
+            del in_chart, used_back
+            return Path().init(path, graph)
+        else:
+            del in_chart, used_back
+
+    
+
+
+cdef class _MinMaxPotentials(_Potentials):
+    def __cinit__(self, Hypergraph graph):
+        self.graph = graph
+        self.kind = MinMax
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+        self.thisptr = NULL
+
+    cdef init(self, CHypergraphMinMaxPotentials *ptr):
+        self.thisptr = ptr
+        return self
+
+    
+    def from_array(self, double [:] X):
+        self.thisptr =  \
+            cmake_pointer_potentials_MinMax(self.graph.thisptr,
+                                               <double *> &X[0])
+        return self
+
+    def as_array(self):
+        return _MinMaxvector_to_numpy(self.thisptr.potentials(),
+                                          len(self.graph.edges))
+    
+
+
+cdef class MinMaxValue:
+    cdef MinMaxValue init(self, double val):
+        self.thisval = val
+        return self
+
+    @staticmethod
+    def from_value(double val):
+        created = MinMaxValue()
+        created.thisval = _MinMax_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _MinMax_from_cpp(MinMax_zero())
+
+    @staticmethod
+    def one_raw():
+        return _MinMax_from_cpp(MinMax_one())
+
+    @staticmethod
+    def zero():
+        return MinMaxValue().init(MinMax_zero())
+
+    @staticmethod
+    def one():
+        return MinMaxValue().init(MinMax_one())
+
+    def __add__(MinMaxValue self, MinMaxValue other):
+        return MinMaxValue().init(MinMax_add(self.thisval,
+                                                  other.thisval))
+
+    def __mul__(MinMaxValue self, MinMaxValue other):
+        return MinMaxValue().init(MinMax_times(self.thisval,
+                                                    other.thisval))
+
+    property value:
+        def __get__(self):
+            return _MinMax_from_cpp(self.thisval)
+
+
+cdef double _MinMax_to_cpp(double val):
+    return val
+
+
+cdef _MinMax_from_cpp(double val):
+    
+    return val
+    
+
+
+
+
+
+cdef _MinMaxvector_to_numpy(const double *vec,
+                                int size):
+    cdef view.array my_array = \
+        view.array(shape=(size,),
+                   itemsize=sizeof(double),
+                   format="d",
+                   mode="c", allocate_buffer=False)
+    my_array.data = <char *> vec
+    cdef double [:] my_view = my_array
+    return np.asarray(my_view)
+
+
+
+class MinMax:
+    Potentials = _MinMaxPotentials
+    Value = MinMaxValue
+    
+    @staticmethod
+    def inside(Hypergraph graph,
+               _MinMaxPotentials potentials,
+               double [:] chart=None):
+        cdef double [:] my_chart = chart
+        if chart is None:
+            my_chart = np.zeros(len(graph.nodes))
+        cdef CMinMaxChart *in_chart = new CMinMaxChart(
+            graph.thisptr,
+            &my_chart[0])
+
+        inside_MinMax(graph.thisptr,
+                          deref(potentials.thisptr),
+                          in_chart)
+        del in_chart
+        return np.asarray(my_chart)
+
+    @staticmethod
+    def outside(Hypergraph graph,
+                _MinMaxPotentials potentials,
+                double [:] inside_chart,
+                double [:] chart=None):
+        cdef double [:] my_chart = chart
+        if chart is None:
+            my_chart = np.zeros(len(graph.nodes))
+
+        cdef CMinMaxChart *in_chart = new CMinMaxChart(
+            graph.thisptr,
+            &inside_chart[0])
+        cdef CMinMaxChart *out_chart = new CMinMaxChart(
+            graph.thisptr,
+            &my_chart[0])
+
+        outside_MinMax(graph.thisptr,
+                           deref(potentials.thisptr),
+                           deref(in_chart),
+                           out_chart)
+        del in_chart, out_chart
+        return np.asarray(my_chart)
+
+    @staticmethod
+    def compute_marginals(Hypergraph graph,
+                          _MinMaxPotentials potentials,
+                          double [:] inside_chart,
+                          double [:] outside_chart):
+
+        cdef double [:] node_margs = np.zeros(len(graph.nodes))
+        cdef double [:] edge_margs = np.zeros(len(graph.edges))
+
+        cdef CMinMaxChart *in_chart = new CMinMaxChart(
+            graph.thisptr,
+            &inside_chart[0])
+        cdef CMinMaxChart *out_chart = new CMinMaxChart(
+            graph.thisptr,
+            &outside_chart[0])
+
+        cdef CMinMaxChart *node_chart = new CMinMaxChart(
+            graph.thisptr,
+            &node_margs[0])
+
+        node_marginals_MinMax(graph.thisptr,
+                                  deref(in_chart),
+                                  deref(out_chart),
+                                  node_chart)
+
+        edge_marginals_MinMax(graph.thisptr,
+                                  deref(potentials.thisptr),
+                                  deref(in_chart),
+                                  deref(out_chart),
+                                  &edge_margs[0])
+        del in_chart, out_chart, node_chart
+        return np.asarray(node_margs), np.asarray(edge_margs)
+        # #cdef const CMinMaxMarginals *marginals = \
+
+
+        # return (_MinMaxvector_to_numpy(marginals.node_marginals(),
+        #                                    len(graph.nodes)),
+        #         _MinMaxvector_to_numpy(marginals.edge_marginals(),
+        #                                    len(graph.edges)))
+
+    
+    
+
+
+cdef class _AlphabetPotentials(_Potentials):
+    def __cinit__(self, Hypergraph graph):
+        self.graph = graph
+        self.kind = Alphabet
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+        self.thisptr = NULL
+
+    cdef init(self, CHypergraphAlphabetPotentials *ptr):
+        self.thisptr = ptr
+        return self
+
+    
+
+
+cdef class AlphabetValue:
+    cdef AlphabetValue init(self, vector[int] val):
+        self.thisval = val
+        return self
+
+    @staticmethod
+    def from_value(vector[int] val):
+        created = AlphabetValue()
+        created.thisval = _Alphabet_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _Alphabet_from_cpp(Alphabet_zero())
+
+    @staticmethod
+    def one_raw():
+        return _Alphabet_from_cpp(Alphabet_one())
+
+    @staticmethod
+    def zero():
+        return AlphabetValue().init(Alphabet_zero())
+
+    @staticmethod
+    def one():
+        return AlphabetValue().init(Alphabet_one())
+
+    def __add__(AlphabetValue self, AlphabetValue other):
+        return AlphabetValue().init(Alphabet_add(self.thisval,
+                                                  other.thisval))
+
+    def __mul__(AlphabetValue self, AlphabetValue other):
+        return AlphabetValue().init(Alphabet_times(self.thisval,
+                                                    other.thisval))
+
+    property value:
+        def __get__(self):
+            return _Alphabet_from_cpp(self.thisval)
+
+
+cdef vector[int] _Alphabet_to_cpp(vector[int] val):
+    return val
+
+
+cdef _Alphabet_from_cpp(vector[int] val):
+    
+    return val
+    
+
+
+
+
+
+
+
+class Alphabet:
+    Potentials = _AlphabetPotentials
+    Value = AlphabetValue
+    
+    
+
+
+cdef class _BinaryVectorPotentials(_Potentials):
+    def __cinit__(self, Hypergraph graph):
+        self.graph = graph
+        self.kind = BinaryVector
+        self.thisptr = NULL
+
+    def __dealloc__(self):
+        del self.thisptr
+        self.thisptr = NULL
+
+    cdef init(self, CHypergraphBinaryVectorPotentials *ptr):
+        self.thisptr = ptr
+        return self
+
+    
+
+
+cdef class BinaryVectorValue:
+    cdef BinaryVectorValue init(self, cbitset val):
+        self.thisval = val
+        return self
+
+    @staticmethod
+    def from_value(Bitset val):
+        created = BinaryVectorValue()
+        created.thisval = _BinaryVector_to_cpp(val)
+        return created
+
+    @staticmethod
+    def zero_raw():
+        return _BinaryVector_from_cpp(BinaryVector_zero())
+
+    @staticmethod
+    def one_raw():
+        return _BinaryVector_from_cpp(BinaryVector_one())
+
+    @staticmethod
+    def zero():
+        return BinaryVectorValue().init(BinaryVector_zero())
+
+    @staticmethod
+    def one():
+        return BinaryVectorValue().init(BinaryVector_one())
+
+    def __add__(BinaryVectorValue self, BinaryVectorValue other):
+        return BinaryVectorValue().init(BinaryVector_add(self.thisval,
+                                                  other.thisval))
+
+    def __mul__(BinaryVectorValue self, BinaryVectorValue other):
+        return BinaryVectorValue().init(BinaryVector_times(self.thisval,
+                                                    other.thisval))
+
+    property value:
+        def __get__(self):
+            return _BinaryVector_from_cpp(self.thisval)
+
+
+cdef cbitset _BinaryVector_to_cpp(Bitset val):
+    return <cbitset>val.data
+
+
+cdef _BinaryVector_from_cpp(cbitset val):
+    
+    return Bitset().init(val)
+    
+
+
+
+
+
+
+
+class BinaryVector:
+    Potentials = _BinaryVectorPotentials
+    Value = BinaryVectorValue
+    
     
 
 

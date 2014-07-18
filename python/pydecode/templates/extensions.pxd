@@ -36,9 +36,9 @@ cdef class LatticeLabel:
     cdef CLatticeLabel label
     cdef init(LatticeLabel self, CLatticeLabel label)
 
-cdef void _fill_trellis(float[:, :] emissions,
+cdef void _fill_trellis(float[:, ::1] emissions,
                         float[:] transitions,
                         int n_labels,
                         int[:] words,
-                        float[:, :] trellis,
-                        int[:,:] path)
+                        float[:, ::1] trellis,
+                        int[:,::1] path)

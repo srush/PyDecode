@@ -1,5 +1,7 @@
 # For finite-state automaton construction.
 
+cimport cython
+
 cdef class DFA:
     def __init__(self, int num_states,
                  int num_symbols, transitions,
@@ -168,55 +170,3 @@ def binarize(Hypergraph graph):
     """
     cdef CHypergraphMap *hypergraph_map = cbinarize(graph.thisptr)
     return convert_hypergraph_map(hypergraph_map, graph, None)
-
-
-INFINITY = 1e9
-
-def fill_trel(emissions, transitions, n_labels, words, trellis, path):
-    _fill_trellis(emissions, transitions, n_labels, words, trellis, path)
-
-
-cdef void _fill_trellis(float[:,:] emissions, float[:] transitions,
-                        int n_labels, int[:] words, float[:,:] trellis,
-                        int[:,:] path):
-    cdef:
-        float min_score
-        float score
-        int min_prev
-        float e_score
-
-        int cur_label, prev_label
-        int  feat_i, i, j
-        int word_i = 0
-        # Example cur
-        int offset
-
-    for word_i in range(len(words)):
-        cur = words[word_i]
-        # Current label
-        for cur_label in range(n_labels):
-            if trellis[word_i, cur_label] == -INFINITY:
-                continue
-
-            min_score = -1E9
-            min_prev = -1
-
-            # Emission score
-            e_score = emissions[cur, cur_label]
-
-            # Previous label
-            # Transitions from start state
-            if word_i == 0:
-                trellis[word_i, cur_label] = e_score + transitions[0]#self.transition.get2d(n_labels, cur_label)
-                path[word_i, cur_label] = cur_label
-            # Transitions from the rest of the states
-            else:
-                # Including labels for initial and final states
-                offset = cur_label * (n_labels + 2)
-                for prev_label in range(n_labels):
-                    score = e_score + transitions[offset + prev_label] + trellis[word_i-1, prev_label]
-                    if score >= min_score:
-                        min_score = score
-                        min_prev = prev_label
-                trellis[word_i, cur_label] = min_score
-                path[word_i, cur_label] = min_prev

@@ -256,6 +256,7 @@ template<typename BVP>
 Hyperpath *BeamChart<BVP>::get_path(int result) {
     // Collect backpointers.
     vector<HEdge> path;
+    vector<HNode> node_path;
     queue<pair<HNode, int> > to_examine;
     to_examine.push(pair<HNode, int>(hypergraph_->root(), result));
     if (result >= get_beam(hypergraph_->root()).size()) {
@@ -265,6 +266,7 @@ Hyperpath *BeamChart<BVP>::get_path(int result) {
     while (!to_examine.empty()) {
         pair<HNode, int> p = to_examine.front();
         HNode node = p.first;
+        node_path.push_back(node);
         int position = p.second;
 
         BeamHyp *score = get_beam(node)[position];
@@ -284,8 +286,10 @@ Hyperpath *BeamChart<BVP>::get_path(int result) {
                                               )));
         }
     }
+    sort(node_path.begin(), node_path.end(), IdComparator());
     sort(path.begin(), path.end(), IdComparator());
-    return new Hyperpath(hypergraph_, path);
+
+    return new Hyperpath(hypergraph_, node_path, path);
 }
 
 // template<typename BVP>

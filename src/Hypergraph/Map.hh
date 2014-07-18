@@ -23,14 +23,14 @@ class HypergraphMap {
 
     HypergraphMap *invert() const;
 
-    Hyperpath *map(const Hyperpath &domain_path) const {
-        domain_path.check(*domain_graph());
-        vector<HEdge> edges;
-        foreach (HEdge edge, domain_path.edges()) {
-            edges.push_back(map_edge(edge));
-        }
-        return new Hyperpath(range_graph(), edges);
-    }
+    // Hyperpath *map(const Hyperpath &domain_path) const {
+    //     domain_path.check(*domain_graph());
+    //     vector<HEdge> edges;
+    //     foreach (HEdge edge, domain_path.edges()) {
+    //         edges.push_back(map_edge(edge));
+    //     }
+    //     return new Hyperpath(range_graph(), edges);
+    // }
 
     HEdge map_edge(HEdge original) const {
         //assert(original->id() < edge_map_->size());

@@ -211,8 +211,9 @@ class {{S.type}}:
     def viterbi(Hypergraph graph,
                 _{{S.type}}Potentials potentials,
                 {{S.cvalue}} [:] chart=None,
+                int [:] back_pointers=None,
                 bool [:] mask=None,
-                ):
+                bool get_path=True):
         cdef {{S.cvalue}} [:] my_chart = chart
         if chart is None:
             my_chart = np.zeros(len(graph.nodes))
@@ -220,8 +221,12 @@ class {{S.type}}:
             graph.thisptr,
             &my_chart[0])
 
+        cdef int [:] my_back_pointers = back_pointers
+        if back_pointers is None:
+            my_back_pointers = np.zeros(len(graph.nodes), dtype=np.int32)
         cdef CBackPointers *used_back = \
-            new CBackPointers(graph.thisptr)
+            new CBackPointers(graph.thisptr,
+                              &my_back_pointers[0])
 
         viterbi_{{S.type}}(graph.thisptr,
                            deref(potentials.thisptr),
@@ -229,9 +234,13 @@ class {{S.type}}:
                            used_back,
                            (<bool *> NULL) if mask is None else (<bool *>&mask[0])
                            )
-        cdef CHyperpath *path = used_back.construct_path()
-        del in_chart
-        return Path().init(path, graph)
+        cdef CHyperpath *path
+        if get_path:
+            path = used_back.construct_path()
+            del in_chart, used_back
+            return Path().init(path, graph)
+        else:
+            del in_chart, used_back
 
     {% endif %}
 {% endfor %}
