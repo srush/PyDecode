@@ -1,16 +1,13 @@
-language: python
-virtualenv:
-    system_site_packages: true
-python:
-  - "2.7"
-# command to install dependencies
-before_install:
- - sudo apt-get update -qq
- - sudo apt-get install python-scipy python-cvxopt graphviz cython glpk libboost-dev
-install:
-  - pip install -r requirements.txt -r optional-requirements.txt --use-mirrors
-  - pip install .
-# command to run tests
+image: python
+env:
+  - PYTHONPATH=/var/cache/drone
 script:
+ - sudo apt-get update -qq
+ - sudo apt-get install python-numpy python-scipy python-cvxopt graphviz cython glpk libboost-dev
+  - pip install -r requirements.txt -r optional-requirements.txt --use-mirrors
   - nosetests python/pydecode
   - cd python; py.test ../notebooks
+notify:
+  email:
+    recipients:
+      - sasha.rush@gmail.com
