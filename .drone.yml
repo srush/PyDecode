@@ -1,12 +1,15 @@
-image: python
+image: scivm/scientific-python-2.7
 env:
   - PYTHONPATH=/var/cache/drone
 script:
- - sudo apt-get update -qq
- - sudo apt-get install python-numpy python-scipy python-cvxopt graphviz cython glpk libboost-dev
-  - pip install -r requirements.txt -r optional-requirements.txt --use-mirrors
-  - nosetests python/pydecode
-  - cd python; py.test ../notebooks
+  - source /opt/ve/bin/activate
+  - cd /var/cache/drone/src/PyDecode/ 
+  - ls .
+  - apt-get install -y glpk
+  - pip install pulp
+  - python setup.py config
+  - python setup.py build_ext --inplace
+  - nosetests python/pydecode/test/
 notify:
   email:
     recipients:
