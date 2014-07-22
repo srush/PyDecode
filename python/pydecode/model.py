@@ -153,9 +153,9 @@ class DynamicProgrammingModel(StructuredModel):
             for x, y in itertools.izip(X, Y):
                 dp = self.dynamic_program(x)
                 self._dp_cache[x] = dp
-                # self._feature_cache[x] = self._active_feature_indices(x, dp)
-                # self._feature_matrix_cache[x] = \
-                #     self._feature_sparse_matrix(self._feature_cache[x])
+                self._feature_cache[x] = self._active_feature_indices(x, dp)
+                self._feature_matrix_cache[x] = \
+                    self._feature_sparse_matrix(self._feature_cache[x])
                 self._joint_feature_cache[x, y] = self._joint_feature(x, y)
 
 
