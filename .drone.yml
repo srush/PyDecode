@@ -4,11 +4,15 @@ env:
 script:
   - source /opt/ve/bin/activate
   - ls .
-  - apt-get install -y glpk
+  - apt-get install -y glpk libboost-dev
   - pip install pulp
   - python setup.py config
-  - python setup.py build_ext --inplace
+  - python setup.py build
+  - python setup.py install
   - nosetests python/pydecode/test/
+  - apt-get install -y pkg-config graphviz graphviz-dev libblas-dev python-cvxopt
+  - pip install pulp networkx pystruct matplotlib pytest pandas pygraphviz cvxopt scikit-learn
+  - py.test notebooks
 notify:
   email:
     recipients:

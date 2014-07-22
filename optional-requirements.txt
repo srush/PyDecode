@@ -17,5 +17,5 @@ pyzmq>=2.1.11
 
 breathe>=1.0
 cvxopt
-scikit-learn
+scikits-learn
 pystruct>=0.1
