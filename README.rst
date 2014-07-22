@@ -1,5 +1,5 @@
 
-PyDecode is a dynamic programming toolkit. It was developed for research in natural language processing with the aim of being simple enough for prototyping, but efficient enough for research use.
+PyDecode is a dynamic programming toolkit developed for research in natural langauge processing. Its aim is to be simple enough for fast prototyping, but efficient enough for research use.
 
 
 .. _documentation: http://pydecode.readthedocs.org/
@@ -10,24 +10,24 @@ PyDecode is a dynamic programming toolkit. It was developed for research in natu
    :align: center
 
 
-Features
--------------
 
-* **Simple interface.** Dynamic programming algorithms specified through pseudo-code like interface. ::
 
+
+* **Simple specifications.** Dynamic programming algorithms specified through pseudo-code. ::
+
+    ...
     c.init(items[0, K[0]])
     for i in range(1, n):
         for t in K[i]:
             c.set(items[i, t],
                   items[i-1, K[i-1]],
                   out=outputs[i, t, K[i-1]])
-    return c.finish()
-
-* **Efficient implementation.** Core code in C++, interfaces through numpy/scipy. ::
-
     dp = c.finish()
-    scores = numpy.random(dp.outputs.shape)
-    output = pydecode.argmax(dp, scores)
+
+* **Efficient implementation.** Core code in C++, interfaces through Numpy. ::
+
+    scores = numpy.random.random(dp.outputs.shape)
+    y = pydecode.argmax(dp, scores)
 
 * **High-level algorithms.** Includes a set of widely-used algorithms. ::
 
@@ -38,13 +38,13 @@ Features
     inside = pydecode.fill(dp, scores, kind=pydecode.Inside)
 
     # Pruning
-    filter = values > threshold
-    _, projection, pruned = pydecode.project(dp.hypergraph, filter)
+    keep = values > threshold
+    _, projection, pruned = pydecode.project(dp.hypergraph, keep)
 
-* **Integration with machine learning toolkits.** Train structured models using dynamic programming. ::
+* **Integration with machine learning toolkits.** Train structured models. ::
 
 
-    perceptron_tagger = StructuredPerceptron(tagger, max_iter=5)
+    perceptron_tagger = StructuredPerceptron(tagger)
     perceptron_tagger.fit(X, Y)
     Y_test = perceptron_tagger.predict(X_test)
 
@@ -57,16 +57,16 @@ Features
    :align: center
 
 
-Documentation, Tutorial and Gallery
-----------------------
+.. Documentation, Tutorial and Gallery
+.. ----------------------
 
-.. hlist::
-   :columns: 2
+.. .. hlist::
+..    :columns: 2
 
-   * documentation_
-   * tutorial_
-   * gallery_
-   * api_
+..    * documentation_
+..    * tutorial_
+..    * gallery_
+..    * api_
 
 
 .. Features
@@ -85,8 +85,8 @@ Documentation, Tutorial and Gallery
 .. * Fast k-best algorithms.
 
 
-.. image:: https://travis-ci.org/srush/PyDecode.png?branch=master
-    :target: https://travis-ci.org/srush/PyDecode
+.. .. image:: https://travis-ci.org/srush/PyDecode.png?branch=master
+..     :target: https://travis-ci.org/srush/PyDecode
 
 .. _gallery: http://pydecode.readthedocs.org/en/latest/notebooks/index.html
 .. _tutorial: http://pydecode.readthedocs.org/en/latest/notebooks/index.html
