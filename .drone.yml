@@ -3,7 +3,6 @@ env:
   - PYTHONPATH=/var/cache/drone
 script:
   - source /opt/ve/bin/activate
-  - cd /var/cache/drone/src/PyDecode/ 
   - ls .
   - apt-get install -y glpk
   - pip install pulp
