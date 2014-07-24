@@ -62,7 +62,7 @@ def main():
     setup(
         name = 'pydecode',
         cmdclass = wrapper.cmdclass(),
-        packages=['pydecode'],
+        packages=['pydecode', 'pydecode.nlp', 'pydecode.test'],
         package_dir={'pydecode': 'python/pydecode'},
         ext_modules = make_extension(wrapper),
         requires=["numpy"],
