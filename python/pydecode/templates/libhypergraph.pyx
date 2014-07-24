@@ -1,5 +1,3 @@
-#cython: embedsignature=True
-
 from cython.operator cimport dereference as deref
 import scipy.sparse
 from libcpp.string cimport string
