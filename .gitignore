@@ -89,3 +89,4 @@ pydecode-*/
 venv/
 ENV/
 *.old
+todo
