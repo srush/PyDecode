@@ -75,7 +75,13 @@ def main():
         keywords = ['nlp'],
         classifiers = [],
         script_args = copy_args,
-        include_dirs = [np.get_include()]
+        include_dirs = [np.get_include()],
+        data_files=[('pydecode/notebooks', ['notebooks/hmm.ipynb',
+                                            "notebooks/Fibonacci.ipynb", 
+                                            "notebooks/EditDistance.ipynb",  
+                                            "notebooks/parsing.ipynb", 
+                                            "notebooks/PerceptronTagger.ipyb"]
+                                        )]
         )
 
 if __name__ == "__main__":

@@ -16,4 +16,3 @@ PyDecode
    notebooks/index
    api
    extensions
-   development

@@ -3,69 +3,49 @@ Setup
 ---------------
 
 Installation
-=============
+=====================
 
-Install using pip ::
+
+The easiest way to install PyDecode is through pip.  ::
 
     $ pip install pydecode
+
+
+The base functionality of the library requires Numpy and Scipy as well
+as Boost. To install Boost on Debian/Ubuntu run::
+
+    $ sudo apt-get install libboost-dev
+
+
+Optional Dependencies
+====================
+
+The core of PyDecode only requires Numpy and Scipy; however the
+library includes functions that can integrate with other python libraries.  
+
+* **NetworkX, PyGraphviz, IPython**  (:ref:`display`)
+  
+  Provides methods for model visualization.
+
+* **PyStruct**  (:ref:`structured`)
+  
+  Provides methods for training the parameters of a model .
+
+* **PuLP and an LP solver** (:ref:`lp`) 
+  
+  Provides methods for solving models using general-purpose
+  linear-programming solvers.
+
+
 
 Running Notebooks
 =================
 
-All of the documentation examples are written as IPython notebooks. They are available in the notebooks/ directory.
+In addition to this documentation, the distribution also include a set
+of example tutorials written as IPython notebooks. 
 
-To modify examples locally, install IPython and run ::
+These notebooks can be run locally after installation. Assuming ENV is
+the base install directory (for instance using virtualenv), the
+notebooks can be run using::
 
-    $ cd notebooks
-    $ ipython notebook --pylab inline
-
-.. _tunneling: http://wisdomthroughknowledge.blogspot.com/2012/07/accessing-ipython-notebook-remotely.html
-.. _emacs: http://tkf.github.io/emacs-ipython-notebook/
-
-Dependencies
-=====================
-
-Requires numpy and scipy.
-
-
-Optional Dependencies
-=====================
-
-Networkx and PyGraphviz
--------------
-
-Provides features for displaying hypergraphs.
-
-Pandas and matplotlib
--------------
-
-Provides abilty to display performance reports and charts.
-
-IPython
--------------
-
-Provides features for working with graphs in IPython and IPython notebook.
-
-
-Scikit Learn and PyStruct
--------------------------
-
-Provides methods for training the parameters of a hypergraph model.
-
-
-PuLP and an LP solver (such as glpk or gurobi)
--------------
-
-Provides a module for converting dynamic programming problems to linear programs which can be solved or exported through PuLP.
-
-
-
-Nose, py.test, and PyZMQ
-------------
-
-Needed to run tests. (including tests in IPython notebooks.)
-
-NLTK
-----------
-
-Used for constructing NLP examples.
+    $ ipython notebook ENV/pydecode/notebooks/
