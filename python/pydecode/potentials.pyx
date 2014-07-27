@@ -1006,8 +1006,6 @@ from pydecode.potentials cimport *
 cdef class Bitset:
     """
     Bitset
-
-
     """
     def __init__(self, v=-1):
         if v != -1:
@@ -1024,8 +1022,8 @@ cdef class Bitset:
         self.data[position] = val
 
 
-cdef class BeamChartBinaryVectorPotential:
-    cdef init(self, CBeamChartBinaryVectorPotential *chart, Hypergraph graph):
+cdef class BeamChartBinaryVectorBeam:
+    cdef init(self, CBeamChartBinaryVectorBeam *chart, Hypergraph graph):
         self.thisptr = chart
         self.graph = graph
         return self
@@ -1042,12 +1040,12 @@ cdef class BeamChartBinaryVectorPotential:
                            self.graph)
 
     def __getitem__(self, Vertex vertex):
-        cdef vector[CBeamHypBinaryVectorPotential *] beam = \
+        cdef vector[CBeamHypBinaryVectorBeam *] beam = \
                     self.thisptr.get_beam(vertex.nodeptr)
         data = []
         i = 0
         for p in beam:
-            data.append((_BinaryVector_from_cpp(p.sig),
+            data.append((_BinaryVectorBeam_from_cpp(p.sig),
                          p.current_score,
                          p.future_score))
         return data
@@ -1057,10 +1055,14 @@ cdef class BeamChartBinaryVectorPotential:
         def __get__(self):
             return self.thisptr.exact
 
+cdef _BinaryVectorBeam_from_cpp(cbitset val):
+    
+    return Bitset().init(val)
+    
 
-# def beam_search_BinaryVector(Hypergraph graph,
+# def beam_search_(Hypergraph graph,
 #                 _LogViterbiPotentials potentials,
-#                 BinaryVectorPotentials constraints,
+#                 BinaryVectorBeams constraints,
 #                 outside,
 #                 double lower_bound,
 #                 groups,
@@ -1113,9 +1115,9 @@ cdef class BeamChartBinaryVectorPotential:
 #     #     cgroups[i] = group
 
 
-#     cdef CBeamChartBinaryVectorPotential *chart
+#     cdef CBeamChartBinaryVectorBeam *chart
 #     if cube_pruning:
-#         chart = ccube_pruningBinaryVectorPotential(graph.thisptr,
+#         chart = ccube_pruningBinaryVectorBeam(graph.thisptr,
 #                      deref(potentials.thisptr),
 #                      deref(constraints.thisptr),
 #                      deref(outside.chart),
@@ -1123,18 +1125,18 @@ cdef class BeamChartBinaryVectorPotential:
 #                      deref(beam_groups),
 #                      recombine)
 #     else:
-#         chart = cbeam_searchBinaryVectorPotential(graph.thisptr,
+#         chart = cbeam_searchBinaryVectorBeam(graph.thisptr,
 #                      deref(potentials.thisptr),
 #                      deref(constraints.thisptr),
 #                      deref(outside.chart),
 #                      lower_bound,
 #                      deref(beam_groups),
 #                      recombine)
-#     return BeamChartBinaryVectorPotential().init(chart, graph)
+#     return BeamChartBinaryVectorBeam().init(chart, graph)
 
 
-cdef class BeamChartAlphabetPotential:
-    cdef init(self, CBeamChartAlphabetPotential *chart, Hypergraph graph):
+cdef class BeamChartAlphabetBeam:
+    cdef init(self, CBeamChartAlphabetBeam *chart, Hypergraph graph):
         self.thisptr = chart
         self.graph = graph
         return self
@@ -1151,12 +1153,12 @@ cdef class BeamChartAlphabetPotential:
                            self.graph)
 
     def __getitem__(self, Vertex vertex):
-        cdef vector[CBeamHypAlphabetPotential *] beam = \
+        cdef vector[CBeamHypAlphabetBeam *] beam = \
                     self.thisptr.get_beam(vertex.nodeptr)
         data = []
         i = 0
         for p in beam:
-            data.append((_Alphabet_from_cpp(p.sig),
+            data.append((_AlphabetBeam_from_cpp(p.sig),
                          p.current_score,
                          p.future_score))
         return data
@@ -1166,10 +1168,14 @@ cdef class BeamChartAlphabetPotential:
         def __get__(self):
             return self.thisptr.exact
 
+cdef _AlphabetBeam_from_cpp(vector[int] val):
+    
+    return val
+    
 
-# def beam_search_Alphabet(Hypergraph graph,
+# def beam_search_(Hypergraph graph,
 #                 _LogViterbiPotentials potentials,
-#                 AlphabetPotentials constraints,
+#                 AlphabetBeams constraints,
 #                 outside,
 #                 double lower_bound,
 #                 groups,
@@ -1222,9 +1228,9 @@ cdef class BeamChartAlphabetPotential:
 #     #     cgroups[i] = group
 
 
-#     cdef CBeamChartAlphabetPotential *chart
+#     cdef CBeamChartAlphabetBeam *chart
 #     if cube_pruning:
-#         chart = ccube_pruningAlphabetPotential(graph.thisptr,
+#         chart = ccube_pruningAlphabetBeam(graph.thisptr,
 #                      deref(potentials.thisptr),
 #                      deref(constraints.thisptr),
 #                      deref(outside.chart),
@@ -1232,123 +1238,14 @@ cdef class BeamChartAlphabetPotential:
 #                      deref(beam_groups),
 #                      recombine)
 #     else:
-#         chart = cbeam_searchAlphabetPotential(graph.thisptr,
+#         chart = cbeam_searchAlphabetBeam(graph.thisptr,
 #                      deref(potentials.thisptr),
 #                      deref(constraints.thisptr),
 #                      deref(outside.chart),
 #                      lower_bound,
 #                      deref(beam_groups),
 #                      recombine)
-#     return BeamChartAlphabetPotential().init(chart, graph)
-
-
-cdef class BeamChartLogViterbiPotential:
-    cdef init(self, CBeamChartLogViterbiPotential *chart, Hypergraph graph):
-        self.thisptr = chart
-        self.graph = graph
-        return self
-
-    def __dealloc__(self):
-        if self.thisptr is not NULL:
-            del self.thisptr
-            self.thisptr = NULL
-
-    def path(self, int result):
-        if self.thisptr.get_path(result) == NULL:
-            return None
-        return Path().init(self.thisptr.get_path(result),
-                           self.graph)
-
-    def __getitem__(self, Vertex vertex):
-        cdef vector[CBeamHypLogViterbiPotential *] beam = \
-                    self.thisptr.get_beam(vertex.nodeptr)
-        data = []
-        i = 0
-        for p in beam:
-            data.append((_LogViterbi_from_cpp(p.sig),
-                         p.current_score,
-                         p.future_score))
-        return data
-
-
-    property exact:
-        def __get__(self):
-            return self.thisptr.exact
-
-
-# def beam_search_LogViterbi(Hypergraph graph,
-#                 _LogViterbiPotentials potentials,
-#                 LogViterbiPotentials constraints,
-#                 outside,
-#                 double lower_bound,
-#                 groups,
-#                 group_limits,
-#                 int num_groups=-1,
-#                 bool recombine=True,
-#                            bool cube_pruning = False):
-#     r"""
-
-#     Parameters
-#     -----------
-#     graph : Hypergraph
-
-#     potentials : LogViterbiPotentials
-#        The potentials on each hyperedge.
-
-#     constraints : BinaryVectorPotentials
-#        The constraints (bitset) at each hyperedge.
-
-#     lower_bound : double
-
-#     outside : LogViterbiChart
-#         The outside scores.
-
-#     groups : size of vertex list
-#        The group for each vertex.
-
-#     group_limits :
-#        The size limit for each group.
-
-#     num_groups :
-#         The total number of groups.
-#     """
-#     if num_groups == -1:
-#         ngroups = max(groups) + 1
-#     else:
-#         ngroups = num_groups
-#     cdef vector[int] cgroups = groups
-#     cdef vector[int] cgroup_limits = group_limits
-
-#     cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
-#                                                     cgroups,
-#                                                     cgroup_limits,
-#                                                     ngroups)
-#     # cgroups.resize(graph.nodes_size())
-#     # cdef vector[int] cgroup_limits
-#     # cgroups.resize(graph.nodes_size())
-
-#     # for i, group in enumerate(groups):
-#     #     cgroups[i] = group
-
-
-#     cdef CBeamChartLogViterbiPotential *chart
-#     if cube_pruning:
-#         chart = ccube_pruningLogViterbiPotential(graph.thisptr,
-#                      deref(potentials.thisptr),
-#                      deref(constraints.thisptr),
-#                      deref(outside.chart),
-#                      lower_bound,
-#                      deref(beam_groups),
-#                      recombine)
-#     else:
-#         chart = cbeam_searchLogViterbiPotential(graph.thisptr,
-#                      deref(potentials.thisptr),
-#                      deref(constraints.thisptr),
-#                      deref(outside.chart),
-#                      lower_bound,
-#                      deref(beam_groups),
-#                      recombine)
-#     return BeamChartLogViterbiPotential().init(chart, graph)
+#     return BeamChartAlphabetBeam().init(chart, graph)
 
 
 #cython: embedsignature=True
@@ -2823,164 +2720,6 @@ class MinMax:
         #         _MinMaxvector_to_numpy(marginals.edge_marginals(),
         #                                    len(graph.edges)))
 
-    
-    
-
-
-cdef class _AlphabetPotentials(_Potentials):
-    def __cinit__(self, Hypergraph graph):
-        self.graph = graph
-        self.kind = Alphabet
-        self.thisptr = NULL
-
-    def __dealloc__(self):
-        del self.thisptr
-        self.thisptr = NULL
-
-    cdef init(self, CHypergraphAlphabetPotentials *ptr):
-        self.thisptr = ptr
-        return self
-
-    
-
-
-cdef class AlphabetValue:
-    cdef AlphabetValue init(self, vector[int] val):
-        self.thisval = val
-        return self
-
-    @staticmethod
-    def from_value(vector[int] val):
-        created = AlphabetValue()
-        created.thisval = _Alphabet_to_cpp(val)
-        return created
-
-    @staticmethod
-    def zero_raw():
-        return _Alphabet_from_cpp(Alphabet_zero())
-
-    @staticmethod
-    def one_raw():
-        return _Alphabet_from_cpp(Alphabet_one())
-
-    @staticmethod
-    def zero():
-        return AlphabetValue().init(Alphabet_zero())
-
-    @staticmethod
-    def one():
-        return AlphabetValue().init(Alphabet_one())
-
-    def __add__(AlphabetValue self, AlphabetValue other):
-        return AlphabetValue().init(Alphabet_add(self.thisval,
-                                                  other.thisval))
-
-    def __mul__(AlphabetValue self, AlphabetValue other):
-        return AlphabetValue().init(Alphabet_times(self.thisval,
-                                                    other.thisval))
-
-    property value:
-        def __get__(self):
-            return _Alphabet_from_cpp(self.thisval)
-
-
-cdef vector[int] _Alphabet_to_cpp(vector[int] val):
-    return val
-
-
-cdef _Alphabet_from_cpp(vector[int] val):
-    
-    return val
-    
-
-
-
-
-
-
-
-class Alphabet:
-    Potentials = _AlphabetPotentials
-    Value = AlphabetValue
-    
-    
-
-
-cdef class _BinaryVectorPotentials(_Potentials):
-    def __cinit__(self, Hypergraph graph):
-        self.graph = graph
-        self.kind = BinaryVector
-        self.thisptr = NULL
-
-    def __dealloc__(self):
-        del self.thisptr
-        self.thisptr = NULL
-
-    cdef init(self, CHypergraphBinaryVectorPotentials *ptr):
-        self.thisptr = ptr
-        return self
-
-    
-
-
-cdef class BinaryVectorValue:
-    cdef BinaryVectorValue init(self, cbitset val):
-        self.thisval = val
-        return self
-
-    @staticmethod
-    def from_value(Bitset val):
-        created = BinaryVectorValue()
-        created.thisval = _BinaryVector_to_cpp(val)
-        return created
-
-    @staticmethod
-    def zero_raw():
-        return _BinaryVector_from_cpp(BinaryVector_zero())
-
-    @staticmethod
-    def one_raw():
-        return _BinaryVector_from_cpp(BinaryVector_one())
-
-    @staticmethod
-    def zero():
-        return BinaryVectorValue().init(BinaryVector_zero())
-
-    @staticmethod
-    def one():
-        return BinaryVectorValue().init(BinaryVector_one())
-
-    def __add__(BinaryVectorValue self, BinaryVectorValue other):
-        return BinaryVectorValue().init(BinaryVector_add(self.thisval,
-                                                  other.thisval))
-
-    def __mul__(BinaryVectorValue self, BinaryVectorValue other):
-        return BinaryVectorValue().init(BinaryVector_times(self.thisval,
-                                                    other.thisval))
-
-    property value:
-        def __get__(self):
-            return _BinaryVector_from_cpp(self.thisval)
-
-
-cdef cbitset _BinaryVector_to_cpp(Bitset val):
-    return <cbitset>val.data
-
-
-cdef _BinaryVector_from_cpp(cbitset val):
-    
-    return Bitset().init(val)
-    
-
-
-
-
-
-
-
-class BinaryVector:
-    Potentials = _BinaryVectorPotentials
-    Value = BinaryVectorValue
     
     
 

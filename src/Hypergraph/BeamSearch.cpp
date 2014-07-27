@@ -10,6 +10,7 @@
 #include <queue>
 #include "./common.h"
 #include "Hypergraph/Semirings.hh"
+#include "Hypergraph/BeamTypes.hh"
 #include <boost/intrusive/rbtree.hpp>
 
 using namespace boost::intrusive;
@@ -34,7 +35,7 @@ template<typename BVP>
 BeamChart<BVP> *BeamChart<BVP>::cube_pruning(
     const Hypergraph *graph,
     const HypergraphPotentials<LogViterbiPotential> &potentials,
-    const HypergraphPotentials<BVP> &constraints,
+    const vector<typename BVP::ValType> &constraints,
     const Chart<LogViterbiPotential> &future,
     double lower_bound,
     const BeamGroups &groups,
@@ -42,7 +43,7 @@ BeamChart<BVP> *BeamChart<BVP>::cube_pruning(
 
     // Check the inputs.
     potentials.check(*graph);
-    constraints.check(*graph);
+    //constraints.check(*graph);
     groups.check(graph);
 
     typedef LogViterbiPotential LVP;
@@ -123,7 +124,7 @@ template<typename BVP>
 BeamChart<BVP> *BeamChart<BVP>::beam_search(
     const Hypergraph *graph,
     const HypergraphPotentials<LogViterbiPotential> &potentials,
-    const HypergraphPotentials<BVP> &constraints,
+    const vector<typename BVP::ValType> &constraints,
     const Chart<LogViterbiPotential> &future,
     double lower_bound,
     const BeamGroups &groups,
@@ -131,7 +132,7 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
 
     // Check the inputs.
     potentials.check(*graph);
-    constraints.check(*graph);
+    //constraints.check(*graph);
     groups.check(graph);
 
     typedef LogViterbiPotential LVP;
@@ -158,8 +159,8 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
             // 2) Enumerate over each edge (in topological order).
             foreach (HEdge edge, graph->edges(node)) {
                 const typename BVP::ValType &sig =
-                        constraints.score(edge);
-                double score = potentials.score(edge);
+                        constraints[edge];
+                double score = potentials[edge];
 
                 // Assume unary/binary edges.
                 HNode node_left = graph->tail_node(edge, 0);
@@ -577,6 +578,5 @@ void BeamChart<BVP>::finish(int group) {
     current_group_++;
 }
 
-template class BeamChart<BinaryVectorPotential>;
-template class BeamChart<AlphabetPotential>;
-template class BeamChart<LogViterbiPotential>;
+template class BeamChart<BinaryVectorBeam>;
+template class BeamChart<AlphabetBeam>;

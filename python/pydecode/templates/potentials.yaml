@@ -26,7 +26,6 @@ semirings:
 
       Uses the operations :math:`(+, *) = (+, *)`.
 
-
   - type: LogViterbi
     cvalue: double
     format: d
@@ -65,24 +64,21 @@ semirings:
 
       Uses the operations :math:`(+, *) = (\min, \max)`.
 
-  - type: Alphabet
-    ctype: AlphabetPotential
-    cvalue: vector[int]
-    viterbi: No
-    description:
-      Alphabet valued weights.
+  # - type: Alphabet
+  #   ctype: AlphabetPotential
+  #   cvalue: vector[int]
+  #   viterbi: No
+  #   description:
+  #     Alphabet valued weights.
 
-
-
-
-  - type: BinaryVector
-    cvalue: cbitset
-    pvalue: Bitset
-    to_cpp: val.data
-    from_cpp: Bitset().init(val)
-    viterbi: No
-    description:
-      Binary vector potentials.
+  # - type: BinaryVector
+  #   cvalue: cbitset
+  #   pvalue: Bitset
+  #   to_cpp: val.data
+  #   from_cpp: Bitset().init(val)
+  #   viterbi: No
+  #   description:
+  #     Binary vector potentials.
 
   # - type: MinSparseVector
   #   cvalue: vector[pair[int, int]]

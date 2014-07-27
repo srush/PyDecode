@@ -447,11 +447,9 @@ SPECIALIZE_ALGORITHMS_FOR_SEMI(CountingPotential)
 SPECIALIZE_ALGORITHMS_FOR_SEMI(SetPotential)
 SPECIALIZE_FOR_SEMI_MIN(LogProbPotential)
 SPECIALIZE_FOR_SEMI_MIN(SparseVectorPotential)
-SPECIALIZE_FOR_SEMI_MIN(MinSparseVectorPotential)
-SPECIALIZE_FOR_SEMI_MIN(MaxSparseVectorPotential)
-SPECIALIZE_FOR_SEMI_MIN(BinaryVectorPotential)
+// SPECIALIZE_FOR_SEMI_MIN(MinSparseVectorPotential)
+// SPECIALIZE_FOR_SEMI_MIN(MaxSparseVectorPotential)
 SPECIALIZE_FOR_SEMI_MIN(MinMaxPotential)
-SPECIALIZE_FOR_SEMI_MIN(AlphabetPotential)
 
 
 template Hyperpath *count_constrained_viterbi<LogViterbiPotential>(

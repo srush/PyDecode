@@ -39,7 +39,8 @@ def make_extension(wrapper):
                       "src/Hypergraph/SemiringAlgorithms.cpp",
                       "src/Hypergraph/Algorithms.cpp",
                       "src/Hypergraph/Potentials.cpp",
-                      "src/Hypergraph/BeamSearch.cpp"
+                      "src/Hypergraph/BeamSearch.cpp",
+                      "src/Hypergraph/BeamTypes.cpp"
                       ])]
     return a
 

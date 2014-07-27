@@ -8,6 +8,7 @@ sources = [
     "Hypergraph/Factory.cpp",
     "Hypergraph/BeamSearch.cpp",
     "Hypergraph/Map.cpp",
+    "Hypergraph/BeamTypes.cpp",
     ]
 
 hyp_lib = env.Library('decoding', sources)

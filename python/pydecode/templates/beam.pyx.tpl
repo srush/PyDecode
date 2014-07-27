@@ -8,8 +8,6 @@ from pydecode.potentials cimport *
 cdef class Bitset:
     """
     Bitset
-
-
     """
     def __init__(self, v=-1):
         if v != -1:
@@ -49,7 +47,7 @@ cdef class BeamChart{{S.type}}:
         data = []
         i = 0
         for p in beam:
-            data.append((_{{S.from}}_from_cpp(p.sig),
+            data.append((_{{S.type}}_from_cpp(p.sig),
                          p.current_score,
                          p.future_score))
         return data
@@ -59,6 +57,12 @@ cdef class BeamChart{{S.type}}:
         def __get__(self):
             return self.thisptr.exact
 
+cdef _{{S.type}}_from_cpp({{S.cvalue}} val):
+    {% if S.from_cpp %}
+    return {{S.from_cpp}}
+    {% else %}
+    return val
+    {% endif %}
 
 # def beam_search_{{S.from}}(Hypergraph graph,
 #                 _LogViterbiPotentials potentials,

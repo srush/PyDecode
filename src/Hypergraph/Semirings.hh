@@ -322,49 +322,49 @@ class MinMaxPotential {
  * 0: (0, 0)
  * 1: (1, 1)
  */
-template<typename SemiringFirst, typename SemiringSecond>
-class CompPotential {
-  public:
-    typedef std::pair<typename SemiringFirst::ValType,
-            typename SemiringSecond::ValType> ValType;
+// template<typename SemiringFirst, typename SemiringSecond>
+// class CompPotential {
+//   public:
+//     typedef std::pair<typename SemiringFirst::ValType,
+//             typename SemiringSecond::ValType> ValType;
 
-    static inline ValType add(ValType lhs, const ValType& rhs) {
-        if (lhs.first < rhs.first) lhs = rhs;
-        return lhs;
-    }
-    static inline ValType times(ValType lhs, const ValType& rhs) {
-        lhs.first = SemiringFirst::times(lhs.first, rhs.first);
-        lhs.second = SemiringSecond::times(lhs.second, rhs.second);
-        return lhs;
-    }
+//     static inline ValType add(ValType lhs, const ValType& rhs) {
+//         if (lhs.first < rhs.first) lhs = rhs;
+//         return lhs;
+//     }
+//     static inline ValType times(ValType lhs, const ValType& rhs) {
+//         lhs.first = SemiringFirst::times(lhs.first, rhs.first);
+//         lhs.second = SemiringSecond::times(lhs.second, rhs.second);
+//         return lhs;
+//     }
 
-    static inline ValType safe_add(ValType lhs, const ValType& rhs) {
-        if (lhs.first < rhs.first) lhs = rhs;
-        return CompPotential::normalize(lhs);
-    }
-    static inline ValType safe_times(ValType lhs, const ValType& rhs) {
-        lhs.first = SemiringFirst::times(lhs.first, rhs.first);
-        lhs.second = SemiringSecond::times(lhs.second, rhs.second);
-        return CompPotential::normalize(lhs);
-    }
+//     static inline ValType safe_add(ValType lhs, const ValType& rhs) {
+//         if (lhs.first < rhs.first) lhs = rhs;
+//         return CompPotential::normalize(lhs);
+//     }
+//     static inline ValType safe_times(ValType lhs, const ValType& rhs) {
+//         lhs.first = SemiringFirst::times(lhs.first, rhs.first);
+//         lhs.second = SemiringSecond::times(lhs.second, rhs.second);
+//         return CompPotential::normalize(lhs);
+//     }
 
-    static inline ValType one() {
-        return ValType(SemiringFirst::one(), SemiringSecond::one());
-    }
-    static inline ValType zero() {
-        return ValType(SemiringFirst::zero(), SemiringSecond::zero());
-    }
+//     static inline ValType one() {
+//         return ValType(SemiringFirst::one(), SemiringSecond::one());
+//     }
+//     static inline ValType zero() {
+//         return ValType(SemiringFirst::zero(), SemiringSecond::zero());
+//     }
 
-    static inline ValType &normalize(ValType &val) {
-        val.first = SemiringFirst::normalize(val.first);
-        val.second = SemiringSecond::normalize(val.second);
-        return val;
-    }
+//     static inline ValType &normalize(ValType &val) {
+//         val.first = SemiringFirst::normalize(val.first);
+//         val.second = SemiringSecond::normalize(val.second);
+//         return val;
+//     }
 
-    static inline ValType randValue() {
-        return ValType(SemiringFirst::randValue(), SemiringSecond::randValue());
-    }
-};
+//     static inline ValType randValue() {
+//         return ValType(SemiringFirst::randValue(), SemiringSecond::randValue());
+//     }
+// };
 
 
 
@@ -461,117 +461,5 @@ class MaxSparseVectorPotential : public SparseVectorPotential {
     }
 };
 
-typedef bitset<BITMAPSIZE> binvec;
-
-/**
- * Binary vector. *Experimental*
- *
- * +: Bitwise AND.
- * *: Bitwise OR.
- * 0: All one bitset.
- * 1: All zero bitset.
- */
-
-class BinaryVectorPotential {
-  public:
-    typedef bitset<BITMAPSIZE> ValType;
-
-    static inline ValType add(ValType lhs, const ValType& rhs) {
-        lhs &= rhs;
-        return lhs;
-    }
-
-    static inline ValType times(ValType value, const ValType& rhs) {
-        value |= rhs;
-        return value;
-    }
-
-    static inline ValType one() {
-        ValType vec = ValType(0x0);
-        return vec;
-    }
-
-    static inline ValType zero() {
-        ValType vec = ValType(0x0);
-        vec.set();
-        return vec;
-    }
-
-    static inline ValType randValue() {
-        return ValType(dRand(0, 0xfffffff));
-    }
-
-    static inline ValType &normalize(ValType &val) {
-        return val;
-    }
-
-    static inline bool valid(const ValType& lhs,
-                             const ValType& rhs) {
-        return ((lhs & rhs).none());
-    }
-};
-
-
-class AlphabetPotential {
-  public:
-    typedef vector<int> ValType;
-    static const int kSize = 54;
-    static inline ValType add(ValType lhs, const ValType& rhs) {
-        // not used.
-        return lhs;
-    }
-
-    /* static inline bool equals(const ValType &lhs, const ValType &rhs) { */
-    /*     // not used. */
-    /*     return lhs; */
-    /* } */
-
-    static inline ValType times(ValType value, const ValType& rhs) {
-        for (int i = 0; i < kSize; ++i) {
-            if (rhs[i] != -1)
-                value[i] = rhs[i];
-        }
-        return value;
-    }
-
-    static inline ValType one() {
-        ValType vec(kSize, -1);
-        return vec;
-    }
-
-    static inline ValType zero() {
-        // not used.
-        ValType vec(kSize, -1);
-        return vec;
-    }
-
-    static inline ValType randValue() {
-        return ValType(0, 0);
-    }
-
-    static inline ValType &normalize(ValType &val) {
-        return val;
-    }
-
-    static inline bool valid(const ValType& lhs,
-                             const ValType& rhs) {
-        for (int i = 0; i < kSize; ++i) {
-            if (lhs[i] != -1 && rhs[i] != -1 && lhs[i] != rhs[i]) {
-                return false;
-            }
-            /* for (int j = 0; j < kSize; ++j) { */
-            /*     if (i != j && lhs[j] != -1 && rhs[i] != -1 && lhs[j] == rhs[i]) { */
-            /*         return false; */
-            /*     } */
-            /* } */
-        }
-        return true;
-    }
-};
-
-
-
-bool valid_binary_vectors(const bitset<BITMAPSIZE> &lhs,
-                          const bitset<BITMAPSIZE> &rhs);
 
 #endif  // HYPERGRAPH_SEMIRINGS_H_

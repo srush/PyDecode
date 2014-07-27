@@ -1,10 +1,7 @@
 semirings:
-  - type: BinaryVectorPotential
-    from: BinaryVector
+  - type: BinaryVectorBeam
     cvalue: cbitset
-  - type: AlphabetPotential
-    from: Alphabet
+    from_cpp: Bitset().init(val)
+
+  - type: AlphabetBeam
     cvalue: vector[int]
-  - type: LogViterbiPotential
-    from: LogViterbi
-    cvalue: float

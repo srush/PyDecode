@@ -80,9 +80,7 @@ class BeamChart {
     bool exact;
 
     struct BeamHyp : public set_base_hook<>{
-
-       set_member_hook<> member_hook_;
-
+        set_member_hook<> member_hook_;
 
         BeamHyp() {}
 
@@ -145,7 +143,7 @@ class BeamChart {
     BeamChart(const Hypergraph *hypergraph,
               const BeamGroups *groups,
               const HypergraphPotentials<LogViterbiPotential> * potentials,
-              const HypergraphPotentials<BVP> *constraints,
+              const vector<typename BVP::ValType> *constraints,
               const Chart<LogViterbiPotential> *future,
               double lower_bound,
               bool recombine)
@@ -175,7 +173,7 @@ class BeamChart {
 
         double cur_score = potentials_->score(edge);
         const typename BVP::ValType &sig =
-                constraints_->score(edge);
+                (*constraints_)[edge];
 
         HNode node_left = hypergraph_->tail_node(edge, 0);
         const BeamHyp *p_left = get_beam(node_left)[bp_left];
@@ -220,7 +218,7 @@ class BeamChart {
     static BeamChart<BVP> *beam_search(
             const Hypergraph *graph,
             const HypergraphPotentials<LogViterbiPotential> &potentials,
-            const HypergraphPotentials<BVP> &constraints,
+            const vector<typename BVP::ValType> &constraints,
             const Chart<LogViterbiPotential> &outside,
             double lower_bound,
             const BeamGroups &groups,
@@ -229,7 +227,7 @@ class BeamChart {
     static BeamChart<BVP> *cube_pruning(
         const Hypergraph *graph,
         const HypergraphPotentials<LogViterbiPotential> &potentials,
-        const HypergraphPotentials<BVP> &constraints,
+        const vector<typename BVP::ValType> &constraints,
         const Chart<LogViterbiPotential> &future,
         double lower_bound,
         const BeamGroups &groups,
@@ -251,7 +249,7 @@ class BeamChart {
     // The (upper bound) future score and a lower bound of total score.
     const Chart<LogViterbiPotential> *future_;
     const HypergraphPotentials<LogViterbiPotential> *potentials_;
-    const HypergraphPotentials<BVP> *constraints_;
+    const vector<typename BVP::ValType> *constraints_;
     double lower_bound_;
 
     vector<Beam *> beam_;
