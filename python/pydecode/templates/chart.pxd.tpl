@@ -22,6 +22,8 @@ cdef class ChartBuilder:
               long [:] tails2=*,
               long [:] tails3=*,
               long [:] out=*)
+    cpdef set_list(self, long index, tuples, out=*)
+    cdef _finish_node(self, long index, result)
 
     cdef CHypergraph *_hg_ptr
     cdef vector[int] *_chart

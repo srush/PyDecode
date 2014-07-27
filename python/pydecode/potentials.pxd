@@ -131,13 +131,6 @@ cdef class LatticeLabel:
     cdef CLatticeLabel label
     cdef init(LatticeLabel self, CLatticeLabel label)
 
-cdef void _fill_trellis(float[:, ::1] emissions,
-                        float[:] transitions,
-                        int n_labels,
-                        int[:] words,
-                        float[:, ::1] trellis,
-                        int[:,::1] path)
-
 cimport numpy as np
 cimport cython
 
@@ -162,6 +155,8 @@ cdef class ChartBuilder:
               long [:] tails2=*,
               long [:] tails3=*,
               long [:] out=*)
+    cpdef set_list(self, long index, tuples, out=*)
+    cdef _finish_node(self, long index, result)
 
     cdef CHypergraph *_hg_ptr
     cdef vector[int] *_chart

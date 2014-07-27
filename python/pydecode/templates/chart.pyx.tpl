@@ -162,6 +162,46 @@ cdef class ChartBuilder:
             self._nindices.append(indices[i])
             self._no_tail.insert(indices[i])
 
+    cpdef set_list(self, long index, tuples, out=None):
+        deref(self._chart)[index] = self._hg_ptr.start_node()
+        cdef vector[int] tails
+        cdef int i, j, node
+
+        blank = (out is None)
+        for j, tail in enumerate(tuples):
+            tails.clear()
+            for node in tail:
+                tails.push_back(deref(self._chart)[node])
+                if tails.back() == NODE_NULL:
+                    raise Exception(
+                        "Item %s not found for tail."%(node,))
+            self._hg_ptr.add_edge(tails)
+            for node in tail:
+                if self._no_tail.find(node) != self._no_tail.end():
+                    self._no_tail.erase(node)
+
+            if self._construct_output:
+                if not blank:
+                    self._indices.append(out[j])
+                else:
+                    self._indices.append(-1)
+
+
+
+        result = self._hg_ptr.end_node()
+        self._finish_node(index, result)
+
+    cdef _finish_node(self, long index, result):
+        if not result:
+            if self._strict:
+                raise Exception("No tail items found for item %s."%(index,))
+            deref(self._chart)[index] = NODE_NULL
+        else:
+            self._last = index
+            self._no_tail.insert(index)
+            self._nindices.append(index)
+
+
     @cython.boundscheck(False)
     cpdef set(self,
               long index,
@@ -228,14 +268,15 @@ cdef class ChartBuilder:
                     self._indices.append(-1)
 
         result = self._hg_ptr.end_node()
-        if not result:
-            if self._strict:
-                raise Exception("No tail items found for item %s."%(index,))
-            deref(self._chart)[index] = NODE_NULL
-        else:
-            self._last = index
-            self._no_tail.insert(index)
-            self._nindices.append(index)
+        self._finish_node(index, result)
+        # if not result:
+        #     if self._strict:
+        #         raise Exception("No tail items found for item %s."%(index,))
+        #     deref(self._chart)[index] = NODE_NULL
+        # else:
+        #     self._last = index
+        #     self._no_tail.insert(index)
+        #     self._nindices.append(index)
 
     def finish(self, reconstruct=False):
         """

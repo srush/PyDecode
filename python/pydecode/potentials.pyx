@@ -691,61 +691,6 @@ def binarize(Hypergraph graph):
     cdef CHypergraphMap *hypergraph_map = cbinarize(graph.thisptr)
     return convert_hypergraph_map(hypergraph_map, graph, None)
 
-
-INFINITY = 1e9
-
-def fill_trel(emissions, transitions, n_labels, words, trellis, path):
-    _fill_trellis(emissions, transitions, n_labels, words, trellis, path)
-
-# @cython.wraparound(False)
-# @cython.boundscheck(False)
-# @cython.cdivision(False)
-cdef void _fill_trellis(float[:,::1] emissions, float[:] transitions,
-                        int n_labels, int[:] words, float[:,::1] trellis,
-                        int[:,::1] path):
-    cdef:
-        float min_score
-        float score
-        int min_prev
-        float e_score
-
-        int cur_label, prev_label
-        int  feat_i, i, j
-        int word_i = 0
-        # Example cur
-        int offset
-        int cur
-
-    for word_i in range(len(words)):
-        cur = words[word_i]
-        # Current label
-        for cur_label in range(n_labels):
-            # if trellis[word_i, cur_label] == -INFINITY:
-            #     continue
-
-            min_score = -1E9
-            min_prev = -1
-
-            # Emission score
-            e_score = emissions[cur, cur_label]
-
-            # Previous label
-            # Transitions from start state
-            if word_i == 0:
-                trellis[word_i, cur_label] = e_score + transitions[0]#self.transition.get2d(n_labels, cur_label)
-                path[word_i, cur_label] = cur_label
-            # Transitions from the rest of the states
-            else:
-                # Including labels for initial and final states
-                offset = cur_label * (n_labels + 2)
-                for prev_label in range(n_labels):
-                    score = e_score + transitions[offset + prev_label] + trellis[word_i-1, prev_label]
-                    if score >= min_score:
-                        min_score = score
-                        min_prev = prev_label
-                trellis[word_i, cur_label] = min_score
-                path[word_i, cur_label] = min_prev
-
 import numpy as np
 cimport cython
 
@@ -910,6 +855,46 @@ cdef class ChartBuilder:
             self._nindices.append(indices[i])
             self._no_tail.insert(indices[i])
 
+    cpdef set_list(self, long index, tuples, out=None):
+        deref(self._chart)[index] = self._hg_ptr.start_node()
+        cdef vector[int] tails
+        cdef int i, j, node
+
+        blank = (out is None)
+        for j, tail in enumerate(tuples):
+            tails.clear()
+            for node in tail:
+                tails.push_back(deref(self._chart)[node])
+                if tails.back() == NODE_NULL:
+                    raise Exception(
+                        "Item %s not found for tail."%(node,))
+            self._hg_ptr.add_edge(tails)
+            for node in tail:
+                if self._no_tail.find(node) != self._no_tail.end():
+                    self._no_tail.erase(node)
+
+            if self._construct_output:
+                if not blank:
+                    self._indices.append(out[j])
+                else:
+                    self._indices.append(-1)
+
+
+
+        result = self._hg_ptr.end_node()
+        self._finish_node(index, result)
+
+    cdef _finish_node(self, long index, result):
+        if not result:
+            if self._strict:
+                raise Exception("No tail items found for item %s."%(index,))
+            deref(self._chart)[index] = NODE_NULL
+        else:
+            self._last = index
+            self._no_tail.insert(index)
+            self._nindices.append(index)
+
+
     @cython.boundscheck(False)
     cpdef set(self,
               long index,
@@ -976,14 +961,15 @@ cdef class ChartBuilder:
                     self._indices.append(-1)
 
         result = self._hg_ptr.end_node()
-        if not result:
-            if self._strict:
-                raise Exception("No tail items found for item %s."%(index,))
-            deref(self._chart)[index] = NODE_NULL
-        else:
-            self._last = index
-            self._no_tail.insert(index)
-            self._nindices.append(index)
+        self._finish_node(index, result)
+        # if not result:
+        #     if self._strict:
+        #         raise Exception("No tail items found for item %s."%(index,))
+        #     deref(self._chart)[index] = NODE_NULL
+        # else:
+        #     self._last = index
+        #     self._no_tail.insert(index)
+        #     self._nindices.append(index)
 
     def finish(self, reconstruct=False):
         """
