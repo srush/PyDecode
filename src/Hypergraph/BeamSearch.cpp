@@ -10,10 +10,10 @@
 #include <queue>
 #include "./common.h"
 #include "Hypergraph/Semirings.hh"
-#include "Hypergraph/BeamTypes.hh"
 #include <boost/intrusive/rbtree.hpp>
 
 using namespace boost::intrusive;
+
 
 template<typename BVP>
 BeamChart<BVP>::~BeamChart<BVP>() {
@@ -32,95 +32,6 @@ BeamChart<BVP>::~BeamChart<BVP>() {
 }
 
 template<typename BVP>
-BeamChart<BVP> *BeamChart<BVP>::cube_pruning(
-    const Hypergraph *graph,
-    const HypergraphPotentials<LogViterbiPotential> &potentials,
-    const vector<typename BVP::ValType> &constraints,
-    const Chart<LogViterbiPotential> &future,
-    double lower_bound,
-    const BeamGroups &groups,
-    bool recombine) {
-
-    // Check the inputs.
-    potentials.check(*graph);
-    //constraints.check(*graph);
-    groups.check(graph);
-
-    typedef LogViterbiPotential LVP;
-
-    BeamChart<BVP> *chart = new BeamChart<BVP>(graph, &groups,
-                                               &potentials,
-                                               &constraints,
-                                               &future,
-                                               lower_bound,
-                                               recombine);
-
-    // 1) Initialize the chart with terminal nodes.
-    typename BVP::ValType one = BVP::one();
-
-
-    foreach (HNode node, graph->nodes()) {
-        if (graph->terminal(node)) {
-            chart->insert(node, NODE_NULL, one, LVP::one(),
-                          -1, -1);
-            continue;
-        }
-    }
-
-    for (int group = 0; group < groups.groups_size(); ++group) {
-        priority_queue<BeamHyp> pqueue;
-        foreach (HNode node, groups.group_nodes(group)) {
-            // 2) Enumerate over each edge (in topological order).
-            foreach (HEdge edge, graph->edges(node)) {
-                chart->queue_up(node, edge, 0, 0, &pqueue);
-            }
-            for (int i = 0; i < groups.group_limit(group); ++i) {
-                BeamHyp hyp = pqueue.top();
-                pqueue.pop();
-                bool unary = graph->tail_nodes(hyp.edge) == 1;
-                HEdge edge = hyp.edge;
-                HNode node_left = graph->tail_node(edge, 0);
-
-                stack<pair<int, int> > inner_queue;
-                inner_queue.push(pair<int, int>(hyp.back_position_left+1, hyp.back_position_right));
-                if (!unary) {
-                    inner_queue.push(pair<int, int>(hyp.back_position_left, hyp.back_position_right+1));
-                }
-
-                while (!inner_queue.empty()) {
-                    pair<int, int> pos = inner_queue.top();
-                    inner_queue.pop();
-
-                    if (pos.first < chart->get_beam(node_left).size() - 1 &&
-                        (!unary ||
-                         pos.second < chart->get_beam(graph->tail_node(edge, 1)).size() - 1)) {
-                        bool attempt = chart->queue_up(hyp.node, hyp.edge,
-                                                   pos.first,
-                                                   pos.second,
-                                                   &pqueue);
-                        if (!attempt) {
-                            inner_queue.push(pair<int, int>(pos.first+1, pos.second));
-                            if (!unary) {
-                                inner_queue.push(pair<int, int>(pos.first, pos.second+1));
-                            }
-                        }
-                    }
-                }
-
-                chart->insert(hyp.node,
-                              hyp.edge,
-                              hyp.sig,
-                              hyp.current_score,
-                              hyp.back_position_left,
-                              hyp.back_position_right);
-            }
-        }
-        chart->finish(group);
-    }
-    return chart;
-}
-
-template<typename BVP>
 BeamChart<BVP> *BeamChart<BVP>::beam_search(
     const Hypergraph *graph,
     const HypergraphPotentials<LogViterbiPotential> &potentials,
@@ -136,6 +47,7 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
     groups.check(graph);
 
     typedef LogViterbiPotential LVP;
+    typedef typename BVP::ValType Signature;
 
     BeamChart<BVP> *chart = new BeamChart<BVP>(graph, &groups,
                                                &potentials,
@@ -145,7 +57,7 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
                                                recombine);
 
     // 1) Initialize the chart with terminal nodes.
-    typename BVP::ValType one = BVP::one();
+    Signature one = BVP::one();
     foreach (HNode node, graph->nodes()) {
         if (graph->terminal(node)) {
             chart->insert(node, NODE_NULL, one, LVP::one(),
@@ -158,8 +70,9 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
         foreach (HNode node, groups.group_nodes(group)) {
             // 2) Enumerate over each edge (in topological order).
             foreach (HEdge edge, graph->edges(node)) {
-                const typename BVP::ValType &sig =
-                        constraints[edge];
+                bool unary = graph->tail_nodes(edge) == 1;
+
+                const Signature &sig = constraints[edge];
                 double score = potentials[edge];
 
                 // Assume unary/binary edges.
@@ -167,37 +80,6 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
                 const typename BeamChart<BVP>::BeamPointers &beam_left =
                         chart->get_beam(node_left);
 
-                bool unary = graph->tail_nodes(edge) == 1;
-
-                // Optimization.
-                // vector<bool> valid_right;
-                // binvec and_sig_right;
-                if (!unary) {
-                    // valid_right.resize(beam_right.size(), true);
-                    // and_sig_right.flip();
-                    // binvec and_sig;
-                    // and_sig.flip();
-
-                    // foreach (const BeamHyp *p, beam_left) {
-                    //     and_sig &= p->sig;
-                    // }
-
-                    // HNode node_right = edge->tail_nodes()[1];
-                    // const BeamChart::BeamPointers &beam_right =
-                    //         chart->get_beam(node_right);
-                    // valid_right.resize(beam_right.size(), false);
-                    // int j = 0;
-                    // foreach (const BeamHyp *p, beam_right) {
-                    //     const binvec &right_sig = p->sig;
-                    //     if (BVP::valid(sig, right_sig) &&
-                    //         BVP::valid(and_sig, right_sig)) {
-                    //         valid_right[j] = true;
-                    //         and_sig_right &= p->sig;
-                    //     }
-                    //     ++j;
-                    // }
-                }
-                // End Optimization.
 
                 int i = -1;
                 foreach (const BeamHyp *p_left, beam_left) {
@@ -205,19 +87,16 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
 
                     // Check valid.
                     if (!BVP::valid(sig, p_left->sig)) continue;
-                        // ||
-                        // !BVP::valid(and_sig_right,
-                        //             p_left->sig)) continue;
 
                     // Construct sig and score.
-                    const typename BVP::ValType mid_sig = BVP::times(sig, p_left->sig);
+                    Signature mid_sig = BVP::times(sig, p_left->sig);
                     double mid_score =
                             LVP::times(score, p_left->current_score);
-
 
                     if (unary) {
                         chart->insert(node, edge, mid_sig, mid_score,
                                       i, -1);
+                        // If unary, stop here.
                         continue;
                     }
 
@@ -236,7 +115,7 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
                                         p_right->sig)) continue;
 
                         // Construct scores and sig.
-                        const typename BVP::ValType full_sig =
+                        const Signature full_sig =
                                 BVP::times(mid_sig, p_right->sig);
                         double full_score =
                                 LVP::times(mid_score, p_right->current_score);
@@ -260,6 +139,7 @@ Hyperpath *BeamChart<BVP>::get_path(int result) {
     vector<HNode> node_path;
     queue<pair<HNode, int> > to_examine;
     to_examine.push(pair<HNode, int>(hypergraph_->root(), result));
+
     if (result >= get_beam(hypergraph_->root()).size()) {
         return NULL;
     }
@@ -541,42 +421,187 @@ void BeamChart<BVP>::finish(int group) {
     int beam_size = groups_->group_limit(group);
 
     int size = min(static_cast<int>(b->size()), beam_size);
-    vector<bool> seen(size, false);
-
+    // vector<bool> seen(size, false);
+    int recombined = 0, total = 0;
     if (recombine_) {
+        vector<BeamHyp *> temp_bp;
         typename Beam::iterator iter = b->begin();
+        //bitset<1000000> beamset;
         for (int i = 0; i < size; ++i) {
-            typename Beam::iterator iter2 = b->begin();
-            for (int j = 0; j < size; ++j) {
+            vector<BeamHyp *> &bp = beam_nodes_[iter->node];
+            BeamHyp *hyp = &(*iter);
+            boost::unordered_set<typename BVP::ValType,
+                                 typename BVP::hash,
+                                 typename BVP::equal_to> &beamset =
+                    beam_set_[hyp->node];
 
-                if (j > i &&
-                    iter->node == iter2->node &&
-                    iter->sig == iter2->sig) {
-                    seen[j] = true;
-                }
-                iter2++;
+            bool seen = beamset.find(hyp->sig) != beamset.end();
+            // for (int j = 0; j < bp.size(); ++j) {
+            //     if (BVP::equals(hyp->sig, bp[j]->sig)) {
+            //         seen = true;
+            //         break;
+            //     }
+            // }
+            if (!seen) {
+                bp.push_back(hyp);
+                beamset.insert(hyp->sig);
+                total++;
+                //beamset[BVP::hash(hyp->sig)]=1;
+            } else {
+                recombined++;
             }
             iter++;
         }
 
-        iter = b->begin();
-        for (int i = 0; i < size; ++i) {
-            if (!seen[i]) {
-                BeamPointers &bp = beam_nodes_[iter->node];
-                bp.push_back(&(*iter));
-            }
-            iter++;
-        }
+        // for (int i = 0; i < size; ++i) {
+        //     for (int j = i+1; j < size; ++j) {
+        //         if (temp_bp[i]->node == temp_bp[j]->node &&
+        //             BVP::equals(temp_bp[i]->sig, temp_bp[j]->sig)) {
+        //             seen[j] = true;
+        //         }
+        //     }
+        // }
+
+        // for (int i = 0; i < size; ++i) {
+        //     if (!seen[i]) {
+        //         BeamPointers &bp = beam_nodes_[temp_bp[i]->node];
+        //         bp.push_back(temp_bp[i]);
+        //     }
+        // }
     } else {
         typename Beam::iterator iter = b->begin();
         for (int i = 0; i < size; ++i) {
-            BeamPointers &bp = beam_nodes_[iter->node];
+            vector<BeamHyp *> &bp = beam_nodes_[iter->node];
             bp.push_back(&(*iter));
             iter++;
         }
     }
+    //cout << current_group_ << " " << recombined << " " << total << endl;
     current_group_++;
+
 }
 
-template class BeamChart<BinaryVectorBeam>;
-template class BeamChart<AlphabetBeam>;
+// template class BeamChart<BinaryVectorBeam>;
+// template class BeamChart<AlphabetBeam>;
+template class BeamChart<ParsingBeam>;
+
+
+                // Optimization.
+                // vector<bool> valid_right;
+                // binvec and_sig_right;
+// if (!unary) {
+                    // valid_right.resize(beam_right.size(), true);
+                    // and_sig_right.flip();
+                    // binvec and_sig;
+                    // and_sig.flip();
+
+                    // foreach (const BeamHyp *p, beam_left) {
+                    //     and_sig &= p->sig;
+                    // }
+
+                    // HNode node_right = edge->tail_nodes()[1];
+                    // const BeamChart::BeamPointers &beam_right =
+                    //         chart->get_beam(node_right);
+                    // valid_right.resize(beam_right.size(), false);
+                    // int j = 0;
+                    // foreach (const BeamHyp *p, beam_right) {
+                    //     const binvec &right_sig = p->sig;
+                    //     if (BVP::valid(sig, right_sig) &&
+                    //         BVP::valid(and_sig, right_sig)) {
+                    //         valid_right[j] = true;
+                    //         and_sig_right &= p->sig;
+                    //     }
+                    //     ++j;
+                    // }
+//             }
+                // End Optimization.
+
+
+                // template<typename BVP>
+// BeamChart<BVP> *BeamChart<BVP>::cube_pruning(
+//     const Hypergraph *graph,
+//     const HypergraphPotentials<LogViterbiPotential> &potentials,
+//     const vector<typename BVP::ValType> &constraints,
+//     const Chart<LogViterbiPotential> &future,
+//     double lower_bound,
+//     const BeamGroups &groups,
+//     bool recombine) {
+
+//     // Check the inputs.
+//     potentials.check(*graph);
+//     //constraints.check(*graph);
+//     groups.check(graph);
+
+//     typedef LogViterbiPotential LVP;
+
+//     BeamChart<BVP> *chart = new BeamChart<BVP>(graph, &groups,
+//                                                &potentials,
+//                                                &constraints,
+//                                                &future,
+//                                                lower_bound,
+//                                                recombine);
+
+//     // 1) Initialize the chart with terminal nodes.
+//     typename BVP::ValType one = BVP::one();
+
+
+//     foreach (HNode node, graph->nodes()) {
+//         if (graph->terminal(node)) {
+//             chart->insert(node, NODE_NULL, one, LVP::one(),
+//                           -1, -1);
+//             continue;
+//         }
+//     }
+
+//     for (int group = 0; group < groups.groups_size(); ++group) {
+//         priority_queue<BeamHyp> pqueue;
+//         foreach (HNode node, groups.group_nodes(group)) {
+//             // 2) Enumerate over each edge (in topological order).
+//             foreach (HEdge edge, graph->edges(node)) {
+//                 chart->queue_up(node, edge, 0, 0, &pqueue);
+//             }
+//             for (int i = 0; i < groups.group_limit(group); ++i) {
+//                 BeamHyp hyp = pqueue.top();
+//                 pqueue.pop();
+//                 bool unary = graph->tail_nodes(hyp.edge) == 1;
+//                 HEdge edge = hyp.edge;
+//                 HNode node_left = graph->tail_node(edge, 0);
+
+//                 stack<pair<int, int> > inner_queue;
+//                 inner_queue.push(pair<int, int>(hyp.back_position_left+1, hyp.back_position_right));
+//                 if (!unary) {
+//                     inner_queue.push(pair<int, int>(hyp.back_position_left, hyp.back_position_right+1));
+//                 }
+
+//                 while (!inner_queue.empty()) {
+//                     pair<int, int> pos = inner_queue.top();
+//                     inner_queue.pop();
+
+//                     if (pos.first < chart->get_beam(node_left).size() - 1 &&
+//                         (!unary ||
+//                          pos.second < chart->get_beam(graph->tail_node(edge, 1)).size() - 1)) {
+//                         bool attempt = chart->queue_up(hyp.node, hyp.edge,
+//                                                    pos.first,
+//                                                    pos.second,
+//                                                    &pqueue);
+//                         if (!attempt) {
+//                             inner_queue.push(pair<int, int>(pos.first+1, pos.second));
+//                             if (!unary) {
+//                                 inner_queue.push(pair<int, int>(pos.first, pos.second+1));
+//                             }
+//                         }
+//                     }
+//                 }
+
+//                 chart->insert(hyp.node,
+//                               hyp.edge,
+//                               hyp.sig,
+//                               hyp.current_score,
+//                               hyp.back_position_left,
+//                               hyp.back_position_right);
+//             }
+//         }
+//         chart->finish(group);
+//     }
+//     return chart;
+// }

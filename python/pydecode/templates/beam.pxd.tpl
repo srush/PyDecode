@@ -14,6 +14,22 @@ cdef class Bitset:
     cdef cbitset data
     cdef init(self, cbitset data)
 
+
+cdef extern from "Hypergraph/BeamTypes.hh":
+    cdef cppclass CParsingElement "ParsingElement":
+        int edge
+        int position
+        int total_size
+        CParsingElement *up
+        void recompute_hash()
+
+cdef extern from "Hypergraph/BeamTypes.hh" namespace "ParsingBeam":
+    bool cparsingequal "ParsingBeam::equals" (const CParsingElement a, const CParsingElement b)
+
+cdef class ParsingElement:
+    cdef CParsingElement data
+    cdef init(self, CParsingElement element)
+
 cdef extern from "Hypergraph/BeamSearch.hh":
     cdef cppclass CBeamGroups "BeamGroups":
         CBeamGroups(const CHypergraph *graph,
@@ -38,14 +54,14 @@ cdef extern from "Hypergraph/BeamSearch.hh" namespace "BeamChart<{{S.type}}>":
             const CBeamGroups &groups,
             bool recombine) except +
 
-    CBeamChart{{S.type}} *ccube_pruning{{S.type}} "BeamChart<{{S.type}}>::cube_pruning" (
-            const CHypergraph *graph,
-            const CHypergraphLogViterbiPotentials &potentials,
-            const vector[{{S.cvalue}}] &constraints,
-            const CLogViterbiChart &outside,
-            double lower_bound,
-            const CBeamGroups &groups,
-            bool recombine) except +
+    # CBeamChart{{S.type}} *ccube_pruning{{S.type}} "BeamChart<{{S.type}}>::cube_pruning" (
+    #         const CHypergraph *graph,
+    #         const CHypergraphLogViterbiPotentials &potentials,
+    #         const vector[{{S.cvalue}}] &constraints,
+    #         const CLogViterbiChart &outside,
+    #         double lower_bound,
+    #         const CBeamGroups &groups,
+    #         bool recombine) except +
 
 
 cdef extern from "Hypergraph/BeamSearch.hh":

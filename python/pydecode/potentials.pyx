@@ -1021,9 +1021,55 @@ cdef class Bitset:
     def __setitem__(self, int position, int val):
         self.data[position] = val
 
+cdef class ParsingElement:
 
-cdef class BeamChartBinaryVectorBeam:
-    cdef init(self, CBeamChartBinaryVectorBeam *chart, Hypergraph graph):
+    cdef init(self, CParsingElement element):
+        self.data = element
+        return self
+
+    def set(self, int edge, int position, int total_size):
+        self.data.edge = edge
+        self.data.position = position
+        self.data.total_size = total_size
+        self.data.recompute_hash()
+        return self
+
+    def __str__(self):
+        return "E_%d_%d_%d %s"%(self.data.edge, self.data.position, self.data.total_size,
+                                self.data.up != NULL)
+
+
+    def to_str(self):
+        return "E_%d_%d_%d"%(self.data.edge, self.data.position, self.data.total_size)
+
+    def from_str(self, s):
+        if len(s) == 0 or s[0] != "E":
+            self.data.position = -1
+            return self
+        else:
+            t = s.split("_")
+            self.data.edge = int(t[1])
+            self.data.position = int(t[2])
+            self.data.total_size = int(t[3])
+            self.data.recompute_hash()
+            return self
+
+    def inc(self):
+        self.data.position += 1
+
+    def edge(self):
+        return self.data.edge
+    def position(self):
+        return self.data.position
+    def size(self):
+        return self.data.total_size
+
+    def equal(self, ParsingElement other):
+        return cparsingequal(self.data, other.data)
+
+
+cdef class BeamChartParsingBeam:
+    cdef init(self, CBeamChartParsingBeam *chart, Hypergraph graph):
         self.thisptr = chart
         self.graph = graph
         return self
@@ -1040,12 +1086,12 @@ cdef class BeamChartBinaryVectorBeam:
                            self.graph)
 
     def __getitem__(self, Vertex vertex):
-        cdef vector[CBeamHypBinaryVectorBeam *] beam = \
+        cdef vector[CBeamHypParsingBeam *] beam = \
                     self.thisptr.get_beam(vertex.nodeptr)
         data = []
         i = 0
         for p in beam:
-            data.append((_BinaryVectorBeam_from_cpp(p.sig),
+            data.append((_ParsingBeam_from_cpp(p.sig),
                          p.current_score,
                          p.future_score))
         return data
@@ -1055,197 +1101,101 @@ cdef class BeamChartBinaryVectorBeam:
         def __get__(self):
             return self.thisptr.exact
 
-cdef _BinaryVectorBeam_from_cpp(cbitset val):
+cdef _ParsingBeam_from_cpp(CParsingElement val):
     
-    return Bitset().init(val)
-    
-
-# def beam_search_(Hypergraph graph,
-#                 _LogViterbiPotentials potentials,
-#                 BinaryVectorBeams constraints,
-#                 outside,
-#                 double lower_bound,
-#                 groups,
-#                 group_limits,
-#                 int num_groups=-1,
-#                 bool recombine=True,
-#                            bool cube_pruning = False):
-#     r"""
-
-#     Parameters
-#     -----------
-#     graph : Hypergraph
-
-#     potentials : LogViterbiPotentials
-#        The potentials on each hyperedge.
-
-#     constraints : BinaryVectorPotentials
-#        The constraints (bitset) at each hyperedge.
-
-#     lower_bound : double
-
-#     outside : LogViterbiChart
-#         The outside scores.
-
-#     groups : size of vertex list
-#        The group for each vertex.
-
-#     group_limits :
-#        The size limit for each group.
-
-#     num_groups :
-#         The total number of groups.
-#     """
-#     if num_groups == -1:
-#         ngroups = max(groups) + 1
-#     else:
-#         ngroups = num_groups
-#     cdef vector[int] cgroups = groups
-#     cdef vector[int] cgroup_limits = group_limits
-
-#     cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
-#                                                     cgroups,
-#                                                     cgroup_limits,
-#                                                     ngroups)
-#     # cgroups.resize(graph.nodes_size())
-#     # cdef vector[int] cgroup_limits
-#     # cgroups.resize(graph.nodes_size())
-
-#     # for i, group in enumerate(groups):
-#     #     cgroups[i] = group
-
-
-#     cdef CBeamChartBinaryVectorBeam *chart
-#     if cube_pruning:
-#         chart = ccube_pruningBinaryVectorBeam(graph.thisptr,
-#                      deref(potentials.thisptr),
-#                      deref(constraints.thisptr),
-#                      deref(outside.chart),
-#                      lower_bound,
-#                      deref(beam_groups),
-#                      recombine)
-#     else:
-#         chart = cbeam_searchBinaryVectorBeam(graph.thisptr,
-#                      deref(potentials.thisptr),
-#                      deref(constraints.thisptr),
-#                      deref(outside.chart),
-#                      lower_bound,
-#                      deref(beam_groups),
-#                      recombine)
-#     return BeamChartBinaryVectorBeam().init(chart, graph)
-
-
-cdef class BeamChartAlphabetBeam:
-    cdef init(self, CBeamChartAlphabetBeam *chart, Hypergraph graph):
-        self.thisptr = chart
-        self.graph = graph
-        return self
-
-    def __dealloc__(self):
-        if self.thisptr is not NULL:
-            del self.thisptr
-            self.thisptr = NULL
-
-    def path(self, int result):
-        if self.thisptr.get_path(result) == NULL:
-            return None
-        return Path().init(self.thisptr.get_path(result),
-                           self.graph)
-
-    def __getitem__(self, Vertex vertex):
-        cdef vector[CBeamHypAlphabetBeam *] beam = \
-                    self.thisptr.get_beam(vertex.nodeptr)
-        data = []
-        i = 0
-        for p in beam:
-            data.append((_AlphabetBeam_from_cpp(p.sig),
-                         p.current_score,
-                         p.future_score))
-        return data
-
-
-    property exact:
-        def __get__(self):
-            return self.thisptr.exact
-
-cdef _AlphabetBeam_from_cpp(vector[int] val):
-    
-    return val
+    return ParsingElement().init(val)
     
 
-# def beam_search_(Hypergraph graph,
-#                 _LogViterbiPotentials potentials,
-#                 AlphabetBeams constraints,
-#                 outside,
-#                 double lower_bound,
-#                 groups,
-#                 group_limits,
-#                 int num_groups=-1,
-#                 bool recombine=True,
-#                            bool cube_pruning = False):
-#     r"""
 
-#     Parameters
-#     -----------
-#     graph : Hypergraph
-
-#     potentials : LogViterbiPotentials
-#        The potentials on each hyperedge.
-
-#     constraints : BinaryVectorPotentials
-#        The constraints (bitset) at each hyperedge.
-
-#     lower_bound : double
-
-#     outside : LogViterbiChart
-#         The outside scores.
-
-#     groups : size of vertex list
-#        The group for each vertex.
-
-#     group_limits :
-#        The size limit for each group.
-
-#     num_groups :
-#         The total number of groups.
-#     """
-#     if num_groups == -1:
-#         ngroups = max(groups) + 1
-#     else:
-#         ngroups = num_groups
-#     cdef vector[int] cgroups = groups
-#     cdef vector[int] cgroup_limits = group_limits
-
-#     cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
-#                                                     cgroups,
-#                                                     cgroup_limits,
-#                                                     ngroups)
-#     # cgroups.resize(graph.nodes_size())
-#     # cdef vector[int] cgroup_limits
-#     # cgroups.resize(graph.nodes_size())
-
-#     # for i, group in enumerate(groups):
-#     #     cgroups[i] = group
+cdef CParsingElement _ParsingBeam_to_cpp(ParsingElement val):
+    return <CParsingElement>val.data
 
 
-#     cdef CBeamChartAlphabetBeam *chart
-#     if cube_pruning:
-#         chart = ccube_pruningAlphabetBeam(graph.thisptr,
-#                      deref(potentials.thisptr),
-#                      deref(constraints.thisptr),
-#                      deref(outside.chart),
-#                      lower_bound,
-#                      deref(beam_groups),
-#                      recombine)
-#     else:
-#         chart = cbeam_searchAlphabetBeam(graph.thisptr,
-#                      deref(potentials.thisptr),
-#                      deref(constraints.thisptr),
-#                      deref(outside.chart),
-#                      lower_bound,
-#                      deref(beam_groups),
-#                      recombine)
-#     return BeamChartAlphabetBeam().init(chart, graph)
+def beam_search_ParsingBeam(Hypergraph graph,
+                        old_potentials,
+                constraints,
+                           double [:] outside,
+                double lower_bound,
+                groups,
+                           group_limits,
+                int num_groups=-1,
+                bool recombine=True,
+                           bool cube_pruning = False):
+    r"""
+
+    Parameters
+    -----------
+    graph : Hypergraph
+
+    potentials : LogViterbiPotentials
+       The potentials on each hyperedge.
+
+    constraints : BinaryVectorPotentials
+       The constraints (bitset) at each hyperedge.
+
+    lower_bound : double
+
+    outside : LogViterbiChart
+        The outside scores.
+
+    groups : size of vertex list
+       The group for each vertex.
+
+    group_limits :
+       The size limit for each group.
+
+    num_groups :
+        The total number of groups.
+    """
+    cdef _LogViterbiPotentials potentials = \
+                                            get_potentials(graph, old_potentials,
+                                LogViterbi.Potentials)
+
+    cdef CLogViterbiChart *out_chart = new CLogViterbiChart(
+        graph.thisptr,
+        &outside[0])
+
+    if num_groups == -1:
+        ngroups = max(groups) + 1
+    else:
+        ngroups = num_groups
+    cdef vector[int] cgroups = groups
+    cdef vector[int] cgroup_limits = group_limits
+
+    cdef CBeamGroups *beam_groups = new CBeamGroups(graph.thisptr,
+                                                    cgroups,
+                                                    cgroup_limits,
+                                                    ngroups)
+    cdef vector[CParsingElement] cons
+    for c in constraints:
+        cons.push_back(_ParsingBeam_to_cpp(c))
+    # cgroups.resize(graph.nodes_size())
+    # cdef vector[int] cgroup_limits
+    # cgroups.resize(graph.nodes_size())
+
+    # for i, group in enumerate(groups):
+    #     cgroups[i] = group
+
+
+    cdef CBeamChartParsingBeam *chart
+    if False:
+        pass
+        # chart = ccube_pruningParsingBeam(graph.thisptr,
+        #              deref(potentials.thisptr),
+        #              cons,
+        #              deref(out_chart),
+        #              lower_bound,
+        #              deref(beam_groups),
+        #              recombine)
+    else:
+        chart = cbeam_searchParsingBeam(graph.thisptr,
+                     deref(potentials.thisptr),
+                                       cons,
+                     deref(out_chart),
+                     lower_bound,
+                     deref(beam_groups),
+                     recombine)
+    return BeamChartParsingBeam().init(chart, graph)
 
 
 #cython: embedsignature=True
@@ -1408,6 +1358,7 @@ class Bool:
                            out_chart)
         del in_chart, out_chart
         return np.asarray(my_chart)
+
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -1627,6 +1578,7 @@ class Viterbi:
         del in_chart, out_chart
         return np.asarray(my_chart)
 
+
     @staticmethod
     def compute_marginals(Hypergraph graph,
                           _ViterbiPotentials potentials,
@@ -1844,6 +1796,7 @@ class Counting:
                            out_chart)
         del in_chart, out_chart
         return np.asarray(my_chart)
+
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -2063,6 +2016,7 @@ class LogViterbi:
         del in_chart, out_chart
         return np.asarray(my_chart)
 
+
     @staticmethod
     def compute_marginals(Hypergraph graph,
                           _LogViterbiPotentials potentials,
@@ -2281,6 +2235,7 @@ class LogProb:
         del in_chart, out_chart
         return np.asarray(my_chart)
 
+
     @staticmethod
     def compute_marginals(Hypergraph graph,
                           _LogProbPotentials potentials,
@@ -2461,6 +2416,7 @@ class Inside:
                            out_chart)
         del in_chart, out_chart
         return np.asarray(my_chart)
+
 
     @staticmethod
     def compute_marginals(Hypergraph graph,
@@ -2679,6 +2635,7 @@ class MinMax:
                            out_chart)
         del in_chart, out_chart
         return np.asarray(my_chart)
+
 
     @staticmethod
     def compute_marginals(Hypergraph graph,

@@ -270,6 +270,22 @@ cdef class Bitset:
     cdef cbitset data
     cdef init(self, cbitset data)
 
+
+cdef extern from "Hypergraph/BeamTypes.hh":
+    cdef cppclass CParsingElement "ParsingElement":
+        int edge
+        int position
+        int total_size
+        CParsingElement *up
+        void recompute_hash()
+
+cdef extern from "Hypergraph/BeamTypes.hh" namespace "ParsingBeam":
+    bool cparsingequal "ParsingBeam::equals" (const CParsingElement a, const CParsingElement b)
+
+cdef class ParsingElement:
+    cdef CParsingElement data
+    cdef init(self, CParsingElement element)
+
 cdef extern from "Hypergraph/BeamSearch.hh":
     cdef cppclass CBeamGroups "BeamGroups":
         CBeamGroups(const CHypergraph *graph,
@@ -279,81 +295,42 @@ cdef extern from "Hypergraph/BeamSearch.hh":
 
 
 
-cdef extern from "Hypergraph/BeamSearch.hh" namespace "BeamChart<BinaryVectorBeam>":
-    cdef cppclass CBeamHypBinaryVectorBeam "BeamChart<BinaryVectorBeam>::BeamHyp":
-        cbitset sig
+cdef extern from "Hypergraph/BeamSearch.hh" namespace "BeamChart<ParsingBeam>":
+    cdef cppclass CBeamHypParsingBeam "BeamChart<ParsingBeam>::BeamHyp":
+        CParsingElement sig
         double current_score
         double future_score
 
-    CBeamChartBinaryVectorBeam *cbeam_searchBinaryVectorBeam "BeamChart<BinaryVectorBeam>::beam_search" (
+    CBeamChartParsingBeam *cbeam_searchParsingBeam "BeamChart<ParsingBeam>::beam_search" (
             const CHypergraph *graph,
             const CHypergraphLogViterbiPotentials &potentials,
-            const vector[cbitset] &constraints,
+            const vector[CParsingElement] &constraints,
             const CLogViterbiChart &outside,
             double lower_bound,
             const CBeamGroups &groups,
             bool recombine) except +
 
-    CBeamChartBinaryVectorBeam *ccube_pruningBinaryVectorBeam "BeamChart<BinaryVectorBeam>::cube_pruning" (
-            const CHypergraph *graph,
-            const CHypergraphLogViterbiPotentials &potentials,
-            const vector[cbitset] &constraints,
-            const CLogViterbiChart &outside,
-            double lower_bound,
-            const CBeamGroups &groups,
-            bool recombine) except +
+    # CBeamChartParsingBeam *ccube_pruningParsingBeam "BeamChart<ParsingBeam>::cube_pruning" (
+    #         const CHypergraph *graph,
+    #         const CHypergraphLogViterbiPotentials &potentials,
+    #         const vector[CParsingElement] &constraints,
+    #         const CLogViterbiChart &outside,
+    #         double lower_bound,
+    #         const CBeamGroups &groups,
+    #         bool recombine) except +
 
 
 cdef extern from "Hypergraph/BeamSearch.hh":
-    cdef cppclass CBeamChartBinaryVectorBeam "BeamChart<BinaryVectorBeam>":
+    cdef cppclass CBeamChartParsingBeam "BeamChart<ParsingBeam>":
         CHyperpath *get_path(int result)
-        vector[CBeamHypBinaryVectorBeam *] get_beam(int)
+        vector[CBeamHypParsingBeam *] get_beam(int)
         bool exact
 
-cdef class BeamChartBinaryVectorBeam:
-    cdef CBeamChartBinaryVectorBeam *thisptr
+cdef class BeamChartParsingBeam:
+    cdef CBeamChartParsingBeam *thisptr
     cdef Hypergraph graph
 
-    cdef init(self, CBeamChartBinaryVectorBeam *chart, Hypergraph graph)
-
-
-
-cdef extern from "Hypergraph/BeamSearch.hh" namespace "BeamChart<AlphabetBeam>":
-    cdef cppclass CBeamHypAlphabetBeam "BeamChart<AlphabetBeam>::BeamHyp":
-        vector[int] sig
-        double current_score
-        double future_score
-
-    CBeamChartAlphabetBeam *cbeam_searchAlphabetBeam "BeamChart<AlphabetBeam>::beam_search" (
-            const CHypergraph *graph,
-            const CHypergraphLogViterbiPotentials &potentials,
-            const vector[vector[int]] &constraints,
-            const CLogViterbiChart &outside,
-            double lower_bound,
-            const CBeamGroups &groups,
-            bool recombine) except +
-
-    CBeamChartAlphabetBeam *ccube_pruningAlphabetBeam "BeamChart<AlphabetBeam>::cube_pruning" (
-            const CHypergraph *graph,
-            const CHypergraphLogViterbiPotentials &potentials,
-            const vector[vector[int]] &constraints,
-            const CLogViterbiChart &outside,
-            double lower_bound,
-            const CBeamGroups &groups,
-            bool recombine) except +
-
-
-cdef extern from "Hypergraph/BeamSearch.hh":
-    cdef cppclass CBeamChartAlphabetBeam "BeamChart<AlphabetBeam>":
-        CHyperpath *get_path(int result)
-        vector[CBeamHypAlphabetBeam *] get_beam(int)
-        bool exact
-
-cdef class BeamChartAlphabetBeam:
-    cdef CBeamChartAlphabetBeam *thisptr
-    cdef Hypergraph graph
-
-    cdef init(self, CBeamChartAlphabetBeam *chart, Hypergraph graph)
+    cdef init(self, CBeamChartParsingBeam *chart, Hypergraph graph)
 
 
 # cython: profile=True

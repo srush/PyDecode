@@ -1,7 +1,15 @@
 semirings:
-  - type: BinaryVectorBeam
-    cvalue: cbitset
-    from_cpp: Bitset().init(val)
+  # - type: BinaryVectorBeam
+  #   cvalue: cbitset
+  #   from_cpp: Bitset().init(val)
+  #   pvalue: Bitset
+  #   to_cpp: val.data
 
-  - type: AlphabetBeam
-    cvalue: vector[int]
+  # - type: AlphabetBeam
+  #   cvalue: vector[int]
+
+  - type: ParsingBeam
+    cvalue: CParsingElement
+    from_cpp: ParsingElement().init(val)
+    pvalue: ParsingElement
+    to_cpp: val.data

@@ -164,6 +164,7 @@ class {{S.type}}:
         del in_chart, out_chart
         return np.asarray(my_chart)
 
+
     @staticmethod
     def compute_marginals(Hypergraph graph,
                           _{{S.type}}Potentials potentials,

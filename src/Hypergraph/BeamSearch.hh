@@ -9,6 +9,7 @@
 #include <vector>
 #include <queue>
 #include <boost/intrusive/rbtree.hpp>
+#include <boost/unordered_set.hpp>
 
 
 #include "./common.h"
@@ -16,8 +17,11 @@
 #include "Hypergraph/Hypergraph.hh"
 #include "Hypergraph/Semirings.hh"
 #include "Hypergraph/Algorithms.hh"
+#include "Hypergraph/BeamTypes.hh"
 
 using namespace boost::intrusive;
+using namespace std;
+using boost::unordered_set;
 
 struct BeamGroups {
     // groups : vector size of nodes.
@@ -115,13 +119,24 @@ class BeamChart {
              back_position_right = _bp_right;
          }
 
+        /**
+         * Assuming maximization. Less than gives the *better* score.
+         *
+         */
         bool operator<(const BeamHyp &other) const {
             return total_score >= other.total_score;
         }
 
+        // The entering edge.
         HEdge edge;
+
+        // The current node.
         HNode node;
+
+        // The signature.
         typename BVP::ValType sig;
+
+        // Scores.
         double current_score;
         double future_score;
         double total_score;
@@ -130,6 +145,7 @@ class BeamChart {
         int back_position_left;
         int back_position_right;
     };
+
 
     struct delete_disposer {
         void operator()(BeamHyp *delete_this) {
@@ -140,6 +156,22 @@ class BeamChart {
     typedef rbtree<BeamHyp> Beam;
     typedef vector<BeamHyp * > BeamPointers;
 
+    /**
+     * Construct a beam chart.
+     *
+     * Parameters
+     * ------------
+     *
+     * groups
+     * potentials
+     * constraints
+     * future
+     *
+     * lower_bound
+     * recombine :
+     *    Should we recombine duplicate hypotheses.
+     *
+     */
     BeamChart(const Hypergraph *hypergraph,
               const BeamGroups *groups,
               const HypergraphPotentials<LogViterbiPotential> * potentials,
@@ -148,17 +180,19 @@ class BeamChart {
               double lower_bound,
               bool recombine)
             : hypergraph_(hypergraph),
-            potentials_(potentials),
-            constraints_(constraints),
-            future_(future),
-            lower_bound_(lower_bound),
-            groups_(groups),
-            current_group_(0),
-            beam_(groups->groups_size()),
-            beam_size_(groups->groups_size(), 0),
-            beam_nodes_(hypergraph->nodes().size()),
-            exact(true),
-            recombine_(recombine) {
+
+              potentials_(potentials),
+              constraints_(constraints),
+              future_(future),
+        lower_bound_(lower_bound),
+        recombine_(recombine),
+        groups_(groups),
+        current_group_(0),
+        beam_(groups->groups_size()),
+        beam_size_(groups->groups_size(), 0),
+        beam_nodes_(hypergraph->nodes().size()),
+        beam_set_(hypergraph->nodes().size()),
+        exact(true) {
         for (int i = 0; i < groups->groups_size(); ++i) {
             beam_[i] = new Beam();
         }
@@ -166,11 +200,12 @@ class BeamChart {
 
     ~BeamChart();
 
-    //
+    /**
+     *
+     */
     bool queue_up(HNode node, HEdge edge,
                   int bp_left, int bp_right,
                   priority_queue<BeamHyp> *queue) {
-
         double cur_score = potentials_->score(edge);
         const typename BVP::ValType &sig =
                 (*constraints_)[edge];
@@ -224,14 +259,14 @@ class BeamChart {
             const BeamGroups &groups,
             bool recombine);
 
-    static BeamChart<BVP> *cube_pruning(
-        const Hypergraph *graph,
-        const HypergraphPotentials<LogViterbiPotential> &potentials,
-        const vector<typename BVP::ValType> &constraints,
-        const Chart<LogViterbiPotential> &future,
-        double lower_bound,
-        const BeamGroups &groups,
-        bool recombine);
+    // static BeamChart<BVP> *cube_pruning(
+    //     const Hypergraph *graph,
+    //     const HypergraphPotentials<LogViterbiPotential> &potentials,
+    //     const vector<typename BVP::ValType> &constraints,
+    //     const Chart<LogViterbiPotential> &future,
+    //     double lower_bound,
+    //     const BeamGroups &groups,
+    //     bool recombine);
 
     Hyperpath *get_path(int result);
 
@@ -241,16 +276,15 @@ class BeamChart {
         }
     }
 
-
-
   protected:
     const Hypergraph *hypergraph_;
 
     // The (upper bound) future score and a lower bound of total score.
-    const Chart<LogViterbiPotential> *future_;
     const HypergraphPotentials<LogViterbiPotential> *potentials_;
     const vector<typename BVP::ValType> *constraints_;
+    const Chart<LogViterbiPotential> *future_;
     double lower_bound_;
+    bool recombine_;
 
     vector<Beam *> beam_;
     vector<int> beam_size_;
@@ -262,7 +296,12 @@ class BeamChart {
 
     stack<BeamHyp *> hyp_pool_;
 
-    bool recombine_;
+    vector<boost::unordered_set<typename BVP::ValType,
+                               typename BVP::hash,
+                               typename BVP::equal_to> > beam_set_;
+    //vector<bitset<1000000> > beam_set_;
+    int recombined_;
+    int total_;
 };
 
 

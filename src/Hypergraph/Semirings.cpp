@@ -8,11 +8,6 @@
 RealPotential::ValType RealPotential::INFINITY_BUFFER = INF/8;
 RealPotential::ValType RealPotential::NEGATIVE_INFINITY = -INF/10;
 
-bool valid_binary_vectors(const bitset<BITMAPSIZE> &lhs,
-                          const bitset<BITMAPSIZE> &rhs) {
-    return ((lhs & rhs).none());
-}
-
 
 SparseVector combine_sparse_vectors(const SparseVector &value,
                                     const SparseVector &rhs,
