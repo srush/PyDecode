@@ -147,11 +147,11 @@ class BeamChart {
     };
 
 
-    struct delete_disposer {
-        void operator()(BeamHyp *delete_this) {
-            delete delete_this;
-        }
-    };
+    // struct delete_disposer {
+    //     void operator()(BeamHyp *delete_this) {
+    //         delete delete_this;
+    //     }
+    // };
 
     typedef rbtree<BeamHyp> Beam;
     typedef vector<BeamHyp * > BeamPointers;

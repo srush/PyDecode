@@ -11,17 +11,28 @@
 #include "./common.h"
 #include "Hypergraph/Semirings.hh"
 #include <boost/intrusive/rbtree.hpp>
+#include <boost/utility.hpp>
 
 using namespace boost::intrusive;
 
 
 template<typename BVP>
 BeamChart<BVP>::~BeamChart<BVP>() {
+
     for (int i = 0; i < beam_.size(); ++i) {
-        typename Beam::iterator iter = beam_[i]->begin();
-        beam_[i]->clear_and_dispose(delete_disposer());
+        // typename Beam::iterator iter = beam_[i]->begin();
+        // beam_[i]->clear_and_dispose(delete_disposer());
         delete beam_[i];
     }
+    for (int i = 0; i < beam_nodes_.size(); ++i) {
+        // typename Beam::iterator iter = beam_[i]->begin();
+        // beam_[i]->clear_and_dispose(delete_disposer());
+        for (int j =0; j <beam_nodes_[i].size(); ++j) {
+            delete beam_nodes_[i][j];
+        }
+    }
+
+
 
     while (!hyp_pool_.empty()) {
         BeamHyp *hyp;
@@ -448,6 +459,10 @@ void BeamChart<BVP>::finish(int group) {
                 total++;
                 //beamset[BVP::hash(hyp->sig)]=1;
             } else {
+                hyp_pool_.push(hyp);
+                // typename Beam::iterator iter2 = boost::next(iter);
+                // b->erase(iter);
+                // iter = iter2;
                 recombined++;
             }
             iter++;
@@ -476,6 +491,7 @@ void BeamChart<BVP>::finish(int group) {
             iter++;
         }
     }
+    b->clear();
     //cout << current_group_ << " " << recombined << " " << total << endl;
     current_group_++;
 

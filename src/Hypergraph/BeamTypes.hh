@@ -117,17 +117,17 @@ struct ParsingElement {
     int total_size;
 
     // Rolling hash used for equality check.
-    bitset<10000> hash;
+    //bitset<10000> hash;
     int rolling_hash;
     bool blank() const { return position == -1; }
     void recompute_hash() {
         if (up == NULL) {
-            hash[edge] = 1;
+            //hash[edge] = 1;
             rolling_hash = edge % 1000000;
         } else {
-            hash = up->hash;
+            //hash = up->hash;
             rolling_hash = (up->rolling_hash * edge) % 1000000;
-            hash[edge] = 1;
+            //hash[edge] = 1;
         }
     }
     bool operator<(const ParsingElement &other) const {
@@ -189,7 +189,26 @@ class ParsingBeam {
             : std::binary_function<ValType, ValType, bool>
     {
         bool operator() (const ValType &lhs1, const ValType& rhs1) const {
-            return (lhs1.hash == rhs1.hash);
+            if (lhs1.rolling_hash != rhs1.rolling_hash) {
+                return false;
+            }
+            const ValType *lhs = &lhs1;
+            const ValType *rhs = &rhs1;
+            while(true) {
+                if (lhs1.rolling_hash != rhs1.rolling_hash) return false;
+                if (lhs->edge != rhs->edge || lhs->position != rhs->position) {
+                    return false;
+                }
+                if (lhs->up == NULL && rhs->up == NULL) {
+                    return true;
+                }
+                if ((lhs->up == NULL && rhs->up != NULL) ||
+                    (lhs->up != NULL && rhs->up == NULL)) {
+                    return false;
+                }
+                lhs = lhs->up;
+                rhs = rhs->up;
+            }
         }
     };
     struct hash
@@ -205,24 +224,26 @@ class ParsingBeam {
     // }
 
     static inline bool equals(const ValType &lhs1, const ValType& rhs1) {
-        return (lhs1.hash == rhs1.hash);
-        // const ValType *lhs = &lhs1;
-        // const ValType *rhs = &rhs1;
-        // while(true) {
-        //     if (lhs->hash != rhs->hash) return false;
-        //     if (lhs->edge != rhs->edge || lhs->position != rhs->position) {
-        //         return false;
-        //     }
-        //     if (lhs->up == NULL && rhs->up == NULL) {
-        //         return true;
-        //     }
-        //     if ((lhs->up == NULL && rhs->up != NULL) ||
-        //         (lhs->up != NULL && rhs->up == NULL)) {
-        //         return false;
-        //     }
-        //     lhs = lhs->up;
-        //     rhs = rhs->up;
-        // }
+        if (lhs1.rolling_hash != rhs1.rolling_hash) {
+            return false;
+        }
+        const ValType *lhs = &lhs1;
+        const ValType *rhs = &rhs1;
+        while(true) {
+            if (lhs1.rolling_hash != rhs1.rolling_hash) return false;
+            if (lhs->edge != rhs->edge || lhs->position != rhs->position) {
+                return false;
+            }
+            if (lhs->up == NULL && rhs->up == NULL) {
+                return true;
+            }
+            if ((lhs->up == NULL && rhs->up != NULL) ||
+                (lhs->up != NULL && rhs->up == NULL)) {
+                return false;
+            }
+            lhs = lhs->up;
+            rhs = rhs->up;
+        }
     }
 };
 
