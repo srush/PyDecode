@@ -18,7 +18,7 @@ class DFA {
             final_(final) {
                 assert(transition.size() == num_states);
                 assert(transition[0].size() == num_symbols);
-                for (int i = 0; i < num_states; ++i) {
+                for (uint i = 0; i < num_states; ++i) {
                     states_[i] = i;
                 }
             }

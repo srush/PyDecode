@@ -6,26 +6,29 @@ from libcpp.set cimport set
 from libcpp cimport bool
 
 cdef extern from "Hypergraph/Hypergraph.hh":
-
+    cdef cppclass CHypergraphBuilder "HypergraphBuilder":
+        CHypergraphBuilder(bool)
+        void set_expected_size(int, int, int)
+        int start_node(int)
+        int add_terminal_node(int)
+        bool end_node()
+        int add_edge(vector[int], int label) except +
+        CHypergraph *finish(bool reconstruct) except +
 
     cdef cppclass CHypergraph "Hypergraph":
         CHypergraph(bool)
-        void set_expected_size(int, int, int)
+        int id()
         int root()
-        vector[int] edges(int)
+        const vector[int] edges(int)
         bool terminal(int)
         int tail_nodes(int)
+        int label(int)
+        int node_label(int)
+        int *labels()
         int tail_node(int, int)
         int head(int)
-        int start_node()
-        int add_terminal_node()
-        bool end_node()
-        int id()
-        int new_id(int)
-        int add_edge(vector[int]) except +
-        void finish(bool reconstruct) except +
-        vector[int] nodes()
-        vector[int] edges()
+        const vector[int] &nodes()
+        const vector[int] &edges()
         vector[int] heads()
 
     cdef cppclass CHyperpath "Hyperpath":
@@ -46,13 +49,13 @@ cdef class Labeling:
 
 cdef class _LazyEdges:
     cdef Hypergraph _graph
-    cdef vector[int] _edges
-    cdef init(self, vector[int])
+    #cdef vector[int] _edges
+    #cdef init(self, vector[int])
 
 cdef class _LazyVertices:
     cdef Hypergraph _graph
-    cdef vector[int] _nodes
-    cdef init(self, vector[int])
+    #cdef vector[int] _nodes
+    #cdef init(self, vector[int])
 
 cdef class Hypergraph:
     cdef CHypergraph *thisptr
@@ -87,10 +90,10 @@ cdef class Path:
     cdef Path init(self, const CHyperpath *path, Hypergraph graph)
     cdef public equal(Path self, Path other)
 
-cdef extern from "Hypergraph/Map.hh":
-    cdef cppclass CHypergraphMap "HypergraphMap":
-        int map_node(int)
-        int map_edge(int)
-        const CHypergraph *domain_graph()
-        const CHypergraph *range_graph()
-        const vector[int] edge_map()
+# cdef extern from "Hypergraph/Map.hh":
+#     cdef cppclass CHypergraphMap "HypergraphMap":
+#         int map_node(int)
+#         int map_edge(int)
+#         const CHypergraph *domain_graph()
+#         const CHypergraph *range_graph()
+#         const vector[int] edge_map()

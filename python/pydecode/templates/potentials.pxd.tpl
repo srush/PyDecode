@@ -78,8 +78,8 @@ cdef class {{S.type}}Value:
 
 {% endfor %}
 
-cdef convert_to_sparse(vector[int] positions)
-cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
+# cdef convert_to_sparse(vector[int] positions)
+# cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
 
 # cdef extern from "Hypergraph/SemiringAlgorithms.hh":
 #     CHyperpath *ccount_constrained_viterbi "count_constrained_viterbi<LogViterbiPotential>" (
@@ -101,7 +101,7 @@ cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
 
 
 cdef extern from "Hypergraph/Algorithms.hh":
-    CHypergraphMap *cproject_hypergraph "project_hypergraph"(
+    CHypergraph *cfilter "filter"(
         const CHypergraph *hypergraph,
         const bool *edge_mask) except +
 

@@ -150,7 +150,8 @@ class BeamChart {
               const double *future,
               double lower_bound,
               bool recombine)
-            : hypergraph_(hypergraph),
+            : exact(true),
+            hypergraph_(hypergraph),
             potentials_(potentials),
             constraints_(constraints),
             future_(future),
@@ -160,7 +161,7 @@ class BeamChart {
             beam_(groups->groups_size()),
             beam_size_(groups->groups_size(), 0),
             beam_nodes_(hypergraph->nodes().size()),
-            exact(true),
+
             recombine_(recombine) {
         for (int i = 0; i < groups->groups_size(); ++i) {
             beam_[i] = new Beam();
@@ -250,18 +251,19 @@ class BeamChart {
     const Hypergraph *hypergraph_;
 
     // The (upper bound) future score and a lower bound of total score.
-    const double *future_;
     const double *potentials_;
     const typename BVP::ValType *constraints_;
+    const double *future_;
     double lower_bound_;
+
+    // Mapping from nodes to beam group.
+    const BeamGroups *groups_;
+    int current_group_;
 
     vector<Beam *> beam_;
     vector<int> beam_size_;
     vector<BeamPointers> beam_nodes_;
 
-    // Mapping from nodes to beam group.
-    const BeamGroups *groups_;
-    int current_group_;
 
     stack<BeamHyp *> hyp_pool_;
 

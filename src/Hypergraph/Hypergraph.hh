@@ -34,6 +34,7 @@ class HypergraphConstructionException : public HypergraphException {};
 struct _HypergraphStructure {
     _HypergraphStructure(int num_nodes, int num_edges, int max_arity) {
         nodes_.reserve(num_nodes);
+        node_labels_.reserve(num_nodes);
         edges_.reserve(num_edges);
         edge_heads_.reserve(num_edges);
         edge_labels_.reserve(num_edges);
@@ -46,6 +47,7 @@ struct _HypergraphStructure {
     _HypergraphStructure() {}
 
     vector<HNode> nodes_;
+    vector<HNode> node_labels_;
     vector<vector<HNode> > node_edges_;
 
     vector<HEdge> edges_;
@@ -101,8 +103,17 @@ class Hypergraph {
         return structure_->edges_;
     }
 
+
+    Label node_label(HNode node) const {
+        return structure_->node_labels_[node];
+    }
+
     Label label(HEdge edge) const {
         return structure_->edge_labels_[edge];
+    }
+
+    Label *labels() const {
+        return structure_->edge_labels_.data();
     }
 
     int edge_start(HNode node) const {
@@ -158,21 +169,17 @@ class Hypergraph {
 
   private:
 
-    _HypergraphStructure *structure_;
-
-    HNode root_;
-
-    bool unary_;
-
     int id_;
+    _HypergraphStructure *structure_;
+    HNode root_;
+    bool unary_;
 
     static int ID;
 };
 
 class HypergraphBuilder {
   public:
-    explicit HypergraphBuilder(
-        bool unary = false)
+    explicit HypergraphBuilder(bool unary = false)
             : terminal_lock_(true),
               lock_(false),
               temp_structure_(NULL),
@@ -199,9 +206,9 @@ class HypergraphBuilder {
     /**
      * Create a new node and begin adding edges.
      */
-    HNode add_terminal_node();
+    HNode add_terminal_node(int label=-1);
 
-    HNode start_node();
+    HNode start_node(int label=-1);
 
     /* HEdge add_edge(const vector<HNode> &nodes); */
     HEdge add_edge(const vector<HNode> &nodes, int label=0);
@@ -230,9 +237,9 @@ class HypergraphBuilder {
     // The current node being created.
     HNode creating_node_;
 
-    bool unary_;
-
     _HypergraphStructure *temp_structure_;
+
+    bool unary_;
 };
 
 

@@ -58,8 +58,8 @@ void general_inside(const Hypergraph *graph,
         if (unary) {
             for (; edge <= end; ++edge) {
                 typename S::ValType score =
-                        score = S::times(weights[edge],
-                                         chart[graph->tail_node(edge)]);
+                        S::times(weights[edge],
+                                 chart[graph->tail_node(edge)]);
                 cur = S::add(cur, score);
             }
         } else {

@@ -1,64 +1,47 @@
 from cython.operator cimport dereference as deref
+from cython.view cimport array as cvarray
 import scipy.sparse
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
 import numpy as np
+#DEFINE NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
 cdef _hypergraph_registry_counts = {}
-
-cdef class Labeling:
-    def __init__(self, Hypergraph graph,
-                 node_labels=None, edge_labels=None):
-        self.edge_labels = edge_labels
-        self.node_labels = node_labels
-
-    def __getitem__(self, obj):
-        if isinstance(obj, Edge):
-            if self.edge_labels is None:
-                raise HypergraphAccessException(
-                    "There is no edge labeling.")
-            return self.edge_labels[obj.id]
-
-        if isinstance(obj, Vertex):
-            if self.node_labels is None:
-                raise HypergraphAccessException(
-                    "There is no node labeling.")
-            return self.node_labels[obj.id]
 
 cdef class _LazyEdges:
     def __init__(self, graph):
         self._graph = graph
 
-    cdef init(self, vector[int] edges):
-        self._edges = edges
-        return self
-
     def __getitem__(self, item):
-        return Edge().init(self._edges[item], self._graph)
+        return Edge().init(self._graph.thisptr.edges()[item],
+                           self._graph)
 
     def __iter__(self):
-        return (Edge().init(edge, self._graph) for edge in self._edges)
+        cdef int edge
+        cdef const vector[int] *edges = &self._graph.thisptr.edges()
+        return (Edge().init(deref(edges)[i], self._graph)
+                for i in range(edges.size()))
 
     def __len__(self):
-        return self._edges.size()
+        return self._graph.thisptr.edges().size()
 
 cdef class _LazyVertices:
     def __init__(self, graph):
         self._graph = graph
 
-    cdef init(self, vector[int] nodes):
-        self._nodes = nodes
-        return self
-
     def __getitem__(self, item):
-        return Vertex().init(self._nodes[item], self._graph)
+        return Vertex().init(self._graph.thisptr.nodes()[item],
+                             self._graph)
 
     def __iter__(self):
-        return (Vertex().init(node, self._graph) for node in self._nodes)
+        cdef const vector[int] *nodes = &self._graph.thisptr.nodes()
+        cdef int node
+        return (Vertex().init(deref(nodes)[i], self._graph)
+                for i in range(nodes.size()))
 
     def __len__(self):
-        return self._nodes.size()
+        return self._graph.thisptr.nodes().size()
 
 cdef class Hypergraph:
     r"""
@@ -82,8 +65,8 @@ cdef class Hypergraph:
     root : :py:class:`Vertex`
       Root vertex in :math:`v_0 \in {\cal V}`.
 
-    labeling : :py:class:`Labeling`
-      The labels associated with vertices and edges. (For debugging.)
+    # labeling : :py:class:`Labeling`
+    #   The labels associated with vertices and edges. (For debugging.)
 
     """
     def __cinit__(Hypergraph self, bool unary=False):
@@ -91,7 +74,7 @@ cdef class Hypergraph:
         Create a new hypergraph.
         """
         self.thisptr = NULL
-        self.labeling = None
+        # self.labeling = None
         self._cached_edges = None
 
     def __dealloc__(self):
@@ -110,7 +93,7 @@ cdef class Hypergraph:
         else:
             _hypergraph_registry_counts[ptr.id()] = 1
         self.thisptr = <CHypergraph *> ptr
-        self.labeling = labeling
+        # self.labeling = labeling
         return self
 
     # def builder(self):
@@ -121,11 +104,11 @@ cdef class Hypergraph:
 
     property vertices:
         def __get__(self):
-            return _LazyVertices(self).init(self.thisptr.nodes())
+            return _LazyVertices(self)
 
     property nodes:
         def __get__(self):
-            return _LazyVertices(self).init(self.thisptr.nodes())
+            return _LazyVertices(self)
 
     property root:
         def __get__(self):
@@ -133,18 +116,25 @@ cdef class Hypergraph:
 
     property edges:
         def __get__(self):
-            return _LazyEdges(self).init(self.thisptr.edges())
-
-    property heads:
-        def __get__(self):
-            return np.array(self.thisptr.heads())
+            return _LazyEdges(self)
 
     property labeling:
         def __get__(self):
-            return self.labeling
+            cdef int *labels = self.thisptr.labels()
+            # cdef int[:] array =
+            #cvarray(shape=(self.thisptr.edges().size(),), itemsize=sizeof(int), format="i")
+            return np.asarray(<int[:self.thisptr.edges().size()]> labels)
 
-        def __set__(self, labeling):
-            self.labeling = labeling
+    # property heads:
+    #     def __get__(self):
+    #         return np.array(self.thisptr.heads())
+
+    # property labeling:
+    #     def __get__(self):
+    #         return self.labeling
+
+    #     def __set__(self, labeling):
+    #         self.labeling = labeling
 
     # def head_labels(self):
     #     for i in range(self.thisptr.edges().size()):
@@ -167,7 +157,7 @@ cdef class Hypergraph:
                                                  len(self.nodes)) + "\n"
         s += "Root %s" % (self.root.id) + "\n"
         for edge in self.edges:
-            s += " %s %s \n" % (edge.id, edge.label)
+            s += " %s \n" % (edge.id,)
             s += "\t%d -> " % (edge.head.id)
             for node in edge.tail:
                 s += " %d " % (node.id)
@@ -208,7 +198,7 @@ cdef class Vertex:
     is_terminal : bool
        Indicates whether this vertex is terminal (no-subedges).
 
-    label : any
+    label : int
         Data associated with the vertex.
     """
 
@@ -250,7 +240,7 @@ cdef class Vertex:
 
     property label:
         def __get__(self):
-            return self.graph.labeling[self]
+            return self.graph.thisptr.node_label(self.nodeptr)
 
     def __str__(self):
         return str(self.nodeptr)
@@ -297,8 +287,8 @@ cdef class Edge:
         ""
         pass
 
-    def __hash__(self):
-        return self.edgeptr
+    # def __hash__(self):
+    #     return self.edgeptr
 
     def __dealloc__(self):
         pass
@@ -329,22 +319,21 @@ cdef class Edge:
             return Vertex().init(self.graph.thisptr.head(self.id), self.graph)
 
 
-    property head_label:
-        def __get__(self):
-            return self.graph.labeling.node_labels[self.graph.thisptr.head(self.id).id()]
-
+    # property head_label:
+    #     def __get__(self):
+    #         return self.graph.labeling.node_labels[self.graph.thisptr.head(self.id).id()]
 
     property label:
         def __get__(self):
-            return self.graph.labeling[self]
+            return self.graph.thisptr.label(self.edgeptr)
 
     property id:
         def __get__(self):
             assert self.edgeptr != -1, "Bad edge id."
-            if self.unfinished:
-                return self.graph.thisptr.new_id(self.edgeptr)
-            else:
-                return self.edgeptr
+            # if self.unfinished:
+            #     return self.graph.thisptr.new_id(self.edgeptr)
+            # else:
+            return self.edgeptr
 
     # def _removed(self):
     #     return (self.id == -1)
@@ -353,9 +342,9 @@ cdef convert_edges(vector[int] edges,
                    Hypergraph graph):
     return [Edge().init(edge, graph) for edge in edges]
 
-cdef convert_nodes(vector[int] nodes,
-                   Hypergraph graph):
-    return [Vertex().init(node, graph) for node in nodes]
+# cdef convert_nodes(vector[int] nodes,
+#                    Hypergraph graph):
+#     return [Vertex().init(node, graph) for node in nodes]
 
 
 cdef class Path:

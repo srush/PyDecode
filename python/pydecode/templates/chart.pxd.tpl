@@ -1,19 +1,6 @@
 cimport numpy as np
 cimport cython
 
-# cdef class IndexedEncoder:
-#     cdef _hasher
-#     cdef int _max_size
-#     cdef _shape
-#     cdef np.ndarray _multipliers
-#     cpdef np.ndarray transform(self, np.ndarray element)
-#     cpdef np.ndarray inverse_transform(self, np.ndarray index)
-
-# cdef class _ChartEdge:
-#     cdef vector[int] tail_ptrs
-#     cdef values
-#     cdef items
-
 cdef class ChartBuilder:
     cpdef init(self, long [:] index)
     cpdef set(self,
@@ -26,6 +13,7 @@ cdef class ChartBuilder:
     cdef _finish_node(self, long index, result)
 
     cdef CHypergraph *_hg_ptr
+    cdef CHypergraphBuilder *_builder
     cdef vector[int] *_chart
 
     cdef bool _done

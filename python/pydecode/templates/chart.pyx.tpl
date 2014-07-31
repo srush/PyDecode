@@ -10,14 +10,14 @@ cimport cython
 
 class DynamicProgram:
     def __init__(self, hypergraph,
-                 item_indices,
-                 output_indices,
+                 # item_indices,
+                 # output_indices,
                  items, outputs):
         self.hypergraph = hypergraph
         self.items = items
         self.outputs = outputs
-        self.item_indices = np.array(item_indices)
-        self.output_indices = np.array(output_indices)
+        # self.item_indices = np.array(item_indices)
+        # self.output_indices = np.array(output_indices)
 
         self._item_matrix = None
         self._output_matrix = None
@@ -59,9 +59,6 @@ class DynamicProgram:
         if self._item_matrix is None:
             self._item_matrix = self._make_item_matrix()
         return self._item_matrix
-
-cdef class _ChartEdge:
-    pass
 
 NODE_NULL = -1
 cdef class ChartBuilder:
@@ -128,22 +125,19 @@ cdef class ChartBuilder:
         self._last = -1
         self._no_tail = set[long]()
         self._strict = not unstrict
-        self._hg_ptr = new CHypergraph(lattice)
+        self._builder = new CHypergraphBuilder(lattice)
 
         self._size = np.max(items) + 1
         self.items = items
         self.outputs = outputs
         self._chart = new vector[int](self._size, NODE_NULL)
-        self._nindices = []
 
         # Output structures.
         self._output_size = np.max(outputs) + 1
         self._construct_output = self._output_size is not None
 
-        self._indices = []
-
         if expected_size:
-            self._hg_ptr.set_expected_size(self._size,
+            self._builder.set_expected_size(self._size,
                                            expected_size[0],
                                            expected_size[1])
             self._max_arity = expected_size[1]
@@ -155,12 +149,13 @@ cdef class ChartBuilder:
     @cython.boundscheck(False)
     cpdef init(self, long [:] indices):
         cdef int i
+        cdef long index
         for i in range(indices.shape[0]):
-            deref(self._chart)[indices[i]] = \
-                self._hg_ptr.add_terminal_node()
+            index = indices[i]
+            deref(self._chart)[index] = \
+                self._builder.add_terminal_node(index)
 
-            self._nindices.append(indices[i])
-            self._no_tail.insert(indices[i])
+            self._no_tail.insert(index)
 
     cpdef set_list(self, long index, tuples, out=None):
         deref(self._chart)[index] = self._hg_ptr.start_node()
@@ -210,7 +205,7 @@ cdef class ChartBuilder:
               long [:] tails3=None,
               long [:] out=None):
 
-        deref(self._chart)[index] = self._hg_ptr.start_node()
+        deref(self._chart)[index] = self._builder.start_node(index)
 
         blank = (out is None)
         cdef vector[int] tails
@@ -252,7 +247,13 @@ cdef class ChartBuilder:
                 if tails.back() == NODE_NULL:
                     raise Exception(
                         "Item %s not found for tail 3."%(tails3[j],))
-            self._hg_ptr.add_edge(tails)
+            if self._construct_output:
+                if not blank:
+                    self._builder.add_edge(tails, out[j])
+                else:
+                    self._builder.add_edge(tails, -1)
+            else:
+                self._builder.add_edge(tails, -1)
 
             if self._no_tail.find(tails1[j]) != self._no_tail.end():
                 self._no_tail.erase(tails1[j])
@@ -260,6 +261,7 @@ cdef class ChartBuilder:
                 self._no_tail.erase(tails2[j])
             if tails3 is not None and self._no_tail.find(tails3[j]) != self._no_tail.end():
                 self._no_tail.erase(tails3[j])
+
 
             if self._construct_output:
                 if not blank and out[j] != -1:
@@ -293,13 +295,11 @@ cdef class ChartBuilder:
         if self._no_tail.size() != 1:
             raise Exception("Hypergraph has multiple vertices that are not connected: %s."%(self._no_tail,))
         self._done = True
-        self._hg_ptr.finish(reconstruct)
+        self._hg_ptr = self._builder.finish(reconstruct)
 
         hypergraph = Hypergraph(self._lattice)
         hypergraph.init(self._hg_ptr,
                         Labeling(hypergraph, None))
         return DynamicProgram(hypergraph,
-                              self._nindices,
-                              self._indices,
                               self.items,
                               self.outputs)

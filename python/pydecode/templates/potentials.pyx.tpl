@@ -158,47 +158,47 @@ class {{S.type}}:
 {% endfor %}
 
 # For mapping between hypergraphs.
-cdef convert_to_sparse(vector[int] positions):
-    data = []
-    indices = []
-    ind = [0]
-    cdef int i
-    for i in range(positions.size()):
-        if positions[i] > -1:
-            data.append(1)
-            indices.append(positions[i])
-        ind.append(len(data))
-    return (data, indices, ind)
+# cdef convert_to_sparse(vector[int] positions):
+#     data = []
+#     indices = []
+#     ind = [0]
+#     cdef int i
+#     for i in range(positions.size()):
+#         if positions[i] > -1:
+#             data.append(1)
+#             indices.append(positions[i])
+#         ind.append(len(data))
+#     return (data, indices, ind)
 
-cdef convert_hypergraph_map(const CHypergraphMap *hyper_map,
-                            graph1_arg, graph2_arg):
-    cdef Hypergraph graph1 = graph1_arg
-    if not graph1:
-        graph1 = Hypergraph()
-        graph1.init(hyper_map.domain_graph(), Labeling(graph1))
+# cdef convert_hypergraph_map(const CHypergraphMap *hyper_map,
+#                             graph1_arg, graph2_arg):
+#     cdef Hypergraph graph1 = graph1_arg
+#     if not graph1:
+#         graph1 = Hypergraph()
+#         graph1.init(hyper_map.domain_graph(), Labeling(graph1))
 
-    cdef Hypergraph graph2 = graph2_arg
-    if not graph2:
-        graph2 = Hypergraph()
-        graph2.init(hyper_map.range_graph(), Labeling(graph2))
+#     cdef Hypergraph graph2 = graph2_arg
+#     if not graph2:
+#         graph2 = Hypergraph()
+#         graph2.init(hyper_map.range_graph(), Labeling(graph2))
 
 
-    cdef vector[int] edges = hyper_map.edge_map()
+#     cdef vector[int] edges = hyper_map.edge_map()
 
-    edge_matrix = scipy.sparse.csc_matrix(
-        convert_to_sparse(hyper_map.edge_map()),
-        shape=(len(graph2.edges),
-               len(graph1.edges)),
-        dtype=np.uint8)
+#     edge_matrix = scipy.sparse.csc_matrix(
+#         convert_to_sparse(hyper_map.edge_map()),
+#         shape=(len(graph2.edges),
+#                len(graph1.edges)),
+#         dtype=np.uint8)
 
-    # cdef vector[int] nodes = hyper_map.node_map()
+#     # cdef vector[int] nodes = hyper_map.node_map()
 
-    # node_matrix = scipy.sparse.css_matrix(
-    #     hyper_map.edge_map(),
-    #     shape=(len(graph1.nodes),
-    #            len(graph2.nodes)),
-    #     dtype=np.int8)
-    return graph1, edge_matrix, graph2
+#     # node_matrix = scipy.sparse.css_matrix(
+#     #     hyper_map.edge_map(),
+#     #     shape=(len(graph1.nodes),
+#     #            len(graph2.nodes)),
+#     #     dtype=np.int8)
+#     return graph1, edge_matrix, graph2
 
 ####### Methods that use specific potential ########
 
@@ -213,10 +213,10 @@ cpdef map_potentials(dp, out_potentials):
     cdef np.ndarray potentials = raveled[dp.output_indices]
     return potentials
 
-def project(Hypergraph graph,
-            bool [:] hyperedge_filter):
+def filter(Hypergraph graph,
+            bool [:] mask):
     """
-    Project a graph based on a set of boolean potentials.
+    Filter a hypergraph based on an edge mask.
 
     Edges with value 0 are pruned, edges with value
     1 are pruned if they are no longer in a path.
@@ -231,20 +231,11 @@ def project(Hypergraph graph,
 
     Returns
     --------
-    original_graph : Hypergraph
-       The original hypergraph.
-
-    projection : N`xN sparse int8 matrix
-       Matrix mapping original edges indices to projected indices.
-
-    projected_graph : Hypergraph
+    filtered_graph : Hypergraph
        The new projected hypergraph with :math:`|{\cal E}| = N'`.
 
 
     """
-    # new_filt = <_BoolPotentials> get_potentials(graph, hyperedge_filter,
-    #                                              Bool.Potentials)
-    cdef const CHypergraphMap *projection = \
-        cproject_hypergraph(graph.thisptr,
-                            &hyperedge_filter[0])
-    return convert_hypergraph_map(projection, graph, None)
+    cdef CHypergraph *new_graph = \
+        cfilter(graph.thisptr, &mask[0])
+    return Hypergraph().init(new_graph, None)

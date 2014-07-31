@@ -41,12 +41,13 @@ HEdge HypergraphBuilder::add_edge(HNode node, int label)  {
     return edge;
 }
 
-HNode HypergraphBuilder::start_node() {
+HNode HypergraphBuilder::start_node(int label) {
     terminal_lock_ = false;
     lock_ = true;
     // creating_node_ = new Hypernode();
     // creating_node_->set_id(temp_structure_->nodes_.size());
     creating_node_ = temp_structure_->nodes_.size();
+    temp_structure_->node_labels_.push_back(label);
     temp_structure_->nodes_.push_back(creating_node_);
     return creating_node_;
 }
@@ -62,16 +63,18 @@ bool HypergraphBuilder::end_node() {
     } else {
         // creating_node_->set_id(-1);
         temp_structure_->nodes_.pop_back();
+        temp_structure_->node_labels_.pop_back();
         return false;
     }
 }
 
-HNode HypergraphBuilder::add_terminal_node() {
+HNode HypergraphBuilder::add_terminal_node(int label) {
     assert(terminal_lock_);
     // Hypernode *node = new Hypernode();
     // node->set_id(temp_structure_->nodes_.size());
 
     HNode node = temp_structure_->nodes_.size();
+    temp_structure_->node_labels_.push_back(label);
     temp_structure_->nodes_.push_back(node);
     return temp_structure_->nodes_[temp_structure_->nodes_.size() - 1];
 }
@@ -141,6 +144,7 @@ HNode HypergraphBuilder::fill(_HypergraphStructure *structure,
     for (uint i = 0; i < reachable_nodes.size(); ++i) {
         if (reachable_nodes[i]) {
             structure->nodes_.push_back(node_count);
+            structure->node_labels_.push_back(temp_structure_->node_labels_[i]);
             node_mapping[i] = node_count;
             node_count++;
         }
