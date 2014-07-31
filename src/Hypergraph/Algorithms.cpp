@@ -11,7 +11,6 @@
 #include <vector>
 
 #include "Hypergraph/Algorithms.hh"
-#include "Hypergraph/Potentials.hh"
 
 using namespace std;
 
@@ -50,21 +49,19 @@ struct EdgeGroup {
     vector<int> back;
 };
 
-
 // Implementation of the Bar-Hillel algorithm.
-HypergraphMap *extend_with_dfa(
-    Hypergraph *hypergraph,
-    const HypergraphPotentials<CountingPotential> &potentials,
-    const DFA &dfa,
-    vector<DFANode> *labels) {
+Hypergraph *extend_with_dfa(
+    Hypergraph *graph,
+    const int *potentials,
+    const DFA &dfa) {
 
-    Hypergraph *new_graph = new Hypergraph(hypergraph->is_unary());
+    HypergraphBuilder *new_graph =
+            new HypergraphBuilder(hypergraph->is_unary());
     vector<vector<DFANode> > new_nodes(
         hypergraph->nodes().size());
     vector<vector<vector<DFANode> > > new_indexed(
         hypergraph->nodes().size());
 
-    vector<DFANode> possible_labels;
 
     foreach (HNode node, hypergraph->nodes()) {
         new_indexed[node].resize(dfa.states().size());
@@ -72,8 +69,8 @@ HypergraphMap *extend_with_dfa(
 
     vector<vector<HNode> > reverse_node_map(
         hypergraph->nodes().size());
-    vector<vector<HEdge> > reverse_edge_map(
-        hypergraph->edges().size());
+    // vector<vector<HEdge> > reverse_edge_map(
+    //     hypergraph->edges().size());
 
     foreach (HNode node, hypergraph->nodes()) {
         if (hypergraph->terminal(node)) {
@@ -82,7 +79,7 @@ HypergraphMap *extend_with_dfa(
                 reverse_node_map[node].push_back(tmp_node);
                 int id = new_nodes[node].size();
                 DFANode label(state, state, tmp_node, id);
-                possible_labels.push_back(label);
+                // possible_labels.push_back(label);
                 new_nodes[node].push_back(label);
                 new_indexed[node][state].push_back(label);
             }
@@ -97,7 +94,7 @@ HypergraphMap *extend_with_dfa(
                 bool unary = hypergraph->tail_nodes(edge) == 1;
                 HNode left_node = hypergraph->tail_node(edge, 0);
                 vector<DFANode> &base = new_nodes[left_node];
-                int symbol = potentials.score(edge);
+                int symbol = potentials[edge];
                 for (int i = 0; i < base.size(); ++i) {
                     if (unary) {
                         if (!dfa.valid_transition(base[i].right_state,
@@ -155,40 +152,40 @@ HypergraphMap *extend_with_dfa(
                     new_nodes[node].push_back(label);
                     new_indexed[node][state_left].push_back(label);
 
-                    foreach (EdgeGroup edge_group, hyps[state_left][state_right]) {
+                    foreach (EdgeGroup edge_group,
+                             hyps[state_left][state_right]) {
                         HEdge edge = edge_group.edge;
                         vector<HNode> tails;
                         for (int i = 0; i < hypergraph->tail_nodes(edge); ++i) {
-                            tails.push_back(new_nodes[hypergraph->tail_node(edge, i)]
-                                            [edge_group.back[i]].node);
+                            tails.push_back(
+                                new_nodes[hypergraph->tail_node(edge, i)]
+                                [edge_group.back[i]].node);
                         }
-                        HEdge new_edge = new_graph->add_edge(tails);
-                        reverse_edge_map[hypergraph->id(edge)].push_back(new_edge);
+                        HEdge new_edge = new_graph->add_edge(tails,
+                                                             graph->label(edge));
+                        //reverse_edge_map[hypergraph->id(edge)].push_back(new_edge);
                     }
                     if (new_graph->end_node()) {
                         reverse_node_map[node].push_back(
                             new_nodes[node].back().node);
-                        possible_labels.push_back(label);
+                        //possible_labels.push_back(label);
                     }
                 }
             }
         }
     }
-    if (reverse_node_map[hypergraph->root()].size() != 1) {
-        throw HypergraphException("New hypergraph has root size is not 1.");
+    if (reverse_node_map[graph->root()].size() == 0) {
+        throw HypergraphException("New hypergraph has no root.");
     }
-    new_graph->finish();
-
-
-    foreach (DFANode label, possible_labels) {
-        if (label.node != NODE_NULL && label.node >= 0) {
-            labels->push_back(label);
-        }
+    if (reverse_node_map[graph->root()].size() > 1) {
+        throw HypergraphException("New hypergraph has root size > 1.");
     }
 
-    return HypergraphMap::make_reverse_map(
-        new_graph, hypergraph,
-        reverse_node_map, reverse_edge_map);
+    Hypergraph *new_graph = new_graph->finish();
+
+
+
+    return new_graph;
 }
 
 
@@ -202,8 +199,8 @@ struct NodeCount {
 };
 
 HypergraphMap *extend_hypergraph_by_count(
-    Hypergraph *hypergraph,
-    const HypergraphPotentials<CountingPotential> &potentials,
+    Hypergraph *graph,
+    const int *edge_counts,
     int lower_limit,
     int upper_limit,
     int goal) {
@@ -211,26 +208,25 @@ HypergraphMap *extend_hypergraph_by_count(
     int limit = upper_limit - lower_limit;
     int modified_goal = goal - lower_limit;
 
-    Hypergraph *new_graph = new Hypergraph(hypergraph->is_unary());
-    vector<vector<HNode> > reverse_node_map(hypergraph->nodes().size());
-    vector<vector<HEdge> > reverse_edge_map(hypergraph->edges().size());
-    vector<vector<NodeCount > > new_nodes(hypergraph->nodes().size());
+    HypergraphBuilder *new_graph =
+            new HypergraphBuilder(graph->is_unary());
+    vector<vector<NodeCount > > new_nodes(graph->nodes().size());
 
-    foreach (HNode node, hypergraph->nodes()) {
-        if (hypergraph->terminal(node)) {
+    foreach (HNode node, graph->nodes()) {
+        if (graph->terminal(node)) {
             // The node is a terminal, so just add it.
             new_nodes[node].push_back(
                 NodeCount(0,
                           new_graph->add_terminal_node()));
         } else {
             // Bucket edges.
-            vector<vector<EdgeGroup> > counts(limit + 1);
-            foreach (HEdge edge, hypergraph->edges(node)) {
-                bool unary = hypergraph->tail_nodes(edge) == 1;
-                assert(hypergraph->tail_nodes(edge) <= 2);
-                HNode left_node = hypergraph->tail_node(edge, 0);
+            vector<vector<EdgeGroup> > edge_counts(limit + 1);
+            foreach (HEdge edge, graph->edges(node)) {
+                bool unary = graph->tail_nodes(edge) == 1;
+                assert(graph->tail_nodes(edge) <= 2);
+                HNode left_node = graph->tail_node(edge, 0);
 
-                int score = potentials.score(edge);
+                int score = edge_counts[edge];
                 vector<NodeCount> &base = new_nodes[left_node];
 
                 for (int i = 0; i < base.size(); ++i) {
@@ -241,7 +237,7 @@ HypergraphMap *extend_hypergraph_by_count(
                         counts[total - lower_limit].push_back(
                             EdgeGroup(edge, i, 0));
                     } else {
-                        HNode right_node = hypergraph->tail_node(edge, 1);
+                        HNode right_node = graph->tail_node(edge, 1);
                         int right_size = new_nodes[right_node].size();
                         for (int j = 0; j < right_size; ++j) {
                             int total =
@@ -259,7 +255,7 @@ HypergraphMap *extend_hypergraph_by_count(
             // Make new nodes.
             for (int count = 0; count <= limit; ++count) {
                 if (counts[count].size() == 0) continue;
-                if (hypergraph->root() == node &&
+                if (graph->root() == node &&
                     count != modified_goal) continue;
 
                 new_nodes[node].push_back(
@@ -269,84 +265,48 @@ HypergraphMap *extend_hypergraph_by_count(
                 foreach (EdgeGroup edge_group, counts[count]) {
                     HEdge edge = edge_group.edge;
                     vector<HNode> tails;
-                    for (int i = 0; i < hypergraph->tail_nodes(edge); ++i) {
-                        tails.push_back(new_nodes[hypergraph->tail_node(edge, i)]
+                    for (int i = 0; i < graph->tail_nodes(edge); ++i) {
+                        tails.push_back(new_nodes[graph->tail_node(edge, i)]
                                         [edge_group.back[i]].node);
                     }
-                    HEdge new_edge = new_graph->add_edge(tails);
-                    reverse_edge_map[hypergraph->id(edge)].push_back(new_edge);
-                }
-                if (new_graph->end_node()) {
-                    reverse_node_map[node].push_back(
-                        new_nodes[node].back().node);
+                    HEdge new_edge =
+                            new_graph->add_edge(tails, graph->label(edge));
                 }
             }
         }
     }
-    new_graph->finish();
-
-    return HypergraphMap::make_reverse_map(
-        new_graph, hypergraph,
-        reverse_node_map, reverse_edge_map);
+    return new_graph->finish();
 }
 
-
-// Chart<SetPotential> *edge_domination(const Hypergraph &graph) {
-//     vector<set<int> > *v = new vector<set<int> >(graph.edges().size());
-//     foreach (HEdge edge, graph.edges()) {
-//         (*v)[graph.id(edge)].insert(graph.id(edge));
-//     }
-
-//     HypergraphVectorPotentials<SetPotential> potentials(
-//         &graph, v, false /* copy */);
-//     Chart<SetPotential> *chart = general_inside(&graph, potentials);
-//     return chart;
-// }
-
-// Chart<SetPotential> *node_domination(const Hypergraph &graph) {
-//     vector<set<int> > *v = new vector<set<int> >(graph.edges().size());
-//     foreach (HEdge edge, graph.edges()) {
-//         for (int i = 0; i < graph.tail_nodes(edge); ++i) {
-//             HNode node = graph.tail_node(edge, i);
-//             (*v)[graph.id(edge)].insert(node);
+// vector<set<int> > *children_sparse(
+//     const Hypergraph *graph,
+//     const HypergraphPotentials<SparseVectorPotential> &potentials) {
+//     vector<set<int> > *children = new vector<set<int> >(graph->nodes().size());
+//     foreach (HNode node, graph->nodes()) {
+//         set<int> &vec = (*children)[node];
+//         foreach (HEdge edge, graph->edges(node)) {
+//             const SparseVector &v = potentials.edge);
+//             foreach (const SparsePair &pair, v) {
+//                 vec.insert(pair.first);
+//             }
 //         }
 //     }
-
-//     HypergraphVectorPotentials<SetPotential> potentials(
-//         &graph, v, false /* copy */);
-//     Chart<SetPotential> *chart = general_inside(&graph, potentials);
-//     return chart;
+//     return children;
 // }
 
-vector<set<int> > *children_sparse(
-    const Hypergraph *graph,
-    const HypergraphPotentials<SparseVectorPotential> &potentials) {
-    vector<set<int> > *children = new vector<set<int> >(graph->nodes().size());
-    foreach (HNode node, graph->nodes()) {
-        set<int> &vec = (*children)[node];
-        foreach (HEdge edge, graph->edges(node)) {
-            const SparseVector &v = potentials.score(edge);
-            foreach (const SparsePair &pair, v) {
-                vec.insert(pair.first);
-            }
-        }
-    }
-    return children;
-}
-
-set<int> *updated_nodes(
-    const Hypergraph *graph,
-    const vector<set<int> > &children,
-    const set<int> &updated) {
-    set<int> *updated_nodes = new set<int>();
-    foreach (HNode node, graph->nodes()) {
-        if (!is_disjoint<set<int>, set<int> >(updated,
-                                             children[node])) {
-            updated_nodes->insert(node);
-        }
-    }
-    return updated_nodes;
-}
+// set<int> *updated_nodes(
+//     const Hypergraph *graph,
+//     const vector<set<int> > &children,
+//     const set<int> &updated) {
+//     set<int> *updated_nodes = new set<int>();
+//     foreach (HNode node, graph->nodes()) {
+//         if (!is_disjoint<set<int>, set<int> >(updated,
+//                                              children[node])) {
+//             updated_nodes->insert(node);
+//         }
+//     }
+//     return updated_nodes;
+// }
 
 vector<set<int> > *children_nodes(const Hypergraph &graph) {
     vector<set<int> > *children =
@@ -366,7 +326,7 @@ vector<set<int> > *children_nodes(const Hypergraph &graph) {
 
 HypergraphMap *project_hypergraph(
     const Hypergraph *hypergraph,
-    const HypergraphPotentials<BoolPotential> &edge_mask) {
+    const bool *edge_mask) {
     vector<HNode> *node_map =
             new vector<HNode>(hypergraph->nodes().size(), NODE_NULL);
     vector<HEdge> *edge_map =
@@ -457,7 +417,8 @@ HypergraphMap *binarize(const Hypergraph *hypergraph) {
                 new_node = tmp;
             }
             new_edge[0] = new_node;
-            new_edge[1] = (*nodes)[hypergraph->tail_node(edge, hypergraph->tail_nodes(edge) - 1)];
+            new_edge[1] = (*nodes)[hypergraph->tail_node(edge,
+                                                         hypergraph->tail_nodes(edge) - 1)];
             new_edges.push_back(new_edge);
         }
         (*nodes)[node] = range_hyper->start_node();
@@ -473,43 +434,43 @@ HypergraphMap *binarize(const Hypergraph *hypergraph) {
 }
 
 
-Hypergraph *make_lattice(int width, int height,
-                         const vector<vector<int> > &transitions,
-                         vector<LatticeLabel> *labels) {
-    Hypergraph *graph = new Hypergraph(true);
-    HNode source = graph->add_terminal_node();
-    labels->push_back(LatticeLabel(0, 0));
+// Hypergraph *make_lattice(int width, int height,
+//                          const vector<vector<int> > &transitions,
+//                          vector<LatticeLabel> *labels) {
+//     Hypergraph *graph = new Hypergraph(true);
+//     HNode source = graph->add_terminal_node();
+//     labels->push_back(LatticeLabel(0, 0));
 
-    vector<HNode> old_nodes(height), new_nodes(height);
-    for (int j = 0; j < height; ++j) {
-        old_nodes[j] = graph->start_node();
-        labels->push_back(LatticeLabel(1, j));
-        graph->add_edge(source);
-        graph->end_node();
-    }
+//     vector<HNode> old_nodes(height), new_nodes(height);
+//     for (int j = 0; j < height; ++j) {
+//         old_nodes[j] = graph->start_node();
+//         labels->push_back(LatticeLabel(1, j));
+//         graph->add_edge(source);
+//         graph->end_node();
+//     }
 
-    for (int i = 1; i < width; ++i) {
-        for (int j = 0; j < height; ++j) {
-            new_nodes[j] = graph->start_node();
-            labels->push_back(LatticeLabel(i + 1, j));
-            foreach (int k, transitions[j]) {
-                graph->add_edge(old_nodes[k]);
-            }
-            graph->end_node();
-        }
-        old_nodes = new_nodes;
-    }
+//     for (int i = 1; i < width; ++i) {
+//         for (int j = 0; j < height; ++j) {
+//             new_nodes[j] = graph->start_node();
+//             labels->push_back(LatticeLabel(i + 1, j));
+//             foreach (int k, transitions[j]) {
+//                 graph->add_edge(old_nodes[k]);
+//             }
+//             graph->end_node();
+//         }
+//         old_nodes = new_nodes;
+//     }
 
-    graph->start_node();
-    labels->push_back(LatticeLabel(width + 1, 0));
-    for (int j = 0; j < height; ++j) {
-        graph->add_edge(old_nodes[j]);
-    }
-    graph->end_node();
+//     graph->start_node();
+//     labels->push_back(LatticeLabel(width + 1, 0));
+//     for (int j = 0; j < height; ++j) {
+//         graph->add_edge(old_nodes[j]);
+//     }
+//     graph->end_node();
 
-    graph->finish();
-    return graph;
-}
+//     graph->finish();
+//     return graph;
+// }
 
 
 // vector<bool> active_nodes(const Hypergraph *graph, set<int> on_edges) {

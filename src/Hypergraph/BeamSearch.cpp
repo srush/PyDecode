@@ -33,24 +33,22 @@ BeamChart<BVP>::~BeamChart<BVP>() {
 template<typename BVP>
 BeamChart<BVP> *BeamChart<BVP>::cube_pruning(
     const Hypergraph *graph,
-    const HypergraphPotentials<LogViterbiPotential> &potentials,
-    const HypergraphPotentials<BVP> &constraints,
-    const Chart<LogViterbiPotential> &future,
+    const double *potentials,
+    const typename BVP::ValType *constraints,
+    const double *future,
     double lower_bound,
     const BeamGroups &groups,
     bool recombine) {
 
     // Check the inputs.
-    potentials.check(*graph);
-    constraints.check(*graph);
     groups.check(graph);
 
-    typedef LogViterbiPotential LVP;
+    typedef LogViterbi LVP;
 
     BeamChart<BVP> *chart = new BeamChart<BVP>(graph, &groups,
-                                               &potentials,
-                                               &constraints,
-                                               &future,
+                                               potentials,
+                                               constraints,
+                                               future,
                                                lower_bound,
                                                recombine);
 
@@ -122,24 +120,22 @@ BeamChart<BVP> *BeamChart<BVP>::cube_pruning(
 template<typename BVP>
 BeamChart<BVP> *BeamChart<BVP>::beam_search(
     const Hypergraph *graph,
-    const HypergraphPotentials<LogViterbiPotential> &potentials,
-    const HypergraphPotentials<BVP> &constraints,
-    const Chart<LogViterbiPotential> &future,
+    const double *potentials,
+    const typename BVP::ValType *constraints,
+    const double *future,
     double lower_bound,
     const BeamGroups &groups,
     bool recombine) {
 
     // Check the inputs.
-    potentials.check(*graph);
-    constraints.check(*graph);
     groups.check(graph);
 
-    typedef LogViterbiPotential LVP;
+    typedef LogViterbi LVP;
 
     BeamChart<BVP> *chart = new BeamChart<BVP>(graph, &groups,
-                                               &potentials,
-                                               &constraints,
-                                               &future,
+                                               potentials,
+                                               constraints,
+                                               future,
                                                lower_bound,
                                                recombine);
 
@@ -158,8 +154,8 @@ BeamChart<BVP> *BeamChart<BVP>::beam_search(
             // 2) Enumerate over each edge (in topological order).
             foreach (HEdge edge, graph->edges(node)) {
                 const typename BVP::ValType &sig =
-                        constraints.score(edge);
-                double score = potentials.score(edge);
+                        constraints[edge];
+                double score = potentials[edge];
 
                 // Assume unary/binary edges.
                 HNode node_left = graph->tail_node(edge, 0);
@@ -373,7 +369,7 @@ void BeamChart<BVP>::insert(HNode node,
                             int bp_left, int bp_right) {
 
     // Check that the node is not bounded out.
-    double future_score = (*future_)[node];
+    double future_score = future_[node];
     double total_score = score + future_score;
     if (total_score < lower_bound_) return;
 
@@ -547,7 +543,6 @@ void BeamChart<BVP>::finish(int group) {
         for (int i = 0; i < size; ++i) {
             typename Beam::iterator iter2 = b->begin();
             for (int j = 0; j < size; ++j) {
-
                 if (j > i &&
                     iter->node == iter2->node &&
                     iter->sig == iter2->sig) {
@@ -577,6 +572,6 @@ void BeamChart<BVP>::finish(int group) {
     current_group_++;
 }
 
-template class BeamChart<BinaryVectorPotential>;
-template class BeamChart<AlphabetPotential>;
-template class BeamChart<LogViterbiPotential>;
+// template class BeamChart<BinaryVectorPotential>;
+// template class BeamChart<AlphabetPotential>;
+template class BeamChart<LogViterbi>;

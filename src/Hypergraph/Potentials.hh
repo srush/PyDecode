@@ -324,10 +324,10 @@ template<typename SemiringType>
 /*     const vector<double> &vec, */
 /*     HypergraphPotentials<LogViterbiPotential> *weights); */
 
-void non_zero_weights(
-    const Hypergraph *graph,
-    const HypergraphPotentials<LogViterbiPotential> &weights,
-    HypergraphVectorPotentials<BoolPotential> *updates);
+// void non_zero_weights(
+//     const Hypergraph *graph,
+//     const HypergraphPotentials<LogViterbiPotential> &weights,
+//     HypergraphVectorPotentials<BoolPotential> *updates);
 
 
 #endif  // HYPERGRAPH_POTENTIALS_H_

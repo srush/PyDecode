@@ -34,11 +34,9 @@ def make_extension(wrapper):
     a = [wrapper.make("pydecode.potentials",
                      "python/pydecode/potentials.pyx",
                      ["src/Hypergraph/Hypergraph.cpp",
-                      "src/Hypergraph/Map.cpp",
                       "src/Hypergraph/Semirings.cpp",
                       "src/Hypergraph/SemiringAlgorithms.cpp",
                       "src/Hypergraph/Algorithms.cpp",
-                      "src/Hypergraph/Potentials.cpp",
                       "src/Hypergraph/BeamSearch.cpp"
                       ])]
     return a

@@ -18,12 +18,6 @@
 // Compute tail node set for each hypergraph node.
 vector<set<int> > *children_nodes(const Hypergraph &graph);
 
-struct IdComparator {
-    bool operator()(HEdge edge1, HEdge edge2) const {
-        return edge1 < edge2;
-    }
-};
-
 struct DFANode {
   DFANode(int _left_state, int _right_state,
           HNode _node, int _id) :
@@ -40,15 +34,15 @@ struct DFANode {
     int id;
 };
 
-HypergraphMap *extend_with_dfa(
+Hypergraph *extend_with_dfa(
     Hypergraph *graph,
-    const HypergraphPotentials<CountingPotential> &potentials,
+    const int *potentials,
     const DFA &dfa,
     vector<DFANode> *labels);
 
-HypergraphMap *extend_hypergraph_by_count(
+Hypergraph *extend_hypergraph_by_count(
     Hypergraph *graph,
-    const HypergraphPotentials<CountingPotential> &potentials,
+    const int *potentials,
     int lower_limit,
     int upper_limit,
     int goal);
@@ -59,31 +53,31 @@ HypergraphMap *extend_hypergraph_by_count(
 template<class Set1, class Set2>
 bool is_disjoint(const Set1 &set1, const Set2 &set2);
 
-vector<set<int> > *children_sparse(
-    const Hypergraph *graph,
-    const HypergraphPotentials<SparseVectorPotential> &potentials);
+// vector<set<int> > *children_sparse(
+//     const Hypergraph *graph,
+//     const HypergraphPotentials<SparseVectorPotential> &potentials);
 
-set<int> *updated_nodes(
-    const Hypergraph *graph,
-    const vector<set<int> > &children,
-    const set<int> &updated);
+// set<int> *updated_nodes(
+//     const Hypergraph *graph,
+//     const vector<set<int> > &children,
+//     const set<int> &updated);
 
 
 HypergraphMap *project_hypergraph(
     const Hypergraph *hypergraph,
-    const HypergraphPotentials<BoolPotential> &edge_mask);
+    const bool *edge_mask);
 
 HypergraphMap *binarize(const Hypergraph *hypergraph);
 
-struct LatticeLabel {
-    LatticeLabel() {}
-  LatticeLabel(int i_, int j_) : i(i_), j(j_) {}
-    int i, j;
-};
+// struct LatticeLabel {
+//     LatticeLabel() {}
+//   LatticeLabel(int i_, int j_) : i(i_), j(j_) {}
+//     int i, j;
+// };
 
-Hypergraph *make_lattice(int width, int height,
-                         const vector<vector<int> > &transitions,
-                         vector<LatticeLabel> *labels);
+// Hypergraph *make_lattice(int width, int height,
+//                          const vector<vector<int> > &transitions,
+//                          vector<LatticeLabel> *labels);
 
 
 
