@@ -28,8 +28,7 @@ def inside(graph, potentials,
        for inside this will be the probability paths
        reaching this vertex.
     """
-    new_potentials = get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.inside(graph, new_potentials, chart)
+    return kind.inside(graph, potentials, chart)
 
 
 def outside(graph, potentials, inside_chart,
@@ -65,15 +64,13 @@ def outside(graph, potentials, inside_chart,
        this node.
 
     """
-    new_potentials = get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.outside(graph, new_potentials,
+    return kind.outside(graph, potentials,
                                        inside_chart, chart)
 
 
 def viterbi(graph, potentials,
               kind=LogViterbi, chart=None, back_pointers=None, mask=None):
-    new_potentials = get_potentials(graph, potentials, kind.Potentials)
-    new_potentials.kind.viterbi(graph, new_potentials, chart,
+    kind.viterbi(graph, potentials, chart,
                                 back_pointers, mask, get_path=False)
 
 def best_path(graph, potentials,
@@ -105,11 +102,10 @@ def best_path(graph, potentials,
     path : :py:class:`Path`
       The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
     """
-    new_potentials = get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.viterbi(graph, new_potentials,
-                                       chart=chart,
-                                       back_pointers=back_pointers,
-                                       mask=mask)
+    return kind.viterbi(graph, potentials,
+                        chart=chart,
+                        back_pointers=back_pointers,
+                        mask=mask)
 
 def marginals(graph, potentials,
               inside_chart=None,
@@ -140,9 +136,8 @@ def marginals(graph, potentials,
         my_outside = \
             outside(graph, potentials, inside_chart=my_inside, kind=kind)
 
-    new_potentials = get_potentials(graph, potentials, kind.Potentials)
-    return new_potentials.kind.compute_marginals(graph, new_potentials,
-                                                 my_inside, my_outside)
+    return kind.compute_marginals(graph, potentials,
+                                  my_inside, my_outside)
 
 
 

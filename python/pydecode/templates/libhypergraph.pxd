@@ -6,9 +6,8 @@ from libcpp.set cimport set
 from libcpp cimport bool
 
 cdef extern from "Hypergraph/Hypergraph.hh":
-    # cdef cppclass CHypernode "Hypernode":
-    #     int id()
-    #     vector[int ] edges()
+
+
     cdef cppclass CHypergraph "Hypergraph":
         CHypergraph(bool)
         void set_expected_size(int, int, int)
@@ -37,6 +36,9 @@ cdef extern from "Hypergraph/Hypergraph.hh":
         vector[int] nodes()
         int has_edge(int)
         bool equal(const CHyperpath path)
+
+    CHyperpath *construct_path(CHypergraph *,
+                                int * back_pointers)
 
 cdef class Labeling:
     cdef edge_labels

@@ -10,7 +10,7 @@ using namespace std;
 
 class DFA {
   public:
-    DFA(int num_states, int num_symbols,
+    DFA(uint num_states, uint num_symbols,
         const vector<map<int, int> > &transition,
         const set<int> &final)
             : states_(num_states),

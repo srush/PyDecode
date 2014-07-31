@@ -13,12 +13,9 @@
 
 using namespace std;
 
-// class Hypernode;
-// class Hyperedge;
-// typedef const Hypernode *HNode;
-//typedef vector <const Hypernode *> HNodes;
 typedef int HEdge;
 typedef int HNode;
+typedef int Label;
 const int EDGE_NULL = -1;
 const int NODE_NULL = -1;
 
@@ -33,69 +30,46 @@ class HypergraphAccessException : public HypergraphException {};
 class HypergraphMatchException : public HypergraphException {};
 class HypergraphConstructionException : public HypergraphException {};
 
-/**
- * Hypernode - Constant representation of a hypernode in a hypergraph.
- * Accessors for edges above and below.
- */
-// class Hypernode {
-//   public:
-//     explicit Hypernode()
-//             : id_(-1) {}
 
-//     int id() const { return id_; }
+struct _HypergraphStructure {
+    _HypergraphStructure(int num_nodes, int num_edges, int max_arity) {
+        nodes_.reserve(num_nodes);
+        edges_.reserve(num_edges);
+        edge_heads_.reserve(num_edges);
+        edge_labels_.reserve(num_edges);
+        if (max_arity == 1) {
+            edge_tails_unary_.reserve(num_edges);
+        } else {
+            edge_tails_.reserve(num_edges);
+        }
+    }
+    _HypergraphStructure() {}
 
-//     void set_id(int id) { id_ = id; }
+    vector<HNode> nodes_;
+    vector<vector<HNode> > node_edges_;
 
-//     void add_edge(HEdge edge) {
-//         edges_.push_back(edge);
-//     }
+    vector<HEdge> edges_;
+    vector<vector<HNode> > edge_tails_;
 
-//     /**
-//      * Get all hyperedges with this hypernode as head.
-//      */
-//     const vector<HEdge> &edges() const { return edges_; }
+    vector<pair<HNode, HNode> > edge_tails_binary_;
 
-//     /**
-//      * Is the node a terminal node.
-//      */
-//     bool terminal() const { return edges_.size() == 0; }
+    vector<HNode> edge_tails_unary_;
+    vector<HNode> edge_heads_;
+    vector<Label> edge_labels_;
 
-//   private:
-//     int id_;
-//     vector<HEdge> edges_;
-// };
+};
 
 class Hypergraph {
   public:
-    explicit Hypergraph(bool unary = false)
-            : terminal_lock_(true), lock_(false),
-              unary_(unary),
-              id_(ID++), temp_structure_(NULL), structure_(NULL) {
-        temp_structure_ = new Structure();
-    }
+    Hypergraph(_HypergraphStructure *structure,
+               HNode root,
+               bool unary) :
+            id_(ID++),
+            structure_(structure),
+            root_(root),
+            unary_(unary) {}
 
-    void set_expected_size(int num_nodes,
-                           int num_edges,
-                           int max_arity) {
-        delete temp_structure_;
-        temp_structure_ = new Structure(num_nodes,
-                                        num_edges,
-                                        max_arity);
-    }
-
-    ~Hypergraph() {
-        // foreach (HNode node, temp_structure_->nodes_) {
-        //     delete node;
-        // }
-        delete structure_;
-
-        /* if (structure_ == temp_structure_) { */
-        /*     delete temp_structure_; */
-        /* } else { */
-        /*     delete structure_; */
-        /*     delete temp_structure_; */
-        /* } */
-    }
+    ~Hypergraph() { delete structure_; }
 
     /**
      * Get the root of the hypergraph
@@ -105,9 +79,9 @@ class Hypergraph {
     HNode root() const { return root_; }
 
     int id(HEdge edge) const { return edge; }
-    int new_id(HEdge edge) const {
-        return temp_structure_->edges_[edge];
-    }
+    // int new_id(HEdge edge) const {
+    //     return temp_structure_->edges_[edge];
+    // }
 
     /**
      * Get all hypernodes in the hypergraph. Ordered topologically.
@@ -127,6 +101,10 @@ class Hypergraph {
         return structure_->edges_;
     }
 
+    Label label(HEdge edge) const {
+        return structure_->edge_labels_[edge];
+    }
+
     int edge_start(HNode node) const {
         return structure_->node_edges_[node][0];
     }
@@ -134,7 +112,6 @@ class Hypergraph {
     int edge_end(HNode node) const {
         return structure_->node_edges_[node].back();
     }
-
 
     const vector<HEdge> &edges(HNode node) const {
         return structure_->node_edges_[node];
@@ -163,124 +140,25 @@ class Hypergraph {
         return structure_->edge_tails_unary_[edge];
     }
 
-
     inline HNode tail_node(HEdge edge, int tail) const {
         if (unary_) return structure_->edge_tails_unary_[edge];
         return structure_->edge_tails_[edge][tail];
     }
-    // const vector<int> &all_tail_node_unary() const {
-    //     assert(unary_);
-    //     return structure_->edge_tails_unary_;
-    // }
-
-    // const vector<int> &all_head_node_unary() const {
-    //     assert(unary_);
-    //     return structure_->edge_heads_;
-    // }
-
-    // Construction Code.
-
-    /**
-     * Create a new node and begin adding edges.
-     */
-    HNode add_terminal_node();
-
-    HNode start_node();
-
-    /* HEdge add_edge(const vector<HNode> &nodes); */
-    HEdge add_edge(const vector<HNode> &nodes);
-    HEdge add_edge(HNode node);
-
-    /**
-     * Returns true if the node was created.
-     * Returns false if the node was removed (no children).
-     */
-    bool end_node();
-
-    /**
-     * Complete the hypergraph.
-     */
-    void finish(bool reconstruct=true) {
-        if (temp_structure_->nodes_.size() == 0) {
-            throw HypergraphException("Hypergraph has size 0.");
-        }
-        root_ = temp_structure_->nodes_[temp_structure_->nodes_.size() - 1];
-        /* if (!(root == NULL || root_ == root)) { */
-        /*   throw HypergraphException("Root is not expected root."); */
-        /* } */
-
-        if (reconstruct) {
-            structure_ = new Structure();
-            fill();
-        } else {
-            structure_ = temp_structure_;
-            structure_->node_edges_.resize(structure_->nodes_.size());
-            for (int i = 0; i < structure_->edges_.size(); ++i) {
-                structure_->node_edges_[structure_->edge_heads_[i]]
-                        .push_back(i);
-            }
-        }
-
-        if (structure_->nodes_.size() == 0) {
-            throw HypergraphException("Final hypergraph has node size 0.");
-        }
-        if (structure_->edges_.size() == 0) {
-            throw HypergraphException("Final hypergraph has edge size 0.");
-        }
-        // TODO(srush) Run checks to make sure we are complete.
-    }
-
-    /**
-     * Remove paths that do not reach the root.
-     */
-    void fill();
 
     /**
      * Is this hypergraph the same as other.
      */
-    bool same(const Hypergraph &other) const { return other.id_ == id_; }
+    bool same(const Hypergraph &other) const {
+        return other.id_ == id_;
+    }
 
     int id() const { return id_; }
 
     bool is_unary() const { return unary_; }
 
   private:
-    // For construction.
-    bool terminal_lock_;
 
-    // The hypergraph is adding an edge. It is locked.
-    bool lock_;
-
-    // The current node being created.
-    HNode creating_node_;
-
-    struct Structure {
-        Structure(int num_nodes, int num_edges, int max_arity) {
-            nodes_.reserve(num_nodes);
-            edges_.reserve(num_edges);
-            edge_heads_.reserve(num_edges);
-            if (max_arity == 1) {
-                edge_tails_unary_.reserve(num_edges);
-            } else {
-                edge_tails_.reserve(num_edges);
-            }
-        }
-        Structure() {}
-
-        vector<HNode> nodes_;
-        vector<vector<HNode> > node_edges_;
-
-        vector<HEdge> edges_;
-        vector<vector<HNode> > edge_tails_;
-
-        vector<pair<HNode, HNode> > edge_tails_binary_;
-
-        vector<HNode> edge_tails_unary_;
-        vector<HNode> edge_heads_;
-    };
-
-    Structure *temp_structure_;
-    Structure *structure_;
+    _HypergraphStructure *structure_;
 
     HNode root_;
 
@@ -291,13 +169,87 @@ class Hypergraph {
     static int ID;
 };
 
+class HypergraphBuilder {
+  public:
+    explicit HypergraphBuilder(
+        bool unary = false)
+            : terminal_lock_(true),
+              lock_(false),
+              temp_structure_(NULL),
+              unary_(unary)
+    {
+        temp_structure_ = new _HypergraphStructure();
+    }
+
+    void set_expected_size(int num_nodes,
+                           int num_edges,
+                           int max_arity) {
+        delete temp_structure_;
+        temp_structure_ = new _HypergraphStructure(num_nodes,
+                                                   num_edges,
+                                                   max_arity);
+    }
+
+    /**
+     * Complete the hypergraph.
+     */
+    Hypergraph *finish(bool reconstruct=true);
+
+
+    /**
+     * Create a new node and begin adding edges.
+     */
+    HNode add_terminal_node();
+
+    HNode start_node();
+
+    /* HEdge add_edge(const vector<HNode> &nodes); */
+    HEdge add_edge(const vector<HNode> &nodes, int label=0);
+    HEdge add_edge(HNode node, int label=0);
+
+    /**
+     * Returns true if the node was created.
+     * Returns false if the node was removed (no children).
+     */
+    bool end_node();
+
+  private:
+
+    /**
+     * Remove paths that do not reach the root.
+     */
+    HNode fill(_HypergraphStructure *structure,
+               HNode root);
+
+    // For construction.
+    bool terminal_lock_;
+
+    // The hypergraph is adding an edge. It is locked.
+    bool lock_;
+
+    // The current node being created.
+    HNode creating_node_;
+
+    bool unary_;
+
+    _HypergraphStructure *temp_structure_;
+};
+
+
+struct IdComparator {
+    bool operator()(HEdge edge1, HEdge edge2) const {
+        return edge1 < edge2;
+    }
+};
+
+
 class Hyperpath {
   public:
     Hyperpath(const Hypergraph *graph,
               const vector<HNode> &nodes,
               const vector<HEdge> &edges)
             : graph_(graph), nodes_(nodes), edges_(edges) {
-        HEdge last_edge = -1;
+        //HEdge last_edge = -1;
         foreach (HEdge edge, edges) {
             edges_set_.insert(graph->id(edge));
         //     if (last_edge != -1 && graph->id(last_edge) >= graph->id(edge)) {
@@ -359,11 +311,15 @@ class Hyperpath {
 
   private:
     const Hypergraph *graph_;
-    set<int> edges_set_;
-    const vector<HEdge> edges_;
     set<int> nodes_set_;
     vector<HNode> nodes_;
+
+    set<int> edges_set_;
+    const vector<HEdge> edges_;
 };
 
+
+Hyperpath *construct_path(const Hypergraph *graph,
+                          int *back);
 
 #endif  // HYPERGRAPH_HYPERGRAPH_H_

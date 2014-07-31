@@ -32,18 +32,18 @@ cdef extern from "Hypergraph/BeamSearch.hh" namespace "BeamChart<{{S.type}}>":
 
     CBeamChart{{S.type}} *cbeam_search{{S.type}} "BeamChart<{{S.type}}>::beam_search" (
             const CHypergraph *graph,
-            const CHypergraphLogViterbiPotentials &potentials,
-            const CHypergraph{{S.type}}s &constraints,
-            const CLogViterbiChart &outside,
+            const double *potentials,
+            const {{S.cvalue}} *constraints,
+            const double *outside,
             double lower_bound,
             const CBeamGroups &groups,
             bool recombine) except +
 
     CBeamChart{{S.type}} *ccube_pruning{{S.type}} "BeamChart<{{S.type}}>::cube_pruning" (
             const CHypergraph *graph,
-            const CHypergraphLogViterbiPotentials &potentials,
-            const CHypergraph{{S.type}}s &constraints,
-            const CLogViterbiChart &outside,
+            const double *potentials,
+            const {{S.cvalue}} *constraints,
+            const double *outside,
             double lower_bound,
             const CBeamGroups &groups,
             bool recombine) except +

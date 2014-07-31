@@ -1,88 +1,86 @@
 semirings:
-  - type: Bool
-    npvalue: np.int8
-    cvalue: char
-    format: i
-    viterbi: Yes
-    description:
-      Boolean-valued logical potentials.
-
-      Uses the operations :math:`(+, *) = (\land, \lor)`.
   - type: Viterbi
     cvalue: double
-    format: d
     npvalue: np.double
     viterbi: Yes
     description:
       Real-valued max probability potentials.
       Uses the operations :math:`(+, *) = (\max, *)`.
-  - type: Counting
-    cvalue: int
-    format: i
-    npvalue: np.int32
-    viterbi: False,
-    description:
-      Natural-valued counting potentials.
-
-      Uses the operations :math:`(+, *) = (+, *)`.
-
-
   - type: LogViterbi
     cvalue: double
-    format: d
     npvalue: np.double
     viterbi: True
     description:
       Real-valued max log-probability potentials.
 
       Uses the operations :math:`(+, *) = (\max, *)`.
-
-  - type: LogProb
+  - type: Real
     cvalue: double
-    format: d
+    npvalue: np.double
+    viterbi: False
+    description:
+      Real-valued inside log-probability potentials.
+  - type: Log
+    cvalue: double
     npvalue: np.double
     viterbi: False
     description:
       Real-valued inside log-probability potentials.
 
-  - type: Inside
-    cvalue: double
-    npvalue: np.double
-    format: d
+  - type: Boolean
+    npvalue: np.int8
+    cvalue: char
     viterbi: Yes
     description:
-      Real-valued probability potentials.
+      Boolean-valued logical potentials.
+
+      Uses the operations :math:`(+, *) = (\land, \lor)`.
+  - type: Counting
+    cvalue: int
+    npvalue: np.int32
+    viterbi: False,
+    description:
+      Natural-valued counting potentials.
 
       Uses the operations :math:`(+, *) = (+, *)`.
-
   - type: MinMax
     cvalue: double
     npvalue: np.double
-    format: d
     viterbi: No
     description:
       Real-valued min value potentials.
 
       Uses the operations :math:`(+, *) = (\min, \max)`.
 
-  - type: Alphabet
-    ctype: AlphabetPotential
-    cvalue: vector[int]
-    viterbi: No
-    description:
-      Alphabet valued weights.
+  # - type: Inside
+  #   cvalue: double
+  #   npvalue: np.double
+  #   format: d
+  #   viterbi: Yes
+  #   description:
+  #     Real-valued probability potentials.
+
+  #     Uses the operations :math:`(+, *) = (+, *)`.
+
+
+  # - type: Alphabet
+  #   ctype: AlphabetPotential
+  #   cvalue: vector[int]
+  #   viterbi: No
+  #   description:
+  #     Alphabet valued weights.
 
 
 
 
-  - type: BinaryVector
-    cvalue: cbitset
-    pvalue: Bitset
-    to_cpp: val.data
-    from_cpp: Bitset().init(val)
-    viterbi: No
-    description:
-      Binary vector potentials.
+  # - type: BinaryVector
+  #   cvalue: cbitset
+  #   pvalue: Bitset
+  #   to_cpp: val.data
+  #   from_cpp: Bitset().init(val)
+  #   viterbi: No
+  #   description:
+  #     Binary vector potentials.
 
   # - type: MinSparseVector
   #   cvalue: vector[pair[int, int]]

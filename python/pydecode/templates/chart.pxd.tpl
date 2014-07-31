@@ -55,16 +55,3 @@ cdef class ChartBuilder:
     cdef np.ndarray _out
 
     cdef _lattice
-
-# {% for i in range(2, 6) %}
-# cdef class IntTuple{{i}}:
-#     cdef int a, b, c, d
-
-# cdef class IntTuple{{i}}Hasher:
-#     {% for j in range(i) %}
-#     cdef int _multipliers_{{var[j]}}
-#     {% endfor %}
-#     cdef int _max_size
-#     cpdef int hash_item(self, {% for j in range(i) %}int {{var[j]}}, {% endfor %})
-#     cpdef unhash(self, int val)
-# {% endfor %}

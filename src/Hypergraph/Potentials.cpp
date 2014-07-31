@@ -141,13 +141,13 @@ HypergraphMappedPotentials<SemiringType>::score(HEdge edge) const {
 //     }
 // };
 
-void non_zero_weights(const Hypergraph *graph,
-                      const HypergraphPotentials<LogViterbiPotential> &weights,
-                      HypergraphVectorPotentials<BoolPotential> *updates) {
-    foreach (HEdge edge, graph->edges()) {
-        updates->insert(edge, weights[edge] != 0.0);
-    }
-}
+// void non_zero_weights(const Hypergraph *graph,
+//                       const HypergraphPotentials<LogViterbiPotential> &weights,
+//                       HypergraphVectorPotentials<BoolPotential> *updates) {
+//     foreach (HEdge edge, graph->edges()) {
+//         updates->insert(edge, weights[edge] != 0.0);
+//     }
+// }
 
 SPECIALIZE_HYPER_FOR_SEMI(ViterbiPotential)
 SPECIALIZE_HYPER_FOR_SEMI(LogViterbiPotential)

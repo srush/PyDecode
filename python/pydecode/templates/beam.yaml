@@ -1,10 +1,10 @@
 semirings:
-  - type: BinaryVectorPotential
-    from: BinaryVector
-    cvalue: cbitset
-  - type: AlphabetPotential
-    from: Alphabet
-    cvalue: vector[int]
-  - type: LogViterbiPotential
+  # - type: BinaryVectorPotential
+  #   from: BinaryVector
+  #   cvalue: cbitset
+  # - type: AlphabetPotential
+  #   from: Alphabet
+  #   cvalue: vector[int]
+  - type: LogViterbi
     from: LogViterbi
     cvalue: float
