@@ -75,10 +75,9 @@ def main():
         script_args = copy_args,
         include_dirs = [np.get_include()],
         data_files=[('pydecode/notebooks', ['notebooks/hmm.ipynb',
-                                            "notebooks/Fibonacci.ipynb", 
-                                            "notebooks/EditDistance.ipynb",  
-                                            "notebooks/parsing.ipynb", 
-                                            "notebooks/PerceptronTagger.ipyb"]
+                                            "notebooks/Fibonacci.ipynb",
+                                            "notebooks/EditDistance.ipynb",
+                                            "notebooks/parsing.ipynb"]
                                         )]
         )
 
