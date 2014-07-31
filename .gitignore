@@ -87,3 +87,6 @@ docs/html/
 docs/latex/
 pydecode-*/
 venv/
+ENV/
+*.old
+todo

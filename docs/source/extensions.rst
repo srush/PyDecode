@@ -55,20 +55,21 @@ train the parameters of a model by specifying a HypergraphModelBuilder.
 
 .. _constraints:
 
-Constraints
-=============
-
-Many algorithms in natural language processing, such as translation decoding, can be represented as constrained dynamic programming problems. These can be described as hypergraphs with additional constraints on hyperedges.
-
-.. automodule:: pydecode.constraints
-   :no-members:
-   :no-inherited-members:
-
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
-
+..
    Constraints
+   =============
+
+   Many algorithms in natural language processing, such as translation decoding, can be represented as constrained dynamic programming problems. These can be described as hypergraphs with additional constraints on hyperedges.
+
+   .. automodule:: pydecode.constraints
+      :no-members:
+      :no-inherited-members:
+
+   .. autosummary::
+      :toctree: generated/
+      :template: class.rst
+
+      Constraints
 
 
 .. _lp:
@@ -92,17 +93,18 @@ PyDecode uses PuLP_ to generate these (integer) linear programs.
    HypergraphLP
 
 
-Lagrangian Relaxation
-=====================
+..
+   Lagrangian Relaxation
+   =====================
 
-.. automodule:: pydecode.optimization
-   :no-members:
-   :no-inherited-members:
+   .. automodule:: pydecode.optimization
+      :no-members:
+      :no-inherited-members:
 
-.. autosummary::
+   .. autosummary::
 
-   subgradient
-   subgradient_descent
+      subgradient
+      subgradient_descent
 
 
 
