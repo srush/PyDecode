@@ -26,6 +26,7 @@ cdef extern from "Hypergraph/Hypergraph.hh":
         int label(int)
         int node_label(int)
         int *labels()
+        int *node_labels()
         int tail_node(int, int)
         int head(int)
         const vector[int] &nodes()

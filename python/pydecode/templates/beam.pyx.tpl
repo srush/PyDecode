@@ -3,8 +3,6 @@ from libcpp cimport bool
 from libcpp.vector cimport vector
 
 
-from pydecode.potentials cimport *
-
 cdef class Bitset:
     """
     Bitset

@@ -31,8 +31,8 @@ class ExtensionWrapper:
 
 
 def make_extension(wrapper):
-    a = [wrapper.make("pydecode.potentials",
-                     "python/pydecode/potentials.pyx",
+    a = [wrapper.make("pydecode._pydecode",
+                     "python/pydecode/_pydecode.pyx",
                      ["src/Hypergraph/Hypergraph.cpp",
                       "src/Hypergraph/Semirings.cpp",
                       "src/Hypergraph/SemiringAlgorithms.cpp",
@@ -75,16 +75,9 @@ def main():
         script_args = copy_args,
         include_dirs = [np.get_include()],
         data_files=[('pydecode/notebooks', ['notebooks/hmm.ipynb',
-<<<<<<< HEAD
                                             "notebooks/Fibonacci.ipynb",
                                             "notebooks/EditDistance.ipynb",
                                             "notebooks/parsing.ipynb"]
-=======
-                                            "notebooks/Fibonacci.ipynb", 
-                                            "notebooks/EditDistance.ipynb",  
-                                            "notebooks/parsing.ipynb", 
-                                            "notebooks/PerceptronTagger.ipyb"]
->>>>>>> da8bb9f768fe57e1a63ce9ca82b859bd82157c61
                                         )]
         )
 

@@ -117,6 +117,10 @@ class Hypergraph {
         return structure_->edge_labels_.data();
     }
 
+    Label *node_labels() const {
+        return structure_->node_labels_.data();
+    }
+
     int edge_start(HNode node) const {
         return structure_->node_edges_[node][0];
     }

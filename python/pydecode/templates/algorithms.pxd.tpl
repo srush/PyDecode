@@ -63,8 +63,8 @@ cdef class {{S.type}}Value:
 
 {% endfor %}
 
-cdef convert_to_sparse(vector[int] positions)
-cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
+# python mo	cdef convert_to_sparse(vector[int] positions)
+# python mo	cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
 
 
 cdef extern from "Hypergraph/Algorithms.hh":
@@ -72,7 +72,7 @@ cdef extern from "Hypergraph/Algorithms.hh":
         const CHypergraph *hypergraph,
         const bool *edge_mask) except +
 
-    CHypergraph *binarize(const CHypergraph *hypergraph) except +
+    CHypergraph *cbinarize "binarize"(const CHypergraph *hypergraph) except +
 
 # cdef convert_to_sparse(vector[int] positions)
 # cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
