@@ -10,10 +10,6 @@ cimport libcpp.map as c_map
 from libcpp.pair cimport pair
 from libcpp cimport bool
 
-cdef class _Potentials:
-     cdef Hypergraph graph
-     cdef kind
-
 ############# This is the templated semiring part. ##############
 
 {% for S in semirings %}
@@ -61,22 +57,19 @@ cdef extern from "Hypergraph/Semirings.hh" namespace "{{S.ctype}}":
     {{S.cvalue}} {{S.type}}_times "{{S.ctype}}::times" ({{S.cvalue}},
                                                         const {{S.cvalue}}&)
 
-
-# cdef class _{{S.type}}Potentials(_Potentials):
-#     cdef CHypergraph{{S.type}}Potentials *thisptr
-#     # cdef HypergraphMap projection
-
-#     cdef init(self, CHypergraph{{S.type}}Potentials *ptr)
-#               # HypergraphMap projection)
-
-#     # cdef {{S.cvalue}} _bias(self, bias)
-
-
 cdef class {{S.type}}Value:
     cdef {{S.cvalue}} thisval
     cdef {{S.type}}Value init(self, {{S.cvalue}} val)
 
 {% endfor %}
+
+
+cdef extern from "Hypergraph/Algorithms.hh":
+    CHypergraph *cfilter "filter"(
+        const CHypergraph *hypergraph,
+        const bool *edge_mask) except +
+
+    CHypergraph *binarize(const CHypergraph *hypergraph) except +
 
 # cdef convert_to_sparse(vector[int] positions)
 # cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
@@ -100,10 +93,6 @@ cdef class {{S.type}}Value:
 #                                                        cbitset rhs)
 
 
-cdef extern from "Hypergraph/Algorithms.hh":
-    CHypergraph *cfilter "filter"(
-        const CHypergraph *hypergraph,
-        const bool *edge_mask) except +
 
 #     CHypergraphMap *cextend_hypergraph_by_count "extend_hypergraph_by_count" (
 #         CHypergraph *graph,
@@ -140,4 +129,4 @@ cdef extern from "Hypergraph/Algorithms.hh":
 #     cdef Hypergraph graph
 #     cdef vector[set[int] ] *children
 
-cpdef map_potentials(dp, out_potentials)
+# cpdef map_potentials(dp, out_potentials)

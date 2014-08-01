@@ -12,7 +12,8 @@ class DynamicProgram:
     def __init__(self, hypergraph,
                  # item_indices,
                  # output_indices,
-                 items, outputs):
+                 items,
+                 outputs):
         self.hypergraph = hypergraph
         self.items = items
         self.outputs = outputs
@@ -28,7 +29,8 @@ class DynamicProgram:
         data = []
         outputs = []
         ind = [0]
-        for index in self.output_indices:
+
+        for index in self.hypergraph.labeling:
             if index != -1:
                 data.append(1)
                 outputs.append(index)
@@ -41,7 +43,7 @@ class DynamicProgram:
 
     def _make_item_matrix(self):
         return scipy.sparse.csc_matrix(
-            ([1] * len(self.item_indices),
+            ([1] * len(self.hypergraph.node_labeling),
              self.item_indices,
              range(len(self.item_indices) + 1)),
             shape=(np.max(self.items) + 1,
@@ -158,7 +160,7 @@ cdef class ChartBuilder:
             self._no_tail.insert(index)
 
     cpdef set_list(self, long index, tuples, out=None):
-        deref(self._chart)[index] = self._hg_ptr.start_node()
+        deref(self._chart)[index] = self._builder.start_node(index)
         cdef vector[int] tails
         cdef int i, j, node
 
@@ -170,20 +172,20 @@ cdef class ChartBuilder:
                 if tails.back() == NODE_NULL:
                     raise Exception(
                         "Item %s not found for tail."%(node,))
-            self._hg_ptr.add_edge(tails)
+
+            if self._construct_output:
+                if not blank:
+                    self._builder.add_edge(tails, out[j])
+                else:
+                    self._builder.add_edge(tails, -1)
+            else:
+                self._builder.add_edge(tails, -1)
             for node in tail:
                 if self._no_tail.find(node) != self._no_tail.end():
                     self._no_tail.erase(node)
 
-            if self._construct_output:
-                if not blank:
-                    self._indices.append(out[j])
-                else:
-                    self._indices.append(-1)
 
-
-
-        result = self._hg_ptr.end_node()
+        result = self._builder.end_node()
         self._finish_node(index, result)
 
     cdef _finish_node(self, long index, result):
@@ -194,7 +196,7 @@ cdef class ChartBuilder:
         else:
             self._last = index
             self._no_tail.insert(index)
-            self._nindices.append(index)
+            # self._nindices.append(index)
 
 
     @cython.boundscheck(False)
@@ -263,13 +265,13 @@ cdef class ChartBuilder:
                 self._no_tail.erase(tails3[j])
 
 
-            if self._construct_output:
-                if not blank and out[j] != -1:
-                    self._indices.append(out[j])
-                else:
-                    self._indices.append(-1)
+            # if self._construct_output:
+            #     if not blank and out[j] != -1:
+            #         self._indices.append(out[j])
+            #     else:
+            #         self._indices.append(-1)
 
-        result = self._hg_ptr.end_node()
+        result = self._builder.end_node()
         self._finish_node(index, result)
         # if not result:
         #     if self._strict:

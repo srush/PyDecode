@@ -162,7 +162,7 @@ def valid_path(hypergraph, path):
     path : Path
     """
     root = hypergraph.root
-    assert len(path.edges) > 0
+    assert len(list(path.edges)) > 0
     # Check there is a path to terminals.
     stack = [hypergraph.root]
     while stack:

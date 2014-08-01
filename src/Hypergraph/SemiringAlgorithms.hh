@@ -12,8 +12,8 @@
 #include "Hypergraph/Hypergraph.hh"
 #include "Hypergraph/Semirings.hh"
 
-Hyperpath *construct_path(const Hypergraph *graph,
-                          int *back);
+// Hyperpath *construct_path(const Hypergraph *graph,
+//                           int *back);
 
 // class BackPointers {
 //   public:

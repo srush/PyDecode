@@ -121,9 +121,17 @@ cdef class Hypergraph:
     property labeling:
         def __get__(self):
             cdef int *labels = self.thisptr.labels()
+            cdef int size = self.thisptr.edges().size()
+            return np.asarray(<int[:size]> labels)
+
+    property node_labeling:
+        def __get__(self):
+            cdef int *labels = self.thisptr.node_labels()
+            cdef int size = self.thisptr.nodes().size()
+            return np.asarray(<int[:size]> labels)
+
             # cdef int[:] array =
             #cvarray(shape=(self.thisptr.edges().size(),), itemsize=sizeof(int), format="i")
-            return np.asarray(<int[:self.thisptr.edges().size()]> labels)
 
     # property heads:
     #     def __get__(self):
@@ -469,11 +477,13 @@ cdef class Path:
 
     property edges:
         def __get__(self):
-            return _LazyEdges(self.graph).init(self.thisptr.edges())
+            return (Edge().init(self.thisptr.edges()[i], self.graph)
+                    for i in range(self.thisptr.edges().size()))
 
     property vertices:
         def __get__(self):
-            return _LazyVertices(self.graph).init(self.thisptr.nodes())
+            return (Vertex().init(self.thisptr.nodes()[i], self.graph)
+                    for i in range(self.thisptr.nodes().size()))
 
     property nodes:
         def __get__(self):

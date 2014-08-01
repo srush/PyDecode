@@ -1,9 +1,8 @@
 from pydecode.potentials import *
 
-def inside(graph, potentials,
-           kind=LogViterbi, chart=None):
+def inside(graph, weights, kind=LogViterbi, chart=None):
     r"""
-    Compute the inside values for potentials.
+    Compute the inside values for weights.
 
     Parameters
     ----------
@@ -11,11 +10,11 @@ def inside(graph, potentials,
     graph : :py:class:`Hypergraph`
       The underlying hypergraph :math:`({\cal V}, {\cal E})`.
 
-    potentials : |V|-column vector (type depends on `kind`)
+    weights : |V|-column vector (type depends on `kind`)
       The potential vector :math:`\theta` for each hyperedge.
 
     kind : Semiring.
-      The semiring to use. Must agree with potentials.
+      The semiring to use. Must agree with weights.
 
     chart : |V|-column vector (optional)
       A chart buffer to reuse.
@@ -28,13 +27,12 @@ def inside(graph, potentials,
        for inside this will be the probability paths
        reaching this vertex.
     """
-    return kind.inside(graph, potentials, chart)
+    return kind.inside(graph, weights, chart)
 
 
-def outside(graph, potentials, inside_chart,
-            kind=LogViterbi, chart=None):
+def outside(graph, weights, inside_chart, kind=LogViterbi, chart=None):
     r"""
-    Compute the outside values for potentials.
+    Compute the outside values for weights.
 
     Parameters
     -----------
@@ -42,15 +40,15 @@ def outside(graph, potentials, inside_chart,
     graph : :py:class:`Hypergraph`
       The underlying hypergraph :math:`({\cal V}, {\cal E})`.
 
-    potentials : Nx1 column vector (type depends on `kind`)
+    weights : Nx1 column vector (type depends on `kind`)
       The potential vector :math:`\theta` for each hyperedge.
 
     inside_chart : :py:class:`Chart`
        The associated inside chart. Compute by calling
-       :py:function:`inside`.  Must be the same type as potentials.
+       :py:function:`inside`.  Must be the same type as weights.
 
     kind : A semiring type.
-      The semiring to use. Must agree with potentials.
+      The semiring to use. Must agree with weights.
 
     chart : Mx1 column vector.
       A chart buffer to reuse.
@@ -59,24 +57,23 @@ def outside(graph, potentials, inside_chart,
     ---------
 
     chart : Mx1 column vector (type depends on `kind`).
-       The outside chart. Type depends on potentials type, i.e. for
-       inside potentials this will be the probability paths reaching
+       The outside chart. Type depends on weights type, i.e. for
+       inside weights this will be the probability paths reaching
        this node.
 
     """
-    return kind.outside(graph, potentials,
-                                       inside_chart, chart)
+    return kind.outside(graph, weights, inside_chart, chart)
 
 
-def viterbi(graph, potentials,
-              kind=LogViterbi, chart=None, back_pointers=None, mask=None):
-    kind.viterbi(graph, potentials, chart,
-                                back_pointers, mask, get_path=False)
+def viterbi(graph, weights,
+            kind=LogViterbi, chart=None, back_pointers=None, mask=None):
+    kind.viterbi(graph, weights, chart,
+                 back_pointers, mask, get_path=False)
 
-def best_path(graph, potentials,
+def best_path(graph, weights,
               kind=LogViterbi, chart=None, back_pointers=None, mask=None):
     r"""
-    Find the best path through a hypergraph for a given set of potentials.
+    Find the best path through a hypergraph for a given set of weights.
 
     Formally gives
     :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`
@@ -88,11 +85,11 @@ def best_path(graph, potentials,
     graph : :py:class:`Hypergraph`
       The underlying hypergraph :math:`({\cal V}, {\cal E})`.
 
-    potentials : Nx1 column vector (type depends on `kind`)
+    weights : Nx1 column vector (type depends on `kind`)
       The potential vector :math:`\theta` for each hyperedge.
 
     kind : A semiring type.
-      The semiring to use. Must agree with potentials.
+      The semiring to use. Must agree with weights.
 
     chart : Mx1 column vector.
       A chart buffer to reuse.
@@ -102,51 +99,51 @@ def best_path(graph, potentials,
     path : :py:class:`Path`
       The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
     """
-    return kind.viterbi(graph, potentials,
+    return kind.viterbi(graph, weights,
                         chart=chart,
                         back_pointers=back_pointers,
                         mask=mask)
 
-def marginals(graph, potentials,
+def marginals(graph, weights,
               inside_chart=None,
               outside_chart=None,
               kind=LogViterbi):
     r"""
-    Compute marginals for hypergraph and potentials.
+    Compute marginals for hypergraph and weights.
 
     Parameters
     -----------
     graph : :py:class:`Hypergraph`
        The hypergraph to search.
 
-    potentials : :py:class:`Potentials`
-       The potentials of the hypergraph.
+    weights : :py:class:`Weights`
+       The weights of the hypergraph.
 
     Returns
     --------
     marginals : :py:class:`Marginals`
-       The node and edge marginals associated with these potentials.
+       The node and edge marginals associated with these weights.
     """
     my_inside = inside_chart
     if my_inside is None:
-        my_inside = inside(graph, potentials, kind=kind)
+        my_inside = inside(graph, weights, kind=kind)
 
     my_outside = outside_chart
     if my_outside is None:
         my_outside = \
-            outside(graph, potentials, inside_chart=my_inside, kind=kind)
+            outside(graph, weights, inside_chart=my_inside, kind=kind)
 
-    return kind.compute_marginals(graph, potentials,
+    return kind.compute_marginals(graph, weights,
                                   my_inside, my_outside)
 
 
 
 # Higher-level interface.
 
-def _check_output_potentials(dp, out_potentials):
-    if dp.outputs.size != out_potentials.size:
-        raise ValueError("Potentials do not match output shape: %s != %s"
-                         %(out_potentials.shape, dp.outputs.shape))
+def _check_output_weights(dp, out_weights):
+    if dp.outputs.size != out_weights.size:
+        raise ValueError("Weights do not match output shape: %s != %s"
+                         %(out_weights.shape, dp.outputs.shape))
 
 def path_output(dp, path):
     """
@@ -163,7 +160,7 @@ def path_output(dp, path):
     --------
     outputs : outputs x output_width matrix
        Matrix of outputs. Output_width is the width of an output
-       and outputs is the numbe of non-zero outputs in the path.
+       and outputs is the number of non-zero outputs in the path.
     """
     int_output = dp.output_indices.take(path.edge_indices,
                                         mode="clip")
@@ -208,16 +205,16 @@ def hyperedge_outputs(dp):
                             dp.outputs.shape)
 
 
-def _map_potentials(dp, out_potentials):
-    return out_potentials.take(dp.output_indices, mode='clip')
+def _map_weights(dp, out_weights):
+    return out_weights.take(dp.output_indices, mode='clip')
 
 def map_items(dp, out_items):
     return out_items.take(dp.item_indices, mode='clip')
 
-def _map_potentials2(dp, out_potentials):
-    return dp.output_matrix.T * out_potentials.ravel()
+def _map_weights2(dp, out_weights):
+    return dp.output_matrix.T * out_weights.ravel()
 
-def argmax(dp, out_potentials,
+def argmax(dp, out_weights,
            kind=LogViterbi, chart=None, mask=None):
     """
     Find the highest scoring output structure in a
@@ -228,27 +225,27 @@ def argmax(dp, out_potentials,
     outputs : output x output_width matrix
        Matrix of outputs.
     """
-    _check_output_potentials(dp, out_potentials)
-    potentials = _map_potentials(dp, out_potentials)
+    _check_output_weights(dp, out_weights)
+    weights = _map_weights(dp, out_weights)
     if mask != None:
         new_mask = map_items(dp, mask)
-        path = best_path(dp.hypergraph, potentials,
+        path = best_path(dp.hypergraph, weights,
                          kind, chart=chart, mask=new_mask)
     else:
-        path = best_path(dp.hypergraph, potentials,
+        path = best_path(dp.hypergraph, weights,
                          kind, chart=chart)
     return path_output(dp, path)
 
 
-def fill(dp, out_potentials, kind=LogViterbi, chart=None):
+def fill(dp, out_weights, kind=LogViterbi, chart=None):
     """
-    Fill in a dynamic programming chart based on a set of potentials.
+    Fill in a dynamic programming chart based on a set of weights.
 
     Parameters
     ----------
     dp : DynamicProgram
 
-    out_potentials : array
+    out_weights : array
        An array in the shape of dp.outputs
 
     Returns
@@ -256,15 +253,15 @@ def fill(dp, out_potentials, kind=LogViterbi, chart=None):
     chart : array
        An array in the shape of items.
     """
-    _check_output_potentials(dp, out_potentials)
-    potentials = _map_potentials(dp, out_potentials)
-    new_chart = inside(dp.hypergraph, potentials,
+    _check_output_weights(dp, out_weights)
+    weights = _map_weights(dp, out_weights)
+    new_chart = inside(dp.hypergraph, weights,
                        kind, chart)
     return new_chart.reshape(dp.items.shape)
 
 
 def output_marginals(dp,
-                     out_potentials,
+                     out_weights,
                      kind=LogViterbi):
     """
     Compute marginals for the outputs of a dynamic program.
@@ -273,22 +270,22 @@ def output_marginals(dp,
     ----------
     dp : DynamicProgram
 
-    out_potentials : array
+    out_weights : array
 
     Returns
     -------
     output_marginals : array
        An array in the shape of dp.outputs with marginal values.
     """
-    _check_output_potentials(dp, out_potentials)
-    potentials = _map_potentials(dp, out_potentials)
+    _check_output_weights(dp, out_weights)
+    weights = _map_weights(dp, out_weights)
     _, edge_marginals = marginals(dp.hypergraph,
-                                  potentials, None, None, kind)
+                                  weights, None, None, kind)
     return (dp.output_matrix * edge_marginals).reshape(
         dp.outputs.shape)
 
 def item_marginals(dp,
-                   out_potentials,
+                   out_weights,
                    kind=LogViterbi):
     """
     Compute marginals for the outputs of a dynamic program.
@@ -297,21 +294,21 @@ def item_marginals(dp,
     ----------
     dp : DynamicProgram
 
-    out_potentials : array
+    out_weights : array
 
     Returns
     -------
     item_marginals : array
        An array in the shape of dp.items with marginal values.
     """
-    _check_output_potentials(dp, out_potentials)
-    potentials = _map_potentials(dp, out_potentials)
+    _check_output_weights(dp, out_weights)
+    weights = _map_weights(dp, out_weights)
     node_marginals, _ = marginals(dp.hypergraph,
-                                  potentials, None, None, kind)
+                                  weights, None, None, kind)
     return (dp.item_matrix * node_marginals).reshape(
         dp.items.shape)
 
-def score_outputs(dp, outputs, out_potentials,
+def score_outputs(dp, outputs, out_weights,
                   kind=LogViterbi):
     """
 
@@ -319,4 +316,4 @@ def score_outputs(dp, outputs, out_potentials,
     indices = np.ravel_multi_index(outputs.T,
                                    dp.outputs.shape)
     return np.prod(map(kind.Value,
-                       out_potentials.ravel()[indices]))
+                       out_weights.ravel()[indices]))

@@ -207,14 +207,13 @@ class {{S.type}}:
 #     #     raise ValueError("Potentials must match hypergraph hyperedges size: %s != %s"%(potentials.size, len(graph.edges)))
 #     return kind(graph).from_array(potentials)
 
-@cython.boundscheck(False)
-cpdef map_potentials(dp, out_potentials):
-    cdef np.ndarray raveled = out_potentials.ravel()
-    cdef np.ndarray potentials = raveled[dp.output_indices]
-    return potentials
+# @cython.boundscheck(False)
+# cpdef map_potentials(dp, out_potentials):
+#     cdef np.ndarray raveled = out_potentials.ravel()
+#     cdef np.ndarray potentials = raveled[dp.output_indices]
+#     return potentials
 
-def filter(Hypergraph graph,
-            bool [:] mask):
+def filter(Hypergraph graph, bool [:] mask):
     """
     Filter a hypergraph based on an edge mask.
 
@@ -226,7 +225,7 @@ def filter(Hypergraph graph,
     graph : :py:class:`Hypergraph`
       The underlying hypergraph :math:`({\cal V}, {\cal E})`.
 
-    hyperedge_filter : Nx1 int8 column vector.
+    mask : Nx1 bool column vector.
         The pruning filter to use.
 
     Returns
@@ -236,6 +235,9 @@ def filter(Hypergraph graph,
 
 
     """
-    cdef CHypergraph *new_graph = \
-        cfilter(graph.thisptr, &mask[0])
+    cdef CHypergraph *new_graph = cfilter(graph.thisptr, &mask[0])
+    return Hypergraph().init(new_graph, None)
+
+def binarize(Hypergraph graph):
+    cdef CHypergraph *new_graph = cbinarize(graph.thisptr)
     return Hypergraph().init(new_graph, None)

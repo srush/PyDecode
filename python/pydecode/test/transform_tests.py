@@ -17,12 +17,12 @@ def test_pruning():
         marginals = pydecode.marginals(h, w)
         best = w.T * original_path.v
         print marginals[1]
-        a = np.array(marginals[1] > 0.99* best, dtype=np.int8)
+        a = np.array(marginals[1] > 0.99* best, dtype=np.uint8)
 
-        _, project, new_hyper = pydecode.project(h, a)
-        print project.shape, w.shape
-        print project.todense()
-        new_potentials = project * w
+        new_hyper = pydecode.filter(h, a)
+        # print project.shape, w.shape
+        # print project.todense()
+        # new_potentials = project * w
         prune_path = pydecode.best_path(new_hyper, new_potentials)
         assert len(original_path.edges) > 0
 

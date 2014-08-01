@@ -6,8 +6,6 @@ import numpy as np
 import numpy.random
 import numpy.testing
 
-
-
 def test_main():
     for hypergraph in utils.hypergraphs():
         log_pot = numpy.random.random(len(hypergraph.edges))
@@ -61,6 +59,7 @@ def check_outside(graph, pot):
     chart = pydecode.inside(graph, pot)
     print pot.shape, path.v.shape
     best = pot.T * path.v
+    print path.v
     print best
     nt.assert_almost_equal(best, chart[graph.root.id])
     nt.assert_not_equal(best, 0.0)
@@ -81,7 +80,8 @@ def check_outside(graph, pot):
     # for node in graph.nodes:
     #     other = chart[node] * out_chart[node]
     #     nt.assert_less_equal(other, best + 1e-4)
-
+    print chart
+    print out_chart
 
     for edge in path.edges:
         for node in edge.tail:

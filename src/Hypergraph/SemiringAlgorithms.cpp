@@ -44,6 +44,7 @@ void general_inside(const Hypergraph *graph,
                     const typename S::ValType *weights,
                     typename S::ValType *chart) {
     bool unary = graph->is_unary();
+    fill(chart, chart + graph->nodes().size(), S::zero());
 
     // Run Viterbi Hypergraph algorithm.
     int edge = 0;
@@ -81,7 +82,7 @@ void general_outside(const Hypergraph *graph,
                      const typename S::ValType * weights,
                      const typename S::ValType *inside_chart,
                      typename S::ValType *chart) {
-    fill(chart, chart + graph->edges().size(), S::zero());
+    fill(chart, chart + graph->nodes().size(), S::zero());
 
     const vector<HEdge> &edges = graph->edges();
     chart[graph->root()] = S::one();
@@ -95,7 +96,7 @@ void general_outside(const Hypergraph *graph,
             for (int k = 0; k < graph->tail_nodes(edge); ++k) {
                 HNode other_node = graph->tail_node(edge, k);
                 if (other_node == node) continue;
-                other_score = S::times(other_score, chart[other_node]);
+                other_score = S::times(other_score, inside_chart[other_node]);
             }
             chart[node] = S::add(chart[node],
                                  S::times(head_score,
@@ -113,7 +114,8 @@ void general_viterbi(const Hypergraph *graph,
                      bool *mask) {
     const bool unary = graph->is_unary();
     const bool use_mask = (mask != NULL);
-
+    fill(back_chart, back_chart + graph->nodes().size(), -1);
+    fill(chart, chart + graph->nodes().size(), S::zero());
 
     int edge = 0;
     foreach (HNode node, graph->nodes()) {
