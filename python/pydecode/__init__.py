@@ -1,6 +1,6 @@
 from pydecode.potentials import *
 
-def inside(graph, weights, kind=LogViterbi, chart=None):
+def inside(graph, weights, weight_type=LogViterbi, chart=None):
     r"""
     Compute the inside values for weights.
 
@@ -10,10 +10,10 @@ def inside(graph, weights, kind=LogViterbi, chart=None):
     graph : :py:class:`Hypergraph`
       The underlying hypergraph :math:`({\cal V}, {\cal E})`.
 
-    weights : |V|-column vector (type depends on `kind`)
+    weights : |V|-column vector (type depends on `weight_type`)
       The potential vector :math:`\theta` for each hyperedge.
 
-    kind : Semiring.
+    weight_type : Semiring.
       The semiring to use. Must agree with weights.
 
     chart : |V|-column vector (optional)
@@ -22,16 +22,16 @@ def inside(graph, weights, kind=LogViterbi, chart=None):
     Returns
     -------
 
-    chart : |V|x1 column vector (type depends on `kind`).
+    chart : |V|x1 column vector (type depends on `weight_type`).
        The inside chart. Type depends on semiring, i.e.
        for inside this will be the probability paths
        reaching this vertex.
     """
 
-    return kind.inside(graph, weights, chart)
+    return weight_type.inside(graph, weights, chart)
 
 
-def outside(graph, weights, inside_chart, kind=LogViterbi, chart=None):
+def outside(graph, weights, inside_chart, weight_type=LogViterbi, chart=None):
     r"""
     Compute the outside values for weights.
 
@@ -41,14 +41,14 @@ def outside(graph, weights, inside_chart, kind=LogViterbi, chart=None):
     graph : :py:class:`Hypergraph`
       The underlying hypergraph :math:`({\cal V}, {\cal E})`.
 
-    weights : Nx1 column vector (type depends on `kind`)
+    weights : Nx1 column vector (type depends on `weight_type`)
       The potential vector :math:`\theta` for each hyperedge.
 
     inside_chart : :py:class:`Chart`
        The associated inside chart. Compute by calling
        :py:function:`inside`.  Must be the same type as weights.
 
-    kind : A semiring type.
+    weight_type : A semiring type.
       The semiring to use. Must agree with weights.
 
     chart : Mx1 column vector.
@@ -57,23 +57,23 @@ def outside(graph, weights, inside_chart, kind=LogViterbi, chart=None):
     Returns
     ---------
 
-    chart : Mx1 column vector (type depends on `kind`).
+    chart : Mx1 column vector (type depends on `weight_type`).
        The outside chart. Type depends on weights type, i.e. for
        inside weights this will be the probability paths reaching
        this node.
 
     """
 
-    return kind.outside(graph, weights, inside_chart, chart)
+    return weight_type.outside(graph, weights, inside_chart, chart)
 
 
 def viterbi(graph, weights,
-            kind=LogViterbi, chart=None, back_pointers=None, mask=None):
-    kind.viterbi(graph, weights, chart,
+            weight_type=LogViterbi, chart=None, back_pointers=None, mask=None):
+    weight_type.viterbi(graph, weights, chart,
                  back_pointers, mask, get_path=False)
 
 def best_path(graph, weights,
-              kind=LogViterbi, chart=None, back_pointers=None, mask=None):
+              weight_type=LogViterbi, chart=None, back_pointers=None, mask=None):
     r"""
     Find the best path through a hypergraph for a given set of weights.
 
@@ -87,10 +87,10 @@ def best_path(graph, weights,
     graph : :py:class:`Hypergraph`
       The underlying hypergraph :math:`({\cal V}, {\cal E})`.
 
-    weights : Nx1 column vector (type depends on `kind`)
+    weights : Nx1 column vector (type depends on `weight_type`)
       The potential vector :math:`\theta` for each hyperedge.
 
-    kind : A semiring type.
+    weight_type : A semiring type.
       The semiring to use. Must agree with weights.
 
     chart : Mx1 column vector.
@@ -102,7 +102,7 @@ def best_path(graph, weights,
       The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
     """
 
-    return kind.viterbi(graph, weights,
+    return weight_type.viterbi(graph, weights,
                         chart=chart,
                         back_pointers=back_pointers,
                         mask=mask)
@@ -110,7 +110,7 @@ def best_path(graph, weights,
 def marginals(graph, weights,
               inside_chart=None,
               outside_chart=None,
-              kind=LogViterbi):
+              weight_type=LogViterbi):
     r"""
     Compute marginals for hypergraph and weights.
 
@@ -129,15 +129,15 @@ def marginals(graph, weights,
     """
     my_inside = inside_chart
     if my_inside is None:
-        my_inside = inside(graph, weights, kind=kind)
+        my_inside = inside(graph, weights, weight_type=weight_type)
 
     my_outside = outside_chart
     if my_outside is None:
         my_outside = \
-            outside(graph, weights, inside_chart=my_inside, kind=kind)
+            outside(graph, weights, inside_chart=my_inside, weight_type=weight_type)
 
 
-    return kind.compute_marginals(graph, weights,
+    return weight_type.compute_marginals(graph, weights,
                                   my_inside, my_outside)
 
 
@@ -219,7 +219,7 @@ def _map_weights2(dp, out_weights):
     return dp.output_matrix.T * out_weights.ravel()
 
 def argmax(dp, out_weights,
-           kind=LogViterbi, chart=None, mask=None):
+           weight_type=LogViterbi, chart=None, mask=None):
     """
     Find the highest scoring output structure in a
     dynamic program.
@@ -234,14 +234,14 @@ def argmax(dp, out_weights,
     if mask != None:
         new_mask = map_items(dp, mask)
         path = best_path(dp.hypergraph, weights,
-                         kind, chart=chart, mask=new_mask)
+                         weight_type, chart=chart, mask=new_mask)
     else:
         path = best_path(dp.hypergraph, weights,
-                         kind, chart=chart)
+                         weight_type, chart=chart)
     return path_output(dp, path)
 
 
-def fill(dp, out_weights, kind=LogViterbi, chart=None):
+def fill(dp, out_weights, weight_type=LogViterbi, chart=None):
     """
     Fill in a dynamic programming chart based on a set of weights.
 
@@ -260,13 +260,13 @@ def fill(dp, out_weights, kind=LogViterbi, chart=None):
     _check_output_weights(dp, out_weights)
     weights = _map_weights(dp, out_weights)
     new_chart = inside(dp.hypergraph, weights,
-                       kind, chart)
+                       weight_type, chart)
     return new_chart.reshape(dp.items.shape)
 
 
 def output_marginals(dp,
                      out_weights,
-                     kind=LogViterbi):
+                     weight_type=LogViterbi):
     """
     Compute marginals for the outputs of a dynamic program.
 
@@ -284,13 +284,13 @@ def output_marginals(dp,
     _check_output_weights(dp, out_weights)
     weights = _map_weights(dp, out_weights)
     _, edge_marginals = marginals(dp.hypergraph,
-                                  weights, None, None, kind)
+                                  weights, None, None, weight_type)
     return (dp.output_matrix * edge_marginals).reshape(
         dp.outputs.shape)
 
 def item_marginals(dp,
                    out_weights,
-                   kind=LogViterbi):
+                   weight_type=LogViterbi):
     """
     Compute marginals for the outputs of a dynamic program.
 
@@ -308,16 +308,16 @@ def item_marginals(dp,
     _check_output_weights(dp, out_weights)
     weights = _map_weights(dp, out_weights)
     node_marginals, _ = marginals(dp.hypergraph,
-                                  weights, None, None, kind)
+                                  weights, None, None, weight_type)
     return (dp.item_matrix * node_marginals).reshape(
         dp.items.shape)
 
 def score_outputs(dp, outputs, out_weights,
-                  kind=LogViterbi):
+                  weight_type=LogViterbi):
     """
 
     """
     indices = np.ravel_multi_index(outputs.T,
                                    dp.outputs.shape)
-    return np.prod(map(kind.Value,
+    return np.prod(map(weight_type.Value,
                        out_weights.ravel()[indices]))

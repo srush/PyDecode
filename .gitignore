@@ -90,3 +90,4 @@ venv/
 ENV/
 *.old
 todo
+*flymake*

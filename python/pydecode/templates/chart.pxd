@@ -8,6 +8,7 @@ cdef class ChartBuilder:
               long [:] tails1,
               long [:] tails2=*,
               long [:] tails3=*,
+              long [:] labels=*,
               long [:] out=*)
     cpdef set_list(self, long index, tuples, out=*)
     cdef _finish_node(self, long index, result)

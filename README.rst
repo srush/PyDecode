@@ -9,48 +9,53 @@ PyDecode is a dynamic programming toolkit developed for research in natural lang
    :width: 500 px
    :align: center
 
+|
+|
 
 
-
+Features
+--------
 
 * **Simple specifications.** Dynamic programming algorithms specified through pseudo-code. ::
 
+    # Viterbi algorithm.
     ...
-    c.init(items[0, K[0]])
+    c.init(items[0, :])
     for i in range(1, n):
-        for t in K[i]:
+        for t in range(len(tags)):
             c.set(items[i, t],
-                  items[i-1, K[i-1]],
-                  out=outputs[i, t, K[i-1]])
+                  items[i-1, :],
+                  labels=labels[i, t, :])
     dp = c.finish()
 
-* **Efficient implementation.** Core code in C++, interfaces through Numpy. ::
+* **Efficient implementation.** Core code in C++, python interfaces through numpy. ::
 
-    scores = numpy.random.random(dp.outputs.shape)
-    y = pydecode.argmax(dp, scores)
+    label_weights = numpy.random.random(dp.label_size)
+    weights = pydecode.transform_label_array(dp, label_weights)
+    path = pydecode.best_path(dp, weights)
 
 * **High-level algorithms.** Includes a set of widely-used algorithms. ::
 
-    # Max-marginals.
-    marginals = pydecode.output_marginals(dp, scores)
-
     # Inside probabilities.
-    inside = pydecode.fill(dp, scores, kind=pydecode.Inside)
+    inside = pydecode.inside(dp, weights, kind=pydecode.LogProb)
+
+    # (Max)-marginals.
+    marginals = pydecode.marginals(dp, weights)
 
     # Pruning
-    keep = values > threshold
-    _, projection, pruned = pydecode.project(dp.hypergraph, keep)
+    mask = marginals > threshold
+    pruned_dp = pydecode.filter(dp, mask)
 
 * **Integration with machine learning toolkits.** Train structured models. ::
 
-
+    # Train a discriminative tagger.
     perceptron_tagger = StructuredPerceptron(tagger)
     perceptron_tagger.fit(X, Y)
     Y_test = perceptron_tagger.predict(X_test)
 
-* **Visualization tools.**  IPython integrated tools for debugging algorithms. ::
+* **Visualization tools.**  IPython integrated tools for debugging and teaching. ::
 
-    display.HypergraphFormatter(hypergraph).to_ipython()
+    display.HypergraphFormatter(dp).to_ipython()
 
 .. image:: _images/hmm.png
    :width: 500 px

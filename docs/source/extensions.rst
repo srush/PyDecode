@@ -43,15 +43,15 @@ many useful training algorithms. The pydecode.model module
 wraps the StructuredModel class from PyStruct. This allows the user to
 train the parameters of a model by specifying a HypergraphModelBuilder.
 
-.. automodule:: pydecode.model
-   :no-members:
-   :no-inherited-members:
+.. .. automodule:: pydecode.model
+..    :no-members:
+..    :no-inherited-members:
 
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
+.. .. autosummary::
+..    :toctree: generated/
+..    :template: class.rst
 
-    DynamicProgrammingModel
+..     DynamicProgrammingModel
 
 .. _constraints:
 

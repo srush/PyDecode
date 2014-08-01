@@ -205,6 +205,7 @@ cdef class ChartBuilder:
               long [:] tails1,
               long [:] tails2=None,
               long [:] tails3=None,
+              long [:] labels=None,
               long [:] out=None):
 
         deref(self._chart)[index] = self._builder.start_node(index)
