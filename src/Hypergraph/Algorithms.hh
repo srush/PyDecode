@@ -38,13 +38,11 @@ Hypergraph *intersect_count(Hypergraph *graph,
 //     const Hypergraph *graph,
 //     const HypergraphPotentials<SparseVectorPotential> &potentials);
 
+
 // set<int> *updated_nodes(
 //     const Hypergraph *graph,
 //     const vector<set<int> > &children,
 //     const set<int> &updated);
-
-
-
 
 
 // struct LatticeLabel {

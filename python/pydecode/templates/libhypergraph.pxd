@@ -6,6 +6,7 @@ from libcpp.set cimport set
 from libcpp cimport bool
 
 cdef extern from "Hypergraph/Hypergraph.hh":
+
     cdef cppclass CHypergraphBuilder "HypergraphBuilder":
         CHypergraphBuilder(bool)
         void set_expected_size(int, int, int)

@@ -63,6 +63,9 @@ cdef class {{S.type}}Value:
 
 {% endfor %}
 
+cdef convert_to_sparse(vector[int] positions)
+cdef convert_hypergraph_map(const CHypergraphMap *hyper_map, graph1, graph2)
+
 
 cdef extern from "Hypergraph/Algorithms.hh":
     CHypergraph *cfilter "filter"(
@@ -128,5 +131,6 @@ cdef extern from "Hypergraph/Algorithms.hh":
 # cdef class NodeUpdates:
 #     cdef Hypergraph graph
 #     cdef vector[set[int] ] *children
+
 
 # cpdef map_potentials(dp, out_potentials)

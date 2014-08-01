@@ -251,6 +251,7 @@ class BeamChart {
     const Hypergraph *hypergraph_;
 
     // The (upper bound) future score and a lower bound of total score.
+
     const double *potentials_;
     const typename BVP::ValType *constraints_;
     const double *future_;

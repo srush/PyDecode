@@ -158,6 +158,7 @@ class {{S.type}}:
 {% endfor %}
 
 # For mapping between hypergraphs.
+
 # cdef convert_to_sparse(vector[int] positions):
 #     data = []
 #     indices = []
@@ -213,6 +214,7 @@ class {{S.type}}:
 #     cdef np.ndarray potentials = raveled[dp.output_indices]
 #     return potentials
 
+
 def filter(Hypergraph graph, bool [:] mask):
     """
     Filter a hypergraph based on an edge mask.
@@ -235,6 +237,7 @@ def filter(Hypergraph graph, bool [:] mask):
 
 
     """
+
     cdef CHypergraph *new_graph = cfilter(graph.thisptr, &mask[0])
     return Hypergraph().init(new_graph, None)
 

@@ -126,6 +126,7 @@ struct EdgeGroup {
     vector<int> back;
 };
 
+
 struct DFANode {
   DFANode(int _left_state, int _right_state,
           HNode _node, int _id) :
@@ -188,7 +189,9 @@ Hypergraph *intersect(
                 HNode left_node = graph->tail_node(edge, 0);
                 vector<DFANode> &base = new_nodes[left_node];
                 int symbol = potentials[edge];
+
                 for (uint i = 0; i < base.size(); ++i) {
+
                     if (unary) {
                         if (!dfa.valid_transition(base[i].right_state,
                                                   symbol)) {
@@ -249,6 +252,7 @@ Hypergraph *intersect(
                              hyps[state_left][state_right]) {
                         HEdge edge = edge_group.edge;
                         vector<HNode> tails;
+
                         for (int i = 0; i < graph->tail_nodes(edge); ++i) {
                             tails.push_back(
                                 new_nodes[graph->tail_node(edge, i)]
@@ -270,6 +274,7 @@ Hypergraph *intersect(
     }
     if (reverse_node_map[graph->root()].size() == 0) {
         throw HypergraphException("New hypergraph has no root.");
+
     }
     if (reverse_node_map[graph->root()].size() > 1) {
         throw HypergraphException("New hypergraph has root size > 1.");
@@ -286,6 +291,7 @@ struct NodeCount {
     int count;
     HNode node;
 };
+
 
 Hypergraph *intersect_count(
     Hypergraph *graph,
@@ -397,6 +403,7 @@ Hypergraph *intersect_count(
 //     return updated_nodes;
 // }
 
+
 // vector<set<int> > *children_nodes(const Hypergraph &graph) {
 //     vector<set<int> > *children =
 //             new vector<set<int> >(graph.nodes().size());
@@ -411,6 +418,7 @@ Hypergraph *intersect_count(
 //     }
 //     return children;
 // }
+
 
 
 

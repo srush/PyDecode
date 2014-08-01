@@ -41,6 +41,7 @@ HEdge HypergraphBuilder::add_edge(HNode node, int label)  {
     return edge;
 }
 
+
 HNode HypergraphBuilder::start_node(int label) {
     terminal_lock_ = false;
     lock_ = true;
@@ -67,6 +68,7 @@ bool HypergraphBuilder::end_node() {
         return false;
     }
 }
+
 
 HNode HypergraphBuilder::add_terminal_node(int label) {
     assert(terminal_lock_);

@@ -104,6 +104,7 @@ class Hypergraph {
     }
 
 
+
     Label node_label(HNode node) const {
         return structure_->node_labels_[node];
     }
@@ -169,6 +170,7 @@ class Hypergraph {
 
   private:
 
+
     int id_;
     _HypergraphStructure *structure_;
     HNode root_;
@@ -179,6 +181,7 @@ class Hypergraph {
 
 class HypergraphBuilder {
   public:
+
     explicit HypergraphBuilder(bool unary = false)
             : terminal_lock_(true),
               lock_(false),
@@ -237,11 +240,11 @@ class HypergraphBuilder {
     // The current node being created.
     HNode creating_node_;
 
+
     _HypergraphStructure *temp_structure_;
 
     bool unary_;
 };
-
 
 struct IdComparator {
     bool operator()(HEdge edge1, HEdge edge2) const {

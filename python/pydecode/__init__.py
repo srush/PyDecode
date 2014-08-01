@@ -27,6 +27,7 @@ def inside(graph, weights, kind=LogViterbi, chart=None):
        for inside this will be the probability paths
        reaching this vertex.
     """
+
     return kind.inside(graph, weights, chart)
 
 
@@ -62,6 +63,7 @@ def outside(graph, weights, inside_chart, kind=LogViterbi, chart=None):
        this node.
 
     """
+
     return kind.outside(graph, weights, inside_chart, chart)
 
 
@@ -99,6 +101,7 @@ def best_path(graph, weights,
     path : :py:class:`Path`
       The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
     """
+
     return kind.viterbi(graph, weights,
                         chart=chart,
                         back_pointers=back_pointers,
@@ -132,6 +135,7 @@ def marginals(graph, weights,
     if my_outside is None:
         my_outside = \
             outside(graph, weights, inside_chart=my_inside, kind=kind)
+
 
     return kind.compute_marginals(graph, weights,
                                   my_inside, my_outside)
