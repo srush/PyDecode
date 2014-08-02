@@ -15,9 +15,7 @@ class HypergraphFormatter:
     Full list available - http://www.graphviz.org/content/attrs
     """
 
-    def __init__(self, hypergraph, vertex_labels=None,
-                 hyperedge_labels=None,
-                 show_hyperedges=True):
+    def __init__(self, show_hyperedges=True):
         """
         Parameters
         -------------
@@ -25,15 +23,23 @@ class HypergraphFormatter:
         hypergraph : :py:class:`Hypergraph`
            The hypergraph to style.
         """
-
-        self.hypergraph = hypergraph
         self._show_hyperedges = show_hyperedges
-        self._vertex_labels = vertex_labels
-        self._hyperedge_labels = hyperedge_labels
+        self.edge_weights = None
+        self.node_weights = None
+        self.paths = []
+
+    def set_weights(self, weights):
+        self.edge_weights = weights
+
+    def set_node_weights(self, weights):
+        self.node_weights = weights
+
+    def set_paths(self, paths):
+        self.paths = paths
 
     def graph_attrs(self):
         "Returns a dictionary of graph properties."
-        return {"rankdir": "RL"}
+        return {"rankdir": "LR"}
 
     def hypernode_attrs(self, vertex):
         """
@@ -45,9 +51,12 @@ class HypergraphFormatter:
         node : :py:class:`Node`
            The hypernode to style.
         """
+        label = ""
+        if self.node_weights is not None:
+            label ="%s"%(self.node_weights[vertex.id])
+
         return {"shape": "ellipse",
-                "label": "" if self._vertex_labels is None
-                else self._vertex_labels[vertex.id]}
+                "label": label}
 
     def hyperedge_node_attrs(self, edge):
         """
@@ -60,10 +69,15 @@ class HypergraphFormatter:
         edge : :py:class:`Edge`
            The hyperedge to style.
         """
+
         if self._show_hyperedges:
+            label = ""
+            if self.edge_weights is not None:
+                label = "%s"%(self.edge_weights[edge.id])
             return {"shape": "rect",
-                    "label": "" if self._hyperedge_labels is None
-                else self._hyperedge_labels[edge.id]}
+                    "label": label
+
+            }
         else:
             return {"shape": "point"}
 
@@ -77,6 +91,10 @@ class HypergraphFormatter:
         edge : :py:class:`Edge`
            The hyperedge to style.
         """
+        colors = ["red", "green", "blue", "purple", "orange", "yellow"]
+        for path, color in zip(self.paths, colors):
+            if edge in path:
+                return {"color": color}
         return {}
 
     def hypernode_subgraph(self, node):
@@ -88,6 +106,12 @@ class HypergraphFormatter:
     def subgraph_format(self, subgraph):
         return {}
 
+class HypergraphDraw:
+    def __init__(self, hypergraph, formatter):
+        self.hypergraph = hypergraph
+        self._formatter = formatter
+
+
     def to_networkx(self):
         r"""
         Convert hypergraph to networkx graph representation.
@@ -97,7 +121,6 @@ class HypergraphFormatter:
 
         NetworkX Graph
         """
-
         graph = nx.DiGraph()
 
         def e(edge):
@@ -106,20 +129,20 @@ class HypergraphFormatter:
         for node in self.hypergraph.nodes:
             graph.add_node(node.id)
             graph.node[node.id].update(
-                self.hypernode_attrs(node))
+                self._formatter.hypernode_attrs(node))
             for edge in node.edges:
                 graph.add_node(e(edge))
                 graph.node[e(edge)].update(
-                    self.hyperedge_node_attrs(edge))
+                    self._formatter.hyperedge_node_attrs(edge))
 
                 graph.add_edge(node.id, e(edge))
                 graph[node.id][e(edge)].update(
-                    self.hyperedge_attrs(edge))
+                    self._formatter.hyperedge_attrs(edge))
 
                 for tail_nodes in edge.tail:
                     graph.add_edge(e(edge), tail_nodes.id)
                     graph[e(edge)][tail_nodes.id].update(
-                        self.hyperedge_attrs(edge))
+                        self._formatter.hyperedge_attrs(edge))
         return graph
 
     def to_image(self, filename, layout="dot"):
@@ -139,13 +162,13 @@ d        ------------
         NetworkX Graph
         """
         agraph = self.to_graphviz(layout)
-        agraph.write("/tmp/tmp.dot")
+        #agraph.write("/tmp/tmp.dot")
         agraph.draw(filename)
 
     def to_pydot(self):
         G = self.to_networkx()
         pydot = nx.drawing.to_pydot(G)
-        for k, v in self.graph_attrs().iteritems():
+        for k, v in self._formatter.graph_attrs().iteritems():
             pydot.set(k, v)
         return pydot
 
@@ -155,7 +178,7 @@ d        ------------
         agraph = nx.drawing.to_agraph(G)
 
         for node in self.hypergraph.nodes:
-            for sub, rank in self.hypernode_subgraph(node):
+            for sub, rank in self._formatter.hypernode_subgraph(node):
                 subgraphs.setdefault(sub, [])
                 subgraphs[sub].append((node.id, rank))
 
@@ -168,8 +191,8 @@ d        ------------
                     edge = subgraph.add_edge(n_a, n_b,
                                              weight=1000,
                                              style="invis")
-            subgraph.graph_attr.update(self.subgraph_format(sub))
-        agraph.graph_attr.update(self.graph_attrs())
+            subgraph.graph_attr.update(self._formatter.subgraph_format(sub))
+        agraph.graph_attr.update(self._formatter.graph_attrs())
 
         agraph.layout(layout)
         return agraph

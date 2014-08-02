@@ -82,9 +82,7 @@ void general_outside(const Hypergraph *graph,
                      const typename S::ValType * weights,
                      const typename S::ValType *inside_chart,
                      typename S::ValType *chart) {
-
     fill(chart, chart + graph->nodes().size(), S::zero());
-
     const vector<HEdge> &edges = graph->edges();
     chart[graph->root()] = S::one();
 
@@ -97,7 +95,7 @@ void general_outside(const Hypergraph *graph,
             for (int k = 0; k < graph->tail_nodes(edge); ++k) {
                 HNode other_node = graph->tail_node(edge, k);
                 if (other_node == node) continue;
-                other_score = S::times(other_score, chart[other_node]);
+                other_score = S::times(other_score, inside_chart[other_node]);
             }
             chart[node] = S::add(chart[node],
                                  S::times(head_score,

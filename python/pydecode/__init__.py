@@ -1,108 +1,140 @@
-from pydecode.potentials import *
+from pydecode._pydecode import *
 
-def inside(graph, weights, weight_type=LogViterbi, chart=None):
+def _get_type(weight_type):
+    if weight_type is None:
+        return LogViterbi
+    else:
+        return weight_type
+
+def inside(graph, weights, weight_type=None, chart=None):
     r"""
-    Compute the inside values for weights.
+    Compute the inside table for the hypergraph and weights.
+
+    Formally, given a hyperedge weight vector :math:`w` in
+    :math:`\mathbb{S}^{{\cal E}}`, the function computes the inside
+    vector :math:`C` in :math:`\mathbb{S}^{{\cal V}}` defined for all vertices
+    :math:`v` as
+
+    .. math::
+
+      C_v = \bigoplus_{p \in I_v} w_{p_1} \otimes w_{p_2} \otimes \ldots \otimes w_{p_n}
+
+    where :math:`I_v` is the set of paths inside of vertex :math:`v` and :math:`p_1 \ldots p_n` are
+    the hyperedges in path :math:`p`.
 
     Parameters
     ----------
 
     graph : :py:class:`Hypergraph`
-      The underlying hypergraph :math:`({\cal V}, {\cal E})`.
+      The hypergraph :math:`({\cal V}, {\cal E})`.
 
-    weights : |V|-column vector (type depends on `weight_type`)
-      The potential vector :math:`\theta` for each hyperedge.
+    weights : ndarray
+      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
 
-    weight_type : Semiring.
-      The semiring to use. Must agree with weights.
+    weight_type : weight-type, optional
+      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
 
-    chart : |V|-column vector (optional)
-      A chart buffer to reuse.
+    chart : ndarray, optional
+      A chart buffer to reuse. Vector in :math:`\mathbb{S}^{{\cal V}}`.
 
     Returns
     -------
 
-    chart : |V|x1 column vector (type depends on `weight_type`).
-       The inside chart. Type depends on semiring, i.e.
-       for inside this will be the probability paths
-       reaching this vertex.
+    chart : ndarray
+       The computed inside chart :math:`C`. Represented as a vector in :math:`\mathbb{S}^{{\cal V}}`.
+       Each element corresponds to the sum of the scores of each path
+       "below" vertex v.
     """
+    return _get_type(weight_type).inside(graph, weights, chart)
 
-    return weight_type.inside(graph, weights, chart)
 
-
-def outside(graph, weights, inside_chart, weight_type=LogViterbi, chart=None):
+def outside(graph, weights, inside_chart, weight_type=None, chart=None):
     r"""
-    Compute the outside values for weights.
+    Compute the outside table for the hypergraph and weights.
+
+    Formally, given a hyperedge weight vector :math:`w` in
+    :math:`\mathbb{S}^{{\cal E}}`, the function computes the outside
+    vector :math:`C` in :math:`\mathbb{S}^{{\cal V}}` defined for all hyperedges
+    :math:`v` as
+
+    .. math::
+
+      C_v = \bigoplus_{p \in O_v} w_{p_1} \otimes w_{p_2} \otimes \ldots \otimes w_{p_n}
+
+    where :math:`O_v` is the set of partial paths outside of vertex :math:`v` and :math:`p_1 \ldots p_n` are
+    the hyperedges in path :math:`p`.
+
 
     Parameters
     -----------
 
     graph : :py:class:`Hypergraph`
-      The underlying hypergraph :math:`({\cal V}, {\cal E})`.
+      The hypergraph :math:`({\cal V}, {\cal E})`.
 
-    weights : Nx1 column vector (type depends on `weight_type`)
-      The potential vector :math:`\theta` for each hyperedge.
+    weights : ndarray
+      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
 
-    inside_chart : :py:class:`Chart`
+
+    inside_chart : ndarray
        The associated inside chart. Compute by calling
        :py:function:`inside`.  Must be the same type as weights.
 
-    weight_type : A semiring type.
-      The semiring to use. Must agree with weights.
+    weight_type : weight-type, optional
+      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
 
-    chart : Mx1 column vector.
-      A chart buffer to reuse.
+    chart : ndarray, optional
+      A chart buffer to reuse. Vector in :math:`\mathbb{S}^{{\cal V}}`.
 
     Returns
     ---------
 
-    chart : Mx1 column vector (type depends on `weight_type`).
-       The outside chart. Type depends on weights type, i.e. for
-       inside weights this will be the probability paths reaching
-       this node.
-
+    chart : ndarray
+       The computed ouside chart :math:`C`. Represented as a vector in :math:`\mathbb{S}^{{\cal V}}`.
+       Each element corresponds to the sum of the scores of each path
+       outside of vertex v.
     """
-
-    return weight_type.outside(graph, weights, inside_chart, chart)
+    return _get_type(weight_type).outside(graph, weights, inside_chart, chart)
 
 
 def viterbi(graph, weights,
-            weight_type=LogViterbi, chart=None, back_pointers=None, mask=None):
-    weight_type.viterbi(graph, weights, chart,
+            weight_type=None, chart=None, back_pointers=None, mask=None):
+    _get_type(weight_type).viterbi(graph, weights, chart,
                  back_pointers, mask, get_path=False)
 
 def best_path(graph, weights,
-              weight_type=LogViterbi, chart=None, back_pointers=None, mask=None):
+              weight_type=None, chart=None, back_pointers=None, mask=None):
     r"""
-    Find the best path through a hypergraph for a given set of weights.
-
-    Formally gives
-    :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`
-    in the hypergraph.
+    Find the best path through a hypergraph.
 
     Parameters
     ----------
 
     graph : :py:class:`Hypergraph`
-      The underlying hypergraph :math:`({\cal V}, {\cal E})`.
+      The hypergraph :math:`({\cal V}, {\cal E})`.
 
-    weights : Nx1 column vector (type depends on `weight_type`)
-      The potential vector :math:`\theta` for each hyperedge.
+    weights : ndarray
+      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
 
-    weight_type : A semiring type.
-      The semiring to use. Must agree with weights.
 
-    chart : Mx1 column vector.
-      A chart buffer to reuse.
+    weight_type : weight-type, optional
+      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
+
+    chart : ndarray, optional
+      A chart buffer to reuse. Vector in :math:`\mathbb{S}^{{\cal V}}`.
+
+    back_pointer : ndarray, optional
+      A back pointer buffer to reuse. Int-vector of size :math:`|{\cal V}|`.
+
+    mask : ndarray, optional
+      Pruning mask. Boolean-vector of size :math:`|{\cal V}|`. Only unmasked-vertices are considered.
 
     Returns
     -------
     path : :py:class:`Path`
-      The best path :math:`\arg \max_{y \in {\cal X}} \theta^{\top} x`.
+      The highest-scoring hyperpath under the given weights.
     """
 
-    return weight_type.viterbi(graph, weights,
+    return _get_type(weight_type).viterbi(graph, weights,
                         chart=chart,
                         back_pointers=back_pointers,
                         mask=mask)
@@ -110,22 +142,52 @@ def best_path(graph, weights,
 def marginals(graph, weights,
               inside_chart=None,
               outside_chart=None,
-              weight_type=LogViterbi):
+              weight_type=None):
     r"""
-    Compute marginals for hypergraph and weights.
+    Compute hyperedge marginals based on hypergraph and weights.
+
+    Formally, given a hyperedge weight vector :math:`w` in
+    :math:`\mathbb{S}^{{\cal E}}`, the function computes the hyperedge marginal
+    vector :math:`M` in :math:`\mathbb{S}^{{\cal E}}` defined for all
+    :math:`e` as
+
+    .. math::
+
+      M_e = \bigoplus_{p \in P: e \in p} w_{p_1} \otimes w_{p_2} \otimes \ldots \otimes w_{p_n}
+
+    where :math:`P` is the set of all paths in the hypergraph, :math:`p_1 \ldots p_n` are
+    the hyperedges in path :math:`p`, and the constraint :math:`e \in p` requires that hyperedge
+    :math:`e` appears in the path.
 
     Parameters
     -----------
-    graph : :py:class:`Hypergraph`
-       The hypergraph to search.
 
-    weights : :py:class:`Weights`
-       The weights of the hypergraph.
+    graph : :py:class:`Hypergraph`
+      The hypergraph :math:`({\cal V}, {\cal E})`.
+
+    weights : ndarray
+      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+
+
+    inside_chart : ndarray, optional
+       The associated inside chart. Compute by calling
+       ``inside``.  Must be the same type as weights.
+       If not provide will be calculated as part of the function.
+
+    outside_chart : ndarray, optional
+       The associated outside chart. Compute by calling
+       ``outside``.  Must be the same type as weights.
+       If not provide will be calculated as part of the function.
+
+    weight_type : weight-type, optional
+      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
 
     Returns
-    --------
-    marginals : :py:class:`Marginals`
-       The node and edge marginals associated with these weights.
+    ---------
+
+    marginals : ndarray
+       The computed marginal vector :math:`M`. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+       Each element corresponds to the sum of the scores of each path passing through each hyperedge :math:`e`.
     """
     my_inside = inside_chart
     if my_inside is None:
@@ -137,9 +199,58 @@ def marginals(graph, weights,
             outside(graph, weights, inside_chart=my_inside, weight_type=weight_type)
 
 
-    return weight_type.compute_marginals(graph, weights,
+    return _get_type(weight_type).compute_marginals(graph, weights,
                                   my_inside, my_outside)
 
+
+def draw(graph, edge_labels=None, vertex_labels=None,
+         paths=None, formatter=None, out=None):
+    r"""
+    Draw the hypergraph using GraphViz.
+
+    When run in IPython notebook, will draw the graph directly. Otherwise
+    an output file should be specified with ``out``.
+
+    .. warning::
+
+       Requires graphviz, networkx, and pydot.
+
+    Parameters
+    -----------
+
+    graph : :py:class:`Hypergraph`
+      The hypergraph :math:`({\cal V}, {\cal E})`.
+
+    edge_labels : ndarray, optional
+       A :math:`|{\cal E}|`-vector re-labeling the hyperedges .
+
+    vertex_labels : ndarray, optional
+       A :math:`|{\cal V}|`-vector re-labeling the vertices.
+
+    paths : list of :py:class:`Path`, optional
+       A list of paths to be highlighted in the visualization.
+
+    formatter : :py:class:`HypergraphFormatter`, optional
+       A custom formatter inheriting from ``HypergraphFormatter``
+       for displaying the hypergraph.
+
+    out : filepath, optional
+       A filepath to write out the hypergraph image.
+    """
+    import pydecode.display
+    my_formatter = formatter
+    if formatter is None:
+        my_formatter = pydecode.display.HypergraphFormatter()
+    my_formatter.set_weights(edge_labels)
+    my_formatter.set_node_weights(vertex_labels)
+    if paths is not None:
+        my_formatter.set_paths(paths)
+    drawer = pydecode.display.HypergraphDraw(graph, my_formatter)
+
+    if out is None:
+        return drawer.to_ipython()
+    else:
+        drawer.to_image(out)
 
 
 # Higher-level interface.
@@ -219,7 +330,7 @@ def _map_weights2(dp, out_weights):
     return dp.output_matrix.T * out_weights.ravel()
 
 def argmax(dp, out_weights,
-           weight_type=LogViterbi, chart=None, mask=None):
+           weight_type=None, chart=None, mask=None):
     """
     Find the highest scoring output structure in a
     dynamic program.
@@ -241,7 +352,7 @@ def argmax(dp, out_weights,
     return path_output(dp, path)
 
 
-def fill(dp, out_weights, weight_type=LogViterbi, chart=None):
+def fill(dp, out_weights, weight_type=None, chart=None):
     """
     Fill in a dynamic programming chart based on a set of weights.
 
@@ -266,7 +377,7 @@ def fill(dp, out_weights, weight_type=LogViterbi, chart=None):
 
 def output_marginals(dp,
                      out_weights,
-                     weight_type=LogViterbi):
+                     weight_type=None):
     """
     Compute marginals for the outputs of a dynamic program.
 
@@ -290,7 +401,7 @@ def output_marginals(dp,
 
 def item_marginals(dp,
                    out_weights,
-                   weight_type=LogViterbi):
+                   weight_type=None):
     """
     Compute marginals for the outputs of a dynamic program.
 
@@ -313,7 +424,7 @@ def item_marginals(dp,
         dp.items.shape)
 
 def score_outputs(dp, outputs, out_weights,
-                  weight_type=LogViterbi):
+                  weight_type=None):
     """
 
     """

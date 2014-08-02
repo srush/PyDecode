@@ -10,6 +10,8 @@ API
 Construction
 ===================
 
+Chart
+
 .. automodule:: pydecode._pydecode
    :no-members:
    :no-inherited-members:
@@ -20,8 +22,26 @@ Construction
 
    ChartBuilder
 
-.. _hypergraph:
 
+Hypergraph
+
+.. automodule:: pydecode
+   :no-members:
+   :no-inherited-members:
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   Hypergraph
+   Edge
+   Vertex
+   Path
+
+
+
+
+.. _hypergraph:
 
 Algorithms
 ==========
@@ -41,27 +61,35 @@ Table
 Algorithm                                              Description
 ==============  =========  =====================================================
 **best_path**   |best|     Find the highest-weight hyperpath.
-**inside**      |marg|     Compute the inside weight table.
-**outside**     |marg|     Compute the outside weight table.
+**inside**      |ins|      Compute the inside weight table.
+**outside**     |outs|     Compute the outside weight table.
 **marginals**   |marg|     Compute the hyperedge marginals.
 **transform**   |trans|    Convert between label and hyperedge representation.
-**binarize**    |bin|          Convert to a binary-branching hypergraph.
-**kbest**       |kbest|                Find the k-highest scoring hyperpaths.
-**intersect**   |inter|        Intersect with a finite-state acceptor.
+**binarize**    |bin|      Convert to a binary-branching hypergraph.
+**kbest**       |kbest|    Find the k-highest scoring hyperpaths.
+**intersect**   |inter|    Intersect with a finite-state acceptor.
+**draw**        |draw|     Visualize the hypergraph.
+**lp**          |lp|       Build linear program.
 ==============  =========  =====================================================
 
 .. |best| replace:: [:doc:`doc<notebooks/doc/best_path>`]
+.. |ins| replace:: [:doc:`doc<notebooks/doc/inside>`]
+.. |outs| replace:: [:doc:`doc<notebooks/doc/outside>`]
 .. |marg| replace:: [:doc:`doc<notebooks/doc/marginals>`]
 .. |trans| replace:: [:doc:`doc<notebooks/doc/transform>`]
 .. |bin| replace:: [:doc:`doc<notebooks/doc/binarize>`]
 .. |kbest| replace:: [:doc:`doc<notebooks/doc/kbest>`]
 .. |inter| replace:: [:doc:`doc<notebooks/doc/intersect>`]
+.. |draw| replace:: [:doc:`doc<notebooks/doc/draw>`]
+.. |lp| replace:: [:doc:`doc<notebooks/doc/lp>`]
+
+.. _weight_types:
 
 Weight Types
 ============
 
 Each of these algorithms is parameterized over several
-different semirings. The `kind` argument is used to specify
+different semirings. The ``weight_type`` argument is used to specify
 the semiring.
 
 ==============  ==============  ===============  ===============  ===============  =======

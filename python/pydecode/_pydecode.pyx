@@ -1034,7 +1034,8 @@ class Viterbi:
                double [:] chart=None):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         inside_Viterbi(graph.thisptr,
                           &weights[0],
@@ -1048,7 +1049,8 @@ class Viterbi:
                 double [:] chart=None):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         outside_Viterbi(graph.thisptr,
                            &weights[0],
@@ -1062,8 +1064,10 @@ class Viterbi:
                           double [:] weights,
                           double [:] inside_chart,
                           double [:] outside_chart):
-        cdef double [:] node_margs = np.zeros(len(graph.nodes))
-        cdef double [:] edge_margs = np.zeros(len(graph.edges))
+        cdef double [:] node_margs = np.zeros(len(graph.nodes),
+                                                    dtype=np.double)
+        cdef double [:] edge_margs = np.zeros(len(graph.edges),
+                                                    dtype=np.double)
 
 
         node_marginals_Viterbi(graph.thisptr,
@@ -1090,7 +1094,8 @@ class Viterbi:
                 bool get_path=True):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         cdef int [:] my_back_pointers = back_pointers
         if back_pointers is None:
@@ -1171,7 +1176,8 @@ class LogViterbi:
                double [:] chart=None):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         inside_LogViterbi(graph.thisptr,
                           &weights[0],
@@ -1185,7 +1191,8 @@ class LogViterbi:
                 double [:] chart=None):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         outside_LogViterbi(graph.thisptr,
                            &weights[0],
@@ -1199,8 +1206,10 @@ class LogViterbi:
                           double [:] weights,
                           double [:] inside_chart,
                           double [:] outside_chart):
-        cdef double [:] node_margs = np.zeros(len(graph.nodes))
-        cdef double [:] edge_margs = np.zeros(len(graph.edges))
+        cdef double [:] node_margs = np.zeros(len(graph.nodes),
+                                                    dtype=np.double)
+        cdef double [:] edge_margs = np.zeros(len(graph.edges),
+                                                    dtype=np.double)
 
 
         node_marginals_LogViterbi(graph.thisptr,
@@ -1227,7 +1236,8 @@ class LogViterbi:
                 bool get_path=True):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         cdef int [:] my_back_pointers = back_pointers
         if back_pointers is None:
@@ -1308,7 +1318,8 @@ class Real:
                double [:] chart=None):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         inside_Real(graph.thisptr,
                           &weights[0],
@@ -1322,7 +1333,8 @@ class Real:
                 double [:] chart=None):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         outside_Real(graph.thisptr,
                            &weights[0],
@@ -1336,8 +1348,10 @@ class Real:
                           double [:] weights,
                           double [:] inside_chart,
                           double [:] outside_chart):
-        cdef double [:] node_margs = np.zeros(len(graph.nodes))
-        cdef double [:] edge_margs = np.zeros(len(graph.edges))
+        cdef double [:] node_margs = np.zeros(len(graph.nodes),
+                                                    dtype=np.double)
+        cdef double [:] edge_margs = np.zeros(len(graph.edges),
+                                                    dtype=np.double)
 
 
         node_marginals_Real(graph.thisptr,
@@ -1414,7 +1428,8 @@ class Log:
                double [:] chart=None):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         inside_Log(graph.thisptr,
                           &weights[0],
@@ -1428,7 +1443,8 @@ class Log:
                 double [:] chart=None):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         outside_Log(graph.thisptr,
                            &weights[0],
@@ -1442,8 +1458,10 @@ class Log:
                           double [:] weights,
                           double [:] inside_chart,
                           double [:] outside_chart):
-        cdef double [:] node_margs = np.zeros(len(graph.nodes))
-        cdef double [:] edge_margs = np.zeros(len(graph.edges))
+        cdef double [:] node_margs = np.zeros(len(graph.nodes),
+                                                    dtype=np.double)
+        cdef double [:] edge_margs = np.zeros(len(graph.edges),
+                                                    dtype=np.double)
 
 
         node_marginals_Log(graph.thisptr,
@@ -1520,7 +1538,8 @@ class Boolean:
                char [:] chart=None):
         cdef char [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.int8)
 
         inside_Boolean(graph.thisptr,
                           &weights[0],
@@ -1534,7 +1553,8 @@ class Boolean:
                 char [:] chart=None):
         cdef char [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.int8)
 
         outside_Boolean(graph.thisptr,
                            &weights[0],
@@ -1548,8 +1568,10 @@ class Boolean:
                           char [:] weights,
                           char [:] inside_chart,
                           char [:] outside_chart):
-        cdef char [:] node_margs = np.zeros(len(graph.nodes))
-        cdef char [:] edge_margs = np.zeros(len(graph.edges))
+        cdef char [:] node_margs = np.zeros(len(graph.nodes),
+                                                    dtype=np.int8)
+        cdef char [:] edge_margs = np.zeros(len(graph.edges),
+                                                    dtype=np.int8)
 
 
         node_marginals_Boolean(graph.thisptr,
@@ -1576,7 +1598,8 @@ class Boolean:
                 bool get_path=True):
         cdef char [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.int8)
 
         cdef int [:] my_back_pointers = back_pointers
         if back_pointers is None:
@@ -1657,7 +1680,8 @@ class Counting:
                int [:] chart=None):
         cdef int [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.int32)
 
         inside_Counting(graph.thisptr,
                           &weights[0],
@@ -1671,7 +1695,8 @@ class Counting:
                 int [:] chart=None):
         cdef int [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.int32)
 
         outside_Counting(graph.thisptr,
                            &weights[0],
@@ -1685,8 +1710,10 @@ class Counting:
                           int [:] weights,
                           int [:] inside_chart,
                           int [:] outside_chart):
-        cdef int [:] node_margs = np.zeros(len(graph.nodes))
-        cdef int [:] edge_margs = np.zeros(len(graph.edges))
+        cdef int [:] node_margs = np.zeros(len(graph.nodes),
+                                                    dtype=np.int32)
+        cdef int [:] edge_margs = np.zeros(len(graph.edges),
+                                                    dtype=np.int32)
 
 
         node_marginals_Counting(graph.thisptr,
@@ -1713,7 +1740,8 @@ class Counting:
                 bool get_path=True):
         cdef int [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.int32)
 
         cdef int [:] my_back_pointers = back_pointers
         if back_pointers is None:
@@ -1794,7 +1822,8 @@ class MinMax:
                double [:] chart=None):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         inside_MinMax(graph.thisptr,
                           &weights[0],
@@ -1808,7 +1837,8 @@ class MinMax:
                 double [:] chart=None):
         cdef double [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype=np.double)
 
         outside_MinMax(graph.thisptr,
                            &weights[0],
@@ -1822,8 +1852,10 @@ class MinMax:
                           double [:] weights,
                           double [:] inside_chart,
                           double [:] outside_chart):
-        cdef double [:] node_margs = np.zeros(len(graph.nodes))
-        cdef double [:] edge_margs = np.zeros(len(graph.edges))
+        cdef double [:] node_margs = np.zeros(len(graph.nodes),
+                                                    dtype=np.double)
+        cdef double [:] edge_margs = np.zeros(len(graph.edges),
+                                                    dtype=np.double)
 
 
         node_marginals_MinMax(graph.thisptr,

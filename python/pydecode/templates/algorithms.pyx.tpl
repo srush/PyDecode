@@ -78,7 +78,8 @@ class {{S.type}}:
                {{S.cvalue}} [:] chart=None):
         cdef {{S.cvalue}} [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype={{S.npvalue}})
 
         inside_{{S.type}}(graph.thisptr,
                           &weights[0],
@@ -92,7 +93,8 @@ class {{S.type}}:
                 {{S.cvalue}} [:] chart=None):
         cdef {{S.cvalue}} [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype={{S.npvalue}})
 
         outside_{{S.type}}(graph.thisptr,
                            &weights[0],
@@ -106,8 +108,10 @@ class {{S.type}}:
                           {{S.cvalue}} [:] weights,
                           {{S.cvalue}} [:] inside_chart,
                           {{S.cvalue}} [:] outside_chart):
-        cdef {{S.cvalue}} [:] node_margs = np.zeros(len(graph.nodes))
-        cdef {{S.cvalue}} [:] edge_margs = np.zeros(len(graph.edges))
+        cdef {{S.cvalue}} [:] node_margs = np.zeros(len(graph.nodes),
+                                                    dtype={{S.npvalue}})
+        cdef {{S.cvalue}} [:] edge_margs = np.zeros(len(graph.edges),
+                                                    dtype={{S.npvalue}})
 
 
         node_marginals_{{S.type}}(graph.thisptr,
@@ -134,7 +138,8 @@ class {{S.type}}:
                 bool get_path=True):
         cdef {{S.cvalue}} [:] my_chart = chart
         if chart is None:
-            my_chart = np.zeros(len(graph.nodes))
+            my_chart = np.zeros(len(graph.nodes),
+                                dtype={{S.npvalue}})
 
         cdef int [:] my_back_pointers = back_pointers
         if back_pointers is None:
