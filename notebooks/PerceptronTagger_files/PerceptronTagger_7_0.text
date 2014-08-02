@@ -1,0 +1,24 @@
+iteration 0
+['START', 'D', 'N', 'V', 'END'] ['START' 'N' 'N' 'N' 'END']
+['START', 'I', 'D', 'N', 'END'] ['START' 'D' 'V' 'V' 'END']
+['START', 'I', 'D', 'N', 'END'] ['START' 'I' 'D' 'N' 'END']
+avg loss: 0.066667 w: [ 1.  0.  1. -1.  0. -1.  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+  0.  0.  0.  0.  1.  0.  2.  0.  0. -2. -1.  0.  0.  0.  0.  0.  0.  0.
+ -1.  0.  0.  1.  0. -1.]
+effective learning rate: 1.000000
+iteration 1
+['START', 'D', 'N', 'V', 'END'] ['START' 'I' 'D' 'N' 'END']
+['START', 'I', 'D', 'N', 'END'] ['START' 'D' 'N' 'V' 'END']
+['START', 'I', 'D', 'N', 'END'] ['START' 'I' 'D' 'N' 'END']
+avg loss: 0.080000 w: [ 1.  0.  1. -1.  0. -1.  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+  0.  0.  0.  0.  1.  0.  2.  0.  0. -2. -1.  0.  0.  0.  0.  0.  0.  0.
+ -1.  0.  0.  1.  0. -1.]
+effective learning rate: 1.000000
+iteration 2
+['START', 'D', 'N', 'V', 'END'] ['START' 'I' 'D' 'N' 'END']
+['START', 'I', 'D', 'N', 'END'] ['START' 'D' 'N' 'V' 'END']
+['START', 'I', 'D', 'N', 'END'] ['START' 'I' 'D' 'N' 'END']
+avg loss: 0.080000 w: [ 1.  0.  1. -1.  0. -1.  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+  0.  0.  0.  0.  1.  0.  2.  0.  0. -2. -1.  0.  0.  0.  0.  0.  0.  0.
+ -1.  0.  0.  1.  0. -1.]
+effective learning rate: 1.000000

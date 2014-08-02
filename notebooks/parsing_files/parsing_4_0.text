@@ -1,0 +1,12 @@
+-c:7: FutureWarning: Numpy has detected that you (may be) writing to an array returned
+by numpy.diagonal or by selecting multiple fields in a record
+array. This code will likely break in the next numpy release --
+see numpy.diagonal or arrays.indexing reference docs for details.
+The quick fix is to make an explicit copy (e.g., do
+arr.diagonal().copy() or arr[['f0','f1']].copy()).
+-c:8: FutureWarning: Numpy has detected that you (may be) writing to an array returned
+by numpy.diagonal or by selecting multiple fields in a record
+array. This code will likely break in the next numpy release --
+see numpy.diagonal or arrays.indexing reference docs for details.
+The quick fix is to make an explicit copy (e.g., do
+arr.diagonal().copy() or arr[['f0','f1']].copy()).

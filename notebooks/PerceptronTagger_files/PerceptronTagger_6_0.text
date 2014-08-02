@@ -1,0 +1,6 @@
+([['START', 'the', 'dog', 'walked', 'END'],
+  ['START', 'in', 'the', 'park', 'END'],
+  ['START', 'in', 'the', 'dog', 'END']],
+ [['START', 'D', 'N', 'V', 'END'],
+  ['START', 'I', 'D', 'N', 'END'],
+  ['START', 'I', 'D', 'N', 'END']])
