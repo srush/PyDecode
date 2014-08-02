@@ -104,15 +104,16 @@ cimport numpy as np
 cimport cython
 
 cdef class ChartBuilder:
-    cpdef init(self, long [:] index)
-    cpdef set(self,
-              long index,
-              long [:] tails1,
-              long [:] tails2=*,
-              long [:] tails3=*,
-              long [:] labels=*,
-              long [:] out=*)
-    cpdef set_list(self, long index, tuples, out=*)
+    cdef _init_buffer(self, long [:] indices)
+    cdef _init_list(self, indices)
+            
+    cdef _set_transpose(self,
+                        long index,
+                        long [:] tails1,
+                        long [:] tails2=*,
+                        long [:] tails3=*,
+                        long [:] out=*)
+    cdef _set_list(self, long index, tuples, out=*)
     cdef _finish_node(self, long index, result)
 
     cdef CHypergraph *_hg_ptr

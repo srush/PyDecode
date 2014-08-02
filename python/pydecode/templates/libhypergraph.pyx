@@ -45,29 +45,41 @@ cdef class _LazyVertices:
 
 cdef class Hypergraph:
     r"""
-    The search space of a dynamic program.
+    A directed hypergraph is a generalization of a directed graph
+    where each (hyper)edge is allowed have multiple tail vertices,
+    writen as :math:`\langle v_1 , \langle v_2 \ldots v_{n} \rangle
+    \rangle`.
 
-    Hypergraph consisting of a set of M nodes :math:`{\cal V}`,
-    N hyperedges :math:`{\cal E}`, and a root vertex :math:`v_0 \in {\cal V}`.
+    Acyclic, directed hypergraphs are commonly used to represent
+    dynamic programs where each vertex corresponds to an item, and
+    each hyperedge corresponds to a recursive statement. Roughly
+    each hyperedge is used to stand in for
 
-    Warning: Direct use of this interface is relatively slow and is mainly
-    designed for prototyping and debugging.
+    .. math::
+
+       C_{v_1}  \oplus=  C_{v_2} \otimes C_{v_3} \ldots \otimes C_{v_n} \otimes w(l)
+
+    where :math:`l` is a label associated with the edge.
+
+    Each hypergraph consists of a set of vertices :math:`{\cal V}`,
+    hyperedges :math:`{\cal E}`, a distinguised root vertex :math:`v_0
+    \in {\cal V}`, and a label vector :math:`l \in L^{\cal E}` mapping
+    each hyperedge to a label in :math:`L`.
 
     Attributes
     -----------
 
-    vertices : list of :py:class:`Vertex` of length M
-      List of vertices :math:`{\cal V}` in topological order.
+    vertices : iterator of :py:class:`Vertex`
+      Vertices :math:`{\cal V}` in topological order.
 
-    edges : list of :py:class:`Edge` of length N
-      List of hyperedges :math:`{\cal E}` in topological order.
+    edges : iterator of :py:class:`Edge`
+      Hyperedges :math:`{\cal E}` in topological order.
 
     root : :py:class:`Vertex`
-      Root vertex in :math:`v_0 \in {\cal V}`.
+      Root vertex :math:`v_0 \in {\cal V}`.
 
-    # labeling : :py:class:`Labeling`
-    #   The labels associated with vertices and edges. (For debugging.)
-
+    labeling : int ndarray
+      The labeling :math:`l`.
     """
     def __cinit__(Hypergraph self, bool unary=False):
         """
@@ -183,31 +195,21 @@ cdef int_cmp(int first, int second, int cmp_type):
 
 cdef class Vertex:
     r"""
-    Hypergraph vertex.
-
-    A hypergraph constains a set of vertices :math:`v \in {\cal V}`.
-    Each vertex (besides the root) is in the tail of many possible
+    A hypergraph contains a set of vertices :math:`v \in {\cal V}`.
+    Each vertex (besides the root) is in the tail of at least one
     hyperedges :math:`e \in {\cal E}`, and (besides terminal vertices)
-    at the head of many other edges.
+    at the head of other hyperedges.
 
-    The vertex object has access to the subedges of the vertex
-    or a bit indicating it is a terminal vertex. It also optionally
-    has an associated label, which may be any python object.
+    The vertex object has access to the subedges of the vertex.
 
     Attributes
     -------------
 
-    subedges : iterator of :py:class:`Edge` s
-
+    subedges : iterator of :py:class:`Edge`
        The hyperedges that have this vertex as head.
-
-       We write this as :math:`\{e \in {\cal E} : h(e) = v \}`
 
     is_terminal : bool
        Indicates whether this vertex is terminal (no-subedges).
-
-    label : int
-        Data associated with the vertex.
     """
 
     cdef Vertex init(self, int nodeptr,
@@ -265,10 +267,7 @@ cdef class Node(Vertex):
 
 cdef class Edge:
     r"""
-    Hypergraph hyperedge.
-
-
-    A hypergraph constains a set of hyperedge :math:`e \in {\cal E}`.
+    A hypergraph contains a set of hyperedge :math:`e \in {\cal E}`.
     at the head of many other edges.  A hyperedge is a vector
     :math:`\langle v_1 , \langle v_2 \ldots v_{n} \rangle \rangle`
     where :math:`v_1` is a head vertex and :math:`v_2 \ldots v_{n}` is
@@ -287,8 +286,8 @@ cdef class Edge:
     tail : iterator of :py:class:`Vertex`
         The tail vertices :math:`v_2 \ldots v_{n}`.
 
-    label : any
-        Data associated with the hyperedge.
+    label : int
+        Label associated with the hyperedge.
     """
 
     def __cinit__(self):
@@ -357,13 +356,22 @@ cdef convert_edges(vector[int] edges,
 
 cdef class Path:
     r"""
-    Path through the hypergraph.
-
     A (hyper)path representing a possible traversal of the hypergraph.
-    A path is a member of the combinatorial set
-    :math:`y \in {\cal Y}` satisfying the consistency conditions.
 
-    We represent a path as an ordered list of edges and vertices
+    Formally a path is a member of the combinatorial set :math:`
+    {\cal Y}` satisfying the consistency conditions.
+
+
+    .. math::
+
+          y(v_0) = 1
+
+          y(v) = \sum_{e \in {\cal E} : h(e) = v} y(e) \ \forall v \in {\cal V}
+
+          y(v) = \sum_{e \in {\cal E} : v \in t(e)} y(e) \ \forall v \in {\cal V}
+
+
+    We represent a path as an ordered list of edges and vertices.
 
     Attributes
     -----------
@@ -374,9 +382,8 @@ cdef class Path:
     vertices : iterator of :py:class:`Vertex`
         The vertices in the path in topological order.
 
-    v : sparse Nx1 column vector
+    v : sparse array
         Indicator of hyperedges in the hyperpath.
-
     """
 
     def __dealloc__(self):

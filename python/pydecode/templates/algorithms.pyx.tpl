@@ -220,7 +220,7 @@ class {{S.type}}:
 #     return potentials
 
 
-def filter(Hypergraph graph, bool [:] mask):
+def filter_internal(Hypergraph graph, bool [:] mask):
     """
     Filter a hypergraph based on an edge mask.
 
@@ -246,6 +246,6 @@ def filter(Hypergraph graph, bool [:] mask):
     cdef CHypergraph *new_graph = cfilter(graph.thisptr, &mask[0])
     return Hypergraph().init(new_graph, None)
 
-def binarize(Hypergraph graph):
+def binarize_internal(Hypergraph graph):
     cdef CHypergraph *new_graph = cbinarize(graph.thisptr)
     return Hypergraph().init(new_graph, None)

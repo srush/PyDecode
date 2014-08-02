@@ -10,9 +10,7 @@ Example
 -------
 
 
-This examples creates a simple hypergraph with random integer weights,
-and overlays the inside scores onto the graph for several different
-weight types.
+This examples creates a simple hypergraph with random integer weights, and overlays the inside scores onto the graph for several different weight types.
 
 .. code:: python
 
@@ -69,8 +67,7 @@ Invariants
 ----------
 
 
-Check that the Real inside score of a vertex is the sum of its direct
-children.
+Check that the Real inside score of a vertex is the sum of its direct children. 
 
 .. code:: python
 

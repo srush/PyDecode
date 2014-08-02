@@ -139,6 +139,30 @@ def best_path(graph, weights,
                         back_pointers=back_pointers,
                         mask=mask)
 
+def kbest(graph, weights,
+          weight_type=None, chart=None, back_pointers=None, mask=None):
+    r"""
+    Find the k-best paths through a hypergraph.
+
+    Parameters
+    ----------
+
+    graph : :py:class:`Hypergraph`
+      The hypergraph :math:`({\cal V}, {\cal E})`.
+
+    weights : ndarray
+      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+
+    weight_type : weight-type, optional
+      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
+
+    Returns
+    -------
+    paths : list of :py:class:`Path`
+      The k-highest-scoring hyperpaths under the given weights.
+    """
+    raise NotImplementedError()
+
 def marginals(graph, weights,
               inside_chart=None,
               outside_chart=None,
@@ -204,14 +228,14 @@ def marginals(graph, weights,
 
 
 def draw(graph, edge_labels=None, vertex_labels=None,
-         paths=None, formatter=None, out=None):
+         paths=None, formatter=None, labels=False, out=None):
     r"""
     Draw the hypergraph using GraphViz.
 
     When run in IPython notebook, will draw the graph directly. Otherwise
     an output file should be specified with ``out``.
 
-    .. warning::
+    .. note::
 
        Requires graphviz, networkx, and pydot.
 
@@ -241,8 +265,12 @@ def draw(graph, edge_labels=None, vertex_labels=None,
     my_formatter = formatter
     if formatter is None:
         my_formatter = pydecode.display.HypergraphFormatter()
-    my_formatter.set_weights(edge_labels)
-    my_formatter.set_node_weights(vertex_labels)
+    if labels:
+        my_formatter.set_weights(graph.labeling)
+        my_formatter.set_node_weights(graph.node_labeling)
+    else:
+        my_formatter.set_weights(edge_labels)
+        my_formatter.set_node_weights(vertex_labels)
     if paths is not None:
         my_formatter.set_paths(paths)
     drawer = pydecode.display.HypergraphDraw(graph, my_formatter)
@@ -252,6 +280,142 @@ def draw(graph, edge_labels=None, vertex_labels=None,
     else:
         drawer.to_image(out)
 
+
+def transform(graph, label_array, weight_type=None):
+    r"""
+    Transform a label-sized array into an edge-sized array.
+    Labels are often a smaller, and more natural way for specifying
+    weights. This function efficiently transforms a label array into
+    a weight array for use with the hypergraph functions (such as
+    ``best_path``, ``marginals``, etc.)
+
+    Parameters
+    -----------
+    graph : :py:class:`Hypergraph`
+      A labeled hypergraph :math:`({\cal V}, {\cal E})` with
+      labeling in :math:`L`.
+
+    label_array : ndarray
+      An array of size :math:`|L|`. Type depends of ``weight_type``.
+
+    weight_type : weight-type, optional
+      A weight-type semiring; default: LogViterbi. Used
+      to give weight :math:`\bar{1}` to unlabeled (-1) edges.
+      Type :math:`\mathbb{S}` must agree with label_array.
+
+    Returns
+    -------
+    weights : ndarray
+      The corresponding weight array. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+    """
+    return label_array.take(graph.labeling, mode='clip')
+
+def inverse_transform(graph, weights, weight_type=None):
+    r"""
+
+    Transform a edge-sized array into an array over labels.  Labels
+    can give a better representation of the underlying output.  For
+    instance, the function can be used to transform the output of
+    `marginals` to give values over labels instead of edges.
+
+    Parameters
+    -----------
+    graph : :py:class:`Hypergraph`
+      A labeled hypergraph :math:`({\cal V}, {\cal E})` with
+      labeling in :math:`L`.
+
+    weights : ndarray
+      A weight of each hyperedge. Represented as a
+      vector in :math:`\mathbb{S}^{{\cal E}}`.
+
+
+    weight_type : weight-type, optional
+      A weight-type semiring; default: LogViterbi. Used
+      to give a :math:`\oplus` operation to combine weights
+      for labels that are used at multiple edges.
+      Type :math:`\mathbb{S}` must agree with label_array.
+
+    Returns
+    -------
+    label : ndarray
+      The corresponding label array. Represented as a vector in :math:`\mathbb{S}^{L}`.
+    """
+    raise NotImplementedError()
+    # Slow implementation, make faster.
+    return _get_type(weight_type).transform_to_labels(weights)
+
+def binary(graph):
+    """
+    Create an equivalent hypergraph with binary hyperedges.
+
+    Constructs a new hypergraph with binary-branching hyperedges. Each
+    k-ary edge is converted to (k-1) right-branching binary
+    edges. Labels are placed at the new edge closest to the root.
+
+    Parameters
+    -----------
+    graph : :py:class:`Hypergraph`
+      A hypergraph :math:`({\cal V}, {\cal E})`.
+
+    Returns
+    --------
+    binarized_graph : :py:class:`Hypergraph`
+       The binarized hypergraph. The hypergraph will maintain
+       the hyperedge labeling, but not edge id's.
+    """
+    return binarize_internal(graph)
+
+def filter(graph, mask):
+    """
+    Filter a hypergraph based on an edge mask.
+
+    Edges with value 0 are explicitly pruned.
+    Additionaly edges (and vertices) will be pruned
+    if they are no longer on a valid path.
+
+    Parameters
+    -----------
+    graph : :py:class:`Hypergraph`
+      A hypergraph :math:`({\cal V}, {\cal E})`.
+
+    mask : bool ndarray
+        A pruning mask represented as a :math:`\{0,1\}^{\cal E}` vector.
+
+    Returns
+    --------
+    filtered_graph : :py:class:`Hypergraph`
+       The filtered hypergraph. The hypergraph will maintain both
+       the hyperedge and vertex labeling, but not edge id's.
+    """
+    return filter_internal(graph, mask)
+
+
+def lp(graph, weights):
+    """
+    Construct a linear program for the best-path.
+
+    .. note::
+
+       Requires PuLP_.
+
+    .. _PuLP: http://pythonhosted.org/PuLP/
+
+    Parameters
+    -----------
+    graph : :py:class:`Hypergraph`
+      A hypergraph :math:`({\cal V}, {\cal E})`.
+
+    weights : ndarray
+      The weight of each hyperedge. Must be LogViterbi weights.
+      Represented as a vector in :math:`\mathbb{R}^{{\cal E}}`.
+
+    Returns
+    --------
+    lp : :py:class:`HypergraphLP`
+      The hypergraph best-path problem expressed as a linear program.
+    """
+    import pydecode.lp
+    return pydecode.lp.HypergraphLP.make_lp(graph, weights)
 
 # Higher-level interface.
 

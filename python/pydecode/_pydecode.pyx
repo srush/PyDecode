@@ -45,29 +45,41 @@ cdef class _LazyVertices:
 
 cdef class Hypergraph:
     r"""
-    The search space of a dynamic program.
+    A directed hypergraph is a generalization of a directed graph
+    where each (hyper)edge is allowed have multiple tail vertices,
+    writen as :math:`\langle v_1 , \langle v_2 \ldots v_{n} \rangle
+    \rangle`.
 
-    Hypergraph consisting of a set of M nodes :math:`{\cal V}`,
-    N hyperedges :math:`{\cal E}`, and a root vertex :math:`v_0 \in {\cal V}`.
+    Acyclic, directed hypergraphs are commonly used to represent
+    dynamic programs where each vertex corresponds to an item, and
+    each hyperedge corresponds to a recursive statement. Roughly
+    each hyperedge is used to stand in for
 
-    Warning: Direct use of this interface is relatively slow and is mainly
-    designed for prototyping and debugging.
+    .. math::
+
+       C_{v_1}  \oplus=  C_{v_2} \otimes C_{v_3} \ldots \otimes C_{v_n} \otimes w(l)
+
+    where :math:`l` is a label associated with the edge.
+
+    Each hypergraph consists of a set of vertices :math:`{\cal V}`,
+    hyperedges :math:`{\cal E}`, a distinguised root vertex :math:`v_0
+    \in {\cal V}`, and a label vector :math:`l \in L^{\cal E}` mapping
+    each hyperedge to a label in :math:`L`.
 
     Attributes
     -----------
 
-    vertices : list of :py:class:`Vertex` of length M
-      List of vertices :math:`{\cal V}` in topological order.
+    vertices : iterator of :py:class:`Vertex`
+      Vertices :math:`{\cal V}` in topological order.
 
-    edges : list of :py:class:`Edge` of length N
-      List of hyperedges :math:`{\cal E}` in topological order.
+    edges : iterator of :py:class:`Edge`
+      Hyperedges :math:`{\cal E}` in topological order.
 
     root : :py:class:`Vertex`
-      Root vertex in :math:`v_0 \in {\cal V}`.
+      Root vertex :math:`v_0 \in {\cal V}`.
 
-    # labeling : :py:class:`Labeling`
-    #   The labels associated with vertices and edges. (For debugging.)
-
+    labeling : int ndarray
+      The labeling :math:`l`.
     """
     def __cinit__(Hypergraph self, bool unary=False):
         """
@@ -183,31 +195,21 @@ cdef int_cmp(int first, int second, int cmp_type):
 
 cdef class Vertex:
     r"""
-    Hypergraph vertex.
-
-    A hypergraph constains a set of vertices :math:`v \in {\cal V}`.
-    Each vertex (besides the root) is in the tail of many possible
+    A hypergraph contains a set of vertices :math:`v \in {\cal V}`.
+    Each vertex (besides the root) is in the tail of at least one
     hyperedges :math:`e \in {\cal E}`, and (besides terminal vertices)
-    at the head of many other edges.
+    at the head of other hyperedges.
 
-    The vertex object has access to the subedges of the vertex
-    or a bit indicating it is a terminal vertex. It also optionally
-    has an associated label, which may be any python object.
+    The vertex object has access to the subedges of the vertex.
 
     Attributes
     -------------
 
-    subedges : iterator of :py:class:`Edge` s
-
+    subedges : iterator of :py:class:`Edge`
        The hyperedges that have this vertex as head.
-
-       We write this as :math:`\{e \in {\cal E} : h(e) = v \}`
 
     is_terminal : bool
        Indicates whether this vertex is terminal (no-subedges).
-
-    label : int
-        Data associated with the vertex.
     """
 
     cdef Vertex init(self, int nodeptr,
@@ -265,10 +267,7 @@ cdef class Node(Vertex):
 
 cdef class Edge:
     r"""
-    Hypergraph hyperedge.
-
-
-    A hypergraph constains a set of hyperedge :math:`e \in {\cal E}`.
+    A hypergraph contains a set of hyperedge :math:`e \in {\cal E}`.
     at the head of many other edges.  A hyperedge is a vector
     :math:`\langle v_1 , \langle v_2 \ldots v_{n} \rangle \rangle`
     where :math:`v_1` is a head vertex and :math:`v_2 \ldots v_{n}` is
@@ -287,8 +286,8 @@ cdef class Edge:
     tail : iterator of :py:class:`Vertex`
         The tail vertices :math:`v_2 \ldots v_{n}`.
 
-    label : any
-        Data associated with the hyperedge.
+    label : int
+        Label associated with the hyperedge.
     """
 
     def __cinit__(self):
@@ -357,13 +356,22 @@ cdef convert_edges(vector[int] edges,
 
 cdef class Path:
     r"""
-    Path through the hypergraph.
-
     A (hyper)path representing a possible traversal of the hypergraph.
-    A path is a member of the combinatorial set
-    :math:`y \in {\cal Y}` satisfying the consistency conditions.
 
-    We represent a path as an ordered list of edges and vertices
+    Formally a path is a member of the combinatorial set :math:`
+    {\cal Y}` satisfying the consistency conditions.
+
+
+    .. math::
+
+          y(v_0) = 1
+
+          y(v) = \sum_{e \in {\cal E} : h(e) = v} y(e) \ \forall v \in {\cal V}
+
+          y(v) = \sum_{e \in {\cal E} : v \in t(e)} y(e) \ \forall v \in {\cal V}
+
+
+    We represent a path as an ordered list of edges and vertices.
 
     Attributes
     -----------
@@ -374,9 +382,8 @@ cdef class Path:
     vertices : iterator of :py:class:`Vertex`
         The vertices in the path in topological order.
 
-    v : sparse Nx1 column vector
+    v : sparse array
         Indicator of hyperedges in the hyperpath.
-
     """
 
     def __dealloc__(self):
@@ -581,65 +588,12 @@ class DynamicProgram:
 
 NODE_NULL = -1
 cdef class ChartBuilder:
-    """
-    ChartBuilder is an interface for specifying dynamic programs.
-
-    The chart acts like a dictionary between items I and "tokens". ::
-       >> c[item] = c.init()
-       >> c[item2] = [c.merge(item)]
-       >> c[item3] = [c.merge(item, item2), c.merge(item)]
-       >> c[item4] = [c.merge(item3, out=[output])]
-
-    When a chart is complete, it creates a hypergraph (V, E).
-
-       >> hypergraph = c.finish()
-
-    The chart builder also maintains a mapping between the hypergraph
-    and item set and output set.
-
-    Define the set of items I to specify the cells in a dynamic
-    programming chart.
-
-    Define the set of outputs O to specify the output emitted by a
-    decision in the dynamic program.
-
-    Attributes
-    ----------
-    items : Encoder I -> {0...|I|}
-       Encodes elements of the item set I as integers.
-
-    outputs : Encoder O -> {0...|O|}
-       Encodes elements of the output set O as integers.
-    """
-
     def __init__(self,
                  items,
-                 outputs,
+                 outputs=None,
                  unstrict=False,
                  expected_size=None,
                  lattice=False):
-        """
-        Initialize the dynamic programming chart.
-
-        Parameters
-        ------------
-
-        item_encoder, item_set_size : Encoder I -> {0...|I|}, Int
-            Specifies the item set I for chart, and the size |I|
-            The encoder must have a `transform` method.
-
-        output_encoder : Encoder O -> {0...|O|}
-            Specifies the item set O for chart.
-            The encoder must have a `transform` method.
-
-        unstrict : bool
-            Allows the chart to merge NULL items.
-
-        expected_size : (int, int)
-            Set the expected number of edges |E| and
-            the max-arity of edges. Useful for efficiency.
-        """
-
         self._done = False
         self._last = -1
         self._no_tail = set[long]()
@@ -652,9 +606,9 @@ cdef class ChartBuilder:
         self._chart = new vector[int](self._size, NODE_NULL)
 
         # Output structures.
-        self._output_size = np.max(outputs) + 1
-        self._construct_output = self._output_size is not None
-
+        # self._output_size = np.max(outputs) + 1
+        # self._construct_output = self._output_size is not None
+        self._construct_output = True
         if expected_size:
             self._builder.set_expected_size(self._size,
                                            expected_size[0],
@@ -665,18 +619,149 @@ cdef class ChartBuilder:
 
         self._lattice = lattice
 
+    def init(self, items):
+        r"""
+        init(self, items)
+
+        Initialize a base case for a set of items.
+
+        Formally, for each item :math:`v \in I`, sets
+
+        .. math::
+        
+           C_v  = \bar{1}
+
+        Parameters:
+        ------------
+        
+        items : int or array
+            Initialize the given items. 
+        """
+        if isinstance(items, np.ndarray):
+            return self._init_buffer(items)
+        elif isinstance(items, int):
+            return self._init_list([items])
+        else:
+            return self._init_list(items)
+
+
+    def set(self, long item, tails_list, labels=None):
+        r"""
+        set(self, items, tails_list, labels=None)
+
+        Add an item with a recursive definition.
+        
+        Calling this function adds a recursive definition to the dynamic program 
+        for ``item`` based on the previous defined values of the items in tails and
+        a sequnce of labels.
+        
+
+        Formally, for given ``item`` :math:`v`, adds the recursive definition
+        
+        .. math::
+        
+           C_v  = \bigoplus_{i} C_{T_{i,1}} \otimes C_{T_{i,2}} \ldots \otimes C_{T_{i,n}} \otimes w(L_i)
+
+        where :math:`T` is a sequence of tail items given by parameter ``tails``,
+        :math:`L` is a sequence of labels given by parameter ``labels``.
+
+        Warning: This function is more flexible, but often slower than ``set_t``. 
+
+
+        Parameters
+        ----------
+        
+        item : int
+            The dynamic programming item to set. 
+
+        tails_list : list of list of ints
+            A list of tail lists :math:`T`. 
+
+        labels : list of ints, optional
+            A list of labels. Must be None orthe same size as tails.
+        """
+        return self._set_list(item, tails_list, labels)
+
+
+    def set_t(self, long item, tails1, tails2=None, tails3=None, labels=None):
+        r"""
+        set_t(self, item, tails1, tails2=None, tails3=None, labels=None)
+
+        Add an item with a recursive definition, transpose.
+        
+        Calling this function adds a recursive definition to the dynamic program 
+        for ``item`` based on the previous defined values of the items in tails and
+        a sequnce of labels.
+
+        Formally, for given ``item`` :math:`v`, adds the recursive definition
+        
+        .. math::
+        
+           C_v  = \bigoplus_{i} C_{T_{1,i}} \otimes C_{T_{2,i}} \otimes C_{T_{3,i}} \otimes w(L_i)
+
+        where :math:`T` is a sequence of tail items given by parameters ``tails1``, ``tails2``, ``tails3``
+        :math:`L` is a sequence of labels given by parameter ``labels``.
+
+
+        Parameters
+        ----------
+        
+        item : int
+            The dynamic programming item to set. 
+
+        tails1, tails2, tails3  : int ndarray, optional
+            Sequence of tail items. Represented by :math:`T_1, T_2, T_3` respectively. 
+            Must be of the same length or None.
+
+        labels : int ndarray, optional
+            The labels for each definition. Must be the same length as tails.
+
+        """        
+        return self._set_transpose(item, tails1, tails2, tails3, labels)
+
+    def finish(self, reconstruct=False):
+        r"""
+        Complete the dynamic program. 
+
+        Returns
+        --------
+        hypergraph : :py:class:`Hypergraph`
+            The hypergraph representing the dynamic program.
+
+        """
+        if self._done:
+            raise Exception("Hypergraph not constructed.")
+        if self._no_tail.size() != 1:
+            raise Exception("Hypergraph has multiple vertices that are not connected: %s."%(self._no_tail,))
+        self._done = True
+        self._hg_ptr = self._builder.finish(reconstruct)
+
+        hypergraph = Hypergraph(self._lattice)
+        hypergraph.init(self._hg_ptr,
+                        Labeling(hypergraph, None))
+        return hypergraph 
+
+
     @cython.boundscheck(False)
-    cpdef init(self, long [:] indices):
+    cdef _init_buffer(self, long [:] indices):
         cdef int i
         cdef long index
         for i in range(indices.shape[0]):
             index = indices[i]
             deref(self._chart)[index] = \
                 self._builder.add_terminal_node(index)
-
             self._no_tail.insert(index)
 
-    cpdef set_list(self, long index, tuples, out=None):
+    @cython.boundscheck(False)
+    cdef _init_list(self, indices):
+        cdef long index
+        for index in indices:
+            deref(self._chart)[index] = \
+                self._builder.add_terminal_node(index)
+            self._no_tail.insert(index)
+
+
+    cdef _set_list(self, long index, tuples, out=None):
         deref(self._chart)[index] = self._builder.start_node(index)
         cdef vector[int] tails
         cdef int i, j, node
@@ -717,13 +802,13 @@ cdef class ChartBuilder:
 
 
     @cython.boundscheck(False)
-    cpdef set(self,
-              long index,
-              long [:] tails1,
-              long [:] tails2=None,
-              long [:] tails3=None,
-              long [:] labels=None,
-              long [:] out=None):
+
+    cdef _set_transpose(self,
+                        long index,
+                        long [:] tails1,
+                        long [:] tails2=None,
+                        long [:] tails3=None,
+                        long [:] out=None):
 
         deref(self._chart)[index] = self._builder.start_node(index)
 
@@ -800,29 +885,9 @@ cdef class ChartBuilder:
         #     self._no_tail.insert(index)
         #     self._nindices.append(index)
 
-    def finish(self, reconstruct=False):
-        """
-        Finish chart construction.
-
-        Returns
-        -------
-        hypergraph :
-           The hypergraph representing the dynamic program.
-
-        """
-        if self._done:
-            raise Exception("Hypergraph not constructed.")
-        if self._no_tail.size() != 1:
-            raise Exception("Hypergraph has multiple vertices that are not connected: %s."%(self._no_tail,))
-        self._done = True
-        self._hg_ptr = self._builder.finish(reconstruct)
-
-        hypergraph = Hypergraph(self._lattice)
-        hypergraph.init(self._hg_ptr,
-                        Labeling(hypergraph, None))
-        return DynamicProgram(hypergraph,
-                              self.items,
-                              self.outputs)
+    # DynamicProgram(hypergraph,
+    #                           self.items,
+    #                           self.outputs)
 
 from cython.operator cimport dereference as deref
 from libcpp cimport bool
@@ -1932,7 +1997,7 @@ class MinMax:
 #     return potentials
 
 
-def filter(Hypergraph graph, bool [:] mask):
+def filter_internal(Hypergraph graph, bool [:] mask):
     """
     Filter a hypergraph based on an edge mask.
 
@@ -1958,6 +2023,6 @@ def filter(Hypergraph graph, bool [:] mask):
     cdef CHypergraph *new_graph = cfilter(graph.thisptr, &mask[0])
     return Hypergraph().init(new_graph, None)
 
-def binarize(Hypergraph graph):
+def binarize_internal(Hypergraph graph):
     cdef CHypergraph *new_graph = cbinarize(graph.thisptr)
     return Hypergraph().init(new_graph, None)

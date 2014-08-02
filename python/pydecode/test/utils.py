@@ -79,13 +79,13 @@ def simple_hypergraph():
 
     c.init(enc[:4])
 
-    c.set(enc[4], enc[0:2], enc[1:3])
-    c.set(enc[5], np.repeat(enc[4], 1), enc[[3]])
+    c.set_t(enc[4], enc[0:2], enc[1:3])
+    c.set_t(enc[5], np.repeat(enc[4], 1), enc[[3]])
 
     dp = c.finish()
     # for edge in hypergraph.edges:
     #     assert edge.label in ["0", "1", "2", "3", "4"]
-    return dp.hypergraph
+    return dp
 
 
 import numpy as np
@@ -118,18 +118,18 @@ def random_hypergraph(size=50):
         if reference_sets[node_a] & reference_sets[node_b]:
             continue
 
-        c.set(enc[head_node], enc[[node_a]], enc[[node_b]])
+        c.set_t(enc[head_node], enc[[node_a]], enc[[node_b]])
         used.update([node_a, node_b])
         reference_sets[head_node] |= \
             reference_sets[node_a] | reference_sets[node_b]
         nodes.append(head_node)
     unused = set(nodes) -  used
-    c.set(enc[2*size], enc[list(unused)])
+    c.set_t(enc[2*size], enc[list(unused)])
 
     dp = c.finish()
-    assert len(dp.hypergraph.nodes) > 0
-    assert len(dp.hypergraph.edges) > 0
-    return dp.hypergraph
+    assert len(dp.nodes) > 0
+    assert len(dp.edges) > 0
+    return dp
 
 
 def chain_hypergraph(size=100):

@@ -10,33 +10,44 @@ API
 Construction
 ===================
 
-Chart
+================  =========  =====================================================
+**ChartBuilder**   |Chart|     Interface for constructing a dynamic programs.
+================  =========  =====================================================
 
-.. automodule:: pydecode._pydecode
-   :no-members:
-   :no-inherited-members:
 
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
 
-   ChartBuilder
+.. .. automodule:: pydecode._pydecode
+..    :no-members:
+..    :no-inherited-members:
+
+.. .. autosummary::
+..    :toctree: generated/
+..    :template: class.rst
+
+..    ChartBuilder
 
 
 Hypergraph
 
-.. automodule:: pydecode
-   :no-members:
-   :no-inherited-members:
+===============  =========  =====================================================
+**Hypergraph**   |hyper|    Interact with and visualize a dynamic program.
+===============  =========  =====================================================
 
-.. autosummary::
-   :toctree: generated/
-   :template: class.rst
+.. |hyper| replace:: [:doc:`doc<notebooks/doc/Hypergraph>`]
+.. |chart| replace:: [:doc:`doc<notebooks/doc/ChartBuilder>`]
 
-   Hypergraph
-   Edge
-   Vertex
-   Path
+.. .. automodule:: pydecode
+..    :no-members:
+..    :no-inherited-members:
+
+.. .. autosummary::
+..    :toctree: generated/
+..    :template: class.rst
+
+..    Hypergraph
+..    Edge
+..    Vertex
+..    Path
 
 
 
@@ -66,10 +77,10 @@ Algorithm                                              Description
 **marginals**   |marg|     Compute the hyperedge marginals.
 **transform**   |trans|    Convert between label and hyperedge representation.
 **binarize**    |bin|      Convert to a binary-branching hypergraph.
-**kbest**       |kbest|    Find the k-highest scoring hyperpaths.
-**intersect**   |inter|    Intersect with a finite-state acceptor.
 **draw**        |draw|     Visualize the hypergraph.
 **lp**          |lp|       Build linear program.
+**kbest**       |kbest|    Find the k-highest scoring hyperpaths.
+**intersect**   |inter|    Intersect with a finite-state acceptor.
 ==============  =========  =====================================================
 
 .. |best| replace:: [:doc:`doc<notebooks/doc/best_path>`]
@@ -93,17 +104,24 @@ different semirings. The ``weight_type`` argument is used to specify
 the semiring.
 
 ==============  ==============  ===============  ===============  ===============  =======
-Name            :math:`\oplus`  :math:`\otimes`  :math:`\bar{0}`  :math:`\bar{1}`  dtype
+Name            |splus|           |stimes|       |szero|           |sone|          |stype|
 ==============  ==============  ===============  ===============  ===============  =======
-**LogViterbi**   :math:`\max`    :math:`+`       :math:`-\infty`  0                float32
+**LogViterbi**   :math:`\max`    :math:`+`       |ninf|           0                float32
 **Viterbi**      :math:`\max`    :math:`*`       0                1                float32
 **Real**         :math:`+`       :math:`*`       0                1                float32
-**Log**          logsum          :math:`+`       :math:`-\infty`   0               float32
-**Boolean**      or               and             false             true            uint8
-**Counting**     :math:`+`       :math:`*`        0                 1              int32
-**MinMax**       :math:`\min`    :math:`\max`    :math:`-\infty`  :math:`\infty`   float32
+**Log**          logsum          :math:`+`       |ninf|           0                float32
+**Boolean**      or               and             false           true             uint8
+**Counting**     :math:`+`       :math:`*`        0               1                int32
+**MinMax**       :math:`\min`    :math:`\max`    |ninf|           |inf|            float32
 ==============  ==============  ===============  ===============  ===============  =======
 
+.. |stype| replace:: :math:`\mathbb{S}`/dtype
+.. |inf| replace:: :math:`\infty`
+.. |ninf| replace:: :math:`-\infty`
+.. |sone| replace:: :math:`\bar{1}`
+.. |szero| replace:: :math:`\bar{0}`
+.. |splus| replace:: :math:`\oplus`
+.. |stimes| replace:: :math:`\otimes`
 
 
 
