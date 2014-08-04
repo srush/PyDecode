@@ -1129,23 +1129,24 @@ class Viterbi:
                           double [:] weights,
                           double [:] inside_chart,
                           double [:] outside_chart):
-        cdef double [:] node_margs = np.zeros(len(graph.nodes),
-                                                    dtype=np.double)
+        # cdef double [:] node_margs = np.zeros(len(graph.nodes),
+        #                                             dtype=np.double)
         cdef double [:] edge_margs = np.zeros(len(graph.edges),
                                                     dtype=np.double)
 
 
-        node_marginals_Viterbi(graph.thisptr,
-                                  &inside_chart[0],
-                                  &outside_chart[0],
-                                  &node_margs[0])
+        # node_marginals_Viterbi(graph.thisptr,
+        #                           &inside_chart[0],
+        #                           &outside_chart[0],
+        #                           &node_margs[0])
 
         edge_marginals_Viterbi(graph.thisptr,
                                   &weights[0],
                                   &inside_chart[0],
                                   &outside_chart[0],
                                   &edge_margs[0])
-        return np.asarray(node_margs), np.asarray(edge_margs)
+        return np.asarray(edge_margs)
+    #np.asarray(node_margs),
 
     
     
@@ -1181,6 +1182,21 @@ class Viterbi:
                 &my_back_pointers[0])
             return Path().init(path, graph)
     
+
+    @staticmethod
+    def transform_to_labels(Hypergraph graph,
+                            double [:] weights,
+                            int [:] labeling,
+                            int label_size):
+        cdef double [:] label_weights = np.zeros(label_size,
+                                 dtype=np.double)
+        ctransform_Viterbi(graph.thisptr,
+                              &weights[0],
+                              &labeling[0],
+                              &label_weights[0],
+                              label_size)
+        return np.asarray(label_weights)
+
 
 
 cdef class LogViterbiValue:
@@ -1271,23 +1287,24 @@ class LogViterbi:
                           double [:] weights,
                           double [:] inside_chart,
                           double [:] outside_chart):
-        cdef double [:] node_margs = np.zeros(len(graph.nodes),
-                                                    dtype=np.double)
+        # cdef double [:] node_margs = np.zeros(len(graph.nodes),
+        #                                             dtype=np.double)
         cdef double [:] edge_margs = np.zeros(len(graph.edges),
                                                     dtype=np.double)
 
 
-        node_marginals_LogViterbi(graph.thisptr,
-                                  &inside_chart[0],
-                                  &outside_chart[0],
-                                  &node_margs[0])
+        # node_marginals_LogViterbi(graph.thisptr,
+        #                           &inside_chart[0],
+        #                           &outside_chart[0],
+        #                           &node_margs[0])
 
         edge_marginals_LogViterbi(graph.thisptr,
                                   &weights[0],
                                   &inside_chart[0],
                                   &outside_chart[0],
                                   &edge_margs[0])
-        return np.asarray(node_margs), np.asarray(edge_margs)
+        return np.asarray(edge_margs)
+    #np.asarray(node_margs),
 
     
     
@@ -1323,6 +1340,21 @@ class LogViterbi:
                 &my_back_pointers[0])
             return Path().init(path, graph)
     
+
+    @staticmethod
+    def transform_to_labels(Hypergraph graph,
+                            double [:] weights,
+                            int [:] labeling,
+                            int label_size):
+        cdef double [:] label_weights = np.zeros(label_size,
+                                 dtype=np.double)
+        ctransform_LogViterbi(graph.thisptr,
+                              &weights[0],
+                              &labeling[0],
+                              &label_weights[0],
+                              label_size)
+        return np.asarray(label_weights)
+
 
 
 cdef class RealValue:
@@ -1413,26 +1445,42 @@ class Real:
                           double [:] weights,
                           double [:] inside_chart,
                           double [:] outside_chart):
-        cdef double [:] node_margs = np.zeros(len(graph.nodes),
-                                                    dtype=np.double)
+        # cdef double [:] node_margs = np.zeros(len(graph.nodes),
+        #                                             dtype=np.double)
         cdef double [:] edge_margs = np.zeros(len(graph.edges),
                                                     dtype=np.double)
 
 
-        node_marginals_Real(graph.thisptr,
-                                  &inside_chart[0],
-                                  &outside_chart[0],
-                                  &node_margs[0])
+        # node_marginals_Real(graph.thisptr,
+        #                           &inside_chart[0],
+        #                           &outside_chart[0],
+        #                           &node_margs[0])
 
         edge_marginals_Real(graph.thisptr,
                                   &weights[0],
                                   &inside_chart[0],
                                   &outside_chart[0],
                                   &edge_margs[0])
-        return np.asarray(node_margs), np.asarray(edge_margs)
+        return np.asarray(edge_margs)
+    #np.asarray(node_margs),
 
     
     
+
+    @staticmethod
+    def transform_to_labels(Hypergraph graph,
+                            double [:] weights,
+                            int [:] labeling,
+                            int label_size):
+        cdef double [:] label_weights = np.zeros(label_size,
+                                 dtype=np.double)
+        ctransform_Real(graph.thisptr,
+                              &weights[0],
+                              &labeling[0],
+                              &label_weights[0],
+                              label_size)
+        return np.asarray(label_weights)
+
 
 
 cdef class LogValue:
@@ -1523,26 +1571,42 @@ class Log:
                           double [:] weights,
                           double [:] inside_chart,
                           double [:] outside_chart):
-        cdef double [:] node_margs = np.zeros(len(graph.nodes),
-                                                    dtype=np.double)
+        # cdef double [:] node_margs = np.zeros(len(graph.nodes),
+        #                                             dtype=np.double)
         cdef double [:] edge_margs = np.zeros(len(graph.edges),
                                                     dtype=np.double)
 
 
-        node_marginals_Log(graph.thisptr,
-                                  &inside_chart[0],
-                                  &outside_chart[0],
-                                  &node_margs[0])
+        # node_marginals_Log(graph.thisptr,
+        #                           &inside_chart[0],
+        #                           &outside_chart[0],
+        #                           &node_margs[0])
 
         edge_marginals_Log(graph.thisptr,
                                   &weights[0],
                                   &inside_chart[0],
                                   &outside_chart[0],
                                   &edge_margs[0])
-        return np.asarray(node_margs), np.asarray(edge_margs)
+        return np.asarray(edge_margs)
+    #np.asarray(node_margs),
 
     
     
+
+    @staticmethod
+    def transform_to_labels(Hypergraph graph,
+                            double [:] weights,
+                            int [:] labeling,
+                            int label_size):
+        cdef double [:] label_weights = np.zeros(label_size,
+                                 dtype=np.double)
+        ctransform_Log(graph.thisptr,
+                              &weights[0],
+                              &labeling[0],
+                              &label_weights[0],
+                              label_size)
+        return np.asarray(label_weights)
+
 
 
 cdef class BooleanValue:
@@ -1633,23 +1697,24 @@ class Boolean:
                           char [:] weights,
                           char [:] inside_chart,
                           char [:] outside_chart):
-        cdef char [:] node_margs = np.zeros(len(graph.nodes),
-                                                    dtype=np.int8)
+        # cdef char [:] node_margs = np.zeros(len(graph.nodes),
+        #                                             dtype=np.int8)
         cdef char [:] edge_margs = np.zeros(len(graph.edges),
                                                     dtype=np.int8)
 
 
-        node_marginals_Boolean(graph.thisptr,
-                                  &inside_chart[0],
-                                  &outside_chart[0],
-                                  &node_margs[0])
+        # node_marginals_Boolean(graph.thisptr,
+        #                           &inside_chart[0],
+        #                           &outside_chart[0],
+        #                           &node_margs[0])
 
         edge_marginals_Boolean(graph.thisptr,
                                   &weights[0],
                                   &inside_chart[0],
                                   &outside_chart[0],
                                   &edge_margs[0])
-        return np.asarray(node_margs), np.asarray(edge_margs)
+        return np.asarray(edge_margs)
+    #np.asarray(node_margs),
 
     
     
@@ -1685,6 +1750,21 @@ class Boolean:
                 &my_back_pointers[0])
             return Path().init(path, graph)
     
+
+    @staticmethod
+    def transform_to_labels(Hypergraph graph,
+                            char [:] weights,
+                            int [:] labeling,
+                            int label_size):
+        cdef char [:] label_weights = np.zeros(label_size,
+                                 dtype=np.int8)
+        ctransform_Boolean(graph.thisptr,
+                              &weights[0],
+                              &labeling[0],
+                              &label_weights[0],
+                              label_size)
+        return np.asarray(label_weights)
+
 
 
 cdef class CountingValue:
@@ -1775,23 +1855,24 @@ class Counting:
                           int [:] weights,
                           int [:] inside_chart,
                           int [:] outside_chart):
-        cdef int [:] node_margs = np.zeros(len(graph.nodes),
-                                                    dtype=np.int32)
+        # cdef int [:] node_margs = np.zeros(len(graph.nodes),
+        #                                             dtype=np.int32)
         cdef int [:] edge_margs = np.zeros(len(graph.edges),
                                                     dtype=np.int32)
 
 
-        node_marginals_Counting(graph.thisptr,
-                                  &inside_chart[0],
-                                  &outside_chart[0],
-                                  &node_margs[0])
+        # node_marginals_Counting(graph.thisptr,
+        #                           &inside_chart[0],
+        #                           &outside_chart[0],
+        #                           &node_margs[0])
 
         edge_marginals_Counting(graph.thisptr,
                                   &weights[0],
                                   &inside_chart[0],
                                   &outside_chart[0],
                                   &edge_margs[0])
-        return np.asarray(node_margs), np.asarray(edge_margs)
+        return np.asarray(edge_margs)
+    #np.asarray(node_margs),
 
     
     
@@ -1827,6 +1908,21 @@ class Counting:
                 &my_back_pointers[0])
             return Path().init(path, graph)
     
+
+    @staticmethod
+    def transform_to_labels(Hypergraph graph,
+                            int [:] weights,
+                            int [:] labeling,
+                            int label_size):
+        cdef int [:] label_weights = np.zeros(label_size,
+                                 dtype=np.int32)
+        ctransform_Counting(graph.thisptr,
+                              &weights[0],
+                              &labeling[0],
+                              &label_weights[0],
+                              label_size)
+        return np.asarray(label_weights)
+
 
 
 cdef class MinMaxValue:
@@ -1917,26 +2013,42 @@ class MinMax:
                           double [:] weights,
                           double [:] inside_chart,
                           double [:] outside_chart):
-        cdef double [:] node_margs = np.zeros(len(graph.nodes),
-                                                    dtype=np.double)
+        # cdef double [:] node_margs = np.zeros(len(graph.nodes),
+        #                                             dtype=np.double)
         cdef double [:] edge_margs = np.zeros(len(graph.edges),
                                                     dtype=np.double)
 
 
-        node_marginals_MinMax(graph.thisptr,
-                                  &inside_chart[0],
-                                  &outside_chart[0],
-                                  &node_margs[0])
+        # node_marginals_MinMax(graph.thisptr,
+        #                           &inside_chart[0],
+        #                           &outside_chart[0],
+        #                           &node_margs[0])
 
         edge_marginals_MinMax(graph.thisptr,
                                   &weights[0],
                                   &inside_chart[0],
                                   &outside_chart[0],
                                   &edge_margs[0])
-        return np.asarray(node_margs), np.asarray(edge_margs)
+        return np.asarray(edge_margs)
+    #np.asarray(node_margs),
 
     
     
+
+    @staticmethod
+    def transform_to_labels(Hypergraph graph,
+                            double [:] weights,
+                            int [:] labeling,
+                            int label_size):
+        cdef double [:] label_weights = np.zeros(label_size,
+                                 dtype=np.double)
+        ctransform_MinMax(graph.thisptr,
+                              &weights[0],
+                              &labeling[0],
+                              &label_weights[0],
+                              label_size)
+        return np.asarray(label_weights)
+
 
 
 # For mapping between hypergraphs.

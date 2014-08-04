@@ -48,6 +48,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const {{S.cvalue}} *out_chart,
         {{S.cvalue}} *marginals)
 
+    void ctransform_{{S.type}} "transform<{{S.ctype}}>"(
+        const CHypergraph *graph,
+        const {{S.cvalue}} *weights,
+        const int *labeling,
+        {{S.cvalue}} *label_weights,
+        int)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "{{S.ctype}}":
     {{S.cvalue}} {{S.type}}_one "{{S.ctype}}::one" ()

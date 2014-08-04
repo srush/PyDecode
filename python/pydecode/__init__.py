@@ -310,7 +310,7 @@ def transform(graph, label_array, weight_type=None):
     """
     return label_array.take(graph.labeling, mode='clip')
 
-def inverse_transform(graph, weights, weight_type=None):
+def inverse_transform(graph, weights, labeling=None, weight_type=None, size=None):
     r"""
 
     Transform a edge-sized array into an array over labels.  Labels
@@ -328,7 +328,6 @@ def inverse_transform(graph, weights, weight_type=None):
       A weight of each hyperedge. Represented as a
       vector in :math:`\mathbb{S}^{{\cal E}}`.
 
-
     weight_type : weight-type, optional
       A weight-type semiring; default: LogViterbi. Used
       to give a :math:`\oplus` operation to combine weights
@@ -340,9 +339,15 @@ def inverse_transform(graph, weights, weight_type=None):
     label : ndarray
       The corresponding label array. Represented as a vector in :math:`\mathbb{S}^{L}`.
     """
-    raise NotImplementedError()
-    # Slow implementation, make faster.
-    return _get_type(weight_type).transform_to_labels(weights)
+    my_labeling = labeling
+    if my_labeling is None:
+        my_labeling = graph.labeling
+    if size is None:
+        label_size = np.max(my_labeling) + 1
+    else:
+        label_size = size
+    return _get_type(weight_type).transform_to_labels(graph, weights,
+                                                      my_labeling, label_size)
 
 def binary(graph):
     """

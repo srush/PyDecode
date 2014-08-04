@@ -261,6 +261,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const double *out_chart,
         double *marginals)
 
+    void ctransform_Viterbi "transform<Viterbi>"(
+        const CHypergraph *graph,
+        const double *weights,
+        const int *labeling,
+        double *label_weights,
+        int)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "Viterbi":
     double Viterbi_one "Viterbi::one" ()
@@ -310,6 +316,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const double *out_chart,
         double *marginals)
 
+    void ctransform_LogViterbi "transform<LogViterbi>"(
+        const CHypergraph *graph,
+        const double *weights,
+        const int *labeling,
+        double *label_weights,
+        int)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "LogViterbi":
     double LogViterbi_one "LogViterbi::one" ()
@@ -359,6 +371,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const double *out_chart,
         double *marginals)
 
+    void ctransform_Real "transform<Real>"(
+        const CHypergraph *graph,
+        const double *weights,
+        const int *labeling,
+        double *label_weights,
+        int)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "Real":
     double Real_one "Real::one" ()
@@ -408,6 +426,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const double *out_chart,
         double *marginals)
 
+    void ctransform_Log "transform<Log>"(
+        const CHypergraph *graph,
+        const double *weights,
+        const int *labeling,
+        double *label_weights,
+        int)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "Log":
     double Log_one "Log::one" ()
@@ -457,6 +481,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const char *out_chart,
         char *marginals)
 
+    void ctransform_Boolean "transform<Boolean>"(
+        const CHypergraph *graph,
+        const char *weights,
+        const int *labeling,
+        char *label_weights,
+        int)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "Boolean":
     char Boolean_one "Boolean::one" ()
@@ -506,6 +536,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const int *out_chart,
         int *marginals)
 
+    void ctransform_Counting "transform<Counting>"(
+        const CHypergraph *graph,
+        const int *weights,
+        const int *labeling,
+        int *label_weights,
+        int)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "Counting":
     int Counting_one "Counting::one" ()
@@ -555,6 +591,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const double *out_chart,
         double *marginals)
 
+    void ctransform_MinMax "transform<MinMax>"(
+        const CHypergraph *graph,
+        const double *weights,
+        const int *labeling,
+        double *label_weights,
+        int)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "MinMax":
     double MinMax_one "MinMax::one" ()

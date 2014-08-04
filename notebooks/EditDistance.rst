@@ -38,68 +38,109 @@ and giving the dynamic program for edit distance.
     operations = np.array([kInsert, kDelete, kMatch])
     offsets = np.array([[1,0], [0,1], [1,1]]) 
     op_names = np.array(["<",  ">",  "="])
-
-
 .. code:: python
 
-    def edit_distance(strings):
-        m, n = len(strings[0]), len(strings[1])
-        items = np.arange((m+1) * (n+1)).reshape((m+1, n+1))
-        items[:, 0] = -1
-        items[0,:] = -1
-    
-        outputs = np.arange((m+1) * (n+1) * operations.size).\
-            reshape((m+1, n+1, operations.size))
-    
-        c = pydecode.ChartBuilder(items, outputs)
-        c.init(items[1, [1]])
-    
-        for i in range(1, m+1):
-            for j in range(1, n+1):
-                if (i, j) == (1, 1): continue
-                prev_pos = np.array([i, j]) - offsets
-                c.set(items[i,j],
-                      items[prev_pos[:,0], prev_pos[:,1]],
-                      out=outputs[prev_pos[:,0], prev_pos[:,1], operations])
-        
-        return c.finish()
-.. code:: python
-
-    strings = np.array(["^dac$", "^bac$"])
-    dp = edit_distance(strings)
-Let's look at the the dynamic program in more detail.
-
-The set of chart items is now more interesting than before. We have one
-item for each string1 x string2 position, and a border of -1's
-representing invalid items.
-
-.. code:: python
-
-    dp.items
+    def grid(m, n, o=None):
+        if o is None:
+            return np.arange(m * n).reshape((m, n))
+        else:
+            return np.arange(m * n * o).reshape((m, n, o))
+    grid(5,5)
 
 
 
 .. parsed-literal::
 
-    array([[-1, -1, -1, -1, -1, -1],
-           [-1,  7,  8,  9, 10, 11],
-           [-1, 13, 14, 15, 16, 17],
-           [-1, 19, 20, 21, 22, 23],
-           [-1, 25, 26, 27, 28, 29],
-           [-1, 31, 32, 33, 34, 35]])
+    array([[ 0,  1,  2,  3,  4],
+           [ 5,  6,  7,  8,  9],
+           [10, 11, 12, 13, 14],
+           [15, 16, 17, 18, 19],
+           [20, 21, 22, 23, 24]])
 
 
 
-We also have a output set which describes the operations applied at each
-point in the dynamic program. The key part of the function is the call
-to ``set``
 
-c.set(items[i,j], items[prev\_pos[:,0], prev\_pos[:,1]],
+Edit distance is defined by the following base case and recursions 
+
+.. math::
+    C_{0, 0} &=& 0\ \ \  \forall \  j \in \{ 0 \ldots m \} \\
+    C_{0, j} &=& 0\ \ \ \forall \  j \in \{ 1 \ldots m \} \\
+    C_{i, 0} &=& 0\ \ \  \forall\  i \in \{ 1 \ldots n \} \\
+    \\
+    C_{i, j} &=& \max \begin{array}{ll}C_{i-1, j} +  W_{i-1, j, DELETE} \\ C_{i, j-1}  + W_{i, j-1, INSERT} \\ C_{i-1, j-1} + W_{i-1, j-1, MATCH}\end{array}    \\
+
+
+.. code:: python
+
+    def edit_distance(m, n):
+    
+        # Create a grid for the items and labels.
+        item_grid = grid(m, n)
+        op_grid = grid(m, n, len(operations))
+        c = pydecode.ChartBuilder(item_grid)
+    
+        # Construct the base cases. 
+        c.init(item_grid[0, 0])
+        c.init(item_grid[0, 1:])
+        c.init(item_grid[1:, 0])
+    
+        for i in range(1, m):
+            for j in range(1, n):
+                position = np.array([i, j])
+                prev = []
+                labels = []
+                for op, offset in zip(operations, offsets):
+                    prev_i, prev_j = position - offset
+                    prev.append([item_grid[prev_i, prev_j]])
+                    labels.append(op_grid[prev_i, prev_j, op])
+                c.set(item_grid[i, j], prev, labels)
+        return c.finish()
+.. code:: python
+
+    graph = edit_distance(3, 3)
+Let's look at the the dynamic program in more detail.
+
+First note that we have used an indexing trick from numpy to define out
+chart. The set of chart items is now more interesting than before. We
+have one item for each string1 x string2 position. Offsets are used to
+calculate the previous element of the chart.
+
+.. code:: python
+
+    items
+
+
+
+.. parsed-literal::
+
+    array([[ 0,  1,  2,  3,  4,  5],
+           [ 6,  7,  8,  9, 10, 11],
+           [12, 13, 14, 15, 16, 17],
+           [18, 19, 20, 21, 22, 23],
+           [24, 25, 26, 27, 28, 29],
+           [30, 31, 32, 33, 34, 35]])
+
+
+
+.. code:: python
+
+    We also have a output set which describes the operations applied at each point in the dynamic program.
+    The key part of the function is the call to ``set``.
+c.set(items[i,j],
+=================
+
+items[prev\_pos[:,0], prev\_pos[:,1]],
+======================================
+
 out=outputs[prev\_pos[:,0], prev\_pos[:,1], operations])
+========================================================
 
-This indicates that item (i, j) should be constructed from the array of
-previous items each associated with an output structure from
-``outputs``. These two arrays must be of the same size.
+This indicates that item (i, j) should be constructed from the array of previous items each associated with
+===========================================================================================================
+
+an output structure from ``outputs``. These two arrays must be of the same size.
+================================================================================
+
 
 To get a better sense of this dynamic program, we can look at its
 hypergraph.
@@ -114,7 +155,7 @@ hypergraph.
 
 
 
-.. image:: EditDistance_files/EditDistance_13_0.png
+.. image:: EditDistance_files/EditDistance_15_0.png
 
 
 
@@ -167,7 +208,7 @@ can then transform these into an easier to view format.
     None
 
 
-.. image:: EditDistance_files/EditDistance_18_0.png
+.. image:: EditDistance_files/EditDistance_20_0.png
 
 
 Furthermore, we can map these scores directly onto the hypergraph, to
@@ -181,7 +222,7 @@ see which path was chosen as the highest scoring.
 
 
 
-.. image:: EditDistance_files/EditDistance_20_0.png
+.. image:: EditDistance_files/EditDistance_22_0.png
 
 
 
@@ -212,7 +253,7 @@ useful for pruning, training models, and decoding with partial data.
 
 
 
-.. image:: EditDistance_files/EditDistance_23_0.png
+.. image:: EditDistance_files/EditDistance_25_0.png
 
 
 Finally we look at a longer alignment example.
@@ -236,5 +277,5 @@ Finally we look at a longer alignment example.
     None
 
 
-.. image:: EditDistance_files/EditDistance_27_0.png
+.. image:: EditDistance_files/EditDistance_29_0.png
 

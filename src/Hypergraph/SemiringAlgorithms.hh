@@ -102,6 +102,13 @@ void general_viterbi(
     int *back_pointers,
     bool *mask);
 
+template<typename SemiringType>
+void transform(const Hypergraph *graph,
+               const typename SemiringType::ValType *weights,
+               const int *labeling,
+               typename SemiringType::ValType *label_weights,
+               int label_size);
+
 // template<typename S>
 // Hyperpath *count_constrained_viterbi(
 //     const Hypergraph *graph,

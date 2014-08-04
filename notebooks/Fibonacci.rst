@@ -17,7 +17,7 @@ The Fibonacci sequence is defined by the base case and recursions
 .. math::
 
     C_0 &=& 0 \\
-    C_1 &=& C_0 + 1   \\
+    C_1 &=& 1   \\
     C_i &=& C_i + C_{i-1}
 
 The bottom-up algorithm for generating this sequence takes a simple form. We begin 
@@ -55,6 +55,7 @@ bottom-up style.
     chart = pydecode.ChartBuilder(np.arange(10))
     chart.init(0)
     chart.set(1, [[0]], labels=[0])
+    
     for item in range(2, n):
         chart.set(item, [[item-1, item-2]])
     graph = chart.finish()

@@ -35,6 +35,10 @@
                                const typename X::ValType *in_chart,  \
                                const typename X::ValType *out_chart,  \
                                typename X::ValType *edge_marginals);  \
+  template void transform<X>(const Hypergraph *hypergraph,        \
+                             const typename X::ValType *weights,     \
+                             const int *labeling,                  \
+                             typename X::ValType *label_weights, int);   \
 
 using namespace std;
 
@@ -195,6 +199,22 @@ void edge_marginals(const Hypergraph *hypergraph,
         edge_marginals[edge] = score;
     }
 }
+
+template<typename S>
+void transform(const Hypergraph *hypergraph,
+               const typename S::ValType *weights,
+               const int *labeling,
+               typename S::ValType *label_weights,
+               int label_size) {
+    fill(label_weights, label_weights + label_size, S::zero());
+    foreach (HEdge edge, hypergraph->edges()) {
+        int label = labeling[edge];
+        label_weights[label] = S::add(label_weights[label],
+                                      weights[edge]);
+    }
+}
+
+
 
 SPECIALIZE_ALGORITHMS_FOR_SEMI(Viterbi)
 SPECIALIZE_ALGORITHMS_FOR_SEMI(LogViterbi)

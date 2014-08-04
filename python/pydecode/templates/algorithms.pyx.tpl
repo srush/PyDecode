@@ -108,23 +108,24 @@ class {{S.type}}:
                           {{S.cvalue}} [:] weights,
                           {{S.cvalue}} [:] inside_chart,
                           {{S.cvalue}} [:] outside_chart):
-        cdef {{S.cvalue}} [:] node_margs = np.zeros(len(graph.nodes),
-                                                    dtype={{S.npvalue}})
+        # cdef {{S.cvalue}} [:] node_margs = np.zeros(len(graph.nodes),
+        #                                             dtype={{S.npvalue}})
         cdef {{S.cvalue}} [:] edge_margs = np.zeros(len(graph.edges),
                                                     dtype={{S.npvalue}})
 
 
-        node_marginals_{{S.type}}(graph.thisptr,
-                                  &inside_chart[0],
-                                  &outside_chart[0],
-                                  &node_margs[0])
+        # node_marginals_{{S.type}}(graph.thisptr,
+        #                           &inside_chart[0],
+        #                           &outside_chart[0],
+        #                           &node_margs[0])
 
         edge_marginals_{{S.type}}(graph.thisptr,
                                   &weights[0],
                                   &inside_chart[0],
                                   &outside_chart[0],
                                   &edge_margs[0])
-        return np.asarray(node_margs), np.asarray(edge_margs)
+        return np.asarray(edge_margs)
+    #np.asarray(node_margs),
 
     {% endif %}
     {% if S.viterbi %}
@@ -160,6 +161,21 @@ class {{S.type}}:
                 &my_back_pointers[0])
             return Path().init(path, graph)
     {% endif %}
+
+    @staticmethod
+    def transform_to_labels(Hypergraph graph,
+                            {{S.cvalue}} [:] weights,
+                            int [:] labeling,
+                            int label_size):
+        cdef {{S.cvalue}} [:] label_weights = np.zeros(label_size,
+                                 dtype={{S.npvalue}})
+        ctransform_{{S.type}}(graph.thisptr,
+                              &weights[0],
+                              &labeling[0],
+                              &label_weights[0],
+                              label_size)
+        return np.asarray(label_weights)
+
 {% endfor %}
 
 # For mapping between hypergraphs.

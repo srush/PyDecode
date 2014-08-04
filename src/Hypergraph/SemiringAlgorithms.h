@@ -115,6 +115,14 @@ void general_viterbi(
     BackPointers *back,
     bool *mask);
 
+template<typename S>
+void transform<S>(const Hypergraph *hypergraph,
+                  const typename S::ValType *weights,
+                  const typename int *weights,
+                  typename S::ValType *label_weights,
+                  int);
+
+
 template<typename SemiringType>
 class Marginals {
     typedef SemiringType S;
