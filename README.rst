@@ -26,25 +26,26 @@ Features
             c.set(items[i, t],
                   items[i-1, :],
                   labels=labels[i, t, :])
-    dp = c.finish()
+    graph = c.finish()
 
 * **Efficient implementation.** Core code in C++, python interfaces through numpy. ::
 
-    label_weights = numpy.random.random(dp.label_size)
-    weights = pydecode.transform_label_array(dp, label_weights)
-    path = pydecode.best_path(dp, weights)
+    # Compute path.
+    label_weights = numpy.random.random(graph.label_size)
+    weights = pydecode.transform_label_array(graph, label_weights)
+    path = pydecode.best_path(graph, weights)
 
 * **High-level algorithms.** Includes a set of widely-used algorithms. ::
 
     # Inside probabilities.
-    inside = pydecode.inside(dp, weights, kind=pydecode.LogProb)
+    inside = pydecode.inside(graph, weights, kind=pydecode.LogProb)
 
     # (Max)-marginals.
-    marginals = pydecode.marginals(dp, weights)
+    marginals = pydecode.marginals(graph, weights)
 
     # Pruning
     mask = marginals > threshold
-    pruned_dp = pydecode.filter(dp, mask)
+    pruned_graph = pydecode.filter(graph, mask)
 
 * **Integration with machine learning toolkits.** Train structured models. ::
 
@@ -55,7 +56,7 @@ Features
 
 * **Visualization tools.**  IPython integrated tools for debugging and teaching. ::
 
-    display.HypergraphFormatter(dp).to_ipython()
+    pydecode.draw(graph, paths=paths)
 
 .. image:: _images/hmm.png
    :width: 500 px

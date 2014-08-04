@@ -3,31 +3,31 @@ Tutorial 2: Edit Distance
 =========================
 
 
-In our next tutorial, we look at a non-trivial dynamic programming
-problem, edit distance. In this notebook, we show how to
+In this tutorial, we look at a more substantial dynamic programming
+problem: computin the edit distance between two strings. In this
+notebook, we show how to
 
 -  Construct a dynamic program.
 -  Assign scores to outputs.
 -  Use more advanced hypergraph operations.
 
+We beging by importing the standard libraries.
 
 .. code:: python
 
     import pydecode
-    import pydecode.display as display
     import numpy as np
-    import numpy.random
     import matplotlib.pyplot as plt
-Edit distance problems are concerned with aligning two strings. An
-alignment consists of a sequence of single operations
+Edit distance problems are concerned with aligning two strings. An alignment consists of a 
+sequence of single operations 
 
--  Match : Generate the same character in both string.
--  Insert : Generate a character only in the first string.
--  Delete : Generate a character only in the second string.
+* Match : Generate the same character in both string.
+* Insert : Generate a character only in the first string.
+* Delete : Generate a character only in the second string.
 
-For a detailed overview of the edit distance problem, see the wikipedia
-article on Levenshtein distance,
-http://en.wikipedia.org/wiki/Levenshtein\_distance.
+For a detailed overview of the edit distance problem, see the wikipedia article on `Levenshtein distance <http://en.wikipedia.org/wiki/Levenshtein_distance>`_.,
+
+.. _`Levenshtein distance`  http://en.wikipedia.org/wiki/Levenshtein_distance.
 
 We begin by defining the basic operations available for edit distance,
 and giving the dynamic program for edit distance.
@@ -36,8 +36,10 @@ and giving the dynamic program for edit distance.
 
     kInsert, kDelete, kMatch = 0, 1, 2
     operations = np.array([kInsert, kDelete, kMatch])
-    offsets = np.array([[1,0],[0,1], [1,1]]) 
+    offsets = np.array([[1,0], [0,1], [1,1]]) 
     op_names = np.array(["<",  ">",  "="])
+
+
 .. code:: python
 
     def edit_distance(strings):
@@ -112,7 +114,7 @@ hypergraph.
 
 
 
-.. image:: EditDistance_files/EditDistance_12_0.png
+.. image:: EditDistance_files/EditDistance_13_0.png
 
 
 
@@ -165,7 +167,7 @@ can then transform these into an easier to view format.
     None
 
 
-.. image:: EditDistance_files/EditDistance_17_0.png
+.. image:: EditDistance_files/EditDistance_18_0.png
 
 
 Furthermore, we can map these scores directly onto the hypergraph, to
@@ -179,7 +181,7 @@ see which path was chosen as the highest scoring.
 
 
 
-.. image:: EditDistance_files/EditDistance_19_0.png
+.. image:: EditDistance_files/EditDistance_20_0.png
 
 
 
@@ -210,7 +212,7 @@ useful for pruning, training models, and decoding with partial data.
 
 
 
-.. image:: EditDistance_files/EditDistance_22_0.png
+.. image:: EditDistance_files/EditDistance_23_0.png
 
 
 Finally we look at a longer alignment example.
@@ -234,5 +236,5 @@ Finally we look at a longer alignment example.
     None
 
 
-.. image:: EditDistance_files/EditDistance_26_0.png
+.. image:: EditDistance_files/EditDistance_27_0.png
 
