@@ -209,8 +209,10 @@ void transform(const Hypergraph *hypergraph,
     fill(label_weights, label_weights + label_size, S::zero());
     foreach (HEdge edge, hypergraph->edges()) {
         int label = labeling[edge];
-        label_weights[label] = S::add(label_weights[label],
-                                      weights[edge]);
+        if (label != -1) {
+            label_weights[label] = S::add(label_weights[label],
+                                          weights[edge]);
+        }
     }
 }
 

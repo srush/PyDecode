@@ -24,15 +24,15 @@ class HypergraphFormatter:
            The hypergraph to style.
         """
         self._show_hyperedges = show_hyperedges
-        self.edge_weights = None
-        self.node_weights = None
+        self.edge_labels = None
+        self.node_labels = None
         self.paths = []
 
-    def set_weights(self, weights):
-        self.edge_weights = weights
+    def set_labels(self, labels):
+        self.edge_labels = labels
 
-    def set_node_weights(self, weights):
-        self.node_weights = weights
+    def set_vertex_labels(self, labels):
+        self.vertex_labels = labels
 
     def set_paths(self, paths):
         self.paths = paths
@@ -52,8 +52,8 @@ class HypergraphFormatter:
            The hypernode to style.
         """
         label = ""
-        if self.node_weights is not None:
-            label ="%s"%(self.node_weights[vertex.id])
+        if self.vertex_labels is not None:
+            label ="%s"%(self.vertex_labels[vertex.id])
 
         return {"shape": "ellipse",
                 "label": label}
@@ -72,12 +72,12 @@ class HypergraphFormatter:
 
         if self._show_hyperedges:
             label = ""
-            if self.edge_weights is not None:
-                label = "%s"%(self.edge_weights[edge.id])
-            return {"shape": "rect",
-                    "label": label
-
-            }
+            shape = "point"
+            if self.edge_labels is not None:
+                label = "%s"%(self.edge_labels[edge.id])
+                shape = "rect"
+            return {"shape": shape,
+                    "label": label}
         else:
             return {"shape": "point"}
 

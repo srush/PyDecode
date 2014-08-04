@@ -16,6 +16,7 @@ Examples
 .. code:: python
 
     import pydecode
+    import numpy as np
 .. code:: python
 
     items = np.arange(11)
@@ -49,24 +50,48 @@ Examples
     marginals = pydecode.marginals(graph, values * 1.)
     print pydecode.inverse_transform(graph, marginals)
 
-::
+.. parsed-literal::
+
+    [  1.17365385e+214   1.17365385e+214   1.17365385e+214]
 
 
-    ---------------------------------------------------------------------------
-    NameError                                 Traceback (most recent call last)
-
-    <ipython-input-36-eb6672d0b575> in <module>()
-          1 marginals = pydecode.marginals(graph, values * 1.)
-    ----> 2 print pydecode.inverse_transform(graph, marginals)
-    
-
-    /home/srush/Projects/decoding/python/pydecode/__init__.pyc in inverse_transform(graph, weights, weight_type)
-        317       The corresponding label array. Represented as a vector in :math:`\mathbb{S}^{L}`.
-        318     """
-    --> 319     raise NotImplementedError()
-        320     # Slow implementation, make faster.
-        321     return _get_type(weight_type).transform_to_labels(weights)
+Invariants
+----------
 
 
-    NameError: global name 'NotImplementedErro' is not defined
+Check that the transforms are invertible.
 
+.. code:: python
+
+    import numpy.testing as test
+    import pydecode.test.utils as test_utils
+    graph, _, weight_type = test_utils.random_setup()
+    size = np.max(graph.labeling) + 1
+    label_weights = test_utils.random_weights(weight_type, size)
+.. code:: python
+
+    weights = pydecode.transform(graph, label_weights, weight_type=weight_type)
+Weight transform.
+
+.. code:: python
+
+    weights2 = np.zeros(len(graph.edges))
+    weights2.fill(weight_type.Value.one_raw())
+    for i, label in enumerate(graph.labeling):
+        if label == -1: continue
+        weights2[i] = label_weights[label]
+    test.assert_almost_equal(weights, weights2, 5)
+Reverse transform.
+
+.. code:: python
+
+    weights = test_utils.random_weights(weight_type, len(graph.edges))
+    label_weights = pydecode.inverse_transform(graph, weights, weight_type=weight_type)
+.. code:: python
+
+    label_weights2 = [weight_type.Value.zero()] * size
+    for i, label in enumerate(graph.labeling):
+        if label == -1: continue
+        label_weights2[label] += weight_type.Value(weights[i])
+    label_weights2 = np.array([weight.value for weight in label_weights2])
+    test.assert_almost_equal(label_weights, label_weights2, 5)

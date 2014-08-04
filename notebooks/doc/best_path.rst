@@ -57,4 +57,22 @@ paths.
         assert weights.T * path.v >= weights.T * path2.v
         if path == path2:
             match = True
+            score = pydecode.test.utils.path_score(path2, weights, pydecode.LogViterbi)
+            assert math.fabs(score.value - weights.T * path.v) < 1e-4
     assert match
+
+::
+
+
+    ---------------------------------------------------------------------------
+    AssertionError                            Traceback (most recent call last)
+
+    <ipython-input-10-bda59e0186df> in <module>()
+          9         match = True
+         10         score = pydecode.test.utils.path_score(path2, weights, pydecode.LogViterbi)
+    ---> 11         assert math.fabs(score.value - weights.T * path.v) < 1e-4
+         12 assert match
+
+
+    AssertionError: 
+

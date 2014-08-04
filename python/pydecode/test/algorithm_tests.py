@@ -131,14 +131,12 @@ def check_max_marginals(graph, pot):
     max_marginals = pydecode.marginals(graph, pot)
 
     # Array-form.
-    for node in graph.nodes:
-        other = max_marginals[0][node.id]
+    for edge in graph.edges:
+        other = max_marginals[edge.id]
         nt.assert_less_equal(other, best + 1e-4)
 
     # Matrix-form.
-    assert (max_marginals[0] < best + 1e-4).all()
-    assert (max_marginals[1] < best + 1e-4).all()
-
+    assert (max_marginals < best + 1e-4).all()
     # for edge in graph.edges:
     #     other = max_marginals[edge]
     #     nt.assert_less_equal(other, best + 1e-4)
@@ -152,7 +150,8 @@ def check_semirings(graph):
     weights = [10.0] * len(graph.edges)
     weights2 = [0.5] * len(graph.edges)
     potentials = np.array(weights)
-    node_marg, edge_marg = pydecode.marginals(graph, potentials, kind=pydecode.Viterbi)
+    edge_marg = pydecode.marginals(graph, potentials,
+                                   weight_type=pydecode.Viterbi)
 
     log_potentials = np.array(weights)
     potentials = np.array(weights)
@@ -172,7 +171,7 @@ def check_semirings(graph):
     marg2 = pydecode.marginals(graph, potentials)
 
     for edge in graph.edges:
-        nt.assert_almost_equal(marg[1][edge.id], marg2[1][edge.id])
+        nt.assert_almost_equal(marg[edge.id], marg2[edge.id])
 
     potentials = np.array(weights2)
     # chart = ph.inside(graph, potentials, kind=ph.Inside)

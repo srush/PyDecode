@@ -364,11 +364,11 @@ cdef class Path:
 
     .. math::
 
-          y(v_0) = 1
+          y(v_0) &=& 1 \\
 
-          y(v) = \sum_{e \in {\cal E} : h(e) = v} y(e) \ \forall v \in {\cal V}
+          y(v) &=& \sum_{e \in {\cal E} : h(e) = v} y(e) \ \forall v \in {\cal V} \\
 
-          y(v) = \sum_{e \in {\cal E} : v \in t(e)} y(e) \ \forall v \in {\cal V}
+          y(v) &=& \sum_{e \in {\cal E} : v \in t(e)} y(e) \ \forall v \in {\cal V}
 
 
     We represent a path as an ordered list of edges and vertices.

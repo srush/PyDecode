@@ -364,11 +364,11 @@ cdef class Path:
 
     .. math::
 
-          y(v_0) = 1
+          y(v_0) &=& 1 \\
 
-          y(v) = \sum_{e \in {\cal E} : h(e) = v} y(e) \ \forall v \in {\cal V}
+          y(v) &=& \sum_{e \in {\cal E} : h(e) = v} y(e) \ \forall v \in {\cal V} \\
 
-          y(v) = \sum_{e \in {\cal E} : v \in t(e)} y(e) \ \forall v \in {\cal V}
+          y(v) &=& \sum_{e \in {\cal E} : v \in t(e)} y(e) \ \forall v \in {\cal V}
 
 
     We represent a path as an ordered list of edges and vertices.
@@ -1042,6 +1042,10 @@ from cython cimport view
 
 
 cdef class ViterbiValue:
+    def __init__(self, val=None):
+        if val is not None:
+            self.thisval = val
+
     cdef ViterbiValue init(self, double val):
         self.thisval = val
         return self
@@ -1200,6 +1204,10 @@ class Viterbi:
 
 
 cdef class LogViterbiValue:
+    def __init__(self, val=None):
+        if val is not None:
+            self.thisval = val
+
     cdef LogViterbiValue init(self, double val):
         self.thisval = val
         return self
@@ -1358,6 +1366,10 @@ class LogViterbi:
 
 
 cdef class RealValue:
+    def __init__(self, val=None):
+        if val is not None:
+            self.thisval = val
+
     cdef RealValue init(self, double val):
         self.thisval = val
         return self
@@ -1484,6 +1496,10 @@ class Real:
 
 
 cdef class LogValue:
+    def __init__(self, val=None):
+        if val is not None:
+            self.thisval = val
+
     cdef LogValue init(self, double val):
         self.thisval = val
         return self
@@ -1610,6 +1626,10 @@ class Log:
 
 
 cdef class BooleanValue:
+    def __init__(self, val=None):
+        if val is not None:
+            self.thisval = val
+
     cdef BooleanValue init(self, char val):
         self.thisval = val
         return self
@@ -1768,6 +1788,10 @@ class Boolean:
 
 
 cdef class CountingValue:
+    def __init__(self, val=None):
+        if val is not None:
+            self.thisval = val
+
     cdef CountingValue init(self, int val):
         self.thisval = val
         return self
@@ -1926,6 +1950,10 @@ class Counting:
 
 
 cdef class MinMaxValue:
+    def __init__(self, val=None):
+        if val is not None:
+            self.thisval = val
+
     cdef MinMaxValue init(self, double val):
         self.thisval = val
         return self

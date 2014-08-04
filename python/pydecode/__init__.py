@@ -266,11 +266,11 @@ def draw(graph, edge_labels=None, vertex_labels=None,
     if formatter is None:
         my_formatter = pydecode.display.HypergraphFormatter()
     if labels:
-        my_formatter.set_weights(graph.labeling)
-        my_formatter.set_node_weights(graph.node_labeling)
+        my_formatter.set_labels(graph.labeling)
+        my_formatter.set_vertex_labels(graph.node_labeling)
     else:
-        my_formatter.set_weights(edge_labels)
-        my_formatter.set_node_weights(vertex_labels)
+        my_formatter.set_labels(edge_labels)
+        my_formatter.set_vertex_labels(vertex_labels)
     if paths is not None:
         my_formatter.set_paths(paths)
     drawer = pydecode.display.HypergraphDraw(graph, my_formatter)
@@ -308,7 +308,8 @@ def transform(graph, label_array, weight_type=None):
     weights : ndarray
       The corresponding weight array. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
     """
-    return label_array.take(graph.labeling, mode='clip')
+    array = np.append(label_array, np.array([_get_type(weight_type).Value.one_raw()]))
+    return array.take(graph.labeling, mode='wrap')
 
 def inverse_transform(graph, weights, labeling=None, weight_type=None, size=None):
     r"""
@@ -349,7 +350,7 @@ def inverse_transform(graph, weights, labeling=None, weight_type=None, size=None
     return _get_type(weight_type).transform_to_labels(graph, weights,
                                                       my_labeling, label_size)
 
-def binary(graph):
+def binarize(graph):
     """
     Create an equivalent hypergraph with binary hyperedges.
 

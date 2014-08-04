@@ -16,6 +16,10 @@ from cython cimport view
 {% for S in semirings %}
 
 cdef class {{S.type}}Value:
+    def __init__(self, val=None):
+        if val is not None:
+            self.thisval = val
+
     cdef {{S.type}}Value init(self, {{S.cvalue}} val):
         self.thisval = val
         return self

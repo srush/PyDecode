@@ -67,23 +67,37 @@ Invariants
 ----------
 
 
-Check that the Real inside score of a vertex is the sum of its direct children. 
-
 .. code:: python
 
     import numpy.testing as test
-    
-    graph = pydecode.test.utils.random_hypergraph()
-    weights = np.random.random(len(graph.edges))
-    inside = pydecode.inside(graph, weights, weight_type=pydecode.Real)
-    inside2 = np.ones(inside.shape, dtype=np.double)
-    
+    import pydecode.test.utils as test_utils
+    graph, weights, weight_type = test_utils.random_setup()
+    inside = pydecode.inside(graph, weights, weight_type=weight_type)
+Scores in the chart represent the sum of all inside path.
+
+.. code:: python
+
     for vertex in graph.vertices:
         if vertex.is_terminal: 
-            continue
-        score = 0.0    
-        for edge in vertex.edges:
-            score += np.product([inside[sub.id] for sub in edge.tail]) * weights[edge.id]
-        inside2[vertex.id] = score
-    
+            score = weight_type.Value.one()
+        else:
+            score = weight_type.Value.zero()
+            for path in test_utils.inside_paths(graph, vertex):
+                score += test_utils.path_score(path, weights, weight_type)
+        test.assert_almost_equal(inside[vertex.id], score.value, 5)
+Check that the inside score of a vertex is the sum of its direct children. 
+
+.. code:: python
+
+    inside2 = np.zeros(inside.shape, dtype=np.double)
+    inside2.fill(weight_type.Value.zero_raw())
+    for vertex in graph.vertices:
+        if vertex.is_terminal: 
+            inside2[vertex.id] = weight_type.Value.one().value
+        else:
+            score = weight_type.Value(inside2[vertex.id])
+            for edge in vertex.edges:
+                temp = [inside[sub.id] for sub in edge.tail] +  [weights[edge.id]]
+                score += np.product(map(weight_type.Value, temp))
+        inside2[vertex.id] = score.value
     test.assert_almost_equal(inside, inside2, 5)

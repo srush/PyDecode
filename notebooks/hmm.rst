@@ -9,7 +9,6 @@ part-of-speech tagging.
 .. code:: python
 
     import pydecode
-    import pydecode.display as display
     import pandas as pd
     import matplotlib.pyplot as plt
     import numpy as np
@@ -61,6 +60,10 @@ tagging.
 
 .. code:: python
 
+    def ungrid(items, shape):
+        return np.array(np.unravel_index(items, shape)).T
+.. code:: python
+
     def viterbi(n):
         t = len(tags)
         # Initialization.
@@ -75,23 +78,25 @@ tagging.
         c.init(items[0, K[0]])
         for i in range(1, n):
             for t in K[i]:
-                c.set(items[i, t],
-                      items[i-1, K[i-1]],
-                      out=outputs[i, t, K[i-1]])
+                c.set_t(items[i, t],
+                        items[i-1, K[i-1]],
+                        labels=outputs[i, t, K[i-1]])
         return c.finish()
 .. code:: python
 
     # A sentence to be tagged.
     sentence = 'START the dog walked in the park END'.split()
-    dp = viterbi(len(sentence))
+    n = len(sentence)
+    graph = viterbi(n)
 .. code:: python
 
-    vertex_labels = pydecode.vertex_items(dp)
-    display.HypergraphFormatter(dp.hypergraph, vertex_labels=vertex_labels, show_hyperedges=False).to_ipython()
+    # vertex_labels = pydecode.vertex_items(dp)
+    # display.HypergraphFormatter(dp.hypergraph, vertex_labels=vertex_labels, show_hyperedges=False).to_ipython()
+    pydecode.draw(graph, None, ungrid(graph.node_labeling, shape=(n,len(tags))))
 
 
 
-.. image:: hmm_files/hmm_8_0.png
+.. image:: hmm_files/hmm_9_0.png
 
 
 
@@ -100,67 +105,50 @@ outputs.
 
 .. code:: python
 
-    def make_scores(words, outputs):
+    def make_scores(words, n_tags):
         n = len(words)
-        scores = np.zeros(outputs.shape)
-        for i, tag, prev_tag in np.ndindex(outputs.shape):
+        shape = (n, n_tags, n_tags)
+        scores = np.zeros(shape)
+        for i, tag, prev_tag in np.ndindex(shape):
             scores[i, tag, prev_tag] = \
                 transition[tags[prev_tag]].get(tags[tag], 0.0) * \
                 emission[words[i]].get(tags[tag], 0.0)
         return scores
-    output_scores = make_scores(sentence, dp.outputs)
+    scores = make_scores(sentence, len(tags))
+    weights = pydecode.transform(graph, scores)
 .. code:: python
 
-    best = pydecode.argmax(dp, output_scores, kind=pydecode.Inside)
-    best
+    path = pydecode.best_path(graph, weights, weight_type=pydecode.Viterbi)
+    path
 
 
 
 .. parsed-literal::
 
-    array([[1, 1, 0],
-           [2, 2, 1],
-           [3, 3, 2],
-           [4, 1, 3],
-           [5, 2, 1],
-           [6, 3, 2],
-           [7, 4, 3]])
+    <pydecode._pydecode.Path at 0x434a2c0>
 
 
 
 .. code:: python
 
-    scores = dp.output_matrix.T * output_scores.ravel()
-    path = pydecode.best_path(dp.hypergraph, scores, kind=pydecode.Inside)
-    node_marg, _ = pydecode.marginals(dp.hypergraph, scores, kind=pydecode.Inside)
-    normalized_marg = node_marg / node_marg[dp.hypergraph.root.id]
-    normalized_marg
-
-
-
-.. parsed-literal::
-
-    array([ 1.        ,  0.9358864 ,  0.01666875,  0.04744485,  0.00357674,
-            0.98624913,  0.01017413,  0.        ,  0.        ,  1.        ,
-            1.        ,  0.        ,  0.        ,  0.28387177,  0.67849973,
-            0.03762849,  0.        ,  0.21191252,  0.78808748,  1.        ])
-
-
-
+    inside = pydecode.inside(graph, weights, weight_type=pydecode.Real)
+    root_prob = inside[graph.root.id]
+    marginals = pydecode.marginals(graph, weights, weight_type=pydecode.Real, 
+                                   inside_chart=inside)
+    normalized_marginals = marginals / root_prob
 .. code:: python
 
-    m = min(normalized_marg)
-    M = max(normalized_marg)
-    
-    
-    class HMMFormat(display.HypergraphPathFormatter):
+    m = min(normalized_marginals)
+    M = max(normalized_marginals)
+    import pydecode.display
+    class HMMFormat(pydecode.display.HypergraphPathFormatter):
         def label(self, node):
-            label = self._vertex_labels[node.id]
+            label = self.vertex_labels[node.id]
             return "%d %s"%(label[0], tags[label[1]])
         def hyperedge_node_attrs(self, edge):
             return {"color": "pink", "shape": "point"}
         def hypernode_subgraph(self, node):
-            return [("cluster_" + str(self._vertex_labels[node.id][0]), None)]
+            return [("cluster_" + str(self.vertex_labels[node.id][0]), None)]
         def subgraph_format(self, subgraph):
             return {"label": (sentence)[int(subgraph.split("_")[1])],
                     "rank" : "same"}
@@ -170,51 +158,30 @@ outputs.
             return {"shape": "",
                     "label": self.label(node),
                     "style": "filled",
-                    "fillcolor": "#FFFF%d"%(int(((normalized_marg[node.id] - m) / (M-m)) * 100))}
+                    "fillcolor": "#FFFF%d"%(int(((normalized_marginals[node.id] - m) / (M-m)) * 100))}
     
-    HMMFormat(dp.hypergraph, vertex_labels=vertex_labels).set_paths([path]).to_ipython()
+    pydecode.draw(graph, None, ungrid(graph.node_labeling, shape=(n,len(tags))), 
+                  formatter=HMMFormat(graph))
 
 
 
-.. image:: hmm_files/hmm_13_0.png
+
+.. image:: hmm_files/hmm_14_0.png
 
 
 
 .. code:: python
 
-    item = pydecode.item_marginals(dp, output_scores)
-    plt.pcolor(item.T)
-    plt.yticks(np.arange(0.5, len(tags), 1), tags)
-    plt.xticks(np.arange(0.5, len(sentence), 1), sentence)
-    None
-
-::
+    tags
 
 
-    ---------------------------------------------------------------------------
-    TypeError                                 Traceback (most recent call last)
 
-    <ipython-input-10-f33f4810bb0b> in <module>()
-    ----> 1 item = pydecode.item_marginals(dp, output_scores)
-          2 plt.pcolor(item.T)
-          3 plt.yticks(np.arange(0.5, len(tags), 1), tags)
-          4 plt.xticks(np.arange(0.5, len(sentence), 1), sentence)
-          5 None
+.. parsed-literal::
+
+    ['START', 'D', 'N', 'V', 'END']
 
 
-    /home/srush/Projects/decoding/python/pydecode/__init__.pyc in item_marginals(dp, out_potentials, kind)
-        298     node_marginals, _ = marginals(dp.hypergraph,
-        299                                   potentials, None, None, kind)
-    --> 300     return (dp.item_matrix * node_marginals).reshape(
-        301         dp.items.shape)
-        302 
 
+.. code:: python
 
-    /home/srush/Projects/decoding/python/pydecode/potentials.so in pydecode.potentials.DynamicProgram.item_matrix (python/pydecode/potentials.cpp:14124)()
-
-
-    /home/srush/Projects/decoding/python/pydecode/potentials.so in pydecode.potentials.DynamicProgram._make_item_matrix (python/pydecode/potentials.cpp:13810)()
-
-
-    TypeError: can only concatenate list (not "int") to list
-
+    

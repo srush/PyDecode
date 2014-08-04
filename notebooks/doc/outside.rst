@@ -10,9 +10,10 @@ Example
 -------
 
 
-.. code:: python
+This examples creates a simple hypergraph with random integer weights,
+and overlays the outside scores onto the graph for several different
+weight types.
 
-    This examples creates a simple hypergraph with random integer weights, and overlays the outside scores onto the graph for several different weight types.
 .. code:: python
 
     import pydecode
@@ -69,4 +70,23 @@ Invariants
 ----------
 
 
+.. code:: python
 
+    import numpy.testing as test
+    import pydecode.test.utils as test_utils
+    graph, weights, weight_type = test_utils.random_setup()
+    
+    inside = pydecode.inside(graph, weights, weight_type=weight_type)
+    outside = pydecode.outside(graph, weights, inside, weight_type=weight_type)
+Scores in the chart represent the sum of all outside paths.
+
+.. code:: python
+
+    for vertex in graph.vertices:
+        if vertex.id == graph.root.id: 
+            score = weight_type.Value.one()
+        else:
+            score = weight_type.Value.zero()
+            for path in test_utils.outside_paths(graph, vertex):
+                score += test_utils.path_score(path, weights, weight_type)
+        test.assert_almost_equal(outside[vertex.id], score.value, 5)

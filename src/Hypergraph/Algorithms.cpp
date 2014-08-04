@@ -32,7 +32,7 @@ Hypergraph *filter(const Hypergraph *hypergraph,
 
             // Try to add each of the edges of the node.
             foreach (HEdge edge, hypergraph->edges(node)) {
-                if (!static_cast<bool>(edge_mask[edge])) continue;
+                if (!edge_mask[edge]) continue;
                 vector<HNode> tails;
                 bool all_tails_exist = true;
                 for (int i = 0; i < hypergraph->tail_nodes(edge); ++i) {
@@ -47,7 +47,9 @@ Hypergraph *filter(const Hypergraph *hypergraph,
                     }
                 }
                 if (all_tails_exist) {
-                    HEdge new_edge = new_graph->add_edge(tails);
+                    HEdge new_edge = new_graph->add_edge(
+                        tails,
+                        hypergraph->label(edge));
                     (*edge_map)[hypergraph->id(edge)] = new_edge;
                 }
             }
@@ -72,6 +74,7 @@ Hypergraph *binarize(const Hypergraph *hypergraph) {
             continue;
         }
         vector<vector<HNode> > new_edges;
+        vector<int > new_labels;
         foreach (HEdge edge, hypergraph->edges(node)) {
             vector<HNode> new_edge(2);
             if (hypergraph->tail_nodes(edge) <= 2) {
@@ -81,12 +84,13 @@ Hypergraph *binarize(const Hypergraph *hypergraph) {
                     new_tail.push_back((*nodes)[tnode]);
                 }
                 new_edges.push_back(new_tail);
+                new_labels.push_back(hypergraph->label(edge));
                 continue;
             }
             new_edge[0] = (*nodes)[hypergraph->tail_node(edge, 0)];
             new_edge[1] = (*nodes)[hypergraph->tail_node(edge, 1)];
             HNode new_node = range_hyper->start_node();
-            range_hyper->add_edge(new_edge);
+            range_hyper->add_edge(new_edge, -1);
             range_hyper->end_node();
 
             for (int i = 2; i < hypergraph->tail_nodes(edge) - 1; ++i) {
@@ -94,7 +98,7 @@ Hypergraph *binarize(const Hypergraph *hypergraph) {
                 HNode tmp = range_hyper->start_node();
                 new_edge[0] = new_node;
                 new_edge[1] = (*nodes)[tnode];
-                range_hyper->add_edge(new_edge);
+                range_hyper->add_edge(new_edge, -1);
                 range_hyper->end_node();
                 new_node = tmp;
             }
@@ -102,13 +106,15 @@ Hypergraph *binarize(const Hypergraph *hypergraph) {
             new_edge[1] = (*nodes)[
                 hypergraph->tail_node(edge,
                                       hypergraph->tail_nodes(edge) - 1)];
+            new_labels.push_back(hypergraph->label(edge));
             new_edges.push_back(new_edge);
         }
         (*nodes)[node] = range_hyper->start_node();
 
          // assert(new_edges.size() == node->edges().size());
         for (uint i = 0; i < new_edges.size(); ++i) {
-            (*edges)[i] = range_hyper->add_edge(new_edges[i]);
+            (*edges)[i] = range_hyper->add_edge(new_edges[i],
+                                                new_labels[i]);
         }
         range_hyper->end_node();
     }

@@ -6,11 +6,8 @@ Tutorial 4: Dependency Parsing
 .. code:: python
 
     import pydecode
-    import pydecode.display as display
     import numpy as np
-    import numpy.random
     import matplotlib.pyplot as plt
-    import pandas as pd
 .. code:: python
 
     kShapes = 2
@@ -23,11 +20,11 @@ Tutorial 4: Dependency Parsing
         coder = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
             .reshape([kShapes, kDir, n, n])
         out = np.arange(n*n, dtype=np.int64).reshape([n, n])
-        c = pydecode.ChartBuilder(coder, out)
+        chart = pydecode.ChartBuilder(coder, out)
     
         # Add terminal nodes.
-        c.init(np.diag(coder[Tri, Right]))
-        c.init(np.diag(coder[Tri, Left, 1:, 1:]))
+        chart.init(np.diag(coder[Tri, Right]))
+        chart.init(np.diag(coder[Tri, Left, 1:, 1:]))
     
         for k in range(1, n):
             for s in range(n):
@@ -39,93 +36,103 @@ Tutorial 4: Dependency Parsing
                 out_ind = np.zeros([t-s], dtype=np.int64)
                 if s != 0:
                     out_ind.fill(out[t, s])
-                    c.set(coder[Trap, Left,  s,       t],
-                          coder[Tri,  Right, s,       s:t],
-                          coder[Tri,  Left,  s+1:t+1, t],
-                          out=out_ind)
+                    chart.set_t(coder[Trap, Left,  s,       t],
+                                coder[Tri,  Right, s,       s:t],
+                                coder[Tri,  Left,  s+1:t+1, t],
+                                labels=out_ind)
     
                 out_ind.fill(out[s, t])
-                c.set(coder[Trap, Right, s,       t],
-                       coder[Tri,  Right, s,       s:t],
-                       coder[Tri,  Left,  s+1:t+1, t],
-                       out=out_ind)
+                chart.set_t(coder[Trap, Right, s,       t],
+                            coder[Tri,  Right, s,       s:t],
+                            coder[Tri,  Left,  s+1:t+1, t],
+                            labels=out_ind)
     
     
                 if s != 0:
-                    c.set(coder[Tri,  Left,  s,   t],
-                          coder[Tri,  Left,  s,   s:t],
-                          coder[Trap, Left,  s:t, t])
+                    chart.set_t(coder[Tri,  Left,  s,   t],
+                                coder[Tri,  Left,  s,   s:t],
+                                coder[Trap, Left,  s:t, t])
     
-                c.set(coder[Tri,  Right, s,       t],
-                      coder[Trap, Right, s,       s+1:t+1],
-                      coder[Tri,  Right, s+1:t+1, t])
-    
-        return c.finish()
+                chart.set_t(coder[Tri,  Right, s,       t],
+                            coder[Trap, Right, s,       s+1:t+1],
+                            coder[Tri,  Right, s+1:t+1, t])
+        return chart.finish()
 .. code:: python
 
-    dp = eisner_first_order(4)
+    graph = eisner_first_order(4)
+.. code:: python
 
-.. parsed-literal::
-
-    -c:7: FutureWarning: Numpy has detected that you (may be) writing to an array returned
-    by numpy.diagonal or by selecting multiple fields in a record
-    array. This code will likely break in the next numpy release --
-    see numpy.diagonal or arrays.indexing reference docs for details.
-    The quick fix is to make an explicit copy (e.g., do
-    arr.diagonal().copy() or arr[['f0','f1']].copy()).
-    -c:8: FutureWarning: Numpy has detected that you (may be) writing to an array returned
-    by numpy.diagonal or by selecting multiple fields in a record
-    array. This code will likely break in the next numpy release --
-    see numpy.diagonal or arrays.indexing reference docs for details.
-    The quick fix is to make an explicit copy (e.g., do
-    arr.diagonal().copy() or arr[['f0','f1']].copy()).
-
-
+    def ungrid(items, shape):
+        return np.array(np.unravel_index(items, shape)).T
 .. code:: python
 
     sentence = "fans went wild"
-    output_scores = np.random.random(dp.outputs.size).ravel()
-    scores = dp.output_matrix.T * output_scores
-    path = pydecode.best_path(dp.hypergraph, scores)
-    best = scores.T * path.v
-    print pydecode.path_output(dp, path)
+    label_scores = np.random.random(4 * 4)
+    # scores = dp.output_matrix.T * output_scores
+    weights = pydecode.transform(graph, label_scores)
+    path = pydecode.best_path(graph, weights)
+    labels = np.array([edge.label for edge in path.edges])
+    ungrid(labels[labels != -1], (4, 4))
+
+
 
 .. parsed-literal::
 
-    [[2 1]
-     [3 2]
-     [0 3]]
+    array([[0, 1],
+           [3, 2],
+           [0, 3]])
+
 
 
 .. code:: python
 
-    node_marginals, edge_marginals = pydecode.marginals(dp.hypergraph, scores)
-    
-    avg = np.sum(edge_marginals) / len(dp.hypergraph.edges)
+    path = pydecode.best_path(graph, weights)
+    best = weights * path.v
+.. code:: python
+
+    edge_marginals = pydecode.marginals(graph, weights)
+    avg = np.sum(edge_marginals) / len(graph.edges)
     thres = 0.4 * best + 0.6 * avg
-    edge_filter = np.array(edge_marginals >=thres, dtype=np.int8)
-    _, projection, pruned_hyper = pydecode.project(dp.hypergraph, edge_filter)
-    pruned_scores = projection * scores
+    edge_filter = np.array(edge_marginals >=thres, dtype=np.uint8)
+    pruned_hyper = pydecode.filter(graph, edge_filter)
 .. code:: python
 
-    mat = np.reshape(dp.output_matrix *  edge_marginals, dp.outputs.shape).T
+    mat = pydecode.inverse_transform(graph, edge_marginals, size=(4*4))
+
+
+
+
+.. parsed-literal::
+
+    array([ -1.00000000e+09,   2.39736353e+00,   2.31316550e+00,
+             2.39736353e+00,  -1.00000000e+09,  -1.00000000e+09,
+             2.17027452e+00,   2.11240168e+00,  -1.00000000e+09,
+             2.33194419e+00,  -1.00000000e+09,   2.27204940e+00,
+            -1.00000000e+09,   2.09714112e+00,   2.39736353e+00,
+            -1.00000000e+09])
+
+
+
+.. code:: python
+
+    mat= mat.reshape((4,4))
     plt.pcolor(mat.T)
     plt.yticks(np.arange(0.5, len(sentence.split()), 1), ["*"] + sentence.split())
     plt.xticks(np.arange(0.5, len(sentence.split()), 1), ["*"] + sentence.split())
     None
 
 
-.. image:: parsing_files/parsing_7_0.png
+.. image:: parsing_files/parsing_10_0.png
 
 
 .. code:: python
 
-    vertex_labels = pydecode.vertex_items(dp)
-    class ParseFormat(display.HypergraphPathFormatter):
+    import pydecode.display
+    class ParseFormat(pydecode.display.HypergraphPathFormatter):
         def graph_attrs(self):
             return {"rankdir": "TB", "clusterrank": "local"}
         def hypernode_attrs(self, vertex):
-            label = self._vertex_labels[vertex.id]
+            label = self.vertex_labels[vertex.id]
             return {"image": "images/" +
                     ("triangle" if label[0] == Tri else "trap") + "-" + 
                     ("right" if label[1] == Right else "left") + ".png",
@@ -138,7 +145,7 @@ Tutorial 4: Dependency Parsing
     
                     }
         def hypernode_subgraph(self, vertex):
-            label = self._vertex_labels[vertex.id]
+            label = self.vertex_labels[vertex.id]
             if label[2] == label[3]:
                 return [("clust_terminals", label[2] + (0.5 if label[1] == Right else 0))]
             return []
@@ -151,11 +158,13 @@ Tutorial 4: Dependency Parsing
                     "color": "orange" if edge in self.paths[0] else "black",
                     "penwidth": 5 if edge in self.paths[0] else 1}
     
-    ParseFormat(dp.hypergraph, 
-                vertex_labels=vertex_labels).set_paths([path]).to_ipython()
+    vertex_labels = ungrid(graph.node_labeling, shape=[kShapes, kDir, 4, 4])
+    pydecode.draw(graph, None, vertex_labels, paths=[path], formatter=ParseFormat())
+    # ParseFormat(graph, 
+    #             vertex_labels=vertex_labels).set_paths([path]).to_ipython()
 
 
 
-.. image:: parsing_files/parsing_8_0.png
+.. image:: parsing_files/parsing_11_0.png
 
 

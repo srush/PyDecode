@@ -52,7 +52,7 @@ directly.
         def hypernode_attrs(self, vertex):
             return {"shape": "point"}
         def hyperedge_node_attrs(self, edge):
-            label = "%s"%(self.edge_weights[edge.id])
+            label = "%s"%(self.edge_labels[edge.id])
             if label[0] == "w":
                 color = "blue"
             else:
