@@ -1,0 +1,40 @@
+Hypergraph Problem:
+MAXIMIZE
+4.0*edge_0 + 2.0*edge_2 + 0.0
+SUBJECT TO
+_C1: node_5 = 1
+
+_C2: - edge_0 - edge_1 + node_4 = 0
+
+_C3: - edge_2 + node_5 = 0
+
+_C4: - edge_0 + node_0 = 0
+
+_C5: - edge_0 - edge_1 + node_1 = 0
+
+_C6: - edge_1 + node_2 = 0
+
+_C7: - edge_2 + node_3 = 0
+
+_C8: - edge_2 + node_4 = 0
+
+_C9: - edge_2 + label_0 = 0
+
+_C10: - edge_2 + label_1 = 0
+
+_C11: - edge_2 + label_2 = 0
+
+VARIABLES
+edge_0 <= 1 Continuous
+edge_1 <= 1 Continuous
+edge_2 <= 1 Continuous
+label_0 <= 1 Continuous
+label_1 <= 1 Continuous
+label_2 <= 1 Continuous
+node_0 <= 1 Continuous
+node_1 <= 1 Continuous
+node_2 <= 1 Continuous
+node_3 <= 1 Continuous
+node_4 <= 1 Continuous
+node_5 <= 1 Continuous
+
