@@ -268,6 +268,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         double *label_weights,
         int)
 
+    void ckbest_Viterbi "general_kbest<Viterbi>"(
+        const CHypergraph *graph,
+        const double *weights,
+        int K,
+        vector[CHyperpath *] *)
+
 cdef extern from "Hypergraph/Semirings.hh" namespace "Viterbi":
     double Viterbi_one "Viterbi::one" ()
     double Viterbi_zero "Viterbi::zero" ()
@@ -322,6 +328,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const int *labeling,
         double *label_weights,
         int)
+
+    void ckbest_LogViterbi "general_kbest<LogViterbi>"(
+        const CHypergraph *graph,
+        const double *weights,
+        int K,
+        vector[CHyperpath *] *)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "LogViterbi":
     double LogViterbi_one "LogViterbi::one" ()
@@ -378,6 +390,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         double *label_weights,
         int)
 
+    void ckbest_Real "general_kbest<Real>"(
+        const CHypergraph *graph,
+        const double *weights,
+        int K,
+        vector[CHyperpath *] *)
+
 cdef extern from "Hypergraph/Semirings.hh" namespace "Real":
     double Real_one "Real::one" ()
     double Real_zero "Real::zero" ()
@@ -432,6 +450,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const int *labeling,
         double *label_weights,
         int)
+
+    void ckbest_Log "general_kbest<Log>"(
+        const CHypergraph *graph,
+        const double *weights,
+        int K,
+        vector[CHyperpath *] *)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "Log":
     double Log_one "Log::one" ()
@@ -488,6 +512,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         char *label_weights,
         int)
 
+    void ckbest_Boolean "general_kbest<Boolean>"(
+        const CHypergraph *graph,
+        const char *weights,
+        int K,
+        vector[CHyperpath *] *)
+
 cdef extern from "Hypergraph/Semirings.hh" namespace "Boolean":
     char Boolean_one "Boolean::one" ()
     char Boolean_zero "Boolean::zero" ()
@@ -543,6 +573,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         int *label_weights,
         int)
 
+    void ckbest_Counting "general_kbest<Counting>"(
+        const CHypergraph *graph,
+        const int *weights,
+        int K,
+        vector[CHyperpath *] *)
+
 cdef extern from "Hypergraph/Semirings.hh" namespace "Counting":
     int Counting_one "Counting::one" ()
     int Counting_zero "Counting::zero" ()
@@ -597,6 +633,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         const int *labeling,
         double *label_weights,
         int)
+
+    void ckbest_MinMax "general_kbest<MinMax>"(
+        const CHypergraph *graph,
+        const double *weights,
+        int K,
+        vector[CHyperpath *] *)
 
 cdef extern from "Hypergraph/Semirings.hh" namespace "MinMax":
     double MinMax_one "MinMax::one" ()

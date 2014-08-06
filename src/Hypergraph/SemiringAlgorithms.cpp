@@ -16,7 +16,13 @@
     SPECIALIZE_FOR_SEMI_MIN(X);                 \
   template void general_viterbi<X>(const Hypergraph *graph, \
              const typename X::ValType *weights,      \
-             typename X::ValType *chart, int *back, bool *mask);
+             typename X::ValType *chart, int *back, bool *mask); \
+  template void general_kbest<X>(    \
+          const Hypergraph *graph, \
+          const typename X::ValType *weights,   \
+          int K,  \
+          vector<Hyperpath *> *paths);
+
 
 #define SPECIALIZE_FOR_SEMI_MIN(X)\
   template void general_inside<X>(const Hypergraph *graph, \
@@ -216,6 +222,128 @@ void transform(const Hypergraph *hypergraph,
     }
 }
 
+template<typename SemiringType>
+struct KBestHypothesis {
+    KBestHypothesis(typename SemiringType::ValType score_,
+                    HEdge last_edge_,
+                    vector<int> last_best_)
+            : score(score_), last_edge(last_edge_), last_best(last_best_) {}
+
+    KBestHypothesis(HEdge last_edge_, int size)
+            : last_edge(last_edge_), last_best(size, 0) {}
+
+
+    typename SemiringType::ValType score;
+    HEdge last_edge;
+    vector<int> last_best;
+
+    double rescore(const Hypergraph *graph,
+                 const typename SemiringType::ValType *weights,
+                 const vector<vector<KBestHypothesis<SemiringType> > > &chart) {
+        score = weights[last_edge];
+        for (int i = 0; i < graph->tail_nodes(last_edge); ++i) {
+            HNode tail_node = graph->tail_node(last_edge, i);
+            score = SemiringType::times(score,
+                                        chart[tail_node][last_best[i]].score);
+        }
+    }
+
+    KBestHypothesis<SemiringType> advance(int i) const {
+        vector<int> new_best = last_best;
+        new_best[i] += 1;
+        return KBestHypothesis(score, last_edge, new_best);
+    }
+
+    bool operator<(const KBestHypothesis<SemiringType> &hyp) const{
+        return score > hyp.score;
+    }
+};
+
+
+
+template<typename SemiringType>
+void general_kbest(
+    const Hypergraph *graph,
+    const typename SemiringType::ValType *weights,
+    int K,
+    vector<Hyperpath *> *paths) {
+    typedef KBestHypothesis<SemiringType> KHyp;
+    vector<vector<KHyp> > chart(graph->nodes().size());
+
+    foreach (HNode node, graph->nodes()) {
+        if (graph->terminal(node)) {
+            KHyp hyp(SemiringType::one(),
+                     EDGE_NULL);
+            chart[node].push_back(hyp);
+            continue;
+        }
+
+        // Initialize priority queue.
+        priority_queue<KHyp> queue;
+        foreach (HEdge edge, graph->edges(node)) {
+            KHyp hypothesis(edge, graph->tail_nodes(edge));
+            hypothesis.rescore(graph, weights, chart);
+            queue.push(hypothesis);
+        }
+
+
+        // Pull up on k at a time.
+        for (int k_round = 0; k_round < K; k_round++) {
+            // Pull up.
+            KHyp hyp = queue.top();
+            queue.pop();
+            chart[node].push_back(hyp);
+
+            // Add new hypotheses.
+            for (int i = 0; i < graph->tail_nodes(hyp.last_edge); ++i) {
+                HNode node = graph->tail_node(hyp.last_edge, i);
+                if (hyp.last_best[i] + 1 >= chart[node].size())
+                    continue;
+                KHyp new_hyp(hyp.advance(i));
+                new_hyp.rescore(graph, weights, chart);
+                queue.push(new_hyp);
+            }
+        }
+    }
+
+    // Find the k-best paths.
+    HNode root = graph->root();
+    for (int i = 0; i < chart[root].size(); ++i) {
+        vector<HEdge> path;
+        vector<HNode> node_path;
+        queue<pair<HNode, int> > to_examine;
+        to_examine.push(pair<HNode, int>(root, i));
+        // if (result >= get_beam(hypergraph_->root()).size()) {
+        //     return NULL;
+        // }
+
+        while (!to_examine.empty()) {
+            pair<HNode, int> p = to_examine.front();
+            HNode node = p.first;
+            node_path.push_back(node);
+            int position = p.second;
+
+            const KHyp &hyp = chart[node][position];
+            HEdge edge = hyp.last_edge;
+
+            to_examine.pop();
+            if (edge == EDGE_NULL) {
+                assert(graph->terminal(node));
+                continue;
+            }
+            path.push_back(edge);
+            for (int i = 0; i < graph->tail_nodes(edge); ++i) {
+                HNode node = graph->tail_node(edge, i);
+                to_examine.push(pair<HNode, int>(node,
+                                                 hyp.last_best[i]));
+
+            }
+        }
+        sort(node_path.begin(), node_path.end(), IdComparator());
+        sort(path.begin(), path.end(), IdComparator());
+        paths->push_back(new Hyperpath(graph, node_path, path));
+   }
+}
 
 
 SPECIALIZE_ALGORITHMS_FOR_SEMI(Viterbi)

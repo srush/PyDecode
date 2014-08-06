@@ -55,6 +55,12 @@ cdef extern from "Hypergraph/SemiringAlgorithms.hh":
         {{S.cvalue}} *label_weights,
         int)
 
+    void ckbest_{{S.type}} "general_kbest<{{S.ctype}}>"(
+        const CHypergraph *graph,
+        const {{S.cvalue}} *weights,
+        int K,
+        vector[CHyperpath *] *)
+
 cdef extern from "Hypergraph/Semirings.hh" namespace "{{S.ctype}}":
     {{S.cvalue}} {{S.type}}_one "{{S.ctype}}::one" ()
     {{S.cvalue}} {{S.type}}_zero "{{S.ctype}}::zero" ()

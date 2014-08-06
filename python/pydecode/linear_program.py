@@ -27,6 +27,7 @@ class HypergraphLP:
     """
 
     def __init__(self, lp, hypergraph, node_vars, edge_vars,
+                 label_vars,
                  integral=False):
         r"""
         Initialize the Hypergraph LP.
@@ -50,6 +51,8 @@ class HypergraphLP:
            The hyperedge variables :math:`y(e)`
            for all :math:`e \in {\cal E}`.
 
+        label_vars :
+
         integral : bool
         """
 
@@ -58,6 +61,7 @@ class HypergraphLP:
         self.node_vars = node_vars
         self.edge_vars = edge_vars
         self.integral = integral
+        self.label_vars = label_vars
 
     def solve(self, solver=None):
         r"""
@@ -104,20 +108,20 @@ class HypergraphLP:
         weights = pydecode.LogViterbiPotentials(self.hypergraph).from_vector(vec)
         return pydecode.best_path(self.hypergraph, weights)
 
-    def add_constraints(self, constraints):
-        """
-        Add hard constraints to the hypergraph.
+    # def add_constraints(self, constraints):
+    #     """
+    #     Add hard constraints to the hypergraph.
 
-        Parameters
-        -----------
+    #     Parameters
+    #     -----------
 
-        constraints : :py:class:`Constraints`
-        """
-        for i, constraint in enumerate(constraints):
-            self.lp += 0 == \
-                constraints.bias[i, 0] + \
-                pulp.lpSum([coeff * self.edge_vars[edge.id]
-                            for (coeff, edge) in constraint])
+    #     constraints : :py:class:`Constraints`
+    #     """
+    #     for i, constraint in enumerate(constraints):
+    #         self.lp += 0 == \
+    #             constraints.bias[i, 0] + \
+    #             pulp.lpSum([coeff * self.edge_vars[edge.id]
+    #                         for (coeff, edge) in constraint])
 
     @staticmethod
     def make_lp(hypergraph, potentials, name="", integral=False):
@@ -165,6 +169,9 @@ class HypergraphLP:
         def edge_name(edge):
             return "edge_{}".format(edge.id)
 
+        def label_name(label):
+            return "label_{}".format(label)
+
         # Make variables for the nodes.
         node_vars = {node.id: pulp.LpVariable(node_name(node), 0, 1,
                                               var_type)
@@ -180,9 +187,16 @@ class HypergraphLP:
             for node in edge.tail:
                 in_edges[node.id].append(edge)
 
+        labels = defaultdict(list)
         for edge in hypergraph.edges:
             p = potentials[edge.id]
             v = edge_vars[edge.id]
+            if edge.label != -1:
+                labels[edge.label].append(edge.id)
+        label_vars = {label: pulp.LpVariable(label_name(label), 0, 1,
+                                              var_type)
+                      for label in labels.keys()}
+
 
         # max \theta x
         prob += pulp.lpSum(
@@ -207,6 +221,11 @@ class HypergraphLP:
             prob += node_vars[node.id] == \
                 pulp.lpSum((edge_vars[edge.id]
                             for edge in in_edges[node.id]))
+
+        for label in labels.keys():
+            prob += label_vars[label] == \
+                pulp.lpSum([edge_vars[edge.id]
+                    for edge_id in labels[label]])
 
         return HypergraphLP(prob, hypergraph, node_vars,
                             edge_vars, integral)

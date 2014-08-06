@@ -1156,6 +1156,13 @@ class Viterbi:
     
 
     @staticmethod
+    def kbest(Hypergraph graph,
+              double [:] weights,
+              int K):
+        cdef vector[CHyperpath *] paths
+        ckbest_Viterbi(graph.thisptr, &weights[0], K, &paths)
+
+    @staticmethod
     def viterbi(Hypergraph graph,
                 double [:] weights,
                 double [:] chart=None,
@@ -1316,6 +1323,13 @@ class LogViterbi:
 
     
     
+
+    @staticmethod
+    def kbest(Hypergraph graph,
+              double [:] weights,
+              int K):
+        cdef vector[CHyperpath *] paths
+        ckbest_LogViterbi(graph.thisptr, &weights[0], K, &paths)
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1740,6 +1754,13 @@ class Boolean:
     
 
     @staticmethod
+    def kbest(Hypergraph graph,
+              char [:] weights,
+              int K):
+        cdef vector[CHyperpath *] paths
+        ckbest_Boolean(graph.thisptr, &weights[0], K, &paths)
+
+    @staticmethod
     def viterbi(Hypergraph graph,
                 char [:] weights,
                 char [:] chart=None,
@@ -1900,6 +1921,13 @@ class Counting:
 
     
     
+
+    @staticmethod
+    def kbest(Hypergraph graph,
+              int [:] weights,
+              int K):
+        cdef vector[CHyperpath *] paths
+        ckbest_Counting(graph.thisptr, &weights[0], K, &paths)
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -2078,63 +2106,6 @@ class MinMax:
         return np.asarray(label_weights)
 
 
-
-# For mapping between hypergraphs.
-
-# cdef convert_to_sparse(vector[int] positions):
-#     data = []
-#     indices = []
-#     ind = [0]
-#     cdef int i
-#     for i in range(positions.size()):
-#         if positions[i] > -1:
-#             data.append(1)
-#             indices.append(positions[i])
-#         ind.append(len(data))
-#     return (data, indices, ind)
-
-# cdef convert_hypergraph_map(const CHypergraphMap *hyper_map,
-#                             graph1_arg, graph2_arg):
-#     cdef Hypergraph graph1 = graph1_arg
-#     if not graph1:
-#         graph1 = Hypergraph()
-#         graph1.init(hyper_map.domain_graph(), Labeling(graph1))
-
-#     cdef Hypergraph graph2 = graph2_arg
-#     if not graph2:
-#         graph2 = Hypergraph()
-#         graph2.init(hyper_map.range_graph(), Labeling(graph2))
-
-
-#     cdef vector[int] edges = hyper_map.edge_map()
-
-#     edge_matrix = scipy.sparse.csc_matrix(
-#         convert_to_sparse(hyper_map.edge_map()),
-#         shape=(len(graph2.edges),
-#                len(graph1.edges)),
-#         dtype=np.uint8)
-
-#     # cdef vector[int] nodes = hyper_map.node_map()
-
-#     # node_matrix = scipy.sparse.css_matrix(
-#     #     hyper_map.edge_map(),
-#     #     shape=(len(graph1.nodes),
-#     #            len(graph2.nodes)),
-#     #     dtype=np.int8)
-#     return graph1, edge_matrix, graph2
-
-####### Methods that use specific potential ########
-
-# def get_potentials(graph, potentials, kind=_LogViterbiPotentials):
-#     # if potentials.size != len(graph.edges):
-#     #     raise ValueError("Potentials must match hypergraph hyperedges size: %s != %s"%(potentials.size, len(graph.edges)))
-#     return kind(graph).from_array(potentials)
-
-# @cython.boundscheck(False)
-# cpdef map_potentials(dp, out_potentials):
-#     cdef np.ndarray raveled = out_potentials.ravel()
-#     cdef np.ndarray potentials = raveled[dp.output_indices]
-#     return potentials
 
 
 def filter_internal(Hypergraph graph, bool [:] mask):

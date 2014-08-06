@@ -420,8 +420,8 @@ def lp(graph, weights):
     lp : :py:class:`HypergraphLP`
       The hypergraph best-path problem expressed as a linear program.
     """
-    import pydecode.lp
-    return pydecode.lp.HypergraphLP.make_lp(graph, weights)
+    import pydecode.linear_program
+    return pydecode.linear_program.HypergraphLP.make_lp(graph, weights)
 
 # Higher-level interface.
 
