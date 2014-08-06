@@ -140,6 +140,10 @@ class {{S.type}}:
               int K):
         cdef vector[CHyperpath *] paths
         ckbest_{{S.type}}(graph.thisptr, &weights[0], K, &paths)
+        ret_paths = []
+        for p in range(paths.size()):
+            ret_paths.append(Path().init(paths[p], graph))
+        return ret_paths
 
     @staticmethod
     def viterbi(Hypergraph graph,

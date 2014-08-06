@@ -139,7 +139,7 @@ def best_path(graph, weights,
                         back_pointers=back_pointers,
                         mask=mask)
 
-def kbest(graph, weights,
+def kbest(graph, weights, k,
           weight_type=None, chart=None, back_pointers=None, mask=None):
     r"""
     Find the k-best paths through a hypergraph.
@@ -153,6 +153,8 @@ def kbest(graph, weights,
     weights : ndarray
       The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
 
+    k : int
+
     weight_type : weight-type, optional
       A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
 
@@ -161,7 +163,7 @@ def kbest(graph, weights,
     paths : list of :py:class:`Path`
       The k-highest-scoring hyperpaths under the given weights.
     """
-    raise NotImplementedError()
+    return _get_type(weight_type).kbest(graph, weights, k)
 
 def marginals(graph, weights,
               inside_chart=None,

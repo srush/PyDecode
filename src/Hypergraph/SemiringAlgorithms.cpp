@@ -255,7 +255,7 @@ struct KBestHypothesis {
     }
 
     bool operator<(const KBestHypothesis<SemiringType> &hyp) const{
-        return score > hyp.score;
+        return score < hyp.score;
     }
 };
 
@@ -272,8 +272,8 @@ void general_kbest(
 
     foreach (HNode node, graph->nodes()) {
         if (graph->terminal(node)) {
-            KHyp hyp(SemiringType::one(),
-                     EDGE_NULL);
+            KHyp hyp(EDGE_NULL, 0);
+            hyp.score = SemiringType::one();
             chart[node].push_back(hyp);
             continue;
         }
@@ -303,6 +303,7 @@ void general_kbest(
                 new_hyp.rescore(graph, weights, chart);
                 queue.push(new_hyp);
             }
+            if (queue.empty()) break;
         }
     }
 
@@ -313,9 +314,6 @@ void general_kbest(
         vector<HNode> node_path;
         queue<pair<HNode, int> > to_examine;
         to_examine.push(pair<HNode, int>(root, i));
-        // if (result >= get_beam(hypergraph_->root()).size()) {
-        //     return NULL;
-        // }
 
         while (!to_examine.empty()) {
             pair<HNode, int> p = to_examine.front();
@@ -325,8 +323,8 @@ void general_kbest(
 
             const KHyp &hyp = chart[node][position];
             HEdge edge = hyp.last_edge;
-
             to_examine.pop();
+
             if (edge == EDGE_NULL) {
                 assert(graph->terminal(node));
                 continue;
@@ -336,13 +334,12 @@ void general_kbest(
                 HNode node = graph->tail_node(edge, i);
                 to_examine.push(pair<HNode, int>(node,
                                                  hyp.last_best[i]));
-
             }
         }
         sort(node_path.begin(), node_path.end(), IdComparator());
         sort(path.begin(), path.end(), IdComparator());
         paths->push_back(new Hyperpath(graph, node_path, path));
-   }
+    }
 }
 
 

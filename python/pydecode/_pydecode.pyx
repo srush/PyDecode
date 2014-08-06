@@ -1161,6 +1161,10 @@ class Viterbi:
               int K):
         cdef vector[CHyperpath *] paths
         ckbest_Viterbi(graph.thisptr, &weights[0], K, &paths)
+        ret_paths = []
+        for p in range(paths.size()):
+            ret_paths.append(Path().init(paths[p], graph))
+        return ret_paths
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1330,6 +1334,10 @@ class LogViterbi:
               int K):
         cdef vector[CHyperpath *] paths
         ckbest_LogViterbi(graph.thisptr, &weights[0], K, &paths)
+        ret_paths = []
+        for p in range(paths.size()):
+            ret_paths.append(Path().init(paths[p], graph))
+        return ret_paths
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1759,6 +1767,10 @@ class Boolean:
               int K):
         cdef vector[CHyperpath *] paths
         ckbest_Boolean(graph.thisptr, &weights[0], K, &paths)
+        ret_paths = []
+        for p in range(paths.size()):
+            ret_paths.append(Path().init(paths[p], graph))
+        return ret_paths
 
     @staticmethod
     def viterbi(Hypergraph graph,
@@ -1928,6 +1940,10 @@ class Counting:
               int K):
         cdef vector[CHyperpath *] paths
         ckbest_Counting(graph.thisptr, &weights[0], K, &paths)
+        ret_paths = []
+        for p in range(paths.size()):
+            ret_paths.append(Path().init(paths[p], graph))
+        return ret_paths
 
     @staticmethod
     def viterbi(Hypergraph graph,
