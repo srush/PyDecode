@@ -16,9 +16,9 @@ The Fibonacci sequence is defined by the base case and recursions
 
 .. math::
 
-    C_0 &=& 0 \\
-    C_1 &=& 1   \\
-    C_i &=& C_i + C_{i-1}
+    C_0 &= 0 \\
+    C_1 &= 1   \\
+    C_i &= C_i + C_{i-1} \\
 
 The bottom-up algorithm for generating this sequence takes a simple form. We begin 
 by initializing a ``chart`` with the base cases, and then loop over each ``item`` 

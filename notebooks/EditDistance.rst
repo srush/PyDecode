@@ -84,11 +84,11 @@ Edit distance is defined by the following base case and recursions
 
 .. math::
 
-    C_{0, 0} &=& 0\ \ \  \forall \  j \in \{ 0 \ldots m \} \\
-    C_{0, j} &=& 0\ \ \ \forall \  j \in \{ 1 \ldots m \} \\
-    C_{i, 0} &=& 0\ \ \  \forall\  i \in \{ 1 \ldots n \} \\
+    C_{0, 0} &= 0\ \ \  \forall \  j \in \{ 0 \ldots m \} \\
+    C_{0, j} &= 0\ \ \ \forall \  j \in \{ 1 \ldots m \} \\
+    C_{i, 0} &= 0\ \ \  \forall\  i \in \{ 1 \ldots n \} \\
     \\
-    C_{i, j} &=& \max \begin{array}{ll}C_{i-1, j} +  W_{i-1, j, DELETE} \\ C_{i, j-1}  + W_{i, j-1, INSERT} \\ C_{i-1, j-1} + W_{i-1, j-1, MATCH}  \end{array} \ \ \forall i \in \{ 1 \ldots m \} ,j \in \{ 1 \ldots n \}    \\
+    C_{i, j} &= \max \begin{array}{ll}C_{i-1, j} +  W_{i-1, j, DELETE} \\ C_{i, j-1}  + W_{i, j-1, INSERT} \\ C_{i-1, j-1} + W_{i-1, j-1, MATCH}  \end{array} \ \ \forall i \in \{ 1 \ldots m \} ,j \in \{ 1 \ldots n \}    \\
 
 
 .. code:: python
@@ -148,9 +148,9 @@ can only be applied when we have a direct match.
 
 .. math::
 
-    W_{i, j, o} &=& 0 \ \ \forall i, j, o \in \{DELETE, INSERT \}
-    W_{i, j, MATCH} &=& 1 \ \ \forall i, j, s_i == s_j
-    W_{i, j, MATCH} &=& -\infty \ \ \forall i, j, s_i != s_j
+    W_{i, j, o} &= 0 \ \ \forall i, j, o \in \{DELETE, INSERT \} \\
+    W_{i, j, MATCH} &= 1 \ \ \forall i, j, s_i == s_j \\
+    W_{i, j, MATCH} &= -\infty \ \ \forall i, j, s_i != s_j
     
 
 

@@ -10,6 +10,8 @@ API
 Construction
 ===================
 
+
+
 ================  =========  =====================================================
 **ChartBuilder**   |Chart|     Interface for constructing a dynamic programs.
 ================  =========  =====================================================
@@ -33,11 +35,16 @@ Hypergraph
 **Hypergraph**   |hyper|    Interact with and visualize a dynamic program.
 ===============  =========  =====================================================
 
-Weight Types [:doc:`doc<notebooks/doc/Weights>`]
+Weights
+
+================  =========  =====================================================
+**Weight Types**  |weights|   Semiring types for defining hypergraph weights.
+================  =========  =====================================================
 
 
 .. |hyper| replace:: [:doc:`doc<notebooks/doc/Hypergraph>`]
 .. |chart| replace:: [:doc:`doc<notebooks/doc/ChartBuilder>`]
+.. |weights| replace::  [:doc:`doc<notebooks/doc/Weights>`]
 
 .. .. automodule:: pydecode
 ..    :no-members:
@@ -66,8 +73,6 @@ Algorithms
 
 .. .. autosummary::
 ..    :toctree: generated/
-
-Table
 
 
 
@@ -100,8 +105,22 @@ Algorithm                                              Description
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
 
-   notebooks/doc/Weight
+   notebooks/doc/Hypergraph
+   notebooks/doc/ChartBuilder
+   notebooks/doc/Weights
+   notebooks/doc/best_path
+   notebooks/doc/inside
+   notebooks/doc/outside
+   notebooks/doc/marginals
+   notebooks/doc/transform
+   notebooks/doc/binarize
+   notebooks/doc/kbest
+   notebooks/doc/intersect
+   notebooks/doc/draw
+   notebooks/doc/lp
+
 
 
 .. .. _weight_types:
@@ -134,6 +153,8 @@ Algorithm                                              Description
 .. .. |szero| replace:: :math:`\bar{0}`
 .. .. |splus| replace:: :math:`\oplus`
 .. .. |stimes| replace:: :math:`\otimes`
+
+
 
 
 

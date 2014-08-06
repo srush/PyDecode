@@ -129,10 +129,11 @@ class HypergraphLP:
         Construct a linear program from a hypergraph.
 
         .. math::
-          \max \theta^{\top} x \\
-          x(1) = 1 \\
-          x(v) = \sum_{e \in {\cal E} : h(e) = v} x(e) \\
-          x(v) = \sum_{e \in {\cal E} : v \in t(e)} x(e)
+
+          \max & \theta^{\top} x \\
+          x(1) &= 1 \\
+          x(v) &= \sum_{e \in {\cal E} : h(e) = v} x(e) \\
+          x(v) &= \sum_{e \in {\cal E} : v \in t(e)} x(e)
 
         Parameters
         ----------
