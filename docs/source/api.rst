@@ -10,6 +10,13 @@ API
 Construction
 ===================
 
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
+   notebooks/doc/Hypergraph
+   notebooks/doc/ChartBuilder
+   notebooks/doc/Weights
 
 
 ================  =========  =====================================================
@@ -107,9 +114,6 @@ Algorithm                                              Description
    :maxdepth: 2
    :hidden:
 
-   notebooks/doc/Hypergraph
-   notebooks/doc/ChartBuilder
-   notebooks/doc/Weights
    notebooks/doc/best_path
    notebooks/doc/inside
    notebooks/doc/outside
