@@ -1,1 +1,4 @@
+numpy>=1.7
+scipy
 sphinx_rtd_theme>=0.1.6
+nose>1.0
