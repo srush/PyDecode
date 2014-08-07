@@ -104,14 +104,14 @@ cdef class ChartBuilder:
         Formally, for each item :math:`v \in I`, sets
 
         .. math::
-        
+
            C_v  = \bar{1}
 
         Parameters:
         ------------
-        
+
         items : int or array
-            Initialize the given items. 
+            Initialize the given items.
         """
         if isinstance(items, np.ndarray):
             return self._init_buffer(items)
@@ -126,32 +126,32 @@ cdef class ChartBuilder:
         set(self, items, tails_list, labels=None)
 
         Add an item with a recursive definition.
-        
-        Calling this function adds a recursive definition to the dynamic program 
+
+        Calling this function adds a recursive definition to the dynamic program
         for ``item`` based on the previous defined values of the items in tails and
         a sequnce of labels.
-        
+
 
         Formally, for given ``item`` :math:`v`, adds the recursive definition
-        
+
         .. math::
-        
+
            C_v  = \bigoplus_{i} C_{T_{i,1}} \otimes C_{T_{i,2}} \ldots \otimes C_{T_{i,n}} \otimes w(L_i)
 
         where :math:`T` is a sequence of tail items given by parameter ``tails``,
         :math:`L` is a sequence of labels given by parameter ``labels``.
 
-        Warning: This function is more flexible, but often slower than ``set_t``. 
+        Warning: This function is more flexible, but often slower than ``set_t``.
 
 
         Parameters
         ----------
-        
+
         item : int
-            The dynamic programming item to set. 
+            The dynamic programming item to set.
 
         tails_list : list of list of ints
-            A list of tail lists :math:`T`. 
+            A list of tail lists :math:`T`.
 
         labels : list of ints, optional
             A list of labels. Must be None orthe same size as tails.
@@ -164,15 +164,15 @@ cdef class ChartBuilder:
         set_t(self, item, tails1, tails2=None, tails3=None, labels=None)
 
         Add an item with a recursive definition, transpose.
-        
-        Calling this function adds a recursive definition to the dynamic program 
+
+        Calling this function adds a recursive definition to the dynamic program
         for ``item`` based on the previous defined values of the items in tails and
         a sequnce of labels.
 
         Formally, for given ``item`` :math:`v`, adds the recursive definition
-        
+
         .. math::
-        
+
            C_v  = \bigoplus_{i} C_{T_{1,i}} \otimes C_{T_{2,i}} \otimes C_{T_{3,i}} \otimes w(L_i)
 
         where :math:`T` is a sequence of tail items given by parameters ``tails1``, ``tails2``, ``tails3``
@@ -181,23 +181,23 @@ cdef class ChartBuilder:
 
         Parameters
         ----------
-        
+
         item : int
-            The dynamic programming item to set. 
+            The dynamic programming item to set.
 
         tails1, tails2, tails3  : int ndarray, optional
-            Sequence of tail items. Represented by :math:`T_1, T_2, T_3` respectively. 
+            Sequence of tail items. Represented by :math:`T_1, T_2, T_3` respectively.
             Must be of the same length or None.
 
         labels : int ndarray, optional
             The labels for each definition. Must be the same length as tails.
 
-        """        
+        """
         return self._set_transpose(item, tails1, tails2, tails3, labels)
 
     def finish(self, reconstruct=False):
         r"""
-        Complete the dynamic program. 
+        Complete the dynamic program.
 
         Returns
         --------
@@ -207,7 +207,7 @@ cdef class ChartBuilder:
         """
         if self._done:
             raise Exception("Hypergraph not constructed.")
-        if self._no_tail.size() != 1:
+        if self._strict and self._no_tail.size() != 1:
             raise Exception("Hypergraph has multiple vertices that are not connected: %s."%(self._no_tail,))
         self._done = True
         self._hg_ptr = self._builder.finish(reconstruct)
@@ -215,7 +215,7 @@ cdef class ChartBuilder:
         hypergraph = Hypergraph(self._lattice)
         hypergraph.init(self._hg_ptr,
                         Labeling(hypergraph, None))
-        return hypergraph 
+        return hypergraph
 
 
     @cython.boundscheck(False)
