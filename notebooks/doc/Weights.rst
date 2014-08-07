@@ -20,13 +20,22 @@ Name            |splus|           |stimes|       |szero|           |sone|       
 **MinMax**       :math:`\min`    :math:`\max`    |ninf|           |inf|            float32
 ==============  ==============  ===============  ===============  ===============  =======
 
-.. |stype| replace:: :math:`\mathbb{S}`/dtype
+.. |stype| replace:: :math:`\mathbb{K}`/dtype
 .. |inf| replace:: :math:`\infty`
 .. |ninf| replace:: :math:`-\infty`
 .. |sone| replace:: :math:`\bar{1}`
 .. |szero| replace:: :math:`\bar{0}`
 .. |splus| replace:: :math:`\oplus`
 .. |stimes| replace:: :math:`\otimes`
+
+Bibliography
+------------
+
+
+
+.. bibliography:: ../../full.bib 
+   :filter: key in {"goodman1998parsing", "allauzen2007openfst"}
+   :style: plain
 
 Invariants
 ----------
@@ -36,11 +45,13 @@ Check the semiring properties.
 
 .. code:: python
 
-    import pydecode.test.utils as test_utils
-    graph, weights, weight_type = test_utils.random_setup()
+    import pydecode.test
 Check the additive and multiplicative identities.
 
 .. code:: python
 
-    assert (weight_type.Value.one() * weight_type.Value(weights[0])).value == weights[0]
-    assert (weight_type.Value.zero() + weight_type.Value(weights[0])).value == weights[0]
+    @pydecode.test.property()
+    def test_weight_properties(graph, weights, weight_type):
+        assert (weight_type.one() * weight_type.from_value(weights[0])).value == weights[0]
+        assert (weight_type.zero() + weight_type.from_value(weights[0])).value == weights[0]
+    test_weight_properties()

@@ -150,7 +150,7 @@ Algorithm                                              Description
 .. **MinMax**       :math:`\min`    :math:`\max`    |ninf|           |inf|            float32
 .. ==============  ==============  ===============  ===============  ===============  =======
 
-.. .. |stype| replace:: :math:`\mathbb{S}`/dtype
+.. .. |stype| replace:: :math:`\mathbb{K}`/dtype
 .. .. |inf| replace:: :math:`\infty`
 .. .. |ninf| replace:: :math:`-\infty`
 .. .. |sone| replace:: :math:`\bar{1}`

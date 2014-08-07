@@ -15,12 +15,11 @@ Examples
 
 .. code:: python
 
-    import pydecode
-    import pydecode.test.utils as test_utils
+    import pydecode, pydecode.test
     import numpy as np
 .. code:: python
 
-    graph = test_utils.simple_hypergraph()
+    graph = pydecode.test.simple_hypergraph()
     weights = np.random.randint(10, size=len(graph.edges))
     pydecode.draw(graph, weights)
 
@@ -50,7 +49,7 @@ Examples
 
     Hypergraph Problem:
     MAXIMIZE
-    4.0*edge_0 + 2.0*edge_2 + 0.0
+    4.0*edge_0 + 4.0*edge_1 + 9.0*edge_2 + 0.0
     SUBJECT TO
     _C1: node_5 = 1
     
@@ -90,6 +89,14 @@ Examples
     
 
 
+Bibliography
+------------
+
+
+.. bibliography:: ../../full.bib 
+   :filter: key in {"martin1990"}
+   :style: plain
+
 Invariants
 ----------
 
@@ -98,15 +105,12 @@ Check that linear program always gives the same result as best path.
 
 .. code:: python
 
-    import numpy.testing as test
-    import pydecode.test.utils as test_utils
-    graph = test_utils.random_hypergraph()
-    weights = test_utils.random_weights(pydecode.LogViterbi, len(graph.edges))
-    best_path = pydecode.best_path(graph, weights)
-    best_path_score = best_path.v.T * weights
-.. code:: python
-
-    linear_program = pydecode.lp(graph, weights)
-    linear_program.solve()
-    assert linear_program.path == best_path
-    assert best_path_score == linear_program.objective
+    @pydecode.test.property(viterbi=True)
+    def test_linear_programming_solver(graph, weights, weight_type):
+        best_path = pydecode.best_path(graph, weights)
+        best_path_score = best_path.v.T * weights
+        linear_program = pydecode.lp(graph, weights)
+        linear_program.solve()
+        assert linear_program.path == best_path
+        assert best_path_score == linear_program.objective
+    test_linear_programming_solver()

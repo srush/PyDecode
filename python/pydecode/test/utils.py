@@ -87,51 +87,6 @@ def simple_hypergraph():
     return dp
 
 
-
-def random_hypergraph(size=50):
-    """
-    Generate a random hypergraph.
-
-    Parameters
-    ----------
-    size : integer
-    """
-    # children = defaultdict(lambda: set())
-
-    # complete_reference_set = range(0, size)
-    reference_sets = defaultdict(lambda: set())
-    enc = np.arange(2*size  + 1)
-
-    c = pydecode.ChartBuilder(enc, np.arange(10))
-    used = set()
-
-    c.init(enc[:size])
-
-    for i in range(size):
-        reference_sets[i] = set([i])
-
-    nodes = range(size)
-    for node in range(size):
-        head_node = size + node
-        node_a, node_b = random.sample(nodes, 2)
-        if reference_sets[node_a] & reference_sets[node_b]:
-            continue
-
-        c.set_t(enc[head_node], enc[[node_a]], enc[[node_b]],
-                labels=np.array([random.randint(0, 100)]))
-        used.update([node_a, node_b])
-        reference_sets[head_node] |= \
-            reference_sets[node_a] | reference_sets[node_b]
-        nodes.append(head_node)
-    unused = set(nodes) -  used
-    c.set_t(enc[2*size], enc[list(unused)])
-
-    dp = c.finish()
-    assert len(dp.nodes) > 0
-    assert len(dp.edges) > 0
-    return dp
-
-
 def chain_hypergraph(size=100):
     """
     Returns a simple chain hypergraph.
@@ -203,65 +158,6 @@ def _paths(node, bottom_vertex=None):
             t = [_paths(node) for node in edge.tail]
             for below in itertools.product(*t):
                 yield (edge,) + sum(below, ())
-
-def all_paths(graph):
-    """
-    Constructs all possible hyperpaths through a hypergraph (for testing).
-
-    Parameters
-    ------------
-    graph : Hypergraph
-
-    Returns
-    ----------
-    paths : list of hyperpaths
-        All hyperpaths in the graph.
-
-    """
-    paths = [pydecode.Path(graph, list(edges))
-             for edges in _paths(graph.root)]
-    return paths
-
-def inside_paths(graph, vertex):
-    paths = [pydecode.Path(graph, list(edges))
-             for edges in _paths(vertex)]
-    return paths
-
-def outside_paths(graph, vertex):
-    def has_vertex(path):
-        for edge in path.edges:
-            for tail in edge.tail:
-                if vertex.id == tail.id:
-                    return True
-        return False
-
-    paths = [pydecode.Path(graph, list(edges))
-             for edges in _paths(graph.root, vertex)]
-    paths = [path for path in paths if has_vertex(path)]
-    return paths
-
-def path_score(path, weights, weight_type):
-    return np.product(
-        [weight_type.Value(weights[edge.id])
-         for edge in path])
-
-def random_weight_type():
-    return random.sample([pydecode.Real, pydecode.Viterbi, pydecode.LogViterbi,
-                          pydecode.Log, pydecode.Boolean, pydecode.Counting,
-                          pydecode.MinMax], 1)[0]
-
-def random_weights(weight_type, size):
-    if weight_type == pydecode.Counting:
-        return np.array(np.random.randint(100, size=size), dtype=np.int32)
-    if weight_type == pydecode.Boolean:
-        return np.array(np.random.randint(1, size=size), dtype=np.uint8)
-    return np.random.random(size)
-
-def random_setup():
-    graph = pydecode.test.utils.random_hypergraph()
-    weight_type = random_weight_type()
-    weights = random_weights(weight_type, len(graph.edges))
-    return (graph, weights, weight_type)
 
 
 def random_path(graph):

@@ -12,10 +12,9 @@ Example
 
 .. code:: python
 
-    import pydecode
-    import pydecode.test.utils
+    import pydecode, pydecode.test
     import numpy as np
-    graph = pydecode.test.utils.random_hypergraph(5)
+    graph = pydecode.test.random_hypergraph(5)
     words = np.array("it was the best of times it was the worst of times".split())
     edge_labels = words[np.random.randint(words.shape[0]-1, size=len(graph.edges))]
     pydecode.draw(graph, edge_labels)

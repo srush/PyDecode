@@ -1096,6 +1096,22 @@ cdef _Viterbi_from_cpp(double val):
 
 class Viterbi:
     Value = ViterbiValue
+
+    @staticmethod
+    def zero():
+        return ViterbiValue().init(Viterbi_zero())
+
+    @staticmethod
+    def one():
+        return ViterbiValue().init(Viterbi_one())
+
+    @staticmethod
+    def from_value(double val):
+        created = ViterbiValue()
+        created.thisval = _Viterbi_to_cpp(val)
+        return created
+
+
     
     @staticmethod
     def inside(Hypergraph graph,
@@ -1269,6 +1285,22 @@ cdef _LogViterbi_from_cpp(double val):
 
 class LogViterbi:
     Value = LogViterbiValue
+
+    @staticmethod
+    def zero():
+        return LogViterbiValue().init(LogViterbi_zero())
+
+    @staticmethod
+    def one():
+        return LogViterbiValue().init(LogViterbi_one())
+
+    @staticmethod
+    def from_value(double val):
+        created = LogViterbiValue()
+        created.thisval = _LogViterbi_to_cpp(val)
+        return created
+
+
     
     @staticmethod
     def inside(Hypergraph graph,
@@ -1442,6 +1474,22 @@ cdef _Real_from_cpp(double val):
 
 class Real:
     Value = RealValue
+
+    @staticmethod
+    def zero():
+        return RealValue().init(Real_zero())
+
+    @staticmethod
+    def one():
+        return RealValue().init(Real_one())
+
+    @staticmethod
+    def from_value(double val):
+        created = RealValue()
+        created.thisval = _Real_to_cpp(val)
+        return created
+
+
     
     @staticmethod
     def inside(Hypergraph graph,
@@ -1572,6 +1620,22 @@ cdef _Log_from_cpp(double val):
 
 class Log:
     Value = LogValue
+
+    @staticmethod
+    def zero():
+        return LogValue().init(Log_zero())
+
+    @staticmethod
+    def one():
+        return LogValue().init(Log_one())
+
+    @staticmethod
+    def from_value(double val):
+        created = LogValue()
+        created.thisval = _Log_to_cpp(val)
+        return created
+
+
     
     @staticmethod
     def inside(Hypergraph graph,
@@ -1702,6 +1766,22 @@ cdef _Boolean_from_cpp(char val):
 
 class Boolean:
     Value = BooleanValue
+
+    @staticmethod
+    def zero():
+        return BooleanValue().init(Boolean_zero())
+
+    @staticmethod
+    def one():
+        return BooleanValue().init(Boolean_one())
+
+    @staticmethod
+    def from_value(char val):
+        created = BooleanValue()
+        created.thisval = _Boolean_to_cpp(val)
+        return created
+
+
     
     @staticmethod
     def inside(Hypergraph graph,
@@ -1875,6 +1955,22 @@ cdef _Counting_from_cpp(int val):
 
 class Counting:
     Value = CountingValue
+
+    @staticmethod
+    def zero():
+        return CountingValue().init(Counting_zero())
+
+    @staticmethod
+    def one():
+        return CountingValue().init(Counting_one())
+
+    @staticmethod
+    def from_value(int val):
+        created = CountingValue()
+        created.thisval = _Counting_to_cpp(val)
+        return created
+
+
     
     @staticmethod
     def inside(Hypergraph graph,
@@ -2048,6 +2144,22 @@ cdef _MinMax_from_cpp(double val):
 
 class MinMax:
     Value = MinMaxValue
+
+    @staticmethod
+    def zero():
+        return MinMaxValue().init(MinMax_zero())
+
+    @staticmethod
+    def one():
+        return MinMaxValue().init(MinMax_one())
+
+    @staticmethod
+    def from_value(double val):
+        created = MinMaxValue()
+        created.thisval = _MinMax_to_cpp(val)
+        return created
+
+
     
     @staticmethod
     def inside(Hypergraph graph,

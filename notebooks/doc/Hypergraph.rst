@@ -46,3 +46,11 @@ Examples
     5 False
     	2 -1
 
+
+Bibliography
+------------
+
+
+.. bibliography:: ../../full.bib 
+   :filter: key in {"martin1990","klein2005parsing"}
+   :style: plain

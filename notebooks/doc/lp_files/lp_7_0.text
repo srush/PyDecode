@@ -1,6 +1,6 @@
 Hypergraph Problem:
 MAXIMIZE
-4.0*edge_0 + 2.0*edge_2 + 0.0
+4.0*edge_0 + 4.0*edge_1 + 9.0*edge_2 + 0.0
 SUBJECT TO
 _C1: node_5 = 1
 

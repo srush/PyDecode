@@ -12,7 +12,7 @@ Examples
 
 .. code:: python
 
-    import pydecode
+    import pydecode, pydecode.test
     import numpy as np
 .. code:: python
 
@@ -50,22 +50,21 @@ Invariants
 
 .. code:: python
 
-    import numpy.testing as test
-    import pydecode.test.utils as test_utils
-    graph, _, weight_type = test_utils.random_setup()
-    binary_graph = pydecode.binarize(graph)
-    size = np.max(graph.labeling) + 1
-    label_weights = test_utils.random_weights(weight_type, size)
+    
 Binarizing does not change best path score.
 
 .. code:: python
 
-    weights = pydecode.transform(graph, label_weights, weight_type=weight_type)
-    score1 = pydecode.inside(graph, weights, weight_type=weight_type)[graph.root.id]
-.. code:: python
-
-    weights2 = pydecode.transform(binary_graph, label_weights, weight_type=weight_type)
-    score2 = pydecode.inside(binary_graph, weights2, weight_type=weight_type)[graph.root.id]
-.. code:: python
-
-    test.assert_almost_equal(score1, score2)
+    @pydecode.test.property()
+    def test_binarize(graph, weights, weight_type):
+        binary_graph = pydecode.binarize(graph)
+        size = np.max(graph.labeling) + 1
+        label_weights = pydecode.test.random_weights(weight_type, size)
+        
+        new_weights = pydecode.transform(graph, label_weights, weight_type=weight_type)
+        score1 = pydecode.inside(graph, new_weights, weight_type=weight_type)[graph.root.id]
+    
+        weights2 = pydecode.transform(binary_graph, label_weights, weight_type=weight_type)
+        score2 = pydecode.inside(binary_graph, weights2, weight_type=weight_type)[graph.root.id]
+        pydecode.test.assert_almost_equal(score1, score2)
+    test_binarize()

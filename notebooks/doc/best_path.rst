@@ -39,40 +39,38 @@ and highlights the best path in the hypergraph.
 
 
 
+Bibliography
+------------
+
+
+.. bibliography:: ../../full.bib 
+   :filter: key in {"younger1967recognition"}
+   :style: plain
+
 Invariants
 ----------
 
 
-Check that the LogViterbi best path scores at least as high as all other
-paths.
+-  Best path is equal to
+
+.. math:: \ *x W*\ {x\_1} W\_{x\_n}
 
 .. code:: python
 
-    
-    graph = pydecode.test.utils.random_hypergraph()
-    weights = np.random.random(len(graph.edges))
-    path = pydecode.best_path(graph, weights)
-    match = False
-    for path2 in pydecode.test.utils.all_paths(graph):
-        assert weights.T * path.v >= weights.T * path2.v
-        if path == path2:
-            match = True
-            score = pydecode.test.utils.path_score(path2, weights, pydecode.LogViterbi)
-            assert math.fabs(score.value - weights.T * path.v) < 1e-4
-    assert match
-
-::
-
-
-    ---------------------------------------------------------------------------
-    AssertionError                            Traceback (most recent call last)
-
-    <ipython-input-10-bda59e0186df> in <module>()
-          9         match = True
-         10         score = pydecode.test.utils.path_score(path2, weights, pydecode.LogViterbi)
-    ---> 11         assert math.fabs(score.value - weights.T * path.v) < 1e-4
-         12 assert match
-
-
-    AssertionError: 
-
+    import pydecode.test
+    @pydecode.test.property(viterbi=True)
+    def test_all_paths(graph, weights, weight_type):
+        """
+        Compare best-path to exhaustive enumeration.
+        """
+        best_path = pydecode.best_path(graph, weights, weight_type)
+        best_score = pydecode.score(best_path, weights, weight_type)
+        match = False
+        for path in pydecode.test.all_paths(graph):
+            score = pydecode.score(path, weights, weight_type)
+            assert best_score.value >= score.value
+            if path == best_path:
+                match = True
+                pydecode.test.assert_almost_equal(best_score.value, score.value)
+        assert match
+    test_all_paths()    

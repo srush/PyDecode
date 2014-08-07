@@ -2,11 +2,11 @@
 Classes for sequence tagging/labeling problem.
 """
 import pydecode
-import pydecode.nlp.decoding as decoding
+# import pydecode.nlp.decoding as decoding
 import itertools
 import numpy as np
 
-class TaggingProblem(decoding.DecodingProblem):
+class TaggingProblem:
     """
     Description of a tagging program.
 
@@ -102,53 +102,77 @@ class BiTagCoder(object):
             sequence[i] = t
         return TagSequence(sequence)
 
-class BigramTagger(decoding.HypergraphDecoder):
-    """
-    Bigram tagging decoder.
-    """
-    def output_coder(self, problem):
-        """
-        Get the output coder for a tagging problem.
+# class BigramTagger(decoding.HypergraphDecoder):
+#     """
+#     Bigram tagging decoder.
+#     """
+#     def output_coder(self, problem):
+#         """
+#         Get the output coder for a tagging problem.
 
-        Parameters
-        ----------
-        problem : TaggingProblem
+#         Parameters
+#         ----------
+#         problem : TaggingProblem
 
-        """
-        return BiTagCoder(problem)
+#         """
+#         return BiTagCoder(problem)
 
-    def dynamic_program(self, problem):
-        """
-        Construct a dynamic program for decoding a tagging problem.
+#     def dynamic_program(self, problem):
+#         """
+#         Construct a dynamic program for decoding a tagging problem.
 
-        Parameters
-        ----------
-        problem : TaggingProblem
+#         Parameters
+#         ----------
+#         problem : TaggingProblem
 
-        Returns
-        --------
-        dp : DynamicProgram
+#         Returns
+#         --------
+#         dp : DynamicProgram
 
-        """
+#         """
 
-        n = problem.size
-        K = problem.tag_sizes
+#         n = problem.size
+#         K = problem.tag_sizes
+#         return tagger_first_order(sentence_length, tag_sizes)
+#         # t = problem.max_tag_size
+#         # coder = np.arange(n * t, dtype=np.int64)\
+#         #     .reshape([n, t])
+#         # out = np.arange(n * t * t, dtype=np.int64)\
+#         #     .reshape([n, t, t])
 
-        t = problem.max_tag_size
-        coder = np.arange(n * t, dtype=np.int64)\
-            .reshape([n, t])
-        out = np.arange(n * t * t, dtype=np.int64)\
-            .reshape([n, t, t])
+#         # c = pydecode.ChartBuilder(coder, out,
+#         #                           unstrict=True,
+#         #                           lattice=True)
 
-        c = pydecode.ChartBuilder(coder, out,
-                                  unstrict=True,
-                                  lattice=True)
+#         # c.init(coder[0, :K[0]])
+#         # for i in range(1, problem.size):
+#         #     for t in range(K[i]):
+#         #         c.set(coder[i, t],
+#         #               coder[i-1, :K[i-1]],
+#         #               out=out[i, t, :K[i-1]])
 
-        c.init(coder[0, :K[0]])
-        for i in range(1, problem.size):
-            for t in range(K[i]):
-                c.set(coder[i, t],
-                      coder[i-1, :K[i-1]],
-                      out=out[i, t, :K[i-1]])
+#         # return c.finish(False)
 
-        return c.finish(False)
+
+def tagger_first_order(self, sentence_length, tag_sizes):
+    n = sentence_length
+    K = tag_sizes
+    t = np.max(tag_sizes)
+
+    coder = np.arange(n * t, dtype=np.int64)\
+        .reshape([n, t])
+    out = np.arange(n * t * t, dtype=np.int64)\
+        .reshape([n, t, t])
+
+    c = pydecode.ChartBuilder(coder, out,
+                              unstrict=True,
+                              lattice=True)
+
+    c.init(coder[0, :K[0]])
+    for i in range(1, problem.size):
+        for t in range(K[i]):
+            c.set(coder[i, t],
+                  coder[i-1, :K[i-1]],
+                  out=out[i, t, :K[i-1]])
+
+    return c.finish(False)

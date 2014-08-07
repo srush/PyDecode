@@ -1,6 +1,5 @@
 import numpy as np
 import pydecode
-import pydecode.lp as lp
 import pulp
 
 MAX = float('inf')

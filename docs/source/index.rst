@@ -15,4 +15,5 @@ PyDecode
    setup
    notebooks/index
    api
+   nlp
    extensions

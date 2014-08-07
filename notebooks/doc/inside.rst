@@ -14,10 +14,9 @@ This examples creates a simple hypergraph with random integer weights, and overl
 
 .. code:: python
 
-    import pydecode
-    import pydecode.test.utils
+    import pydecode, pydecode.test
     import numpy as np
-    graph = pydecode.test.utils.simple_hypergraph()
+    graph = pydecode.test.simple_hypergraph()
     weights = np.random.randint(10, size=(len(graph.edges)))
     pydecode.draw(graph, weights)
 
@@ -63,41 +62,58 @@ This examples creates a simple hypergraph with random integer weights, and overl
 
 
 
+Bibliography
+------------
+
+
+.. bibliography:: ../../full.bib 
+   :filter: key in {"younger1967recognition"}
+   :style: plain
+
 Invariants
 ----------
 
 
-.. code:: python
-
-    import numpy.testing as test
-    import pydecode.test.utils as test_utils
-    graph, weights, weight_type = test_utils.random_setup()
-    inside = pydecode.inside(graph, weights, weight_type=weight_type)
 Scores in the chart represent the sum of all inside path.
 
 .. code:: python
 
-    for vertex in graph.vertices:
-        if vertex.is_terminal: 
-            score = weight_type.Value.one()
-        else:
-            score = weight_type.Value.zero()
-            for path in test_utils.inside_paths(graph, vertex):
-                score += test_utils.path_score(path, weights, weight_type)
-        test.assert_almost_equal(inside[vertex.id], score.value, 5)
+    import pydecode.test
+    @pydecode.test.property()
+    def test_all_inside_paths(graph, weights, weight_type):
+        """
+        Check inside values by enumeration.
+        """
+        inside = pydecode.inside(graph, weights, 
+                                 weight_type=weight_type)
+        for vertex in graph.vertices:
+            if vertex.is_terminal: 
+                score = weight_type.one()
+            else:
+                score = weight_type.zero()
+                for path in pydecode.test.inside_paths(graph, vertex):
+                    score += pydecode.score(path, weights, weight_type)
+            pydecode.test.assert_almost_equal(inside[vertex.id], 
+                                              score.value)
+    test_all_inside_paths()
 Check that the inside score of a vertex is the sum of its direct children. 
 
 .. code:: python
 
-    inside2 = np.zeros(inside.shape, dtype=np.double)
-    inside2.fill(weight_type.Value.zero_raw())
-    for vertex in graph.vertices:
-        if vertex.is_terminal: 
-            inside2[vertex.id] = weight_type.Value.one().value
-        else:
-            score = weight_type.Value(inside2[vertex.id])
-            for edge in vertex.edges:
-                temp = [inside[sub.id] for sub in edge.tail] +  [weights[edge.id]]
-                score += np.product(map(weight_type.Value, temp))
-        inside2[vertex.id] = score.value
-    test.assert_almost_equal(inside, inside2, 5)
+    @pydecode.test.property()
+    def test_local_inside(graph, weights, weight_type):
+        inside = pydecode.inside(graph, weights, 
+                                 weight_type=weight_type)
+        inside2 = np.zeros(inside.shape, dtype=np.double)
+        inside2.fill(weight_type.Value.zero_raw())
+        for vertex in graph.vertices:
+            if vertex.is_terminal: 
+                score = weight_type.one()
+            else:
+                score = weight_type.from_value(inside2[vertex.id])
+                for edge in vertex.edges:
+                    temp = [inside[sub.id] for sub in edge.tail] +  [weights[edge.id]]
+                    score += np.product(map(weight_type.Value, temp))
+            inside2[vertex.id] = score.value
+        pydecode.test.assert_almost_equal(inside, inside2)
+    test_local_inside()

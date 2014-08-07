@@ -2,13 +2,13 @@
 Classes for dependency parsing problems.
 """
 
-import pydecode.nlp.decoding as decoding
+# import pydecode.nlp.decoding as decoding
 import pydecode
-import numpy.random
 import numpy as np
 import itertools
 
-class DependencyProblem(decoding.DecodingProblem):
+
+class DependencyProblem:
     """
     Descriptions for dependency parsing problem over a
     sentence x_1 ... x_n, where x_0 is an implied root
@@ -217,133 +217,114 @@ kDir = 2
 Right = 0
 Left = 1
 
-class FirstOrderDecoder(decoding.HypergraphDecoder):
-    def output_coder(self, problem):
-        return FirstOrderCoder(problem)
+# class FirstOrderDecoder(decoding.HypergraphDecoder):
+#     def output_coder(self, problem):
+#         return FirstOrderCoder(problem)
 
-    def dynamic_program(self, problem):
-        """
-        Implements Eisner's algorithm for first-order parsing.
+#     def dynamic_program(self, problem):
+#         return eisner_first_order(problem.size + 1)
 
-        Parameters
-        -----------
-        problem : DependencyProblem
-          Problem description.
+# class SecondOrderDecoder(decoding.HypergraphDecoder):
+#     def output_coder(self, problem):
+#         return SecondOrderCoder(problem)
 
-        Returns
-        -------
-        dp : DynamicProgram
-        """
-        n = problem.size + 1
-        num_edges = 4 * n ** 3
+#     def dynamic_program(self, problem):
+#         return eisner_second_order(problem.size + 1)
 
-        items = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
-            .reshape([kShapes, kDir, n, n])
-        out = np.arange(n*n, dtype=np.int64).reshape([n, n])
-        c = pydecode.ChartBuilder(items, out,
-                                  unstrict=True,
-                                  expected_size=(num_edges, 2))
 
-        # Add terminal nodes.
-        c.init(np.diag(items[Tri, Right]).copy())
-        c.init(np.diag(items[Tri, Left, 1:, 1:]).copy())
+def eisner_first_order(n):
+    num_edges = 4 * n ** 3
 
-        for k in range(1, n):
-            for s in range(n):
-                t = k + s
-                if t >= n:
-                    break
+    items = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
+        .reshape([kShapes, kDir, n, n])
+    out = np.arange(n*n, dtype=np.int64).reshape([n, n])
+    c = pydecode.ChartBuilder(items, out,
+                              unstrict=True,
+                              expected_size=(num_edges, 2))
 
-                out_ind = np.zeros([t-s], dtype=np.int64)
+    # Add terminal nodes.
+    c.init(np.diag(items[Tri, Right]).copy())
+    c.init(np.diag(items[Tri, Left, 1:, 1:]).copy())
 
-                # First create incomplete items.
-                if s != 0:
-                    out_ind.fill(out[t, s])
-                    c.set(items[Trap, Left,  s,       t],
-                           items[Tri,  Right, s,       s:t],
-                           items[Tri,  Left,  s+1:t+1, t],
-                           out=out_ind)
+    for k in range(1, n):
+        for s in range(n):
+            t = k + s
+            if t >= n:
+                break
 
-                out_ind.fill(out[s, t])
-                c.set(items[Trap, Right, s,       t],
-                      items[Tri,  Right, s,       s:t],
-                      items[Tri,  Left,  s+1:t+1, t],
-                      out=out_ind)
+            out_ind = np.zeros([t-s], dtype=np.int64)
 
-                out_ind.fill(-1)
-                if s != 0:
-                    c.set(items[Tri,  Left,  s,   t],
-                          items[Tri,  Left,  s,   s:t],
-                          items[Trap, Left,  s:t, t],
-                          out=out_ind)
+            # First create incomplete items.
+            if s != 0:
+                out_ind.fill(out[t, s])
+                c.set_t(items[Trap, Left,  s,       t],
+                        items[Tri,  Right, s,       s:t],
+                        items[Tri,  Left,  s+1:t+1, t],
+                        labels=out_ind)
 
-                c.set(items[Tri,  Right, s,       t],
-                      items[Trap, Right, s,       s+1:t+1],
-                      items[Tri,  Right, s+1:t+1, t],
-                      out=out_ind)
+            out_ind.fill(out[s, t])
+            c.set_t(items[Trap, Right, s,       t],
+                    items[Tri,  Right, s,       s:t],
+                    items[Tri,  Left,  s+1:t+1, t],
+                    labels=out_ind)
 
-        return c.finish(False)
+            out_ind.fill(-1)
+            if s != 0:
+                c.set_t(items[Tri,  Left,  s,   t],
+                        items[Tri,  Left,  s,   s:t],
+                        items[Trap, Left,  s:t, t],
+                        labels=out_ind)
 
-class SecondOrderDecoder(decoding.HypergraphDecoder):
-    def output_coder(self, problem):
-        return SecondOrderCoder(problem)
+            c.set_t(items[Tri,  Right, s,       t],
+                    items[Trap, Right, s,       s+1:t+1],
+                    items[Tri,  Right, s+1:t+1, t],
+                    labels=out_ind)
 
-    def dynamic_program(self, problem):
-        """
-        Implements Eisner's algorithm for second-order parsing.
+    return c.finish(False)
 
-        Parameters
-        -----------
-        problem : DependencyProblem
-          Problem description.
 
-        Returns
-        -------
-        dp : DynamicProgram
-        """
-        n = problem.size + 1
+def eisner_second_order(n):
+    coder = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
+        .reshape([kShapes, kDir, n, n])
+    out = np.arange(n*n*n, dtype=np.int64).reshape([n, n, n])
+    c = pydecode.ChartBuilder(coder, out,
+                              unstrict=True)
+    # Initialize the chart.
+    c.init(np.diag(coder[Tri, Right]).copy())
+    c.init(np.diag(coder[Tri, Left, 1:, 1:]).copy())
 
-        coder = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
-            .reshape([kShapes, kDir, n, n])
-        out = np.arange(n*n*n, dtype=np.int64).reshape([n, n, n])
-        c = pydecode.ChartBuilder(coder, out,
-                                  unstrict=True)
-        # Initialize the chart.
-        c.init(np.diag(coder[Tri, Right]).copy())
-        c.init(np.diag(coder[Tri, Left, 1:, 1:]).copy())
+    for k in range(1, n):
+        for s in range(n):
+            t = k + s
+            if t >= n:
+                break
 
-        for k in range(1, n):
-            for s in range(n):
-                t = k + s
-                if t >= n:
-                    break
+            if s != 0:
+                c.set_t(coder[Box, Left, s, t],
+                        coder[Tri, Right, s, s:t],
+                        coder[Tri, Left, s+1:t+1, t])
 
-                if s != 0:
-                    c.set(coder[Box, Left, s, t],
-                          coder[Tri, Right, s, s:t],
-                          coder[Tri, Left, s+1:t+1, t])
+                c.set_t(coder[Trap, Left, s, t],
+                        np.append(coder[Tri, Right, s, t-1],
+                                  coder[Box, Left, s, t-1:s:-1]),
+                        np.append(coder[Tri, Left, t, t],
+                                  coder[Trap, Left, t-1:s:-1, t]),
+                        labels=out[t, s, t:s:-1])
 
-                    c.set(coder[Trap, Left, s, t],
-                          np.append(coder[Tri, Right, s, t-1],
-                                    coder[Box, Left, s, t-1:s:-1]),
-                          np.append(coder[Tri, Left, t, t],
-                                    coder[Trap, Left, t-1:s:-1, t]),
-                          out=out[t, s, t:s:-1])
+            c.set_t(coder[Trap, Right, s, t],
+                    np.append(coder[Tri, Right, s, s],
+                              coder[Trap, Right, s, s+1:t]),
+                    np.append(coder[Tri, Left, s+1, t],
+                              coder[Box, Left, s+1:t, t]),
+                    labels=out[s, t, s:t])
 
-                c.set(coder[Trap, Right, s, t],
-                      np.append(coder[Tri, Right, s, s],
-                                coder[Trap, Right, s, s+1:t]),
-                      np.append(coder[Tri, Left, s+1, t],
-                                coder[Box, Left, s+1:t, t]),
-                      out=out[s, t, s:t])
+            if s != 0:
+                c.set_t(coder[Tri, Left, s, t],
+                        coder[Tri, Left, s, s:t],
+                        coder[Trap, Left, s:t, t])
 
-                if s != 0:
-                    c.set(coder[Tri, Left, s, t],
-                          coder[Tri, Left, s, s:t],
-                          coder[Trap, Left, s:t, t])
-
-                if (s, t) == (0, n-1) or s != 0:
-                    c.set(coder[Tri, Right, s, t],
-                          coder[Trap, Right, s, s+1:t+1],
-                          coder[Tri, Right, s+1:t+1, t])
-        return c.finish(False)
+            if (s, t) == (0, n-1) or s != 0:
+                c.set_t(coder[Tri, Right, s, t],
+                        coder[Trap, Right, s, s+1:t+1],
+                        coder[Tri, Right, s+1:t+1, t])
+    return c.finish(False)

@@ -75,6 +75,22 @@ cdef _{{S.type}}_from_cpp({{S.cvalue}} val):
 
 class {{S.type}}:
     Value = {{S.type}}Value
+
+    @staticmethod
+    def zero():
+        return {{S.type}}Value().init({{S.type}}_zero())
+
+    @staticmethod
+    def one():
+        return {{S.type}}Value().init({{S.type}}_one())
+
+    @staticmethod
+    def from_value({{S.pvalue if S.pvalue else S.cvalue}} val):
+        created = {{S.type}}Value()
+        created.thisval = _{{S.type}}_to_cpp(val)
+        return created
+
+
     {% if S.npvalue %}
     @staticmethod
     def inside(Hypergraph graph,

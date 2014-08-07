@@ -11,8 +11,8 @@ def inside(graph, weights, weight_type=None, chart=None):
     Compute the inside table for the hypergraph and weights.
 
     Formally, given a hyperedge weight vector :math:`w` in
-    :math:`\mathbb{S}^{{\cal E}}`, the function computes the inside
-    vector :math:`C` in :math:`\mathbb{S}^{{\cal V}}` defined for all vertices
+    :math:`\mathbb{K}^{{\cal E}}`, the function computes the inside
+    vector :math:`C` in :math:`\mathbb{K}^{{\cal V}}` defined for all vertices
     :math:`v` as
 
     .. math::
@@ -29,19 +29,19 @@ def inside(graph, weights, weight_type=None, chart=None):
       The hypergraph :math:`({\cal V}, {\cal E})`.
 
     weights : ndarray
-      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{K}^{{\cal E}}`.
 
     weight_type : weight-type, optional
-      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
+      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{K}` must agree with weights.
 
     chart : ndarray, optional
-      A chart buffer to reuse. Vector in :math:`\mathbb{S}^{{\cal V}}`.
+      A chart buffer to reuse. Vector in :math:`\mathbb{K}^{{\cal V}}`.
 
     Returns
     -------
 
     chart : ndarray
-       The computed inside chart :math:`C`. Represented as a vector in :math:`\mathbb{S}^{{\cal V}}`.
+       The computed inside chart :math:`C`. Represented as a vector in :math:`\mathbb{K}^{{\cal V}}`.
        Each element corresponds to the sum of the scores of each path
        "below" vertex v.
     """
@@ -53,8 +53,8 @@ def outside(graph, weights, inside_chart, weight_type=None, chart=None):
     Compute the outside table for the hypergraph and weights.
 
     Formally, given a hyperedge weight vector :math:`w` in
-    :math:`\mathbb{S}^{{\cal E}}`, the function computes the outside
-    vector :math:`C` in :math:`\mathbb{S}^{{\cal V}}` defined for all hyperedges
+    :math:`\mathbb{K}^{{\cal E}}`, the function computes the outside
+    vector :math:`C` in :math:`\mathbb{K}^{{\cal V}}` defined for all hyperedges
     :math:`v` as
 
     .. math::
@@ -72,7 +72,7 @@ def outside(graph, weights, inside_chart, weight_type=None, chart=None):
       The hypergraph :math:`({\cal V}, {\cal E})`.
 
     weights : ndarray
-      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{K}^{{\cal E}}`.
 
 
     inside_chart : ndarray
@@ -80,16 +80,16 @@ def outside(graph, weights, inside_chart, weight_type=None, chart=None):
        :py:function:`inside`.  Must be the same type as weights.
 
     weight_type : weight-type, optional
-      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
+      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{K}` must agree with weights.
 
     chart : ndarray, optional
-      A chart buffer to reuse. Vector in :math:`\mathbb{S}^{{\cal V}}`.
+      A chart buffer to reuse. Vector in :math:`\mathbb{K}^{{\cal V}}`.
 
     Returns
     ---------
 
     chart : ndarray
-       The computed ouside chart :math:`C`. Represented as a vector in :math:`\mathbb{S}^{{\cal V}}`.
+       The computed ouside chart :math:`C`. Represented as a vector in :math:`\mathbb{K}^{{\cal V}}`.
        Each element corresponds to the sum of the scores of each path
        outside of vertex v.
     """
@@ -113,14 +113,14 @@ def best_path(graph, weights,
       The hypergraph :math:`({\cal V}, {\cal E})`.
 
     weights : ndarray
-      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{K}^{{\cal E}}`.
 
 
     weight_type : weight-type, optional
-      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
+      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{K}` must agree with weights.
 
     chart : ndarray, optional
-      A chart buffer to reuse. Vector in :math:`\mathbb{S}^{{\cal V}}`.
+      A chart buffer to reuse. Vector in :math:`\mathbb{K}^{{\cal V}}`.
 
     back_pointer : ndarray, optional
       A back pointer buffer to reuse. Int-vector of size :math:`|{\cal V}|`.
@@ -151,12 +151,12 @@ def kbest(graph, weights, k,
       The hypergraph :math:`({\cal V}, {\cal E})`.
 
     weights : ndarray
-      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{K}^{{\cal E}}`.
 
     k : int
 
     weight_type : weight-type, optional
-      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
+      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{K}` must agree with weights.
 
     Returns
     -------
@@ -173,8 +173,8 @@ def marginals(graph, weights,
     Compute hyperedge marginals based on hypergraph and weights.
 
     Formally, given a hyperedge weight vector :math:`w` in
-    :math:`\mathbb{S}^{{\cal E}}`, the function computes the hyperedge marginal
-    vector :math:`M` in :math:`\mathbb{S}^{{\cal E}}` defined for all
+    :math:`\mathbb{K}^{{\cal E}}`, the function computes the hyperedge marginal
+    vector :math:`M` in :math:`\mathbb{K}^{{\cal E}}` defined for all
     :math:`e` as
 
     .. math::
@@ -192,7 +192,7 @@ def marginals(graph, weights,
       The hypergraph :math:`({\cal V}, {\cal E})`.
 
     weights : ndarray
-      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+      The weight of each hyperedge. Represented as a vector in :math:`\mathbb{K}^{{\cal E}}`.
 
 
     inside_chart : ndarray, optional
@@ -206,13 +206,13 @@ def marginals(graph, weights,
        If not provide will be calculated as part of the function.
 
     weight_type : weight-type, optional
-      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{S}` must agree with weights.
+      A weight-type semiring; default: LogViterbi. See :ref:`weight_types` for full list. Type :math:`\mathbb{K}` must agree with weights.
 
     Returns
     ---------
 
     marginals : ndarray
-       The computed marginal vector :math:`M`. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+       The computed marginal vector :math:`M`. Represented as a vector in :math:`\mathbb{K}^{{\cal E}}`.
        Each element corresponds to the sum of the scores of each path passing through each hyperedge :math:`e`.
     """
     my_inside = inside_chart
@@ -303,14 +303,15 @@ def transform(graph, label_array, weight_type=None):
     weight_type : weight-type, optional
       A weight-type semiring; default: LogViterbi. Used
       to give weight :math:`\bar{1}` to unlabeled (-1) edges.
-      Type :math:`\mathbb{S}` must agree with label_array.
+      Type :math:`\mathbb{K}` must agree with label_array.
 
     Returns
     -------
     weights : ndarray
-      The corresponding weight array. Represented as a vector in :math:`\mathbb{S}^{{\cal E}}`.
+      The corresponding weight array. Represented as a vector in :math:`\mathbb{K}^{{\cal E}}`.
     """
-    array = np.append(label_array, np.array([_get_type(weight_type).Value.one_raw()]))
+    array = np.append(label_array, np.array([_get_type(weight_type).Value.one_raw()],
+                                            dtype=label_array.dtype))
     return array.take(graph.labeling, mode='wrap')
 
 def inverse_transform(graph, weights, labeling=None, weight_type=None, size=None):
@@ -329,18 +330,18 @@ def inverse_transform(graph, weights, labeling=None, weight_type=None, size=None
 
     weights : ndarray
       A weight of each hyperedge. Represented as a
-      vector in :math:`\mathbb{S}^{{\cal E}}`.
+      vector in :math:`\mathbb{K}^{{\cal E}}`.
 
     weight_type : weight-type, optional
       A weight-type semiring; default: LogViterbi. Used
       to give a :math:`\oplus` operation to combine weights
       for labels that are used at multiple edges.
-      Type :math:`\mathbb{S}` must agree with label_array.
+      Type :math:`\mathbb{K}` must agree with label_array.
 
     Returns
     -------
     label : ndarray
-      The corresponding label array. Represented as a vector in :math:`\mathbb{S}^{L}`.
+      The corresponding label array. Represented as a vector in :math:`\mathbb{K}^{L}`.
     """
     my_labeling = labeling
     if my_labeling is None:
@@ -424,6 +425,11 @@ def lp(graph, weights):
     """
     import pydecode.linear_program
     return pydecode.linear_program.HypergraphLP.make_lp(graph, weights)
+
+def score(path, weights, weight_type):
+    return np.product(
+        [weight_type.Value(weights[edge.id])
+         for edge in path])
 
 # Higher-level interface.
 
