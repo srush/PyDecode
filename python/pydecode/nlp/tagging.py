@@ -2,6 +2,7 @@
 Classes for sequence tagging/labeling problem.
 """
 import pydecode
+
 import itertools
 import numpy as np
 

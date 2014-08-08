@@ -2,12 +2,6 @@ import dependency_parsing
 import tagging
 import numpy as np
 
-# class IndexSet:
-#     def __init__(self, shape):
-#         self.shape = shape
-
-#     def transform(self, labels):
-#         return np.array(np.unravel_index(labels, self.shape)).T
 
 def eisner(sentence_length, order=1):
     """

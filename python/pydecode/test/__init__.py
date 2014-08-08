@@ -184,6 +184,7 @@ def simple_hypergraph():
     #     assert edge.label in ["0", "1", "2", "3", "4"]
     return dp
 
+
 def random_path(graph):
     """
     Constructs a randomly-generated valid hyperpath.

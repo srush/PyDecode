@@ -5,6 +5,7 @@ import pydecode
 import numpy as np
 import itertools
 
+
 def all_parses(sentence_length):
     n = sentence_length + 1
     for mid in itertools.product(range(n+1), repeat=n-1):
