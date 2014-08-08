@@ -1,13 +1,13 @@
 import dependency_parsing
 import tagging
+import numpy as np
 
+# class IndexSet:
+#     def __init__(self, shape):
+#         self.shape = shape
 
-class IndexSet:
-    def __init__(self, shape):
-        self.shape = shape
-
-    def transform(self, labels):
-        return np.array(np.unravel_index(labels, self.shape)).T
+#     def transform(self, labels):
+#         return np.array(np.unravel_index(labels, self.shape)).T
 
 def eisner(sentence_length, order=1):
     """
@@ -31,10 +31,13 @@ def eisner(sentence_length, order=1):
     index_set :
 
     """
+    n = sentence_length + 1
     if order == 1:
-        return dependency_parsing.eisner_first_order(sentence_length + 1)
+        graph = dependency_parsing.eisner_first_order(n)
     elif order == 2:
-        return dependency_parsing.eisner_second_order(sentence_length + 1)
+        graph = dependency_parsing.eisner_second_order(n)
+
+    return graph, dependency_parsing.ParsingEncoder(n, order)
 
 
 def tagger(sentence_length, tag_sizes, order=1):
@@ -59,7 +62,8 @@ def tagger(sentence_length, tag_sizes, order=1):
     index_set :
     """
     if order == 1:
-        return tagging.tagger_first_order(sentence_length, tag_sizes)
+        return tagging.tagger_first_order(sentence_length, tag_sizes), \
+            tagging.TaggingEncoder(tag_sizes, order)
 
 
 def semimarkov(sentence_length):

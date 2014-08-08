@@ -183,3 +183,29 @@ def simple_hypergraph():
     # for edge in hypergraph.edges:
     #     assert edge.label in ["0", "1", "2", "3", "4"]
     return dp
+
+def random_path(graph):
+    """
+    Constructs a randomly-generated valid hyperpath.
+
+    Parameters
+    ------------
+
+    graph : Hypergraph
+
+    Returns
+    ----------
+    path : Hyperpath
+        A randomly generated hyperpath.
+
+    """
+    def random_path_edges(node):
+        edges = []
+        if node.edges:
+            edge = random.sample(node.edges, 1)
+            edges.append(edge[0])
+            for t in edge[0].tail:
+                edges += random_path_edges(t)
+        return edges
+    edges = random_path_edges(graph.root)
+    return pydecode.Path(graph, edges)

@@ -41,6 +41,7 @@ cdef extern from "Hypergraph/Hypergraph.hh":
         vector[int] nodes()
         int has_edge(int)
         bool equal(const CHyperpath path)
+        const int *labels()
 
     CHyperpath *construct_path(CHypergraph *,
                                 int * back_pointers)

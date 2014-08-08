@@ -508,6 +508,13 @@ cdef class Path:
                 self._make_vector()
             return self._vertex_vector
 
+    property labeling:
+        def __get__(self):
+            cdef const int *labels = self.thisptr.labels()
+            cdef int size = self.thisptr.edges().size()
+            return np.asarray(<int[:size]> labels)
+
+
 class HypergraphAccessException(Exception):
     def __init__(self, value):
         self.value = value

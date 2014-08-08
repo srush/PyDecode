@@ -11,7 +11,7 @@ int Hypergraph::ID = 0;
 HEdge HypergraphBuilder::add_edge(const vector<HNode> &nodes,
                                   int label)  {
     if (unary_) {
-        return add_edge(nodes[0]);
+        return add_edge(nodes[0], label);
     }
     assert(lock_);
     assert(!unary_);

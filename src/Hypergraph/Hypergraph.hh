@@ -266,6 +266,7 @@ class Hyperpath {
         //HEdge last_edge = -1;
         foreach (HEdge edge, edges) {
             edges_set_.insert(graph->id(edge));
+            labels_.push_back(graph->label(edge));
         //     if (last_edge != -1 && graph->id(last_edge) >= graph->id(edge)) {
         //         throw HypergraphException("Hyperpath is not in order.");
         //     }
@@ -323,6 +324,8 @@ class Hyperpath {
         return true;
     }
 
+    const Label *labels() const { return labels_.data(); }
+
   private:
     const Hypergraph *graph_;
     set<int> nodes_set_;
@@ -330,6 +333,8 @@ class Hyperpath {
 
     set<int> edges_set_;
     const vector<HEdge> edges_;
+
+    vector<Label> labels_;
 };
 
 
