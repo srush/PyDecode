@@ -4,36 +4,20 @@ Classes for dependency parsing problems.
 import pydecode
 import numpy as np
 import itertools
+from pydecode.encoder import StructuredEncoder
 
 
-def all_parses(sentence_length):
-    n = sentence_length + 1
-    for mid in itertools.product(range(n+1), repeat=n-1):
-        parse = np.zeros(n)
-        parse[0] = -1
-        parse[1:] = list(mid)
-        if (not is_projective(parse)) or \
-                (not is_spanning(parse)):
-            continue
-        yield parse
-
-class ParsingEncoder:
+class DependencyParsingEncoder(StructuredEncoder):
     def __init__(self, n, order):
         self.n = n
         self.order = order
         if order == 1:
-            self.shape = (n, n)
+            shape = (n, n)
         elif order == 2:
-            self.shape = (n, n, n)
+            shape = (n, n, n)
+        super(DependencyParsingEncoder, self).__init__(shape)
 
-    def transform(self, labels):
-        return np.array(np.unravel_index(labels, self.shape)).T
-
-    def from_path(self, path):
-        parse = self.transform(path.labeling[path.labeling!=-1])
-        return self.from_labels(parse)
-
-    def to_labels(self, parse):
+    def transform_structure(self, parse):
         if self.order == 1:
             return np.array([[h, m]
                              for m, h in enumerate(parse[1:], 1)])
@@ -41,10 +25,34 @@ class ParsingEncoder:
             return np.array([[h, m, sibling(parse, m)]
                              for m, h in enumerate(parse[1:], 1)])
 
-    def from_labels(self, labels):
-        arcs = list(labels)
+    def from_parts(self, parts):
+        arcs = list(parts)
         arcs.sort(key=lambda a:a[1])
         return np.array(([-1] + [arc[0] for arc in arcs if arc[1] != 0]))
+
+    def all_structures(self):
+        n = self.n
+        for mid in itertools.product(range(n+1), repeat=n-1):
+            parse = np.zeros(n)
+            parse[0] = -1
+            parse[1:] = list(mid)
+            if (not is_projective(parse)) or \
+                    (not is_spanning(parse)):
+                continue
+            yield parse
+
+    def random_structure(self):
+        n = self.n
+        while True:
+            mid = np.random.randint(n+1, size=n-1)
+            parse = np.zeros(n)
+            parse[0] = -1
+            parse[1:] = mid
+            if (not is_projective(parse)) or \
+                    (not is_spanning(parse)):
+                continue
+            return parse
+
 
 # Globals
 kShapes = 3
@@ -61,7 +69,8 @@ def eisner_first_order(n):
 
     items = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
         .reshape([kShapes, kDir, n, n])
-    out = np.arange(n*n, dtype=np.int64).reshape([n, n])
+    part_encoder = DependencyParsingEncoder(n, 1)
+    out = part_encoder.encoder
     c = pydecode.ChartBuilder(items, out,
                               unstrict=True,
                               expected_size=(num_edges, 2))
@@ -104,13 +113,16 @@ def eisner_first_order(n):
                     items[Tri,  Right, s+1:t+1, t],
                     labels=out_ind)
 
-    return c.finish(False)
+    return c.finish(False), part_encoder
 
 
 def eisner_second_order(n):
     coder = np.arange((kShapes * kDir * n * n), dtype=np.int64) \
         .reshape([kShapes, kDir, n, n])
-    out = np.arange(n*n*n, dtype=np.int64).reshape([n, n, n])
+
+    part_encoder = DependencyParsingEncoder(n, 2)
+    out = part_encoder.encoder
+
     c = pydecode.ChartBuilder(coder, out,
                               unstrict=True)
     # Initialize the chart.
@@ -151,7 +163,7 @@ def eisner_second_order(n):
                 c.set_t(coder[Tri, Right, s, t],
                         coder[Trap, Right, s, s+1:t+1],
                         coder[Tri, Right, s+1:t+1, t])
-    return c.finish(False)
+    return c.finish(False), part_encoder
 
 
 def is_spanning(parse):

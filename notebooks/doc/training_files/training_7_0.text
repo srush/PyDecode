@@ -1,0 +1,29 @@
+iteration 0
+avg loss: 0.400000 w: [[-1.]
+ [ 0.]
+ ..., 
+ [ 0.]
+ [ 0.]]
+effective learning rate: 1.000000
+iteration 1
+avg loss: 0.200000 w: [[-1.]
+ [ 0.]
+ ..., 
+ [ 0.]
+ [ 0.]]
+effective learning rate: 1.000000
+iteration 2
+avg loss: 0.200000 w: [[-1.]
+ [ 0.]
+ ..., 
+ [ 0.]
+ [ 0.]]
+effective learning rate: 1.000000
+iteration 3
+avg loss: 0.000000 w: [[-1.]
+ [ 0.]
+ ..., 
+ [ 0.]
+ [ 0.]]
+effective learning rate: 1.000000
+Loss zero. Stopping.

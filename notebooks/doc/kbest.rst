@@ -13,6 +13,7 @@ Example
 .. code:: python
 
     import pydecode, pydecode.test
+    import numpy as np
     graph = pydecode.test.simple_hypergraph()
     weights = np.random.randint(10, size=len(graph.edges))
 .. code:: python
@@ -34,7 +35,7 @@ Example
 
 .. parsed-literal::
 
-    (array([8]), array([6]))
+    (array([11]), array([4]))
 
 
 

@@ -1,7 +1,12 @@
+import numpy as np
+import itertools
+import pydecode.encoder
 def cnf_cky(n, N):
     items = np.arange((n * n * N), dtype=np.int64) \
         .reshape([n, n, N])
-    labels = np.arange(n*n*n*N*N*N, dtype=np.int64).reshape([n, n, n, N, N, N])
+
+    encoder = CFGEncoder(n, N)
+    labels = encoder.encoder
 
     chart = pydecode.ChartBuilder(items)
 
@@ -27,29 +32,77 @@ def cnf_cky(n, N):
             #             items[i, i:k],
             #             items[i+1:k+1, k],
             #             labels=labels[i, i:k, k])
-    return chart.finish()
+    return chart.finish(), encoder
 
 
-class CFGEncoder:
+class CFGEncoder(pydecode.encoder.StructuredEncoder):
     def __init__(self, n, N):
         self.n = n
         self.N = N
-        self.shape = (n, n, n, N, N, N)
+        shape = (n, n, n, N, N, N)
+        super(CFGEncoder, self).__init__(shape)
 
-    def transform(self, labels):
-        return np.array(np.unravel_index(labels, self.shape)).T
+    def transform_structure(self, chart):
+        i, k = 0, self.n-1
+        stack = [(i,k)]
+        parts = []
+        while stack:
+            i, k = stack.pop()
+            if i == k:continue
+            for j in range(i, k):
+                if chart[i, j] == -1 or chart[j+1, k] == -1:
+                    continue
+                assert(chart[j+1, k] != -1)
+                parts.append((i, j, k,
+                              chart[i,k], chart[i,j], chart[j+1, k]))
+                stack.append((i,j))
+                stack.append((j+1,k))
+        return np.array(parts)
 
-    def from_path(self, path):
-        parse = self.transform(path.labeling[path.labeling!=-1])
-        return self.from_labels(parse)
 
-    # def to_labels(self, tagging):
-    #     return np.array([[i] + tagging[i-self.order:i+1]
-    #                      for i in range(self.order, len(tagging))])
+    def from_parts(self, parts):
+        chart = np.zeros((self.n, self.n))
+        chart.fill(-1)
+        for part in parts:
+            chart[part[0], part[2]] = part[3]
+            if part[0] == part[1]:
+                chart[part[0], part[1]] = part[4]
+            if part[1]+1 == part[2]:
+                chart[part[1]+1, part[2]] = part[5]
 
-    # def from_labels(self, labels):
-    #     sequence = np.zeros(self.size)
-    #     for (i, pt, t) in labels:
-    #         sequence[i] = t
-    #         sequence[i-1] = pt
-    #     return sequence
+        return chart
+
+
+    def all_structures(self):
+        for splits in all_splits(0, self.n-1):
+            splits = splits[1:]
+            for labels in itertools.product(range(self.N),
+                                            repeat=len(splits)):
+                chart = np.zeros((self.n, self.n), dtype=np.int32)
+                chart.fill(-1)
+                chart[0, self.n-1] = 0
+                for split, label in zip(splits, labels):
+                    chart[split] = label
+
+                yield chart
+
+    def random_structure(self):
+        chart = np.zeros((self.n, self.n), dtype=np.int32)
+        chart.fill(-1)
+        splits = random_splits(0, self.n-1)
+        for split in splits:
+            chart[split] = np.random.randint(self.N)
+        return chart
+
+def random_splits(i, k):
+    if i == k: return [(i, i)]
+    j = np.random.randint(i, k)
+    return [(i, k)] + random_splits(i, j) + random_splits(j+1, k)
+
+
+def all_splits(i, k):
+    if i == k: yield [(i, i)]
+    for j in range(i,k):
+        for a in all_splits(i, j):
+            for b in all_splits(j+1, k):
+                yield [(i, k)] + a + b

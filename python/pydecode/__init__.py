@@ -431,6 +431,38 @@ def score(path, weights, weight_type):
         [weight_type.Value(weights[edge.id])
          for edge in path])
 
+def sparse_feature_indices(label_features, templates):
+    """
+    feature_matrix : int ndarray
+
+    templates : list of tuples
+    """
+    rows = []
+    offsets = [0]
+    for shape in templates[:-1]:
+        offsets.append(offsets[-1] + np.product(shape))
+
+    for features, shape in zip(label_features, templates):
+        out = np.ravel_multi_index(features, shape)
+        rows.append(out)
+
+    return np.vstack(rows).T + offsets
+
+def sparse_score_vector(feature_index_matrix, feature_weights):
+    return \
+        np.sum(np.take(np.asarray(feature_weights),
+                       feature_indices,
+                       mode="clip"), axis=1)
+
+
+def sparse_indicator_vector(indices, size):
+    ind = indices.ravel()
+    return scipy.sparse.csc_matrix(
+        (np.repeat(1, len(ind)), ind, [0, len(ind)]),
+        shape=(size, 1),
+        dtype=np.double)
+
+
 # Higher-level interface.
 
 def _check_output_weights(dp, out_weights):
