@@ -396,6 +396,7 @@ cdef class Path:
         cdef vector[int ] cnodes
         cdef set[int] nodes
         self.graph = graph
+
         edges.sort(key=lambda e: e.id)
         if graph and edges:
             nodes = set[int]()
