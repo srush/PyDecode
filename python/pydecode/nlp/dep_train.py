@@ -15,6 +15,7 @@ class FirstOrderModel(pydecode.model.HammingLossModel,
             for word, tag in zip(x.words, x.tags):
                 self.preprocessor.add(self._preprocess_word(word, tag))
             self.preprocessor.add(self._preprocess_word("*END*", "*END*"))
+        self.dp_cache_limit = 20
         super(FirstOrderModel, self).initialize(X, Y)
 
     def dynamic_program(self, x):
@@ -22,7 +23,11 @@ class FirstOrderModel(pydecode.model.HammingLossModel,
         if ("DP", n) not in self.cache:
             graph, encoder = pydecode.nlp.eisner(len(x.words)-1)
             self.cache["DP", n] = (graph, encoder)
+            return graph, encoder
         return self.cache["DP", n]
+
+    def part_cache(self, x):
+        return len(x.words) < self.dp_cache_limit
 
     def _preprocess_word(self, word, tag):
         return {"WORD": word, "TAG": tag}
@@ -44,35 +49,62 @@ class FirstOrderModel(pydecode.model.HammingLossModel,
         HEAD = 0
         MOD = 1
         dist = o[:, HEAD] - o[:, MOD]
-        bdist = np.digitize(dist, self.bins)
         direction = dist >= 0
-        base = [(p["WORD"][o[:, HEAD]], p["WORD"][o[:, MOD]]),
-                (p["WORD"][o[:, HEAD]], p["TAG"][ o[:, MOD]]),
-                (p["TAG"][o[:, HEAD]],  p["WORD"][o[:, MOD]]),
-                (p["TAG"][o[:, HEAD]],  p["TAG"][ o[:, MOD]])]
-        t = base
-        t += [(direction, bdist) + b for b in base]
+
+        bdist = np.digitize(np.abs(dist), self.bins)
+
+        # t = [(p["TAG"][o[:, HEAD]],  p["TAG"][ o[:, MOD]])]
+
+        # Unigram features.
+        t = [(p["WORD"][o[:, HEAD]],),
+             (p["WORD"][o[:, MOD]],),
+             (p["POS"] [o[:, HEAD]],),
+             (p["POS"] [o[:, MOD]],),
+             (p["WORD"][o[:, HEAD]], p["POS"][o[:, HEAD]]),
+             (p["WORD"][o[:, MOD]], p["POS"][o[:, MOD]])]
+        # Bigram features.
+        t += [(p["WORD"][o[:, HEAD]], p["WORD"][o[:, MOD]]),
+              (p["WORD"][o[:, HEAD]], p["TAG"][ o[:, MOD]]),
+              (p["TAG"][o[:, HEAD]],  p["WORD"][o[:, MOD]]),
+              (p["TAG"][o[:, HEAD]],  p["TAG"][ o[:, MOD]]),
+              (p["WORD"][o[:, HEAD]], p["TAG"][o[:, HEAD]],  p["TAG"][ o[:, MOD]]),
+              (p["WORD"][o[:, MOD]], p["TAG"][o[:, HEAD]],  p["TAG"][ o[:, MOD]])]
 
         for d in [(-1, -1), (-1, 1), (1, -1), (1, 1)]:
             t += [(p["TAG"][o[:, HEAD] + d[0]],
                    p["TAG"][o[:, HEAD]],
                    p["TAG"][o[:, MOD] + d[1]],
                    p["TAG"][o[:, MOD]])]
+
+        # t = base
+        t += [(direction, bdist) + b for b in t]
+
         return t
 
     def templates(self):
         def s(t):
             return self.preprocessor.size(t)
-        base = [(s("WORD"), s("WORD")),
-                (s("WORD"), s("TAG")),
-                (s("TAG"),  s("WORD")),
-                (s("TAG"),  s("TAG"))]
-        t = base
-        t += [(2, len(self.bins) + 1) + b for b in base]
+        # t = [(s("TAG"),  s("TAG"))]
+        t = [(s("WORD"),),
+             (s("WORD"),),
+             (s("POS"),),
+             (s("POS"),),
+             (s("WORD"), s("POS")),
+             (s("WORD"), s("POS"))]
+
+        t += [(s("WORD"), s("WORD")),
+              (s("WORD"), s("TAG")),
+              (s("TAG"),  s("WORD")),
+              (s("TAG"),  s("TAG")),
+              (s("WORD"), s("TAG"), s("TAG")),
+              (s("WORD"), s("TAG"), s("TAG"))]
+        # t = base
+
         t += [(s("TAG"), s("TAG"),
                s("TAG"), s("TAG"))] * 4
-        return t
 
+        t += [(2, len(self.bins) + 1) + b for b in t]
+        return t
 
 DepX = namedtuple("DepX", ("words", "tags"))
 
