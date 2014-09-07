@@ -19,6 +19,8 @@ class ExtensionWrapper:
                          if self.cython
                          else [pyx_name.split(".")[0] + "." + "cpp"] + cpp_names,
                          language='c++',
+                         library_dirs=['/usr/lib'],
+                         libraries=["boost_serialization"],
                          extra_compile_args=["-O0"] if self.debug else [],
                          include_dirs=[r'src/', "."])
 

@@ -16,6 +16,8 @@ cdef extern from "Hypergraph/Hypergraph.hh":
         int add_edge(vector[int], int label) except +
         CHypergraph *finish(bool reconstruct) except +
 
+
+
     cdef cppclass CHypergraph "Hypergraph":
         CHypergraph(bool)
         int id()
@@ -33,6 +35,10 @@ cdef extern from "Hypergraph/Hypergraph.hh":
         const vector[int] &edges()
         vector[int] heads()
 
+    void csave_hypergraph "save_hypergraph" (string filename,
+                                             const CHypergraph)
+    CHypergraph *cload_hypergraph "load_hypergraph"(string filename)
+
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,
                    const vector[int] nodes,
@@ -45,6 +51,8 @@ cdef extern from "Hypergraph/Hypergraph.hh":
 
     CHyperpath *construct_path(CHypergraph *,
                                 int * back_pointers)
+
+
 
 cdef class Labeling:
     cdef edge_labels

@@ -221,3 +221,29 @@ Hyperpath *construct_path(const Hypergraph *graph,
     }
     return new Hyperpath(graph, node_path, path);
 }
+
+
+void save_hypergraph(string filename, const Hypergraph &graph) {
+    std::ofstream ofs(filename.c_str());
+
+    // save data to archive
+    {
+        boost::archive::text_oarchive oa(ofs);
+        // write class instance to archive
+        oa << graph;
+        // archive and stream closed when destructors are called
+    }
+}
+
+Hypergraph *load_hypergraph(string filename) {
+    Hypergraph *graph = new Hypergraph(NULL, -1, false);
+    {
+        // create and open an archive for input
+        std::ifstream ifs(filename.c_str());
+        boost::archive::text_iarchive ia(ifs);
+        // read class state from archive
+        ia >> *graph;
+        // archive and stream closed when destructors are called
+    }
+    return graph;
+}

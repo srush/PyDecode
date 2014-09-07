@@ -10,6 +10,7 @@ cimport libcpp.map as c_map
 from libcpp.pair cimport pair
 from libcpp cimport bool
 
+
 ############# This is the templated semiring part. ##############
 
 {% for S in semirings %}
@@ -67,7 +68,7 @@ cdef extern from "Hypergraph/Semirings.hh" namespace "{{S.ctype}}":
     {{S.cvalue}} {{S.type}}_add "{{S.ctype}}::add" ({{S.cvalue}},
                                                     const {{S.cvalue}}&)
     {{S.cvalue}} {{S.type}}_times "{{S.ctype}}::times" ({{S.cvalue}},
-                                                        const {{S.cvalue}}&)
+                                                        const  {{S.cvalue}}&)
 
 cdef class {{S.type}}Value:
     cdef {{S.cvalue}} thisval
