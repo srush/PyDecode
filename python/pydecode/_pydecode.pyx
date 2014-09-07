@@ -596,6 +596,10 @@ class DynamicProgram:
 
 NODE_NULL = -1
 cdef class ChartBuilder:
+    def __dealloc__(self):
+        del self._builder
+        del self._chart
+
     def __init__(self,
                  items,
                  outputs=None,
