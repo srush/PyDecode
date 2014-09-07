@@ -431,41 +431,48 @@ def score(path, weights, weight_type):
         [weight_type.Value(weights[edge.id])
          for edge in path])
 
+
 def save(file_name, graph):
-    with open(file_name, "w") as out:
-        print >>out, len(graph.nodes)
-        print >>out, len(graph.edges)
-        for node in graph.nodes:
-            print >>out, node.id, int(node.is_terminal)
-            if not node.is_terminal:
-                for edge in node.edges:
-                    print >>out, "\t", edge.label,
-                    for tail in edge.tail:
-                        print >>out, tail.id,
-                    print >>out
-                print >>out, "----------"
+    save_hypergraph(file_name, graph)
 
 def load(file_name):
-    with open(file_name, "r") as text:
-        num_nodes = int(text.readline())
-        num_edges = int(text.readline())
-        temp = np.array([num_nodes])
-        chart = ChartBuilder(temp)
-        for line in text:
-            node_id, terminal = map(int, line.split())
-            if terminal:
-                chart.init(node_id)
-            else:
-                edges = []
-                labels = []
-                for line in text:
-                    if "------" in line:
-                        break
-                    t = map(int, line.split())
-                    labels.append(t[0])
-                    edges.append(t[1:])
-                chart.set(node_id, edges, labels)
-    return chart.finish()
+    return load_hypergraph(file_name)
+
+# def save(file_name, graph):
+#     with open(file_name, "w") as out:
+#         print >>out, len(graph.nodes)
+#         print >>out, len(graph.edges)
+#         for node in graph.nodes:
+#             print >>out, node.id, int(node.is_terminal)
+#             if not node.is_terminal:
+#                 for edge in node.edges:
+#                     print >>out, "\t", edge.label,
+#                     for tail in edge.tail:
+#                         print >>out, tail.id,
+#                     print >>out
+#                 print >>out, "----------"
+
+# def load(file_name):
+#     with open(file_name, "r") as text:
+#         num_nodes = int(text.readline())
+#         num_edges = int(text.readline())
+#         temp = np.array([num_nodes])
+#         chart = ChartBuilder(temp)
+#         for line in text:
+#             node_id, terminal = map(int, line.split())
+#             if terminal:
+#                 chart.init(node_id)
+#             else:
+#                 edges = []
+#                 labels = []
+#                 for line in text:
+#                     if "------" in line:
+#                         break
+#                     t = map(int, line.split())
+#                     labels.append(t[0])
+#                     edges.append(t[1:])
+#                 chart.set(node_id, edges, labels)
+#     return chart.finish()
 
 def sparse_feature_indices(label_features, templates):
     """

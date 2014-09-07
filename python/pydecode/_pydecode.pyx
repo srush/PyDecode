@@ -530,6 +530,15 @@ class HypergraphConstructionException(Exception):
     def __str__(self):
         return repr(self.value)
 
+
+def load_hypergraph(filename):
+    cdef CHypergraph * graph = cload_hypergraph(filename)
+    return Hypergraph().init(graph, None)
+
+
+def save_hypergraph(filename, Hypergraph hypergraph):
+    csave_hypergraph(filename, deref(hypergraph.thisptr))
+
 import numpy as np
 cimport cython
 

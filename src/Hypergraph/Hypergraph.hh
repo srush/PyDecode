@@ -8,6 +8,12 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <fstream>
+
+
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/vector.hpp>
 
 #include "./common.h"
 
@@ -46,14 +52,28 @@ struct _HypergraphStructure {
     }
     _HypergraphStructure() {}
 
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version) {
+        ar & nodes_;
+        ar & node_labels_;
+        ar & node_edges_;
+
+        ar & edges_;
+        ar & edge_tails_;
+
+        ar & edge_tails_unary_;
+        ar & edge_heads_;
+        ar & edge_labels_;
+    }
+
+
     vector<HNode> nodes_;
     vector<HNode> node_labels_;
     vector<vector<HNode> > node_edges_;
 
     vector<HEdge> edges_;
     vector<vector<HNode> > edge_tails_;
-
-    vector<pair<HNode, HNode> > edge_tails_binary_;
 
     vector<HNode> edge_tails_unary_;
     vector<HNode> edge_heads_;
@@ -102,7 +122,6 @@ class Hypergraph {
     const vector<HEdge> &edges() const {
         return structure_->edges_;
     }
-
 
 
     Label node_label(HNode node) const {
@@ -172,6 +191,15 @@ class Hypergraph {
 
     bool is_unary() const { return unary_; }
 
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version) {
+        ar & structure_;
+        ar & root_;
+        ar & unary_;
+    }
+
   private:
 
 
@@ -182,6 +210,10 @@ class Hypergraph {
 
     static int ID;
 };
+
+
+void save_hypergraph(string filename, const Hypergraph &graph);
+Hypergraph *load_hypergraph(string filename);
 
 class HypergraphBuilder {
   public:

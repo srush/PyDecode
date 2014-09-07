@@ -16,6 +16,8 @@ cdef extern from "Hypergraph/Hypergraph.hh":
         int add_edge(vector[int], int label) except +
         CHypergraph *finish(bool reconstruct) except +
 
+
+
     cdef cppclass CHypergraph "Hypergraph":
         CHypergraph(bool)
         int id()
@@ -33,6 +35,10 @@ cdef extern from "Hypergraph/Hypergraph.hh":
         const vector[int] &edges()
         vector[int] heads()
 
+    void csave_hypergraph "save_hypergraph" (string filename,
+                                             const CHypergraph)
+    CHypergraph *cload_hypergraph "load_hypergraph"(string filename)
+
     cdef cppclass CHyperpath "Hyperpath":
         CHyperpath(const CHypergraph *graph,
                    const vector[int] nodes,
@@ -45,6 +51,8 @@ cdef extern from "Hypergraph/Hypergraph.hh":
 
     CHyperpath *construct_path(CHypergraph *,
                                 int * back_pointers)
+
+
 
 cdef class Labeling:
     cdef edge_labels
@@ -224,6 +232,7 @@ cimport libcpp.map as c_map
 from libcpp.pair cimport pair
 from libcpp cimport bool
 
+
 ############# This is the templated semiring part. ##############
 
 
@@ -281,7 +290,7 @@ cdef extern from "Hypergraph/Semirings.hh" namespace "Viterbi":
     double Viterbi_add "Viterbi::add" (double,
                                                     const double&)
     double Viterbi_times "Viterbi::times" (double,
-                                                        const double&)
+                                                        const  double&)
 
 cdef class ViterbiValue:
     cdef double thisval
@@ -342,7 +351,7 @@ cdef extern from "Hypergraph/Semirings.hh" namespace "LogViterbi":
     double LogViterbi_add "LogViterbi::add" (double,
                                                     const double&)
     double LogViterbi_times "LogViterbi::times" (double,
-                                                        const double&)
+                                                        const  double&)
 
 cdef class LogViterbiValue:
     cdef double thisval
@@ -403,7 +412,7 @@ cdef extern from "Hypergraph/Semirings.hh" namespace "Real":
     double Real_add "Real::add" (double,
                                                     const double&)
     double Real_times "Real::times" (double,
-                                                        const double&)
+                                                        const  double&)
 
 cdef class RealValue:
     cdef double thisval
@@ -464,7 +473,7 @@ cdef extern from "Hypergraph/Semirings.hh" namespace "Log":
     double Log_add "Log::add" (double,
                                                     const double&)
     double Log_times "Log::times" (double,
-                                                        const double&)
+                                                        const  double&)
 
 cdef class LogValue:
     cdef double thisval
@@ -525,7 +534,7 @@ cdef extern from "Hypergraph/Semirings.hh" namespace "Boolean":
     char Boolean_add "Boolean::add" (char,
                                                     const char&)
     char Boolean_times "Boolean::times" (char,
-                                                        const char&)
+                                                        const  char&)
 
 cdef class BooleanValue:
     cdef char thisval
@@ -586,7 +595,7 @@ cdef extern from "Hypergraph/Semirings.hh" namespace "Counting":
     int Counting_add "Counting::add" (int,
                                                     const int&)
     int Counting_times "Counting::times" (int,
-                                                        const int&)
+                                                        const  int&)
 
 cdef class CountingValue:
     cdef int thisval
@@ -647,7 +656,7 @@ cdef extern from "Hypergraph/Semirings.hh" namespace "MinMax":
     double MinMax_add "MinMax::add" (double,
                                                     const double&)
     double MinMax_times "MinMax::times" (double,
-                                                        const double&)
+                                                        const  double&)
 
 cdef class MinMaxValue:
     cdef double thisval
