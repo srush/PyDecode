@@ -1,9 +1,12 @@
-potentials.so binary
-potentials.cpp binary
-potentials.pyx binary
-potentials.pxd binary
-*.xml binary
-docs/ext/* binary
-docs/xml/* binary
-docs/src/generated/* binary
-notebooks/*.ipynb binary
+potentials.so binary -diff
+potentials.cpp binary -diff
+potentials.pyx binary -diff
+potentials.pxd binary -diff
+*.xml binary -diff
+docs/ext/* binary -diff
+docs/xml/* binary -diff
+docs/src/generated/* binary -diff
+notebooks/*.ipynb binary -diff
+notebooks/doc/*.ipynb binary -diff
+python/pydecode/_pydecode.cpp binary -diff
+python/pydecode/_pydecode.pyx binary -diff
