@@ -45,16 +45,14 @@ class _FastVec(object):
         return other
 
 
-def sparse_feature_indices(label_features, templates, feature_hash=None):
+def sparse_feature_indices(label_features, templates, offsets,
+                           feature_hash=None):
     """
     feature_matrix : int ndarray
 
     templates : list of tuples
     """
     rows = []
-    offsets = [0]
-    for shape in templates[:-1]:
-        offsets.append(offsets[-1] + np.product(shape))
 
     for features, shape in zip(label_features, templates):
         out = np.ravel_multi_index(features, shape)
@@ -84,7 +82,7 @@ def fast_vector(indices, shape):
 
 class Preprocessor:
     def __init__(self):
-        self.dict = defaultdict(lambda: defaultdict(lambda: 0))
+        self.dict = defaultdict(dict)
 
     def size(self, key):
         return len(self.dict[key]) + 1
@@ -103,17 +101,20 @@ class Preprocessor:
         for i, d in enumerate(d_list):
             for key in d:
                 preprocessed[key][i] = \
-                    self.dict[key][d[key]]
+                    self.dict[key].get(d[key], 0)
         return preprocessed
 
 class DynamicProgrammingModel(StructuredModel):
-    def __init__(self, feature_hash=None, use_cache=True,
+    def __init__(self, feature_hash=None,
+                 part_feature_cache=True,
+                 joint_feature_cache=True,
                  joint_feature_format=None):
         # Necessary for pystruct.
         self.inference_calls = 0
         self.feature_hash = feature_hash
         self.cache = {}
-        self._use_cache = use_cache
+        self._use_joint_feature_cache = joint_feature_cache
+        self._use_part_feature_cache = part_feature_cache
         self.joint_feature_format = joint_feature_format
 
     def templates(self):
@@ -135,9 +136,14 @@ class DynamicProgrammingModel(StructuredModel):
         """
         Initialize the model and components based on the training data.
         """
+        self.temp_shape = self.templates()
         feature_size = \
             np.sum([np.product(template)
-                    for template in self.templates()])
+                    for template in self.temp_shape])
+        self.offsets = [0]
+        for shape in self.temp_shape[:-1]:
+            self.offsets.append(self.offsets[-1] + np.product(shape))
+
         if self.feature_hash is not None:
             feature_size = min(self.feature_hash, feature_size)
         self.size_joint_feature = (feature_size, 1)
@@ -150,7 +156,8 @@ class DynamicProgrammingModel(StructuredModel):
         labels = encoder.transform_structure(y)
         parts_features = self.parts_features(x, labels)
         feature_matrix = sparse_feature_indices(parts_features,
-                                                self.templates(),
+                                                self.temp_shape,
+                                                self.offsets,
                                                 self.feature_hash)
 
         if self.joint_feature_format is None:
@@ -163,9 +170,12 @@ class DynamicProgrammingModel(StructuredModel):
             feature_vector = fast_vector(feature_matrix,
                                          self.size_joint_feature)
 
-        if self._use_cache:
+        if self._use_joint_feature_cache:
             self.cache["FEAT", x, tuple(y)] = feature_vector
         return feature_vector
+
+    def part_cache(x):
+        return True
 
     def inference(self, x, w, relaxed=False):
         graph, encoder = self.dynamic_program(x)
@@ -175,10 +185,13 @@ class DynamicProgrammingModel(StructuredModel):
             graph_labels = graph.labeling[graph.labeling != -1]
             parts = encoder.transform_labels(graph_labels)
             parts_features = self.parts_features(x, parts)
+
             feature_indices = sparse_feature_indices(parts_features,
-                                                     self.templates(),
+                                                     self.temp_shape,
+                                                     self.offsets,
                                                      self.feature_hash)
-            if self._use_cache:
+            if self._use_part_feature_cache and self.part_cache(x):
+
                 self.cache["IND", x] = feature_indices
 
         # Sum the feature weights for the features in each label row.
