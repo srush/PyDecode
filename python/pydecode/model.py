@@ -174,8 +174,16 @@ class DynamicProgrammingModel(StructuredModel):
             self.cache["FEAT", x, tuple(y)] = feature_vector
         return feature_vector
 
-    def part_cache(x):
+    def part_cache(self, x):
         return True
+
+    def score_part(self, x, w, part):
+        parts_features = self.parts_features(x, np.array([part]))
+        feature_indices = sparse_feature_indices(parts_features,
+                                                 self.temp_shape,
+                                                 self.offsets,
+                                                 self.feature_hash)
+        return np.sum(np.take(w, feature_indices, mode="clip"), axis=1)
 
     def inference(self, x, w, relaxed=False):
         graph, encoder = self.dynamic_program(x)
